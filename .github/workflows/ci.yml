@@ -57,10 +57,7 @@ jobs:
           target: google_apis
           arch: x86_64
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest
-      - name: Collect screenshots
-        if: always()
-        run: adb pull /sdcard/Android/data/com.akylas.enforcedoze/files/screenshots device-screenshots || true
+          script: bash .github/scripts/android16-ui.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:

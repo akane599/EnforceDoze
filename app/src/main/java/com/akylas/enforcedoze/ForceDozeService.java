@@ -78,7 +78,7 @@ public class ForceDozeService extends Service {
                 cancelDelay();
                 // Restore biometrics/sensors/radios immediately so unlocking always works.
                 waitingForUnlock = prefs.getBoolean("waitForUnlock", false) && Utils.isDeviceLocked(context);
-                if (waitingForUnlock && sessionActive && !entering) restoreForUnlock();
+                if (waitingForUnlock && sessionActive && !entering && !pauseRequested()) restoreForUnlock();
                 else leave("WAITING", false);
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 waitingForUnlock = false;
@@ -156,17 +156,22 @@ public class ForceDozeService extends Service {
         return "adb".equals(mode) && Build.VERSION.SDK_INT < 34 && Utils.isDumpPermissionGranted(this)
                 && Utils.isSecureSettingsPermissionGranted(this);
     }
+    private boolean pauseRequested() {
+        return prefs.getBoolean("disableWhenCharging", true) && Utils.isConnectedToCharger(this)
+                || Utils.isUserInCommunicationCall(this) || Utils.isUserInCall(this);
+    }
     private boolean eligible() {
         return !destroyed && !stopping && prefs.getBoolean("serviceEnabled", false)
                 && !Utils.isScreenOn(this) && !waitingForUnlock && Utils.isInsideCustomDozePeriod(this)
-                && !(prefs.getBoolean("disableWhenCharging", true) && Utils.isConnectedToCharger(this))
-                && !Utils.isUserInCommunicationCall(this) && !Utils.isUserInCall(this) && accessReady();
+                && !pauseRequested() && accessReady();
     }
     private void evaluate(boolean delayElapsed) {
         if (destroyed || stopping) return;
         if (!prefs.getBoolean("serviceEnabled", false)) { leave("OFF", true); return; }
         if (!accessReady()) { leave("NEEDS_ACCESS", false); return; }
         if (!Utils.isInsideCustomDozePeriod(this)) { leave("SCHEDULED", false); return; }
+        // Charging and calls override waiting for unlock, including on the lock screen.
+        if (pauseRequested()) { leave("PAUSED", false); return; }
         if (Utils.isScreenOn(this)) { if (waitingForUnlock && sessionActive) return; leave("WAITING", false); return; }
         if (!eligible()) { leave("PAUSED", false); return; }
         if (sessionActive || entering) return;

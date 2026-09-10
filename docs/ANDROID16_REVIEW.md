@@ -29,7 +29,7 @@ This is a substantial development revision, not a certification that every bug h
 
 | Configuration | Implementation | Device validation |
 | --- | --- | --- |
-| Android 16 / API 36 | SDK 36 compile/target; edge-to-edge insets, back dispatcher, special-use foreground service, UserService command path | Build checks run locally; on-device UI and privileged behavior require the CI emulator and a phone. |
+| Android 16 / API 36 | SDK 36 compile/target; edge-to-edge insets, back dispatcher, special-use foreground service, UserService command path | Build checks and six Android 16 emulator instrumentation tests passed. Privileged behavior requires a test phone. |
 | Samsung / One UI, Shizuku started through ADB | Named privileged operations, conservative hotspot handling, explicit access/recovery states and Samsung setup guidance | Not certified on any Samsung model or One UI build in this environment. |
 | Shizuku started with root | Same UserService protocol; actual privileges come from Shizuku | Requires a rooted test device. |
 | Direct root | Explicit user-triggered root check, bounded `su` commands and the same journal | Requires a rooted test device. |
@@ -60,7 +60,7 @@ Local validation succeeded with JDK 17 and the Android 36 SDK, including a clean
 | Android lint | 0 errors; warnings remain, including untranslated development UI copy, unused legacy resources and private API compatibility cautions |
 | Debug APK | Built successfully |
 | Minified release APK | Built successfully; unsigned |
-| Instrumentation APK | Compiled and packaged successfully; device tests not executed |
+| Instrumentation APK | Compiled and packaged successfully; six tests passed on the GitHub Android 16 emulator at `b04be6b` |
 | Native libraries | No `.so` libraries packaged in either app APK; no app-native 16 KB page alignment issue |
 | Resource/manifest XML and workflow YAML | Parsed successfully |
 | Git diff whitespace check | Passed |
@@ -72,16 +72,16 @@ Reproduce the build checks with:
 ./gradlew connectedDebugAndroidTest
 ```
 
-The first command covers JVM regressions, Android lint, Java/Kotlin/AIDL compilation, debug packaging, release shrinking, and instrumentation-test compilation. The second requires a device or emulator; it is defined in CI but has not been run locally. No connected Android device or KVM emulator is available in this environment.
+The first command covers JVM regressions, Android lint, Java/Kotlin/AIDL compilation, debug packaging, release shrinking, and instrumentation-test compilation. The second requires a device or emulator; it passed in [GitHub CI for `b04be6b`](https://github.com/akane599/EnforceDoze/actions/runs/34499273466) but has not been run locally. No connected Android device or KVM emulator is available in this environment.
 
 JVM regressions cover command timeouts, large stderr, bounded output, exit codes, shell quoting/package validation, exact maintenance-state parsing, overnight schedules and malformed/fractional history. Instrumentation tests cover dashboard recreation and screen launch without privileged access, plus persistent recovery, reverse undo order, maintenance restoration and retry after partial failure.
 
-The Fastlane publish lane and signed release workflow were reviewed but not executed: this environment has no Ruby runtime or release signing credentials. CI publication is pending user approval. No GitHub Actions run or pull request is claimed as completed. Local debug APKs use a development signing key and generally cannot replace an installed upstream/F-Droid build with a different signature. The local release APK is unsigned unless release credentials are explicitly supplied.
+The Fastlane publish lane and signed release workflow were reviewed but not executed: this environment has no Ruby runtime or release signing credentials. The revision is published as [draft PR #1](https://github.com/akane599/EnforceDoze/pull/1). The first GitHub build and six emulator tests passed. A follow-up fixes screenshot collection before emulator shutdown and ensures charging/calls override waiting for unlock; current results are recorded in the PR checks. Physical Samsung validation remains pending. Local debug APKs use a development signing key and generally cannot replace an installed upstream/F-Droid build with a different signature. The local release APK is unsigned unless release credentials are explicitly supplied.
 
 ### Phone acceptance checks before stable release
 
 - Android 16 Samsung: authorize, deny and revoke Shizuku; stop/restart Shizuku during entry and restoration; reboot with EnforceDoze enabled. Confirm truthful status and eventual restoration.
-- Rapid screen-off/on, lock/unlock, charger connect/disconnect and incoming cellular/VoIP calls. Confirm no delayed command re-disables a restored control.
+- Rapid screen-off/on, lock/unlock, charger connect/disconnect and incoming cellular/VoIP calls, including while waiting for unlock. Confirm no delayed command re-disables a restored control.
 - Each optional control independently: begin with it on, begin with it off, enter Doze, exit, enter maintenance, and disconnect access. Verify exact restoration and failure reporting.
 - Test active hotspot, music playback, dual SIM, Bluetooth audio, GPS use and work profiles. Verify the relevant protection choices against actual firmware behavior.
 - Test overnight and overlapping periods, timezone/clock changes and manual disable. Confirm schedules never enable a manually disabled app.
