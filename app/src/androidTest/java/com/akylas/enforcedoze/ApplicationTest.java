@@ -57,6 +57,9 @@ public class ApplicationTest {
     private void screenshot(String name) throws Exception {
         var instrumentation = InstrumentationRegistry.getInstrumentation();
         instrumentation.waitForIdleSync();
+        // Activity resume can precede the new window's first rendered frame.
+        // Wait for navigation and asynchronous list updates before capturing.
+        instrumentation.getUiAutomation().waitForIdle(1000, 10000);
         Bitmap bitmap = instrumentation.getUiAutomation().takeScreenshot();
         assertNotNull(bitmap);
         File directory = new File(instrumentation.getTargetContext().getExternalFilesDir(null), "screenshots");
