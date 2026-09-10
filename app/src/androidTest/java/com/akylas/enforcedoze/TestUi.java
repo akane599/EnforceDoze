@@ -3,6 +3,7 @@ package com.akylas.enforcedoze;
 import android.graphics.Bitmap;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
+import androidx.annotation.RequiresApi;
 import androidx.test.platform.app.InstrumentationRegistry;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,14 +21,26 @@ final class TestUi {
         }
         fail(message);
     }
+    @RequiresApi(31)
     static String shell(String command) throws Exception {
         var automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        try (var stream = new ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command));
+        // UiAutomation tokenizes commands without shell quoting. Feed a real shell on stdin.
+        var pipes = automation.executeShellCommandRw("/system/bin/sh");
+        String marker = "__ENFORCEDOZE_TEST_EXIT__";
+        try (var stream = new ParcelFileDescriptor.AutoCloseInputStream(pipes[0]);
                 var output = new ByteArrayOutputStream()) {
+            try (var input = new ParcelFileDescriptor.AutoCloseOutputStream(pipes[1])) {
+                String script = "exec 2>&1\n" + command + "\nprintf '\\n" + marker + "%s\\n' \"$?\"\n";
+                input.write(script.getBytes(StandardCharsets.UTF_8));
+            }
             byte[] data = new byte[4096];
             int count;
             while ((count = stream.read(data)) != -1) output.write(data, 0, count);
-            return output.toString(StandardCharsets.UTF_8.name()).trim();
+            String result = output.toString(StandardCharsets.UTF_8.name());
+            int end = result.lastIndexOf(marker);
+            assertTrue("Test shell did not report completion: " + result, end >= 0);
+            assertEquals(command + ": " + result, "0", result.substring(end + marker.length()).trim());
+            return result.substring(0, end).trim();
         }
     }
     static void screenshot(String name) throws Exception {

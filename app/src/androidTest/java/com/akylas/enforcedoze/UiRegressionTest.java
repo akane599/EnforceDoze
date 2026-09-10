@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion = 31)
 public class UiRegressionTest {
     @Test public void pickerLoadsWhileCommandsAreBusyAndRetainsSearch() throws Exception {
         CountDownLatch blocked = new CountDownLatch(1), release = new CountDownLatch(1);
@@ -115,6 +117,9 @@ public class UiRegressionTest {
             prefs.edit().putStringSet("dozeAppBlockList", previousApps).commit();
             TestUi.shell(previousScale.equals("null") ? "settings delete system font_scale"
                     : "settings put system font_scale " + CommandPolicy.quote(previousScale));
+            float restoredScale = previousScale.equals("null") ? 1f : Float.parseFloat(previousScale);
+            TestUi.await("Font scaling did not restore", () ->
+                    Math.abs(context.getResources().getConfiguration().fontScale - restoredScale) < 0.01f);
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> AppCompatDelegate.setDefaultNightMode(previousNight));
         }
     }

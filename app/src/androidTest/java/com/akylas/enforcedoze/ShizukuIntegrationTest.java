@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,6 +20,7 @@ import static org.junit.Assume.*;
 
 /** Explicit opt-in only: these tests control a disposable emulator's Shizuku server and Doze state. */
 @RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion = 31)
 public class ShizukuIntegrationTest {
     private Context context;
     private ShizukuHandler shizuku;
