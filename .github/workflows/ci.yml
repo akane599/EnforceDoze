@@ -1,7 +1,7 @@
 name: Android checks
 on:
   push:
-    branches: ['codex/**']
+    branches: [master]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -63,5 +63,6 @@ jobs:
           name: android16-ui-results
           path: |
             device-screenshots/
+            device-test-results/
             app/build/reports/androidTests/
           retention-days: 14

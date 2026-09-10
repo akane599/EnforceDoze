@@ -54,6 +54,9 @@
     <string name="stat_empty">No completed Doze sessions yet. Enable EnforceDoze and turn off the screen to begin.</string>
     <string name="package_search">Search app name or package</string>
     <string name="package_empty">No matching apps</string>
+    <string name="package_load_failed">Could not load the app list. Try again.</string>
+    <string name="retry_loading">Reload apps</string>
+    <string name="remove_named_app">Remove %1$s</string>
     <string name="remove_app">Remove app</string>
     <string name="app_picker_title">Choose an app</string>
     <string name="invalid_package">Enter a valid package name, such as com.spotify.music.</string>

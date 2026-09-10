@@ -32,10 +32,13 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> {
     }
     private ArrayList<AppsItem> listData;
     private java.util.function.Consumer<String> removeListener;
+    private java.util.function.Consumer<String> selectListener;
     public void setOnRemoveListener(java.util.function.Consumer<String> listener) { removeListener = listener; }
+    public void setOnSelectListener(java.util.function.Consumer<String> listener) { selectListener = listener; }
 
     public AppsAdapter(Context aContext, ArrayList<AppsItem> listData) {
         this.listData = listData;
+        setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
     }
 
     @Override
@@ -66,6 +69,12 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> {
         holder.appName.setText(item.getAppName());
         holder.appPackageName.setText(item.getAppPackageName());
         View remove = holder.itemView.findViewById(R.id.removeApp);
+        remove.setVisibility(removeListener == null ? View.GONE : View.VISIBLE);
+        remove.setContentDescription(holder.itemView.getContext().getString(R.string.remove_named_app, item.getAppName()));
+        holder.itemView.setOnClickListener(selectListener == null ? null : v -> {
+            int index = holder.getBindingAdapterPosition();
+            if (index != RecyclerView.NO_POSITION) selectListener.accept(listData.get(index).getAppPackageName());
+        });
         if (remove != null) remove.setOnClickListener(v -> {
             int index = holder.getBindingAdapterPosition();
             if (index != RecyclerView.NO_POSITION && removeListener != null) removeListener.accept(listData.get(index).getAppPackageName());

@@ -8,7 +8,10 @@ public final class CommandPolicy {
     private static final Pattern STATE = Pattern.compile("(?:^|\\s)mState=([A-Z_]+)(?:\\s|$)");
     public static boolean validPackage(String name) { return name != null && (name.equals("android") || PACKAGE.matcher(name).matches()); }
     public static boolean protectedPackage(String name) {
-        return java.util.Arrays.asList("android", "com.akylas.enforcedoze", "moe.shizuku.privileged.api", "com.android.systemui", "com.android.settings", "com.android.phone", "com.android.server.telecom").contains(name);
+        return java.util.Arrays.asList("android", "com.akylas.enforcedoze", "moe.shizuku.privileged.api",
+                "com.android.systemui", "com.android.settings", "com.android.phone", "com.android.server.telecom",
+                "com.android.dialer", "com.google.android.dialer", "com.samsung.android.dialer",
+                "com.samsung.android.incallui", "com.samsung.android.app.telephonyui").contains(name);
     }
     public static String quote(String value) { return "'" + value.replace("'", "'\\''") + "'"; }
     public static String idleState(String output) {

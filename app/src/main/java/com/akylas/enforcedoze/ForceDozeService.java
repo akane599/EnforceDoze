@@ -58,6 +58,7 @@ public class ForceDozeService extends Service {
     private ShizukuHandler shizuku;
     private PowerManager power;
     private PowerManager.WakeLock transitionLock;
+    private AutoCloseable callModeMonitor;
     private final ShizukuHandler.OnAvailibilityChange accessListener = available -> {
         if (!Utils.isShizukuMode(this)) return;
         if (!available) leave("NEEDS_ACCESS", false);
@@ -121,6 +122,7 @@ public class ForceDozeService extends Service {
         shizuku.addAvailabilityListener(accessListener);
         transitionLock = power.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "enforcedoze:transition");
         transitionLock.setReferenceCounted(false);
+        callModeMonitor = CallModeMonitor.start(this, () -> evaluate(false));
     }
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_STOP.equals(intent.getAction())) leave("OFF", true);
@@ -460,6 +462,8 @@ public class ForceDozeService extends Service {
         unregisterReceiver(events);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(internal);
         shizuku.removeAvailabilityListener(accessListener);
+        try { if (callModeMonitor != null) callModeMonitor.close(); }
+        catch (Exception e) { Utils.logToLogcat("EnforceDoze", "Unable to detach audio callback: " + e); }
         main.removeCallbacksAndMessages(null);
         CommandExecutor.submit(() -> { journal.restore(); sessionActive = false; });
         releaseLock();

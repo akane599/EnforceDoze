@@ -370,7 +370,8 @@ public class Utils {
 
     public static boolean isUserInCommunicationCall(Context context) {
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return manager.getMode() == AudioManager.MODE_RINGTONE || manager.getMode() == AudioManager.MODE_IN_CALL || manager.getMode() == AudioManager.MODE_IN_COMMUNICATION;
+        // Also preserve call screening, redirected calls and newer communication modes.
+        return manager != null && manager.getMode() != AudioManager.MODE_NORMAL;
     }
 
     public static boolean isUserInCall(Context context) {

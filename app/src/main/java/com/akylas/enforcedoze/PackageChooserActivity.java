@@ -1,63 +1,92 @@
 package com.akylas.enforcedoze;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import com.google.android.material.appbar.MaterialToolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.Future;
 
-/** Loads labels once off the UI thread, includes system apps, and searches package IDs too. */
+/** Searchable package metadata with one adapter update per query. */
 public class PackageChooserActivity extends UiActivity {
     private final ArrayList<AppsItem> all = new ArrayList<>(), visible = new ArrayList<>();
-    private ArrayAdapter<String> adapter;
+    private AppsAdapter adapter;
     private EditText search;
     private TextView count;
+    private MaterialButton retry;
+    private Future<?> loadingTask;
+    private int loadVersion;
+    private boolean loading;
+    private String error;
+
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
-        LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL);
-        MaterialToolbar toolbar = new MaterialToolbar(this); toolbar.setTitle(R.string.app_picker_title); root.addView(toolbar);
-        search = new EditText(this); search.setSingleLine(); search.setHint(R.string.package_search); root.addView(search);
-        count = new TextView(this); count.setText(R.string.loading_installed_apps_text); root.addView(count);
-        ListView list = new ListView(this); root.addView(list, new LinearLayout.LayoutParams(-1, 0, 1));
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>()); list.setAdapter(adapter);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            setResult(RESULT_OK, new Intent().putExtra("package_name", visible.get(position).getAppPackageName())); finish();
+        setContentView(R.layout.activity_package_chooser);
+        setSupportActionBar(findViewById(R.id.packageToolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        search = findViewById(R.id.packageSearch);
+        count = findViewById(R.id.packageCount);
+        retry = findViewById(R.id.packageRetry);
+        retry.setOnClickListener(v -> load());
+        RecyclerView list = findViewById(R.id.packageList);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new AppsAdapter(this, visible);
+        adapter.setOnSelectListener(pkg -> {
+            setResult(RESULT_OK, new Intent().putExtra("package_name", pkg));
+            finish();
         });
+        list.setAdapter(adapter);
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int c, int after) { }
             public void onTextChanged(CharSequence s, int start, int before, int c) { filter(); }
             public void afterTextChanged(Editable s) { }
         });
-        setContentView(root); setSupportActionBar(toolbar); getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        CommandExecutor.submit(() -> {
-            ArrayList<AppsItem> loaded = new ArrayList<>();
-            try {
-                for (ApplicationInfo info : getPackageManager().getInstalledApplications(0)) {
-                    AppsItem item = new AppsItem(); item.setAppPackageName(info.packageName);
-                    item.setAppName(info.loadLabel(getPackageManager()).toString()); loaded.add(item);
-                }
-                loaded.sort((a, b) -> a.getAppName().compareToIgnoreCase(b.getAppName()));
-            } catch (RuntimeException ignored) { }
-            runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) { all.clear(); all.addAll(loaded); filter(); } });
+        load();
+    }
+
+    private void load() {
+        int version = ++loadVersion;
+        if (loadingTask != null) loadingTask.cancel(true);
+        loading = true;
+        error = null;
+        all.clear();
+        filter();
+        loadingTask = AppCatalog.load(this, null, (apps, failure) -> {
+            if (isFinishing() || isDestroyed() || version != loadVersion) return;
+            loading = false;
+            error = failure;
+            all.clear();
+            all.addAll(apps);
+            filter();
         });
     }
+
     private void filter() {
-        if (adapter == null) return;
-        String query = search.getText().toString().toLowerCase(Locale.ROOT);
-        visible.clear(); adapter.clear();
-        for (AppsItem item : all) if (item.getAppName().toLowerCase(Locale.ROOT).contains(query) || item.getAppPackageName().toLowerCase(Locale.ROOT).contains(query)) {
-            visible.add(item); adapter.add(item.getAppName() + "\n" + item.getAppPackageName());
+        String query = search.getText().toString().trim().toLowerCase(Locale.ROOT);
+        visible.clear();
+        for (AppsItem item : all) {
+            if (item.getAppName().toLowerCase(Locale.ROOT).contains(query)
+                    || item.getAppPackageName().toLowerCase(Locale.ROOT).contains(query)) visible.add(item);
         }
-        count.setText(visible.isEmpty() ? getString(R.string.package_empty) : getString(R.string.app_count, visible.size()));
         adapter.notifyDataSetChanged();
+        retry.setVisibility(error == null ? View.GONE : View.VISIBLE);
+        if (loading) count.setText(R.string.loading_installed_apps_text);
+        else if (error != null) count.setText(R.string.package_load_failed);
+        else count.setText(visible.isEmpty() ? getString(R.string.package_empty) : getString(R.string.app_count, visible.size()));
     }
+
+    @Override protected void onDestroy() {
+        ++loadVersion;
+        if (loadingTask != null) loadingTask.cancel(true);
+        super.onDestroy();
+    }
+
     @Override public boolean onSupportNavigateUp() { finish(); return true; }
 }

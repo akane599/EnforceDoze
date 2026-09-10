@@ -88,6 +88,25 @@ The Fastlane publish lane and signed release workflow were reviewed but not exec
 - Large fonts, TalkBack, light/dark theme, gesture/three-button navigation, landscape and split screen. Inspect all screens and dialogs for clipping or unreachable controls.
 - Run an overnight comparison under similar signal, apps and battery conditions. No battery-saving percentage or performance benchmark is asserted by this revision.
 
+## Follow-up: 1.11.1 development revision
+
+- Package metadata now loads on a separate background worker. Opening an app list cannot hold the command queue needed to restore radios and device settings. Search updates the adapter once per query, survives recreation, and shows a retry action when package loading fails.
+- App-list headers scroll with their rows, keeping controls and app entries reachable with large text and in landscape. Lists refresh when returning from Android settings, invalid manual package input stays editable, and removal actions identify the app to screen readers.
+- Diagnostics yield between reads so screen-on restoration can proceed. Completed reports survive recreation, and permission buttons disappear after permission is granted.
+- Android 12+ audio-mode callbacks now trigger evaluation for VoIP calls, including calls starting after screen-off. Call screening and redirected communication modes also pause automation. Samsung dialer and in-call packages are protected from suspension.
+- Missing root authorization and unknown execution modes fail explicitly rather than running a command in the app's unprivileged shell.
+- CI runs once per PR revision instead of duplicating branch and PR builds. A pinned, checksum-verified Shizuku 13.6.0 is installed only on the disposable Android 16 emulator. Opt-in integration tests cover shell identity, named system API reads, actual settings restoration, forced Doze, server death/reconnection, and foreground monitor screen-off/wake behavior. UI regressions also exercise large text, dark mode, landscape, app loading during a blocked command queue and audio-mode callbacks.
+
+The follow-up's current results are recorded in PR #1. These emulator checks do not establish Samsung firmware compatibility or battery savings; the physical-device acceptance checklist above still applies.
+
+The downloadable 1.11.1 development APK has a new debug certificate because the previous temporary signing key is no longer available. It cannot update the earlier 1.11.0 development APK in place. Before replacing that build, turn EnforceDoze off and resolve any pending restoration while its original privileged backend is connected. Record settings you want to keep, uninstall the old development build, then install and configure this one. Uninstalling clears app data. This is a development-package limitation, not a required migration for a future release signed with the upstream key.
+
+### References for the follow-up
+
+- [Audio-mode callbacks (Android 12+)](https://developer.android.com/reference/android/media/AudioManager.OnModeChangedListener)
+- [Pinned Shizuku release](https://github.com/RikkaApps/Shizuku/releases/tag/v13.6.0)
+- [Shizuku server runtime-permission and connection implementation](https://github.com/RikkaApps/Shizuku/blob/v13.6.0/server/src/main/java/rikka/shizuku/server/ShizukuService.java)
+
 ## Primary references
 
 - [Android 16 behavior changes for apps targeting API 36](https://developer.android.com/about/versions/16/behavior-changes-16)

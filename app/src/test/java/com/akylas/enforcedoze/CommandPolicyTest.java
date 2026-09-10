@@ -3,6 +3,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CommandPolicyTest {
+    @Test public void essentialSamsungCallPackagesCannotBeSuspended() {
+        for (String name : new String[]{"com.samsung.android.dialer", "com.samsung.android.incallui", "com.samsung.android.app.telephonyui"})
+            assertTrue(name, CommandPolicy.protectedPackage(name));
+        assertFalse(CommandPolicy.protectedPackage("com.spotify.music"));
+    }
     @Test public void maintenanceIsNotIdle() {
         assertEquals("IDLE_MAINTENANCE", CommandPolicy.idleState("  mState=IDLE_MAINTENANCE\n mLightState=IDLE"));
         assertEquals("UNKNOWN", CommandPolicy.idleState("permission denied"));
