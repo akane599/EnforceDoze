@@ -1,0 +1,10 @@
+<resources>
+    <color name="colorPrimary">#A1D6B7</color>
+    <color name="colorPrimaryDark">#19392D</color>
+    <color name="colorAccent">#A1D6B7</color>
+    <color name="colorOnPrimary">#093824</color>
+    <color name="colorPrimaryContainer">#234D39</color>
+    <color name="colorOnPrimaryContainer">#C1EFCE</color>
+    <color name="colorSurface">#111713</color>
+    <color name="colorOnSurface">#E0E8DE</color>
+</resources>

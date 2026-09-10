@@ -35,11 +35,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.jakewharton.processphoenix.ProcessPhoenix;
-import com.nanotasks.Completion;
-import com.nanotasks.Tasks;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -48,13 +44,9 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import eu.chainfire.libsuperuser.Shell;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends UiActivity {
     public static String TAG = "EnforceDoze";
-    static MaterialDialog progressDialog1 = null;
-    private static Shell.Interactive rootSession;
-    private static Shell.Interactive nonRootSession;
 
     private static void log(String message) {
             logToLogcat(TAG, message);
@@ -87,16 +79,6 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (rootSession != null) {
-            if (rootSession.isRunning()) {
-                rootSession.close();
-            }
-            rootSession = null;
-        }
-        if (nonRootSession != null) {
-            nonRootSession.close();
-            nonRootSession = null;
-        }
         reloadSettings(this);
     }
 
@@ -105,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -116,6 +98,10 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isSuAvailable = false;
         boolean isShizukuAvailable = false;
         private ShizukuHandler shizukuHandler;
+        private final ShizukuHandler.OnAvailibilityChange accessListener = value -> {
+            isShizukuAvailable = value;
+            if (getPreferenceScreen() != null && getContext() != null) toggleRootFeatures(Utils.isShizukuMode(getContext()) ? value : isSuAvailable);
+        };
 
         private void removeIconSpace(PreferenceGroup group) {
             for (int i = 0; i < group.getPreferenceCount(); i++) {
@@ -176,12 +162,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initializeShizuku() {
             shizukuHandler.checkShizukuAvailability();
-            shizukuHandler.setOnAvailibilityChangeListener(value -> {
-                isShizukuAvailable = value;
-                toggleRootFeatures(isShizukuAvailable || isSuAvailable);
-            });
             isShizukuAvailable = shizukuHandler.isShizukuAvailable();
-            log("Shizuku mode enabled, available: " + isShizukuAvailable);
         }
 
 
@@ -193,9 +174,8 @@ public class SettingsActivity extends AppCompatActivity {
             if (useShizuku) {
                 initializeShizuku();
             }
-            // Initialize root and non-root shell
-            executeCommandWithRoot("whoami");
-            executeCommandWithoutRoot("whoami");
+            isSuAvailable = !useShizuku && PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSuAvailable", false);
+            shizukuHandler.addAvailabilityListener(accessListener);
 
             addPreferencesFromResource(R.xml.prefs);
             removeIconSpace(getPreferenceScreen());
@@ -246,21 +226,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             executionMode.setOnPreferenceChangeListener((preference, value) -> {
-                if (value.equals("shizuku")) {
-                    initializeShizuku();
-                    ShizukuHandler.getInstance(getActivity()).requestShizukuPermission();
-                    Utils.grantPermissionsViaShizuku(getActivity());
-                    toggleRootFeatures(isSuAvailable || isShizukuAvailable);
-                } else {
-                    toggleRootFeatures(isSuAvailable);
-                }
-                boolean serviceEnabled = sharedPreferences.getBoolean("serviceEnabled", false);
-                if (serviceEnabled) {
-                    Context context = getActivity();
-                    Intent intent = new Intent(context, ForceDozeService.class);
-                    context.stopService(intent);
-                    context.startService(intent);
-                }
+                // The preference is persisted AFTER this callback. React in onSharedPreferenceChanged.
                 return true;
             });
 
@@ -289,46 +255,10 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             clearDozeStats.setOnPreferenceClickListener(preference -> {
-                progressDialog1 = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.please_wait_text))
-                        .cancelable(false)
-                        .autoDismiss(false)
-                        .content(getString(R.string.clearing_doze_stats_text))
-                        .progress(true, 0)
-                        .show();
-                Tasks.executeInBackground(getActivity(), () -> {
-                    log("Clearing Doze stats");
-                    SharedPreferences sharedPreferences13 = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    SharedPreferences.Editor editor = sharedPreferences13.edit();
-                    editor.remove("dozeUsageDataAdvanced");
-                    return editor.commit();
-                }, new Completion<Boolean>() {
-                    @Override
-                    public void onSuccess(Context context, Boolean result) {
-                        if (progressDialog1 != null) {
-                            progressDialog1.dismiss();
-                        }
-                        if (result) {
-                            log("Doze stats successfully cleared");
-                            if (Utils.isMyServiceRunning(ForceDozeService.class, context)) {
-                                Intent intent = new Intent("reload-settings");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                            }
-                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                            builder.setTitle(getString(R.string.cleared_text));
-                            builder.setMessage(getString(R.string.doze_battery_stats_clear_msg));
-                            builder.setPositiveButton(getString(R.string.close_button_text), (dialogInterface, i) -> dialogInterface.dismiss());
-                            builder.show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Context context, Exception e) {
-                        Log.e(TAG, "Error clearing Doze stats: " + e.getMessage());
-
-                    }
-                });
+                sharedPreferences.edit().remove("dozeUsageDataAdvanced").apply();
+                reloadSettings(requireContext());
+                new MaterialAlertDialogBuilder(requireContext()).setMessage(R.string.doze_battery_stats_clear_msg)
+                        .setPositiveButton(R.string.close_button_text, null).show();
                 return true;
             });
 
@@ -337,7 +267,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (!newValue) {
                     return true;
                 } else {
-                    if (isSuAvailable) {
+                    if (isSuAvailable || isShizukuAvailable) {
                         log("Phone is rooted and SU permission granted");
                         log("Granting android.permission.READ_PHONE_STATE to com.akylas.enforcedoze");
                         executeCommand("pm grant com.akylas.enforcedoze android.permission.READ_PHONE_STATE");
@@ -364,13 +294,13 @@ public class SettingsActivity extends AppCompatActivity {
                         builder.setTitle(getString(R.string.notifications_permission));
                         builder.setMessage(getString(R.string.notifications_permission_explanation));
                         builder.setPositiveButton(getString(R.string.open_button_text), (dialogInterface, i) -> {
-                            Intent settingsIntent = null;
+                            Intent settingsIntent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 settingsIntent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         .putExtra(Settings.EXTRA_APP_PACKAGE, getActivity().getPackageName());
                             }
-                            getActivity().startActivity(settingsIntent);
+                            UiSupport.open(requireContext(), settingsIntent);
                             dialogInterface.dismiss();
                         });
                         builder.show();
@@ -383,12 +313,12 @@ public class SettingsActivity extends AppCompatActivity {
                 final boolean newValue = (boolean) o;
                 if (newValue) {
                     // we need to check if we have notifications permissions
-                    if (!isSuAvailable && !Utils.isUsageStatsPermissionGranted(getContext())) {
+                    if (!isSuAvailable && !isShizukuAvailable && !Utils.isUsageStatsPermissionGranted(getContext())) {
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
                         builder.setTitle(getString(R.string.usage_access_permission));
                         builder.setMessage(getString(R.string.usage_access_explanation));
                         builder.setPositiveButton(getString(R.string.open_button_text), (dialogInterface, i) -> {
-                            getActivity().startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+                            UiSupport.open(requireContext(), new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                             dialogInterface.dismiss();
                         });
                         builder.show();
@@ -405,20 +335,21 @@ public class SettingsActivity extends AppCompatActivity {
 //            }
 
             turnOffDataInDoze.setEnabled(false);
-            turnOffDataInDoze.setSummary(getString(R.string.root_required_text));
+            turnOffDataInDoze.setSummary(getString(R.string.root_or_shizuku));
             dozeNotificationBlocklist.setEnabled(false);
-            dozeNotificationBlocklist.setSummary(getString(R.string.root_required_text));
+            dozeNotificationBlocklist.setSummary(getString(R.string.root_or_shizuku));
             dozeAppBlocklist.setEnabled(false);
-            dozeAppBlocklist.setSummary(getString(R.string.root_required_text));
+            dozeAppBlocklist.setSummary(getString(R.string.root_or_shizuku));
             
             Preference turnOffBluetoothInDoze = (Preference) findPreference("turnOffBluetoothInDoze");
             turnOffBluetoothInDoze.setEnabled(false);
-            turnOffBluetoothInDoze.setSummary(getString(R.string.root_required_text));
+            turnOffBluetoothInDoze.setSummary(getString(R.string.root_or_shizuku));
             
             Preference turnOffGPSInDoze = (Preference) findPreference("turnOffGPSInDoze");
             turnOffGPSInDoze.setEnabled(false);
-            turnOffGPSInDoze.setSummary(getString(R.string.root_required_text));
+            turnOffGPSInDoze.setSummary(getString(R.string.root_or_shizuku));
 
+            toggleRootFeatures(useShizuku ? isShizukuAvailable : isSuAvailable);
             Preference sponsorPref = findPreference("sponsorProject");
             if (sponsorPref != null) {
                 sponsorPref.setOnPreferenceClickListener(preference -> {
@@ -436,7 +367,7 @@ public class SettingsActivity extends AppCompatActivity {
             builder.setPositiveButton(getString(R.string.authorize_button_text), (dialogInterface, i) -> {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                 intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
-                startActivity(intent);
+                UiSupport.open(requireContext(), intent);
             });
             builder.setNegativeButton(getString(R.string.deny_button_text), (dialogInterface, i) -> dialogInterface.dismiss());
             builder.show();
@@ -539,7 +470,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void requestNotificationPermission(){
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    ActivityCompat.requestPermissions(getActivity(),
+                    requestPermissions(
                             new String[]{"android.permission.POST_NOTIFICATIONS"},
                             POST_NOTIF_PERMISSION_REQUEST_CODE);
                 }
@@ -552,60 +483,28 @@ public class SettingsActivity extends AppCompatActivity {
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-            switch (requestCode) {
-                case POST_NOTIF_PERMISSION_REQUEST_CODE:
-                    Preference showPersistentNotif = (Preference) findPreference("showPersistentNotif");
-                    showPersistentNotif.setEnabled(false);
-                    // If request is cancelled, the result arrays are empty.
-                    if (grantResults.length > 0 &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        showPersistentNotif.setEnabled(true);
-
-                    }  else {
-                        showPersistentNotif.setEnabled(false);
-                        PreferenceManager.getDefaultSharedPreferences(getContext())
-                                .edit()
-                                .putBoolean("showPersistentNotif", false)
-                                .apply();
-                    }
-
+            if (requestCode == POST_NOTIF_PERMISSION_REQUEST_CODE && isAdded()
+                    && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                SwitchPreferenceCompat preference = findPreference("showPersistentNotif");
+                if (preference != null) preference.setChecked(true);
             }
-
         }
 
         public void resetForceDoze() {
-            log("Starting ForceDoze reset procedure");
-            if (Utils.isMyServiceRunning(ForceDozeService.class, getActivity())) {
-                log("Stopping ForceDozeService");
-                getActivity().stopService(new Intent(getActivity(), ForceDozeService.class));
-            }
-            log("Enabling sensors, just in case they are disabled");
-            executeCommand("dumpsys sensorservice enable");
-            log("Disabling and re-enabling Doze mode");
-            if (Utils.isDeviceRunningOnN()) {
-                executeCommand("dumpsys deviceidle disable all");
-                executeCommand("dumpsys deviceidle enable all");
-            } else {
-                executeCommand("dumpsys deviceidle disable");
-                executeCommand("dumpsys deviceidle enable");
-            }
-            log("Resetting app preferences");
-            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
-            log("Trying to revoke android.permission.DUMP");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.DUMP");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.READ_LOGS");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.READ_PHONE_STATE");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.WRITE_SETTINGS");
-            log("ForceDoze reset procedure complete");
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
-            builder.setTitle(getString(R.string.reset_complete_dialog_title));
-            builder.setMessage(getString(R.string.reset_complete_dialog_text));
-            builder.setPositiveButton(getString(R.string.okay_button_text), (dialogInterface, i) -> {
-                dialogInterface.dismiss();
-                ProcessPhoenix.triggerRebirth(getActivity());
+            Context context = requireContext().getApplicationContext();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            preferences.edit().putBoolean("serviceEnabled", false).apply();
+            Utils.stopForceDozeService(context);
+            CommandExecutor.submit(() -> {
+                boolean restored = new RecoveryJournal(context).restore();
+                if (restored) preferences.edit().clear().putString("executionMode", "shizuku").apply();
+                if (getActivity() != null) getActivity().runOnUiThread(() -> {
+                    if (!isAdded()) return;
+                    new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.reset_complete_dialog_title)
+                            .setMessage(restored ? R.string.reset_complete_dialog_text : R.string.status_recovery)
+                            .setPositiveButton(R.string.okay_button_text, (dialog, which) -> { if (restored) requireActivity().finish(); }).show();
+                });
             });
-            builder.show();
         }
 
         public void toggleRootFeatures(final boolean enabled) {
@@ -649,43 +548,29 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     } else {
                         turnOffDataInDoze.setEnabled(false);
-                        turnOffDataInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOffDataInDoze.setSummary(getString(R.string.root_or_shizuku));
                         dozeNotificationBlocklist.setEnabled(false);
-                        dozeNotificationBlocklist.setSummary(getString(R.string.root_required_text));
+                        dozeNotificationBlocklist.setSummary(getString(R.string.root_or_shizuku));
                         dozeAppBlocklist.setEnabled(false);
-                        dozeAppBlocklist.setSummary(getString(R.string.root_required_text));
+                        dozeAppBlocklist.setSummary(getString(R.string.root_or_shizuku));
                         turnOffAllSensorsInDoze.setEnabled(false);
-                        turnOffAllSensorsInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOffAllSensorsInDoze.setSummary(getString(R.string.root_or_shizuku));
                         turnOnBatterySaverInDoze.setEnabled(false);
-                        turnOnBatterySaverInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOnBatterySaverInDoze.setSummary(getString(R.string.root_or_shizuku));
                         turnOffBiometricsInDoze.setEnabled(false);
-                        turnOffBiometricsInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOffBiometricsInDoze.setSummary(getString(R.string.root_or_shizuku));
                         turnOnAirplaneInDoze.setEnabled(false);
-                        turnOnAirplaneInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOnAirplaneInDoze.setSummary(getString(R.string.root_or_shizuku));
                         turnOffBluetoothInDoze.setEnabled(false);
-                        turnOffBluetoothInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOffBluetoothInDoze.setSummary(getString(R.string.root_or_shizuku));
                         turnOffGPSInDoze.setEnabled(false);
-                        turnOffGPSInDoze.setSummary(getString(R.string.root_required_text));
+                        turnOffGPSInDoze.setSummary(getString(R.string.root_or_shizuku));
                         whitelistAppsFromDozeMode.setEnabled(false);
-                        whitelistAppsFromDozeMode.setSummary(getString(R.string.root_required_text));
-                        PreferenceManager.getDefaultSharedPreferences(getContext())
-                                .edit()
-                                .putBoolean("turnOnBatterySaverInDoze", false)
-                                .putBoolean("turnOffAllSensorsInDoze", false)
-                                .putBoolean("turnOffBiometricsInDoze", false)
-                                .putBoolean("turnOnAirplaneInDoze", false)
-                                .putBoolean("turnOffBluetoothInDoze", false)
-                                .putBoolean("turnOffGPSInDoze", false)
-                                .apply();
-
+                        whitelistAppsFromDozeMode.setSummary(getString(R.string.root_or_shizuku));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             Preference turnOffWiFiInDoze = (Preference) findPreference("turnOffWiFiInDoze");
                             turnOffWiFiInDoze.setEnabled(false);
-                            turnOffWiFiInDoze.setSummary(getString(R.string.root_required_text));
-                            PreferenceManager.getDefaultSharedPreferences(getContext())
-                                    .edit()
-                                    .putBoolean("turnOffWiFiInDoze", false)
-                                    .apply();
+                            turnOffWiFiInDoze.setSummary(getString(R.string.root_or_shizuku));
                         }
 
                     }
@@ -694,74 +579,16 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         public void executeCommand(final String command) {
-            if (isSuAvailable) {
-                executeCommandWithRoot(command);
-            } else {
-                executeCommandWithoutRoot(command);
-            }
-        }
-
-
-        public void executeCommandWithRoot(final String command) {
-            boolean useShizuku = Utils.isShizukuMode(getActivity());
-            if (useShizuku && isShizukuAvailable) {
-                shizukuHandler.executeCommand(command, (commandCode, exitCode, stdout, stderr) -> {
-                    if (exitCode == 0) {
-                        toggleRootFeatures(true);
-                    } else {
-                        toggleRootFeatures(false);
-                    }
-                }, false);
-                return;
-            }
-            AsyncTask.execute(() -> {
-                if (rootSession != null) {
-                    rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR) -> printShellOutput(STDOUT));
-                } else {
-                    rootSession = new Shell.Builder().
-                            useSU().
-                            setWatchdogTimeout(5).
-                            setMinimalLogging(true).
-                            open((success, reason) -> {
-                                if (reason != Shell.OnShellOpenResultListener.SHELL_RUNNING) {
-                                    log("Error opening root shell: exitCode " + reason);
-                                    isSuAvailable = false;
-                                    toggleRootFeatures(false);
-                                } else {
-                                    rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR) -> {
-                                        printShellOutput(STDOUT);
-                                        isSuAvailable = true;
-                                        toggleRootFeatures(true);
-                                    });
-                                }
-                            });
-                }
+            if (getContext() == null) return;
+            CommandExecutor.execute(requireContext(), command, result -> {
+                if (!result.success()) Utils.logToLogcat("Settings", result.output);
             });
         }
 
-        public void executeCommandWithoutRoot(final String command) {
-            AsyncTask.execute(() -> {
-                if (nonRootSession != null) {
-                    nonRootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR) -> printShellOutput(STDOUT));
-                } else {
-                    nonRootSession = new Shell.Builder().
-                            useSH().
-                            setWatchdogTimeout(5).
-                            setMinimalLogging(true).
-                            open((success, reason) -> {
-                                if (reason != Shell.OnShellOpenResultListener.SHELL_RUNNING) {
-                                    log("Error opening shell: exitCode " + reason);
-//                                    isSuAvailable = false;
-                                } else {
-                                    nonRootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR) -> {
-                                        printShellOutput(STDOUT);
-//                                        isSuAvailable = false;
-                                    });
-                                }
-                            });
-                }
-            });
-        }
+
+        public void executeCommandWithRoot(final String command) { executeCommand(command); }
+
+        public void executeCommandWithoutRoot(final String command) { executeCommand(command); }
 
         public void printShellOutput(List<String> output) {
             if (!output.isEmpty()) {
@@ -771,8 +598,28 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
+        @Override public void onResume() {
+            super.onResume();
+            initializeShizuku();
+            isSuAvailable = "root".equals(CommandExecutor.mode(requireContext())) && PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSuAvailable", false);
+            toggleRootFeatures(Utils.isShizukuMode(requireContext()) ? isShizukuAvailable : isSuAvailable);
+        }
+        @Override public void onDestroy() {
+            shizukuHandler.removeAvailabilityListener(accessListener);
+            if (getPreferenceManager().getSharedPreferences() != null) getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            super.onDestroy();
+        }
+
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
+            // Runtime status and history share this file; they must never trigger reload loops.
+            if (key == null || findPreference(key) == null) return;
+            if ("executionMode".equals(key) && getContext() != null) {
+                isSuAvailable = "root".equals(CommandExecutor.mode(requireContext()))
+                        && sharedPreferences.getBoolean("isSuAvailable", false);
+                initializeShizuku();
+                toggleRootFeatures(Utils.isShizukuMode(getContext()) ? isShizukuAvailable : isSuAvailable);
+            }
             if ("customDozePeriods".equals(key)) {
                 updateCustomDozePeriodsSummary(findPreference("customDozePeriods"), sharedPreferences);
             }

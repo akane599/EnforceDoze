@@ -55,66 +55,53 @@ public class Utils {
 
     public static void startForceDozeService(Context context) {
         if (isMyServiceRunning(ForceDozeService.class, context)) {
-            logToLogcat("EnforceDoze", "ForceDozeService already running");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("reload-settings"));
             return;
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent i = new Intent(context, ForceDozeService.class);
-            PendingIntent pi = PendingIntent.getForegroundService(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-            if (mgr.canScheduleExactAlarms()) {
-                mgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 200 ,pi);
-            } else {
-                context.startForegroundService(i);
-            }
-        } else {
-            context.startService(new Intent(context, ForceDozeService.class));
+        try {
+            Intent intent = new Intent(context, ForceDozeService.class);
+            if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
+            else context.startService(intent);
+            hideDisabledNotification(context);
+        } catch (RuntimeException e) {
+            // Android 12+ can deny background starts. Keep the user's enabled preference.
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putString("runtimeStatus", "NEEDS_START").putString("lastError", e.toString()).apply();
+            showStartRequiredNotification(context);
         }
+        updateTileState(context);
+    }
 
-        // Hide disabled notification
-        Utils.hideDisabledNotification(context);
-        // Update tile state
-        Utils.updateTileState(context);
+    private static void showStartRequiredNotification(Context context) {
+        if (!isPostNotificationPermissionGranted(context)) return;
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 26) manager.createNotificationChannel(new NotificationChannel("start_required", "Service setup", NotificationManager.IMPORTANCE_DEFAULT));
+        PendingIntent open = PendingIntent.getActivity(context, 91, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        manager.notify(9191, new NotificationCompat.Builder(context, "start_required")
+                .setSmallIcon(R.drawable.ic_power_settings_new_white_24dp).setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.status_needs_start)).setContentIntent(open).setAutoCancel(true).build());
     }
 
     public static void stopForceDozeService(Context context) {
+        cancelCustomDozePeriodAlarm(context);
         if (isMyServiceRunning(ForceDozeService.class, context)) {
-            context.stopService(new Intent(context, ForceDozeService.class));
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(ForceDozeService.ACTION_STOP));
         }
-
-        // Hide disabled notification
-        Utils.showDisabledNotification(context);
-        // Update tile state
-        Utils.updateTileState(context);
+        showDisabledNotification(context);
+        updateTileState(context);
     }
 
     public static void applyForceDozeSchedule(Context context) {
-        boolean isServiceEnabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("serviceEnabled", false);
-        // if (!isServiceEnabled) {
-        //     cancelCustomDozePeriodAlarm(context);
-        //     if (isMyServiceRunning(ForceDozeService.class, context)) {
-        //         context.stopService(new Intent(context, ForceDozeService.class));
-        //     }
-        //     return;
-        // }
-
+        boolean enabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("serviceEnabled", false);
+        if (!enabled) { stopForceDozeService(context); return; }
         scheduleNextCustomDozePeriodBoundary(context);
-        boolean shouldRunService = isInsideCustomDozePeriod(context);
-
-        if (shouldRunService) {
-            updateSettingBool(context, "serviceEnabled", true);
-            startForceDozeService(context);
-        } else {
-            updateSettingBool(context, "serviceEnabled", false);
-            stopForceDozeService(context);
-        }
+        // Keep the foreground monitor alive outside periods. Background alarms cannot reliably restart it.
+        startForceDozeService(context);
     }
 
     public static void scheduleNextCustomDozePeriodBoundary(Context context) {
         cancelCustomDozePeriodAlarm(context);
-        if (!hasCustomDozePeriods(context)) {
+        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("serviceEnabled", false) || !hasCustomDozePeriods(context)) {
             return;
         }
 
@@ -128,7 +115,9 @@ public class Utils {
         long triggerAtMillis = System.currentTimeMillis() + delay;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+                if (Build.VERSION.SDK_INT >= 31 && !alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+                } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
             } else {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
             }
@@ -224,21 +213,7 @@ public class Utils {
         return calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
     }
 
-    private static int[] parseCustomDozePeriod(String period) {
-        if (period == null) {
-            return null;
-        }
-        String[] parts = period.split("-");
-        if (parts.length != 2) {
-            return null;
-        }
-        int start = parseCustomDozeTime(parts[0]);
-        int end = parseCustomDozeTime(parts[1]);
-        if (start < 0 || end < 0 || start == end) {
-            return null;
-        }
-        return new int[]{start, end};
-    }
+    private static int[] parseCustomDozePeriod(String period) { return CommandPolicy.period(period); }
 
     private static int parseCustomDozeTime(String time) {
         String[] parts = time.split(":");
@@ -279,7 +254,7 @@ public class Utils {
     }
 
     public static boolean isPostNotificationPermissionGranted(Context context) {
-        return context.checkCallingOrSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        return Build.VERSION.SDK_INT < 33 || context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean isReadPhoneStatePermissionGranted(Context context) {
@@ -317,7 +292,7 @@ public class Utils {
         Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (intent != null) {
             int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-            return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+            return plugged > 0;
         } else return false;
     }
 
@@ -335,7 +310,9 @@ public class Utils {
     }
 
     public static boolean checkForAutoPowerModesFlag() {
-        return Resources.getSystem().getBoolean(Resources.getSystem().getIdentifier("config_enableAutoPowerModes", "bool", "android"));
+        int id = Resources.getSystem().getIdentifier("config_enableAutoPowerModes", "bool", "android");
+        try { return id == 0 || Resources.getSystem().getBoolean(id); }
+        catch (Resources.NotFoundException e) { return true; }
     }
 
     public static boolean isDeviceRunningOnN() {
@@ -393,32 +370,29 @@ public class Utils {
 
     public static boolean isUserInCommunicationCall(Context context) {
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return manager.getMode() == AudioManager.MODE_IN_CALL || manager.getMode() == AudioManager.MODE_IN_COMMUNICATION;
+        return manager.getMode() == AudioManager.MODE_RINGTONE || manager.getMode() == AudioManager.MODE_IN_CALL || manager.getMode() == AudioManager.MODE_IN_COMMUNICATION;
     }
 
     public static boolean isUserInCall(Context context) {
-        if (Utils.isReadPhoneStatePermissionGranted(context)) {
-            TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            return manager.getCallState() == TelephonyManager.CALL_STATE_OFFHOOK || manager.getCallState() == TelephonyManager.CALL_STATE_RINGING;
-        }
-        return false;
+        try {
+            if (!isReadPhoneStatePermissionGranted(context)) return false;
+            TelephonyManager manager = context.getSystemService(TelephonyManager.class);
+            return manager != null && manager.getCallState() != TelephonyManager.CALL_STATE_IDLE;
+        } catch (RuntimeException e) { return false; }
     }
 
     public static boolean isMobileDataEnabled(Context context) {
-        //reading "mobile_data" does not work on all devices
-        // return Settings.Secure.getInt(context.getContentResolver(), "mobile_data", 1) == 1;
-        boolean mobileYN = false;
-
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (tm.getSimState() == TelephonyManager.SIM_STATE_READY) {
-            int dataState = tm.getDataState();
-            if(dataState != TelephonyManager.DATA_DISCONNECTED){
-                mobileYN = true;
+        if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) return false;
+        try {
+            TelephonyManager manager = context.getSystemService(TelephonyManager.class);
+            if (manager == null) return false;
+            if (Build.VERSION.SDK_INT >= 24) {
+                int sub = android.telephony.SubscriptionManager.getDefaultDataSubscriptionId();
+                if (sub >= 0) manager = manager.createForSubscriptionId(sub);
             }
-
-        }
-
-        return mobileYN;
+            if (Build.VERSION.SDK_INT >= 26) return manager.isDataEnabled();
+            return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+        } catch (RuntimeException e) { return false; }
     }
 
     public static boolean isWiFiEnabled(Context context) {
@@ -442,23 +416,6 @@ public class Utils {
         return Settings.Secure.getInt(contentResolver,
                 Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF) != Settings.Secure.LOCATION_MODE_OFF;
     }
-    public static boolean isHotspotEnabled(Context context) {
-        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        Method method = null;
-        try {
-            ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            method = wifi.getClass().getDeclaredMethod("getWifiApState");
-            method.setAccessible(true);
-            int actualState = (Integer) method.invoke(wifi, (Object[]) null);
-            boolean isActiveNetworkMetered = conMgr.isActiveNetworkMetered();
-            return actualState == 12 || actualState == 13;
-//            return conMgr.isActiveNetworkMetered() ||  actualState == 12 || actualState == 13;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public static boolean isLockscreenTimeoutValueTooHigh(ContentResolver contentResolver) {
         return Settings.Secure.getInt(contentResolver, "lock_screen_lock_after_timeout", 5000) >= 5000;
     }
@@ -468,9 +425,9 @@ public class Utils {
     }
 
     public static boolean doesSettingExist(String settingName) {
-        String[] updatableSettings = {"ignoreIfHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
-                "dozeEnterDelay", "useAutoRotateAndBrightnessFix", "enableSensors", "disableWhenCharging",
-                "showPersistentNotif", "useNonRootSensorWorkaround"};
+        String[] updatableSettings = {"respectHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
+                "dozeEnterDelay", "autoRotateAndBrightnessFix", "disableMotionSensors", "disableWhenCharging",
+                "showPersistentNotif", "waitForUnlock", "turnOnAirplaneInDoze", "turnOffBluetoothInDoze", "turnOffGPSInDoze", "turnOnBatterySaverInDoze", "whitelistMusicAppNetwork", "whitelistCurrentApp"};
         return Arrays.asList(updatableSettings).contains(settingName);
     }
 
@@ -530,7 +487,7 @@ public class Utils {
     public static void showDisabledNotification(Context context) {
         boolean showDisabledNotification = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean("showDisabledNotification", false);
-        if (!showDisabledNotification) {
+        if (!showDisabledNotification || !isPostNotificationPermissionGranted(context)) {
             return;
         }
 
@@ -551,7 +508,7 @@ public class Utils {
         }
 
         // Create broadcast intent to enable ForceDoze when tapping the notification
-        Intent enableIntent = new Intent(context, EnableForceDozeService.class);
+        Intent enableIntent = new Intent(context, NotificationActionReceiver.class);
         enableIntent.setAction("com.akylas.enforcedoze.ENABLE_FORCEDOZE");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
             context, 
@@ -580,6 +537,7 @@ public class Utils {
         NotificationManager notificationManager = 
             (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(DISABLED_NOTIFICATION_ID);
+        notificationManager.cancel(9191);
     }
 
     public static void updateTileState(Context context) {
@@ -593,9 +551,11 @@ public class Utils {
         }
     }
 
+    public static int userId() { return android.os.Process.myUid() / 100000; }
+
     public static boolean isShizukuMode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString("executionMode", "root").equals("shizuku");
+                .getString("executionMode", "shizuku").equals("shizuku");
     }
 
     public static void grantPermissionsViaShizuku(Context context) {
@@ -637,12 +597,12 @@ public class Utils {
 
 
     public static void openUrl(android.app.Activity activity, String url) {
-        CustomTabs.with(activity.getApplicationContext())
-                .setStyle(new CustomTabs.Style(activity.getApplicationContext())
-                        .setShowTitle(true)
-                        .setExitAnimation(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                        .setToolbarColor(R.color.colorPrimary))
-                .openUrl(url, activity);
+        try {
+            new androidx.browser.customtabs.CustomTabsIntent.Builder().setShowTitle(true).build()
+                    .launchUrl(activity, android.net.Uri.parse(url));
+        } catch (android.content.ActivityNotFoundException e) {
+            android.widget.Toast.makeText(activity, R.string.settings_unavailable, android.widget.Toast.LENGTH_LONG).show();
+        }
     }
 
 }

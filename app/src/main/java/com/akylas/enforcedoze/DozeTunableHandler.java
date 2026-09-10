@@ -14,9 +14,10 @@ public class DozeTunableHandler {
     // Static method to create instance of Singleton class
     public static synchronized DozeTunableHandler getInstance()
     {
-        if (single_instance == null)
+        if (single_instance == null) {
             single_instance = new DozeTunableHandler();
-            single_instance.loadTunables();
+        }
+        single_instance.loadTunables();
 
         return single_instance;
     }
@@ -49,7 +50,7 @@ public class DozeTunableHandler {
     private float IDLE_PENDING_FACTOR = 2;
     private long IDLE_TIMEOUT = 60 * 60 * 1000L;
     private long MAX_IDLE_TIMEOUT = 6 * 60 * 60 * 1000L;
-    private long IDLE_FACTOR = 2;
+    private float IDLE_FACTOR = 2f;
     private long MIN_TIME_TO_ALARM = 60 * 60 * 1000L;
     private long MAX_TEMP_APP_WHITELIST_DURATION = 5 * 60 * 1000L;
     private long MMS_TEMP_APP_WHITELIST_DURATION = 60 * 1000L;
@@ -57,36 +58,44 @@ public class DozeTunableHandler {
     private long NOTIFICATION_WHITELIST_DURATION = 30 * 1000L;
     private SharedPreferences preferences;
 
+    private long readLong(SharedPreferences prefs, String key, long fallback) {
+        try { long value = Long.parseLong(prefs.getString(key, Long.toString(fallback))); return value >= 0 && value <= 604800000L ? value : fallback; }
+        catch (RuntimeException e) { return fallback; }
+    }
+    private float readFloat(SharedPreferences prefs, String key, float fallback) {
+        try { float value = Float.parseFloat(prefs.getString(key, Float.toString(fallback))); return Float.isFinite(value) && value > 0 && value <= 604800000 ? value : fallback; }
+        catch (RuntimeException e) { return fallback; }
+    }
     public void loadTunables() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
 
         //TODO: load current tunables
-        LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, "300000"));
-        LIGHT_PRE_IDLE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT, "600000"));
-        LIGHT_IDLE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT, "300000"));
-        LIGHT_IDLE_FACTOR = Float.parseFloat(preferences.getString(DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR, "2"));
-        LIGHT_MAX_IDLE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT, "900000"));
-        LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET, "60000"));
-        LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET, "300000"));
-        MIN_LIGHT_MAINTENANCE_TIME = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME, "5000"));
-        MIN_DEEP_MAINTENANCE_TIME = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME, "30000"));
-        INACTIVE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_INACTIVE_TIMEOUT, "1800000"));
-        SENSING_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_SENSING_TIMEOUT, "240000"));
-        LOCATING_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_LOCATING_TIMEOUT, "30000"));
-        LOCATION_ACCURACY = Float.parseFloat(preferences.getString(DozeTunableConstants.KEY_LOCATION_ACCURACY, "20"));
-        MOTION_INACTIVE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT, "600000"));
-        IDLE_AFTER_INACTIVE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT, "1800000"));
-        IDLE_PENDING_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT, "30000"));
-        MAX_IDLE_PENDING_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT, "600000"));
-        IDLE_PENDING_FACTOR = Float.parseFloat(preferences.getString(DozeTunableConstants.KEY_IDLE_PENDING_FACTOR, "2"));
-        IDLE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_IDLE_TIMEOUT, "3600000"));
-        MAX_IDLE_TIMEOUT = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT, "21600000"));
-        IDLE_FACTOR  = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_IDLE_FACTOR, "2"));
-        MIN_TIME_TO_ALARM = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MIN_TIME_TO_ALARM, "3600000"));
-        MAX_TEMP_APP_WHITELIST_DURATION = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION, "300000"));
-        MMS_TEMP_APP_WHITELIST_DURATION = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION, "60000"));
-        SMS_TEMP_APP_WHITELIST_DURATION = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION, "20000"));
-        NOTIFICATION_WHITELIST_DURATION = Long.parseLong(preferences.getString(DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION, "30000"));
+        LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, 300000L);
+        LIGHT_PRE_IDLE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT, 600000L);
+        LIGHT_IDLE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT, 300000L);
+        LIGHT_IDLE_FACTOR = readFloat(preferences, DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR, 2f);
+        LIGHT_MAX_IDLE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT, 900000L);
+        LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = readLong(preferences, DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET, 60000L);
+        LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = readLong(preferences, DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET, 300000L);
+        MIN_LIGHT_MAINTENANCE_TIME = readLong(preferences, DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME, 5000L);
+        MIN_DEEP_MAINTENANCE_TIME = readLong(preferences, DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME, 30000L);
+        INACTIVE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_INACTIVE_TIMEOUT, 1800000L);
+        SENSING_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_SENSING_TIMEOUT, 240000L);
+        LOCATING_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_LOCATING_TIMEOUT, 30000L);
+        LOCATION_ACCURACY = readFloat(preferences, DozeTunableConstants.KEY_LOCATION_ACCURACY, 20f);
+        MOTION_INACTIVE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT, 600000L);
+        IDLE_AFTER_INACTIVE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT, 1800000L);
+        IDLE_PENDING_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT, 30000L);
+        MAX_IDLE_PENDING_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT, 600000L);
+        IDLE_PENDING_FACTOR = readFloat(preferences, DozeTunableConstants.KEY_IDLE_PENDING_FACTOR, 2f);
+        IDLE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_IDLE_TIMEOUT, 3600000L);
+        MAX_IDLE_TIMEOUT = readLong(preferences, DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT, 21600000L);
+        IDLE_FACTOR = readFloat(preferences, DozeTunableConstants.KEY_IDLE_FACTOR, 2f);
+        MIN_TIME_TO_ALARM = readLong(preferences, DozeTunableConstants.KEY_MIN_TIME_TO_ALARM, 3600000L);
+        MAX_TEMP_APP_WHITELIST_DURATION = readLong(preferences, DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION, 300000L);
+        MMS_TEMP_APP_WHITELIST_DURATION = readLong(preferences, DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION, 60000L);
+        SMS_TEMP_APP_WHITELIST_DURATION = readLong(preferences, DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION, 20000L);
+        NOTIFICATION_WHITELIST_DURATION = readLong(preferences, DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION, 30000L);
     }
 
     public String getTunableString() {

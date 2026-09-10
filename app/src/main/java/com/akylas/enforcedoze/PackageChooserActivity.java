@@ -1,125 +1,63 @@
 package com.akylas.enforcedoze;
 
-import android.app.ListActivity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.google.android.material.appbar.MaterialToolbar;
+import java.util.ArrayList;
+import java.util.Locale;
 
-import androidx.appcompat.widget.Toolbar;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.nanotasks.BackgroundWork;
-import com.nanotasks.Completion;
-import com.nanotasks.Tasks;
-
-import java.util.Collections;
-import java.util.List;
-
-public class PackageChooserActivity extends ListActivity {
-    AppAdapter adapter = null;
-    MaterialDialog progressDialog = null;
-    public static String TAG = "EnforceDoze";
-    PackageManager pm;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.package_chooser_layout);
-
-        pm = getPackageManager();
-
-        progressDialog = new MaterialDialog.Builder(this)
-                .title(getString(R.string.please_wait_text))
-                .autoDismiss(false)
-                .cancelable(false)
-                .content(R.string.loading_installed_apps_text)
-                .progress(true, 0)
-                .show();
-
-        Tasks.executeInBackground(PackageChooserActivity.this, new BackgroundWork<List<ResolveInfo>>() {
-            @Override
-            public List<ResolveInfo> doInBackground() throws Exception {
-                Intent main = new Intent(Intent.ACTION_MAIN, null);
-                main.addCategory(Intent.CATEGORY_LAUNCHER);
-                List<ResolveInfo> launchables = pm.queryIntentActivities(main, 0);
-                Collections.sort(launchables,
-                        new ResolveInfo.DisplayNameComparator(pm));
-                return launchables;
-            }
-        }, new Completion<List<ResolveInfo>>() {
-            @Override
-            public void onSuccess(Context context, List<ResolveInfo> result) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+/** Loads labels once off the UI thread, includes system apps, and searches package IDs too. */
+public class PackageChooserActivity extends UiActivity {
+    private final ArrayList<AppsItem> all = new ArrayList<>(), visible = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+    private EditText search;
+    private TextView count;
+    @Override protected void onCreate(Bundle state) {
+        super.onCreate(state);
+        LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL);
+        MaterialToolbar toolbar = new MaterialToolbar(this); toolbar.setTitle(R.string.app_picker_title); root.addView(toolbar);
+        search = new EditText(this); search.setSingleLine(); search.setHint(R.string.package_search); root.addView(search);
+        count = new TextView(this); count.setText(R.string.loading_installed_apps_text); root.addView(count);
+        ListView list = new ListView(this); root.addView(list, new LinearLayout.LayoutParams(-1, 0, 1));
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>()); list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            setResult(RESULT_OK, new Intent().putExtra("package_name", visible.get(position).getAppPackageName())); finish();
+        });
+        search.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int c, int after) { }
+            public void onTextChanged(CharSequence s, int start, int before, int c) { filter(); }
+            public void afterTextChanged(Editable s) { }
+        });
+        setContentView(root); setSupportActionBar(toolbar); getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CommandExecutor.submit(() -> {
+            ArrayList<AppsItem> loaded = new ArrayList<>();
+            try {
+                for (ApplicationInfo info : getPackageManager().getInstalledApplications(0)) {
+                    AppsItem item = new AppsItem(); item.setAppPackageName(info.packageName);
+                    item.setAppName(info.loadLabel(getPackageManager()).toString()); loaded.add(item);
                 }
-                adapter = new AppAdapter(pm, result);
-                setListAdapter(adapter);
-            }
-
-            @Override
-            public void onError(Context context, Exception e) {
-                Log.e(TAG, "Error loading packages: " + e.getMessage());
-
-            }
+                loaded.sort((a, b) -> a.getAppName().compareToIgnoreCase(b.getAppName()));
+            } catch (RuntimeException ignored) { }
+            runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) { all.clear(); all.addAll(loaded); filter(); } });
         });
     }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-
-        ResolveInfo launchable = adapter.getItem(position);
-        ActivityInfo activity = launchable.activityInfo;
-        ComponentName name = new ComponentName(activity.applicationInfo.packageName,
-                activity.name);
-
-        String pack_name = name.getPackageName();
-
-        Intent intentMessage = new Intent();
-        intentMessage.putExtra("package_name", pack_name);
-        setResult(1, intentMessage);
-        finish();
-
+    private void filter() {
+        if (adapter == null) return;
+        String query = search.getText().toString().toLowerCase(Locale.ROOT);
+        visible.clear(); adapter.clear();
+        for (AppsItem item : all) if (item.getAppName().toLowerCase(Locale.ROOT).contains(query) || item.getAppPackageName().toLowerCase(Locale.ROOT).contains(query)) {
+            visible.add(item); adapter.add(item.getAppName() + "\n" + item.getAppPackageName());
+        }
+        count.setText(visible.isEmpty() ? getString(R.string.package_empty) : getString(R.string.app_count, visible.size()));
+        adapter.notifyDataSetChanged();
     }
-
-    class AppAdapter extends ArrayAdapter<ResolveInfo> {
-        private PackageManager pm = null;
-        AppAdapter(PackageManager pm, List<ResolveInfo> apps) {
-            super(PackageChooserActivity.this, R.layout.package_chooser_row, apps);
-            this.pm = pm;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = newView(parent);
-            }
-
-            bindView(position, convertView);
-            return (convertView);
-        }
-
-        private View newView(ViewGroup parent) {
-            return (getLayoutInflater().inflate(R.layout.package_chooser_row, parent, false));
-        }
-
-        private void bindView(int position, View row) {
-            TextView label = (TextView) row.findViewById(R.id.label);
-            label.setText(getItem(position).loadLabel(pm));
-            ImageView icon = (ImageView) row.findViewById(R.id.icon);
-            icon.setImageDrawable(getItem(position).loadIcon(pm));
-        }
-    }
-
-
+    @Override public boolean onSupportNavigateUp() { finish(); return true; }
 }

@@ -31,6 +31,8 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> {
         }
     }
     private ArrayList<AppsItem> listData;
+    private java.util.function.Consumer<String> removeListener;
+    public void setOnRemoveListener(java.util.function.Consumer<String> listener) { removeListener = listener; }
 
     public AppsAdapter(Context aContext, ArrayList<AppsItem> listData) {
         this.listData = listData;
@@ -63,5 +65,10 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> {
         AppsItem item = getItem(position);
         holder.appName.setText(item.getAppName());
         holder.appPackageName.setText(item.getAppPackageName());
+        View remove = holder.itemView.findViewById(R.id.removeApp);
+        if (remove != null) remove.setOnClickListener(v -> {
+            int index = holder.getBindingAdapterPosition();
+            if (index != RecyclerView.NO_POSITION && removeListener != null) removeListener.accept(listData.get(index).getAppPackageName());
+        });
     }
 }

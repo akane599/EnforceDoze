@@ -44,7 +44,7 @@
                     android:contentDescription="@null"
                     android:padding="16dp"
                     android:scaleType="fitCenter"
-                    android:tint="?attr/colorOnSurface" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/supportingText"

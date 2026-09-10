@@ -7,7 +7,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.akylas.enforcedoze"
-            android:targetClass="com.akylas.enforcedoze.SettingsActivity" />/>
+            android:targetClass="com.akylas.enforcedoze.SettingsActivity" />
     </shortcut>
     <shortcut
         android:shortcutId="launchBatteryStats"
@@ -17,6 +17,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.akylas.enforcedoze"
-            android:targetClass="com.akylas.enforcedoze.DozeBatteryStatsActivity" />/>
+            android:targetClass="com.akylas.enforcedoze.DozeBatteryStatsActivity" />
     </shortcut>
 </shortcuts>

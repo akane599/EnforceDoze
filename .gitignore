@@ -13,3 +13,5 @@ app/release
 /.env
 /vendor
 /certs
+# Kotlin compiler session state
+.kotlin/

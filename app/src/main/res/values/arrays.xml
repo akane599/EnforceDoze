@@ -3,10 +3,12 @@
     <string-array name="execution_mode_entries">
         <item>@string/execution_mode_root</item>
         <item>@string/execution_mode_shizuku</item>
+        <item>@string/execution_mode_adb</item>
     </string-array>
     
     <string-array name="execution_mode_values">
         <item>root</item>
         <item>shizuku</item>
+        <item>adb</item>
     </string-array>
 </resources>

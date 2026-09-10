@@ -18,3 +18,5 @@
 -dontwarn com.squareup.okhttp.**
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
+-keep class com.akylas.enforcedoze.PrivilegedService { public <init>(); *; }
+-keep class com.akylas.enforcedoze.PrivilegedOperations { public static void main(java.lang.String[]); }

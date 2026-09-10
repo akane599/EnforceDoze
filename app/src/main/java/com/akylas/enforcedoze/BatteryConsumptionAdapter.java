@@ -36,7 +36,7 @@ public class BatteryConsumptionAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.list_row_layout_stats, null);
+            convertView = layoutInflater.inflate(R.layout.list_row_layout_stats, parent, false);
             holder = new ViewHolder();
             holder.timestamp = (TextView) convertView.findViewById(R.id.dozeStateTimestamp);
             holder.batteryPerc = (TextView) convertView.findViewById(R.id.batteryLevel);
@@ -45,17 +45,17 @@ public class BatteryConsumptionAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String[] data = listData.get(position).getTimestampPercCombo().split(",");
-        if (data[2].equals("EXIT")) {
-            holder.timestamp.setText("Exited Doze mode at ".concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));
-        } else if (data[2].equals("ENTER")) {
-            holder.timestamp.setText("Entered Doze mode at ".concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));
-        } else if (data[2].equals("EXIT_MAINTENANCE")) {
-            holder.timestamp.setText("Exited Doze mode for maintenance at ".concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));
-        } else if(data[2].equals("ENTER_MAINTENANCE")) {
-            holder.timestamp.setText("Entered Doze mode after maintenance at ".concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));
-        }
-        holder.batteryPerc.setText("Battery level: ".concat(data[1]).concat("%"));
+        String record = listData.get(position).getTimestampPercCombo();
+        String[] data = record == null ? new String[0] : record.split(",");
+        holder.timestamp.setText(""); holder.batteryPerc.setText("");
+        try {
+            if (data.length != 3) throw new IllegalArgumentException("Malformed record");
+            long timestamp = Long.parseLong(data[0]);
+            float battery = Float.parseFloat(data[1]);
+            if (!Float.isFinite(battery)) throw new IllegalArgumentException("Invalid battery level");
+            holder.timestamp.setText(data[2] + " · " + Utils.getDateCurrentTimeZone(timestamp));
+            holder.batteryPerc.setText(battery < 0 ? parent.getContext().getString(R.string.stats_charging) : battery + "%");
+        } catch (RuntimeException e) { holder.timestamp.setText(record == null ? "" : record); }
         return convertView;
     }
 
