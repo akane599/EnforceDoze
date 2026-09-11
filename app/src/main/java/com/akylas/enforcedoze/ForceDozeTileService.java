@@ -1,93 +1,84 @@
 package com.akylas.enforcedoze;
 
-import static com.akylas.enforcedoze.Utils.logToLogcat;
-
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-
-@RequiresApi(api = Build.VERSION_CODES.N)
+/** The tile mirrors the enabled preference and refreshes only while Android listens. */
+@RequiresApi(Build.VERSION_CODES.N)
 public class ForceDozeTileService extends TileService {
+    private SharedPreferences preferences;
+    private boolean listening;
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceListener = (prefs, key) -> {
+        if (key == null || "serviceEnabled".equals(key)) refresh();
+    };
+    private final BroadcastReceiver stateListener = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) { refresh(); }
+    };
 
-    static String TAG = "ForceDozeTileService";
-    SharedPreferences settings;
-    boolean serviceEnabled;
-
-    private static void log(String message) {
-        logToLogcat(TAG, message);
-    }
-
-    @Override
-    public void onTileAdded() {
+    @Override public void onTileAdded() {
         super.onTileAdded();
-        log("QuickTile added");
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            updateTileState(true);
-        } else {
-            updateTileState(false);
-        }
+        requestListeningState(this, new ComponentName(this, ForceDozeTileService.class));
     }
 
-    @Override
-    public void onTileRemoved() {
-        super.onTileRemoved();
-        log("QuickTile removed");
-    }
-
-    @Override
-    public void onStartListening() {
+    @Override public void onStartListening() {
         super.onStartListening();
-        log("QuickTile onStartListening");
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            updateTileState(true);
-        } else {
-            updateTileState(false);
+        if (!listening) {
+            listening = true;
+            preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            preferences.registerOnSharedPreferenceChangeListener(preferenceListener);
+            LocalBroadcastManager.getInstance(this).registerReceiver(stateListener, new IntentFilter(ForceDozeService.ACTION_STATE));
         }
+        refresh();
     }
 
+    @Override public void onStopListening() {
+        stopListening();
+        super.onStopListening();
+    }
 
-    @Override
-    public void onClick() {
+    @Override public void onDestroy() {
+        stopListening();
+        super.onDestroy();
+    }
+
+    private void stopListening() {
+        if (!listening) return;
+        listening = false;
+        preferences.unregisterOnSharedPreferenceChangeListener(preferenceListener);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(stateListener);
+    }
+
+    @Override public void onClick() {
         super.onClick();
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            log("Disabling EnforceDoze");
-            settings.edit().putBoolean("serviceEnabled", false).apply();
-            Utils.stopForceDozeService(this);
-        } else {
-            log("Enabling EnforceDoze");
-            settings.edit().putBoolean("serviceEnabled", true).apply();
-            Utils.applyForceDozeSchedule(this);
-        }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean enabled = !prefs.getBoolean("serviceEnabled", false);
+        prefs.edit().putBoolean("serviceEnabled", enabled).apply();
+        if (enabled) Utils.applyForceDozeSchedule(this); else Utils.stopForceDozeService(this);
+        refresh();
     }
 
-    public void sendBroadcastToApp(boolean active) {
-        Intent intent = new Intent("update-state-from-tile");
-        intent.putExtra("isActive", active);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
-    public void updateTileState(final boolean active) {
+    private void refresh() {
+        if (!listening) return;
         Tile tile = getQsTile();
-        if (tile != null) {
-            tile.setLabel(getString(R.string.app_name));
-            tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-            if (Build.VERSION.SDK_INT >= 29) tile.setSubtitle(UiSupport.statusText(this, ForceDozeService.status));
-            tile.updateTile();
+        if (tile == null) return;
+        boolean enabled = preferences.getBoolean("serviceEnabled", false);
+        tile.setLabel(getString(R.string.app_name));
+        tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        if (Build.VERSION.SDK_INT >= 29) {
+            String status = !enabled ? "OFF" : Utils.isMyServiceRunning(ForceDozeService.class, this)
+                    ? ForceDozeService.status : "NEEDS_START";
+            tile.setSubtitle(UiSupport.statusText(this, status));
         }
-        sendBroadcastToApp(active);
+        tile.updateTile();
     }
 }

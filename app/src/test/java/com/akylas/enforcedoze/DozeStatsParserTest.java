@@ -13,4 +13,24 @@ public class DozeStatsParserTest {
         var sessions = DozeStatsParser.parse(Arrays.asList("500,80,EXIT", "1000,-1,ENTER", "4000,90,EXIT", "5000,90,ENTER"));
         assertEquals(1, sessions.size()); assertNull(sessions.get(0).batteryUsed);
     }
+    @Test public void batteryRiseInsideMaintenanceInvalidatesUsageEvenWhenFinalLevelFalls() {
+        var sessions = DozeStatsParser.parse(Arrays.asList("1000,85,ENTER", "2000,84,EXIT_MAINTENANCE",
+                "3000,86,ENTER_MAINTENANCE", "4000,83,EXIT"));
+        assertEquals(1, sessions.size());
+        assertNull(sessions.get(0).batteryUsed);
+    }
+    @Test public void unavailableIntermediateBatteryCannotBecomeAClaimedDrop() {
+        var sessions = DozeStatsParser.parse(Arrays.asList("1000,85,ENTER", "2000,-1,EXIT_MAINTENANCE",
+                "3000,84,ENTER_MAINTENANCE", "4000,83,EXIT"));
+        assertEquals(1, sessions.size());
+        assertNull(sessions.get(0).batteryUsed);
+    }
+    @Test public void invalidBatteryRangesAndUnknownRecordsCannotFabricateSessions() {
+        var sessions = DozeStatsParser.parse(Arrays.asList("1000,-0.5,ENTER", "2000,80,EXIT",
+                "3000,101,ENTER", "4000,80,EXIT", "5000,80,ENTER",
+                "6000,100,UNRELATED", "7000,79,EXIT"));
+        assertEquals(1, sessions.size());
+        assertEquals(5000, sessions.get(0).start);
+        assertEquals(Integer.valueOf(1), sessions.get(0).batteryUsed);
+    }
 }

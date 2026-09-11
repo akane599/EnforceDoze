@@ -14,6 +14,16 @@ public final class CommandPolicy {
                 "com.samsung.android.incallui", "com.samsung.android.app.telephonyui").contains(name);
     }
     public static String quote(String value) { return "'" + value.replace("'", "'\\''") + "'"; }
+    /** Old recovery records must use the same verified sensor operations as new sessions. */
+    public static String verifiedCommand(String command) {
+        if ("dumpsys sensorservice enable".equals(command)) return "enforcedoze-internal motion enable";
+        if ("dumpsys sensorservice restrict".equals(command)) return "enforcedoze-internal motion restrict";
+        String prefix = "dumpsys sensorservice restrict ";
+        if (command != null && command.startsWith(prefix) && validPackage(command.substring(prefix.length()))) {
+            return "enforcedoze-internal motion restrict " + command.substring(prefix.length());
+        }
+        return command;
+    }
     public static String idleState(String output) {
         Matcher m = STATE.matcher(output == null ? "" : output);
         return m.find() ? m.group(1) : "UNKNOWN";

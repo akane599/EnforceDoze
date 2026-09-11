@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sensorEvidenceReport" type="id" />
+    <string name="sensor_evidence_title">Sensor evidence</string>
+    <string name="sensor_evidence_explanation">These saved results verify SensorService restriction and the separate Sensors off privacy switch. RESTRICTED means app sensor access is restricted; NORMAL means that restriction is removed. Sensors off=true is the broader privacy switch. Neither proves that every physical sensor is powered off. Only the last 24 changes are kept; no background sensor sampling runs. Screen interactivity is sampled when the command returns.</string>
+    <string name="sensor_evidence_empty">No sensor changes recorded yet. Enable a supported sensor option in Settings, turn off the screen, then return here after waking. Keep statistics recording enabled. A sensor exception package remains allowed; with no exception, no app package is allowed by the restriction.</string>
+    <string name="sensor_evidence_clear_question">Clear saved sensor verification results?</string>
+    <string name="sensor_diagnostics_note">Motion-sensor restriction and Sensors off are separate controls. Use Sensor evidence to inspect saved screen-off changes and restoration after waking.</string>
+</resources>

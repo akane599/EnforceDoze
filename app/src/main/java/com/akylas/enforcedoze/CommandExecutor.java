@@ -26,6 +26,14 @@ public final class CommandExecutor {
     }
     public static CommandResult run(Context context, String mode, String command) {
         if (Looper.myLooper() == Looper.getMainLooper()) throw new IllegalStateException("Blocking command on UI thread");
+        if (command == null || command.isEmpty() || command.length() > 32768) return new CommandResult(-1, "Invalid command");
+        if (Thread.currentThread().isInterrupted()) return new CommandResult(130, "Command interrupted");
+        command = CommandPolicy.verifiedCommand(command);
+        CommandResult result = runBackend(context, mode, command);
+        SensorEvidence.record(context, mode, command, result);
+        return result;
+    }
+    private static CommandResult runBackend(Context context, String mode, String command) {
         if ("shizuku".equals(mode)) return ShizukuHandler.getInstance(context).executeBlocking(command);
         boolean root = "root".equals(mode) && PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isSuAvailable", false);
         if ("root".equals(mode) && !root) return new CommandResult(-1, "Reconnect root access before running commands");

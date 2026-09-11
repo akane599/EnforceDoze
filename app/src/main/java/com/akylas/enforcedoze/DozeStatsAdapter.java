@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class DozeStatsAdapter extends RecyclerView.Adapter<DozeStatsAdapter.ViewHolder> {
     
-    private List<DozeStatsCard> cards = new ArrayList<>();
+    private final List<DozeStatsCard> cards = new ArrayList<>();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
@@ -56,14 +56,9 @@ public class DozeStatsAdapter extends RecyclerView.Adapter<DozeStatsAdapter.View
         return cards.size();
     }
 
-    public void addCard(DozeStatsCard card) {
-        cards.add(card);
-        notifyItemInserted(cards.size() - 1);
-    }
-
-    public void clearAll() {
-        int size = cards.size();
+    public void replaceCards(List<DozeStatsCard> updated) {
         cards.clear();
-        notifyItemRangeRemoved(0, size);
+        cards.addAll(updated);
+        notifyDataSetChanged();
     }
 }

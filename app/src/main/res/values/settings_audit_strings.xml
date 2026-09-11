@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="live_notification_title">Live notification details</string>
+    <string name="live_notification_summary">Show Doze state changes in the notification. Leave off to keep the monitor notification quiet and stable.</string>
+    <string name="session_notification_title">Include last session in notification</string>
+    <string name="session_notification_summary">Include session duration and battery change when live notification details are enabled.</string>
+    <string name="sensor_restriction_title">Restrict sensor access during Doze</string>
+    <string name="sensor_restriction_summary">Restrict SensorService clients while in Doze, then restore access on wake. This includes motion sensors; it does not prove physical sensors are powered off. See Diagnostics for saved verification.</string>
+    <string name="sensor_privacy_title">Sensors Off privacy switch during Doze</string>
+    <string name="sensor_privacy_summary">Request Android’s Sensors Off privacy control, including camera and microphone. Manufacturer support and privileged permission are required. See Diagnostics for the actual result.</string>
+    <string name="biometrics_unsupported_summary">Unavailable on Android 16: the old biometrics setting is not a reliable control for fingerprint and face unlock. Saved selections are ignored.</string>
+    <string name="location_control_title">Turn off Location during Doze</string>
+    <string name="location_control_summary">Turn off the system Location setting during Doze and restore it on wake. This affects location access beyond GPS.</string>
+    <string name="schedule_timing_summary">Uses local phone time. Android may delay schedule boundaries while asleep; eligibility is checked again on device events.</string>
+    <string name="other_settings_title">History and tools</string>
+    <string name="tunable_editor_notice_title">Persistent Android overrides</string>
+    <string name="tunable_editor_notice">Only values you edit here are applied. Suggested values are examples, not your phone’s defaults. Overrides persist after EnforceDoze is disabled. Android and manufacturer policies can limit their effect; these values are not needed for forced Doze entry.</string>
+    <string name="tunable_retired">This key is no longer read by Android 14 and newer. It is excluded from commands.</string>
+    <string name="tunable_value_summary">%1$s\nValue: %2$s</string>
+    <string name="tunable_invalid">Enter a whole duration from 0 to 604800000 milliseconds, a factor from 1 to 100, or a positive location accuracy.</string>
+    <string name="tunable_no_edits">Edit at least one supported value before applying or copying commands.</string>
+    <string name="tunable_override_conflict">Android has existing device_idle_constants overrides. They can take precedence over DeviceConfig. Remove or review those overrides before applying these values; EnforceDoze will not erase them.</string>
+    <string name="tunable_apply_running">Applying selected overrides…</string>
+    <string name="tunable_apply_verified">Stored and read back %1$d overrides. This verifies the saved Android settings, not their effect on every device policy.</string>
+    <string name="tunable_apply_failed">Stopped after %1$d verified overrides. Earlier changes remain stored. Details: %2$s</string>
+    <string name="tunable_readback_failed">Android did not return the requested value for %1$s.</string>
+</resources>

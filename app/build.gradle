@@ -25,8 +25,8 @@ android {
         minSdkVersion 23
         targetSdkVersion 36
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 89
-        versionName "1.11.2-dev"
+        versionCode 90
+        versionName "1.11.3-dev"
     }
     if (useExternalSigning) {
         signingConfigs {

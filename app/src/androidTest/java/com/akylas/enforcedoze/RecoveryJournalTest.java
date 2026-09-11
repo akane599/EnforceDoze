@@ -51,4 +51,26 @@ public class RecoveryJournalTest {
         RecoveryJournal retried = new RecoveryJournal(context, (mode, cmd) -> { commands.add(cmd); return new CommandResult(0, ""); });
         assertTrue(retried.restore()); assertEquals(Arrays.asList("wifi-on"), commands);
     }
+    @Test public void throwingRestorationStillUnforcesDozeAndRetainsOnlyTheFailedUndo() {
+        List<String> commands = new ArrayList<>();
+        RecoveryJournal journal = new RecoveryJournal(context, (mode, cmd) -> {
+            commands.add(cmd);
+            if (cmd.equals("sensors-on")) throw new IllegalStateException("Simulated Binder loss");
+            return new CommandResult(0, "");
+        });
+        assertTrue(journal.applyCore("shizuku", "force", "unforce"));
+        assertTrue(journal.apply("shizuku", "wifi-off", "wifi-on"));
+        assertTrue(journal.apply("shizuku", "sensors-off", "sensors-on"));
+        commands.clear();
+        assertFalse(journal.restore());
+        assertEquals(Arrays.asList("sensors-on", "wifi-on", "unforce"), commands);
+        assertTrue(journal.hasPending());
+        assertTrue(android.preference.PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("lastError", "").contains("Simulated Binder loss"));
+        commands.clear();
+        RecoveryJournal retry = new RecoveryJournal(context, (mode, cmd) -> { commands.add(cmd); return new CommandResult(0, ""); });
+        assertTrue(retry.restore());
+        assertEquals(Arrays.asList("sensors-on"), commands);
+        assertFalse(retry.hasPending());
+    }
 }

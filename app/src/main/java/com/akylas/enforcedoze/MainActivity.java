@@ -101,6 +101,8 @@ public class MainActivity extends UiActivity implements SharedPreferences.OnShar
         state.setText(UiSupport.statusText(this, status));
         toggle.setText(enabled ? R.string.dashboard_stop : R.string.dashboard_start);
         toggle.setEnabled(!checkingRoot);
+        setup.setEnabled(!checkingRoot);
+        findViewById(R.id.dashboardMode).setEnabled(!checkingRoot);
         findViewById(R.id.dashboardIssue).setVisibility(prefs.getString("lastError", "").isEmpty() ? View.GONE : View.VISIBLE);
         String mode = CommandExecutor.mode(this);
         String modeName = "shizuku".equals(mode) ? "Shizuku" : "root".equals(mode) ? "Root" : "ADB grants";
@@ -126,6 +128,7 @@ public class MainActivity extends UiActivity implements SharedPreferences.OnShar
                 }).setNegativeButton(R.string.close_button_text, null).show();
     }
     private void connect() {
+        if (checkingRoot) return;
         if ("shizuku".equals(CommandExecutor.mode(this))) {
             if (shizuku.isBinderAlive()) {
                 if (shizuku.isShizukuAvailable()) { render(); return; }

@@ -1,0 +1,8 @@
+<resources>
+    <string name="history_session">Automation session</string>
+    <string name="history_level_drop">Battery level drop: %1$d percentage points</string>
+    <string name="history_level_unchanged">No whole percentage-point drop detected</string>
+    <string name="history_info">Each card measures an automation session, including maintenance windows. The battery figure is the change in Android’s reported battery percentage; it is not energy consumed or battery saved. A zero reading does not mean zero consumption. Charging, a rising level, or unavailable readings prevent a reliable comparison. Open Screen-off evidence to inspect saved Android state readings.</string>
+    <string name="history_clear_question">Clear all session history and saved Doze and sensor evidence? This cannot be undone.</string>
+    <string name="history_recording_disabled">History recording is disabled in Settings.</string>
+</resources>
