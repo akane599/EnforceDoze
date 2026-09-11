@@ -107,6 +107,21 @@ The downloadable 1.11.1 development APK has a new debug certificate because the 
 - [Pinned Shizuku release](https://github.com/RikkaApps/Shizuku/releases/tag/v13.6.0)
 - [Shizuku server runtime-permission and connection implementation](https://github.com/RikkaApps/Shizuku/blob/v13.6.0/server/src/main/java/rikka/shizuku/server/ShizukuService.java)
 
+## Follow-up: saved screen-off evidence (1.11.2 development revision)
+
+A diagnostic run after unlocking reports the current awake state. The old history records a session only after the privileged entry path reads `mState=IDLE`, but its displayed duration measures the automation session, including unsampled time and maintenance. It is not continuous verified Doze time or CPU deep-sleep time.
+
+Open **Doze history → Screen-off evidence**, or the same button in Diagnostics, to inspect new saved observations. A confirmed sample requires a successful `dumpsys deviceidle` read with exact deep state `IDLE`, Android's `PowerManager.isDeviceIdleMode()` true before and after that read, a non-interactive phone at both checks, and no intervening session cancellation. PowerManager observations received during idle-mode broadcasts and after restoration are labelled separately. Records include timestamps, monotonic reading intervals, the session identifier, backend, device, app version and a small subset of the exact system output. Package allowlists are excluded.
+
+Collection reuses existing Doze entry and idle-change reads. It adds no polling alarms, recurring timers, shell queries before restoration, or long-lived wake locks. The latest 120 observations are kept locally; disabling statistics pauses new records. Clear evidence removes the readings, and clearing the main history clears them too. Copy evidence and the diagnostic report include saved readings. Old sessions are not backfilled. Missed broadcasts, process death and gaps between observations remain unobserved; the UI does not infer an idle percentage from those gaps.
+
+The 1.11.2 downloadable APK retains the 1.11.1 development signing certificate and is intended to update that build in place. Current validation is recorded in PR #1, including a live Shizuku screen-off/wake test that checks persisted confirmation and restoration observations, opens the evidence screen after waking and captures its real device readings.
+
+### Android evidence references
+
+- [PowerManager idle and interactive state APIs](https://developer.android.com/reference/android/os/PowerManager#isDeviceIdleMode())
+- [Doze maintenance and wake behavior](https://developer.android.com/training/monitoring-device-state/doze-standby)
+
 ## Primary references
 
 - [Android 16 behavior changes for apps targeting API 36](https://developer.android.com/about/versions/16/behavior-changes-16)

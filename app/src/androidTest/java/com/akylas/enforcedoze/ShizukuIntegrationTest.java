@@ -121,11 +121,13 @@ public class ShizukuIntegrationTest {
         int previousDelay = prefs.getInt("dozeEnterDelay", 0);
         boolean previousLockTimeout = prefs.getBoolean("ignoreLockscreenTimeout", true);
         boolean previousUnlock = prefs.getBoolean("waitForUnlock", false);
+        boolean previousStats = prefs.getBoolean("disableStats", false);
+        DozeEvidence.clear(context);
         try {
             prefs.edit().putString("executionMode", "shizuku").putBoolean("serviceEnabled", true)
                     .putBoolean("disableWhenCharging", false).putBoolean("disableMotionSensors", false)
                     .putInt("dozeEnterDelay", 0).putBoolean("ignoreLockscreenTimeout", true)
-                    .putBoolean("waitForUnlock", false).commit();
+                    .putBoolean("waitForUnlock", false).putBoolean("disableStats", false).commit();
             try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
                 TestUi.await("Foreground monitor did not start", () -> "WAITING".equals(ForceDozeService.status));
                 TestUi.screenshot("dashboard_shizuku_ready");
@@ -133,15 +135,32 @@ public class ShizukuIntegrationTest {
                 TestUi.await("Screen-off did not enter Doze: " + ForceDozeService.status,
                         () -> "ACTIVE".equals(ForceDozeService.status));
                 assertEquals("IDLE", checked("dumpsys deviceidle get deep").output.trim());
+                TestUi.await("No saved screen-off confirmation", () -> DozeEvidence.read(context).stream()
+                        .anyMatch(o -> o.event.equals("ENTRY") && o.confirmedScreenOffIdle() && o.raw.contains("mState=IDLE")));
                 TestUi.shell("input keyevent KEYCODE_WAKEUP");
                 TestUi.await("Wake did not restore the session", () -> "WAITING".equals(ForceDozeService.status)
                         && !new RecoveryJournal(context).hasPending());
                 assertNotEquals("IDLE", checked("dumpsys deviceidle get deep").output.trim());
+                TestUi.await("Restoration observation missing", () -> DozeEvidence.read(context).stream()
+                        .anyMatch(o -> o.event.equals("RESTORED") && o.interactiveAfter && !o.idleAfter));
+                try (ActivityScenario<DozeEvidenceActivity> evidence = ActivityScenario.launch(DozeEvidenceActivity.class)) {
+                    evidence.recreate();
+                    evidence.onActivity(activity -> {
+                        var records = DozeEvidence.read(activity);
+                        int entry = -1;
+                        for (int i = 0; i < records.size(); i++) if (records.get(i).event.equals("ENTRY") && records.get(i).confirmedScreenOffIdle()) entry = i;
+                        assertTrue(entry >= 0);
+                        var list = (androidx.recyclerview.widget.RecyclerView) activity.findViewById(R.id.evidenceList);
+                        ((androidx.recyclerview.widget.LinearLayoutManager) list.getLayoutManager()).scrollToPositionWithOffset(records.size() - entry, 0);
+                    });
+                    TestUi.screenshot("doze_evidence_verified");
+                }
             }
         } finally {
             prefs.edit().putBoolean("serviceEnabled", false).putBoolean("disableWhenCharging", previousCharging)
                     .putBoolean("disableMotionSensors", previousSensors).putInt("dozeEnterDelay", previousDelay)
-                    .putBoolean("ignoreLockscreenTimeout", previousLockTimeout).putBoolean("waitForUnlock", previousUnlock).commit();
+                    .putBoolean("ignoreLockscreenTimeout", previousLockTimeout).putBoolean("waitForUnlock", previousUnlock)
+                    .putBoolean("disableStats", previousStats).commit();
             TestUi.shell("input keyevent KEYCODE_WAKEUP");
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> Utils.stopForceDozeService(context));
             TestUi.await("Monitor did not stop", () -> !Utils.isMyServiceRunning(ForceDozeService.class, context));

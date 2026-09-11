@@ -30,6 +30,9 @@ public class DiagnosticsActivity extends UiActivity {
         int padding = (int) (20 * getResources().getDisplayMetrics().density);
         body.setPadding(padding, padding, padding, padding); scroll.addView(body); root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
         TextView intro = new TextView(this); intro.setText(R.string.diagnostics_intro); body.addView(intro);
+        TextView liveNote = new TextView(this); liveNote.setText(R.string.evidence_live_note); body.addView(liveNote);
+        MaterialButton evidence = new MaterialButton(this); evidence.setText(R.string.evidence_title); body.addView(evidence);
+        evidence.setOnClickListener(v -> startActivity(new android.content.Intent(this, DozeEvidenceActivity.class)));
         run = new MaterialButton(this); run.setText(R.string.diagnostics_run); body.addView(run);
         run.setOnClickListener(v -> check());
         copy = new MaterialButton(this); copy.setText(R.string.diagnostics_copy); body.addView(copy); copy.setEnabled(false);
@@ -63,6 +66,7 @@ public class DiagnosticsActivity extends UiActivity {
         if (isFinishing() || isDestroyed() || version != checkVersion) return;
         if (index == CHECKS.length) {
             text.append("\n\nLast error:\n").append(android.preference.PreferenceManager.getDefaultSharedPreferences(this).getString("lastError", "None"));
+            text.append("\n\n").append(DozeEvidence.report(this));
             report.setText(text); run.setEnabled(true); copy.setEnabled(true); reportReady = true;
             return;
         }

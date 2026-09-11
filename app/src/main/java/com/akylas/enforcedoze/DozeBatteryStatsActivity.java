@@ -18,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ConcatAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,7 +59,10 @@ public class DozeBatteryStatsActivity extends UiActivity {
         dozeUsageStats = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getStringSet("dozeUsageDataAdvanced", new LinkedHashSet<String>());
         mListView = findViewById(R.id.material_listview);
         adapter = new DozeStatsAdapter();
-        mListView.setAdapter(adapter);
+        android.view.View header = getLayoutInflater().inflate(R.layout.doze_history_header, mListView, false);
+        header.findViewById(R.id.viewDozeEvidence).setOnClickListener(v -> startActivity(new Intent(this, DozeEvidenceActivity.class)));
+        mListView.setAdapter(new ConcatAdapter(new ListHeaderAdapter(header), adapter));
+        mListView.setItemAnimator(null);
         mListView.setLayoutManager(new LinearLayoutManager(this));
 
         ViewCompat.setOnApplyWindowInsetsListener(mListView, (v, insets) -> {
@@ -129,6 +133,7 @@ public class DozeBatteryStatsActivity extends UiActivity {
 
     public void clearStats() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().remove("dozeUsageDataAdvanced").apply();
+        DozeEvidence.clear(this);
         SettingsActivity.reloadSettings(this);
         adapter.clearAll();
         adapter.addCard(new DozeStatsCard(getString(R.string.dashboard_stats), getString(R.string.stat_empty), returnDrawableBattery(0)));

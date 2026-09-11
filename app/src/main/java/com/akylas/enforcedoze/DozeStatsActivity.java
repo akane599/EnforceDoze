@@ -103,6 +103,7 @@ public class DozeStatsActivity extends UiActivity {
 
     public void clearStats() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().remove("dozeUsageDataAdvanced").apply();
+        DozeEvidence.clear(this);
         SettingsActivity.reloadSettings(this);
         batteryConsumptionItems.clear(); batteryConsumptionAdapter.notifyDataSetChanged();
     }

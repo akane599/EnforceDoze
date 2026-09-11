@@ -53,6 +53,7 @@ public class ForceDozeService extends Service {
     private volatile boolean sessionCharged;
     private String sessionMode;
     private Map<String, ?> sessionConfig;
+    private volatile String evidenceSessionId;
     private SharedPreferences prefs;
     private RecoveryJournal journal;
     private ShizukuHandler shizuku;
@@ -88,6 +89,10 @@ public class ForceDozeService extends Service {
                 waitingForUnlock = false;
                 evaluate(false);
             } else if (PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED.equals(action)) {
+                if (evidenceSessionId != null && DozeEvidence.enabled(context)) {
+                    DozeObservation observation = androidObservation("IDLE_BROADCAST", evidenceSessionId, CommandExecutor.mode(context));
+                    CommandExecutor.submit(() -> DozeEvidence.append(ForceDozeService.this, observation));
+                }
                 handleIdleChanged();
             } else {
                 // Includes charging, phone state, timezone and manual clock changes.
@@ -197,6 +202,8 @@ public class ForceDozeService extends Service {
     private void enter() {
         final int token = ++generation;
         final String mode = CommandExecutor.mode(this);
+        final String evidenceId = java.util.UUID.randomUUID().toString();
+        evidenceSessionId = evidenceId;
         final Map<String, ?> config = prefs.getAll();
         entering = true;
         prefs.edit().remove("lastError").apply();
@@ -213,12 +220,13 @@ public class ForceDozeService extends Service {
                 if (privileged || Build.VERSION.SDK_INT < 24) {
                     entered = journal.applyCore(mode, "dumpsys deviceidle force-idle" + (Build.VERSION.SDK_INT >= 24 ? " deep" : ""), "dumpsys deviceidle unforce");
                     if (entered) {
-                        CommandResult state = CommandExecutor.run(this, mode, "dumpsys deviceidle");
+                        CommandResult state = readIdleWithEvidence("ENTRY", evidenceId, mode);
                         entered = state.success() && "IDLE".equals(CommandPolicy.idleState(state.output));
                     }
                 } else {
                     // Legacy ADB grants: scope restoration to the exact keys changed.
                     entered = applyTunables(mode);
+                    DozeEvidence.append(this, androidObservation("LEGACY_TUNABLES", evidenceId, mode));
                 }
                 if (!entered || !valid(token)) { finishEnter(token, false, "Doze command failed; check Diagnostics"); return; }
                 sessionMode = mode;
@@ -356,12 +364,18 @@ public class ForceDozeService extends Service {
         if (valid(token)) journal.apply(mode, command, undo);
     }
     private void finishEnter(int token, boolean success, String error) {
-        if (!success || token != generation) journal.restore();
+        if (!success || token != generation) {
+            journal.restore();
+            String id = evidenceSessionId;
+            if (token == generation && id != null) DozeEvidence.append(this,
+                    androidObservation("ENTRY_ABORTED", id, CommandExecutor.mode(this)));
+        }
         main.post(() -> {
             if (token != generation || destroyed) return;
             entering = false;
             releaseLock();
             if (!success) {
+                evidenceSessionId = null;
                 sessionActive = false;
                 prefs.edit().putString("lastError", error).apply();
                 publish(accessReady() ? "ERROR" : "NEEDS_ACCESS");
@@ -372,12 +386,17 @@ public class ForceDozeService extends Service {
         if (destroyed) return;
         cancelDelay();
         final int token = ++generation;
+        final String evidenceId = evidenceSessionId;
+        final String evidenceMode = sessionActive && sessionMode != null ? sessionMode : CommandExecutor.mode(this);
+        evidenceSessionId = null;
         entering = false;
         stopping |= stop;
         transitionLock.acquire(60000);
         publish("RESTORING");
         CommandExecutor.submit(() -> {
             boolean restored = journal.restore();
+            if (evidenceId != null) DozeEvidence.append(this,
+                    androidObservation(restored ? "RESTORED" : "RESTORE_PENDING", evidenceId, evidenceMode));
             if (restored && sessionActive && prefs.getBoolean("autoRotateAndBrightnessFix", false) && Utils.isWriteSettingsPermissionGranted(this)) {
                 repairDisplaySettings();
             }
@@ -414,8 +433,9 @@ public class ForceDozeService extends Service {
         if (!sessionActive || destroyed || stopping || Utils.isScreenOn(this)) return;
         final int token = generation;
         final String mode = sessionMode;
+        final String evidenceId = evidenceSessionId;
         CommandExecutor.submit(() -> {
-            CommandResult result = CommandExecutor.run(this, mode, "dumpsys deviceidle");
+            CommandResult result = readIdleWithEvidence("IDLE_CHANGED", evidenceId, mode);
             if (token != generation || !result.success()) return;
             String state = CommandPolicy.idleState(result.output);
             if ("IDLE_MAINTENANCE".equals(state) && !maintenance) {
@@ -432,6 +452,32 @@ public class ForceDozeService extends Service {
             }
         });
     }
+    private CommandResult readIdleWithEvidence(String event, String id, String mode) {
+        if (id == null || !DozeEvidence.enabled(this)) return CommandExecutor.run(this, mode, "dumpsys deviceidle");
+        int token = generation;
+        long start = SystemClock.elapsedRealtime();
+        boolean interactiveBefore = power.isInteractive(), idleBefore = power.isDeviceIdleMode();
+        CommandResult result = CommandExecutor.run(this, mode, "dumpsys deviceidle");
+        boolean interactiveAfter = power.isInteractive(), idleAfter = power.isDeviceIdleMode();
+        long end = SystemClock.elapsedRealtime();
+        String raw = result.success() ? DozeObservation.systemFields(result.output)
+                : result.output.substring(0, Math.min(512, result.output.length()));
+        DozeEvidence.append(this, new DozeObservation(System.currentTimeMillis(), end, end - start,
+                id, event, mode, evidenceDevice(), BuildConfig.VERSION_NAME, result.exitCode,
+                CommandPolicy.idleState(result.output), raw, interactiveBefore, interactiveAfter,
+                idleBefore, idleAfter, token == generation && !destroyed));
+        return result;
+    }
+    private DozeObservation androidObservation(String event, String id, String mode) {
+        long start = SystemClock.elapsedRealtime();
+        boolean interactiveBefore = power.isInteractive(), idleBefore = power.isDeviceIdleMode();
+        boolean interactiveAfter = power.isInteractive(), idleAfter = power.isDeviceIdleMode();
+        long end = SystemClock.elapsedRealtime();
+        return new DozeObservation(System.currentTimeMillis(), end, end - start, id, event, mode,
+                evidenceDevice(), BuildConfig.VERSION_NAME, null, "NOT_SAMPLED", "", interactiveBefore,
+                interactiveAfter, idleBefore, idleAfter, true);
+    }
+    private String evidenceDevice() { return Build.MANUFACTURER + " " + Build.MODEL + " · API " + Build.VERSION.SDK_INT; }
     private void record(String event) {
         if (prefs.getBoolean("disableStats", false)) return;
         ArrayList<String> entries = new ArrayList<>(prefs.getStringSet("dozeUsageDataAdvanced", Collections.emptySet()));
@@ -465,7 +511,15 @@ public class ForceDozeService extends Service {
         try { if (callModeMonitor != null) callModeMonitor.close(); }
         catch (Exception e) { Utils.logToLogcat("EnforceDoze", "Unable to detach audio callback: " + e); }
         main.removeCallbacksAndMessages(null);
-        CommandExecutor.submit(() -> { journal.restore(); sessionActive = false; });
+        final String evidenceId = evidenceSessionId;
+        final String evidenceMode = sessionActive && sessionMode != null ? sessionMode : CommandExecutor.mode(this);
+        evidenceSessionId = null;
+        CommandExecutor.submit(() -> {
+            boolean restored = journal.restore();
+            if (evidenceId != null) DozeEvidence.append(this,
+                    androidObservation(restored ? "RESTORED" : "RESTORE_PENDING", evidenceId, evidenceMode));
+            sessionActive = false;
+        });
         releaseLock();
         status = "OFF";
         stopForeground(true);

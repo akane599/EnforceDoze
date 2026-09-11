@@ -1,0 +1,4 @@
+<resources>
+    <item name="evidenceList" type="id" />
+    <item name="evidenceSummary" type="id" />
+</resources>
