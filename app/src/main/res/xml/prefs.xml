@@ -1,11 +1,4 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="preferenceScreen">
-    <PreferenceCategory android:title="@string/sponsor_card_title">
-        <Preference
-            android:key="sponsorProject"
-            android:title="@string/sponsor_settings_title"
-            android:summary="@string/sponsor_settings_summary"
-            android:icon="@drawable/ic_heart" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="@string/main_settings" android:key="mainSettings">
         <SwitchPreferenceCompat
             android:defaultValue="false"
@@ -30,10 +23,16 @@
             android:summary="@string/rotate_brightness_fix_setting_summary"
             android:title="@string/rotate_brightness_fix_setting_title" />
         <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="detailedMonitorNotification"
+            android:title="@string/live_notification_title"
+            android:summary="@string/live_notification_summary" />
+        <SwitchPreferenceCompat
+            android:dependency="detailedMonitorNotification"
             android:defaultValue="true"
             android:key="showPersistentNotif"
-            android:summary="@string/persistent_notification_setting_summary"
-            android:title="@string/persistent_notification_setting_title" />
+            android:summary="@string/session_notification_summary"
+            android:title="@string/session_notification_title" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="showDisabledNotification"
@@ -83,8 +82,8 @@
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="turnOffGPSInDoze"
-            android:summary="@string/disable_gps_setting_summary"
-            android:title="@string/disable_gps_setting_title" />
+            android:summary="@string/location_control_summary"
+            android:title="@string/location_control_title" />
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="respectHotspot"
@@ -103,13 +102,13 @@
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="disableMotionSensors"
-            android:summary="@string/disable_motion_sensors_setting_summary"
-            android:title="@string/disable_motion_sensors_setting_title" />
+            android:summary="@string/sensor_restriction_summary"
+            android:title="@string/sensor_restriction_title" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="turnOffAllSensorsInDoze"
-            android:summary="@string/disable_all_sensors_setting_summary"
-            android:title="@string/disable_all_sensors_setting_title" />
+            android:summary="@string/sensor_privacy_summary"
+            android:title="@string/sensor_privacy_title" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="turnOffBiometricsInDoze"
@@ -152,7 +151,7 @@
                 android:targetPackage="com.akylas.enforcedoze" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Other">
+    <PreferenceCategory android:title="@string/other_settings_title">
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="disableStats"
@@ -197,5 +196,12 @@
             android:targetClass="com.akylas.enforcedoze.AboutAppActivity"
             android:targetPackage="com.akylas.enforcedoze" />
         </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/sponsor_card_title">
+        <Preference
+            android:key="sponsorProject"
+            android:title="@string/sponsor_settings_title"
+            android:summary="@string/sponsor_settings_summary"
+            android:icon="@drawable/ic_heart" />
     </PreferenceCategory>
 </PreferenceScreen>

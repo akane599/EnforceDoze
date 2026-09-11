@@ -30,4 +30,12 @@ public class CommandPolicyTest {
         CommandResult result = ProcessRunner.run(2000, "sh", "-c", "printf '%s' " + CommandPolicy.quote(value));
         assertTrue(result.output, result.success()); assertEquals(value, result.output);
     }
+    @Test public void legacySensorUndoUsesVerifiedOperationsWithoutRewritingOtherCommands() {
+        assertEquals("enforcedoze-internal motion enable", CommandPolicy.verifiedCommand("dumpsys sensorservice enable"));
+        assertEquals("enforcedoze-internal motion restrict", CommandPolicy.verifiedCommand("dumpsys sensorservice restrict"));
+        assertEquals("enforcedoze-internal motion restrict com.test.music", CommandPolicy.verifiedCommand("dumpsys sensorservice restrict com.test.music"));
+        for (String command : new String[]{"dumpsys sensorservice", "dumpsys sensorservice restrict com.test; id", "dumpsys deviceidle unforce"}) {
+            assertEquals(command, CommandPolicy.verifiedCommand(command));
+        }
+    }
 }

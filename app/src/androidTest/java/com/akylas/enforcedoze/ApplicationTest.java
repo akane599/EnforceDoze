@@ -32,7 +32,8 @@ public class ApplicationTest {
     @Test public void settingsAndListsOpenWithoutRootPrompts() throws Exception {
         for (Class<? extends Activity> screen : new Class[]{SettingsActivity.class, BlockAppsActivity.class,
                 BlockNotificationsActivity.class, DozeBatteryStatsActivity.class, DiagnosticsActivity.class,
-                PackageChooserActivity.class, DozeTunablesActivity.class}) {
+                PackageChooserActivity.class, DozeTunablesActivity.class, SensorEvidenceActivity.class,
+                TaskerBroadcastsActivity.class, DozeStatsActivity.class}) {
             try (ActivityScenario<?> scenario = ActivityScenario.launch(screen)) {
                 scenario.onActivity(activity -> assertFalse(activity.isFinishing()));
                 screenshot(screen.getSimpleName());

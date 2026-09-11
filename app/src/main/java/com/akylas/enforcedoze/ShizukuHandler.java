@@ -83,13 +83,18 @@ public final class ShizukuHandler {
     }
     public CommandResult executeBlocking(String command) {
         if (Looper.myLooper() == Looper.getMainLooper()) throw new IllegalStateException("Blocking command on UI thread");
+        if (Thread.currentThread().isInterrupted()) return new CommandResult(130, "Interrupted");
+        if (command == null || command.isEmpty() || command.length() > 32768) return new CommandResult(-1, "Invalid command");
         if (!isShizukuAvailable()) return new CommandResult(-1, "Start Shizuku and authorize EnforceDoze");
+        java.util.concurrent.Future<String[]> call = null;
         try {
             IPrivilegedService remote = service;
             if (remote == null || !remote.asBinder().pingBinder()) {
                 CountDownLatch latch = new CountDownLatch(1);
                 binding = latch;
                 main.post(() -> {
+                    // The caller may have timed out before the main thread could bind.
+                    if (binding != latch) return;
                     try { Shizuku.bindUserService(args, connection); }
                     catch (RuntimeException e) { latch.countDown(); }
                 });
@@ -101,28 +106,36 @@ public final class ShizukuHandler {
             }
             if (remote == null) return new CommandResult(-1, "Shizuku user service disconnected");
             final IPrivilegedService target = remote;
-            java.util.concurrent.Future<String[]> call = binderCalls.submit(() -> target.execute(command));
+            call = binderCalls.submit(() -> target.execute(command));
             try { return CommandResult.decode(call.get(10, TimeUnit.SECONDS)); }
             catch (java.util.concurrent.TimeoutException e) {
-                call.cancel(true);
-                disconnect();
-                main.post(() -> { try { Shizuku.unbindUserService(args, connection, true); } catch (RuntimeException ignored) { } });
+                discardUserService();
                 return new CommandResult(124, "Shizuku operation timed out; retry after the user service reconnects");
             }
         } catch (InterruptedException e) {
+            // Future.get interruption does not cancel the task. In particular a
+            // queued mutation must never run later, after restoration has started.
+            if (call != null) call.cancel(true);
+            discardUserService();
             Thread.currentThread().interrupt();
             return new CommandResult(130, "Interrupted");
         } catch (Exception e) {
             disconnect(); refresh();
             return new CommandResult(-1, "Shizuku command failed: " + e);
+        } finally {
+            if (call != null && !call.isDone()) call.cancel(true);
         }
+    }
+    private void discardUserService() {
+        disconnect();
+        main.post(() -> { try { Shizuku.unbindUserService(args, connection, true); } catch (RuntimeException ignored) { } });
     }
     public void executeCommand(String command, OnCommandResultListener callback) { executeCommand(command, callback, false); }
     public void executeCommand(String command, OnCommandResultListener callback, boolean print) {
         CommandExecutor.submit(() -> {
             CommandResult result = executeBlocking(command);
             if (print) Utils.logToLogcat("Shizuku", result.output);
-            main.post(() -> callback.onCommandResult(0, result.exitCode, result.success() ? result.lines() : Collections.emptyList(),
+            if (callback != null) main.post(() -> callback.onCommandResult(0, result.exitCode, result.success() ? result.lines() : Collections.emptyList(),
                     result.success() ? Collections.emptyList() : result.lines()));
         });
     }

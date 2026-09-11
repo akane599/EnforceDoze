@@ -1,0 +1,7 @@
+<resources>
+    <item name="automationNotice" type="id" />
+    <string name="tasker_no_extras">No extras required.</string>
+    <string name="tasker_package_extra">String extra: packageName\nUse the full package name, for example com.spotify.music.</string>
+    <string name="tasker_settings_extras">String extras: settingName and settingValue\n\nSupported settingName values:\n%1$s\n\nUse true or false for settingValue. For dozeEnterDelay, use an integer from 0 to 1800 seconds.\n\nThese actions update your preferences. Device control still requires working Shizuku or root access and the permissions shown in Settings.\n\nLegacy aliases remain accepted: enableSensors is the inverse of disableMotionSensors; ignoreIfHotspot is the inverse of respectHotspot; useAutoRotateAndBrightnessFix maps to autoRotateAndBrightnessFix.</string>
+    <string name="tasker_copied">Broadcast action copied</string>
+</resources>

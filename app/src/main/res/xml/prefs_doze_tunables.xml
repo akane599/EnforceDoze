@@ -23,7 +23,7 @@
         android:dialogMessage="Enter a new value (milliseconds)"
         android:dialogTitle="Modify value"
         android:key="light_idle_to"
-        android:summary="This is the initial time that we will run in idle maintenance mode"
+        android:summary="Initial time in light idle before a maintenance window"
         android:title="light_idle_to" />
     <EditTextPreference
         android:defaultValue="2"
@@ -39,7 +39,7 @@
         android:dialogMessage="Enter a new value (milliseconds)"
         android:dialogTitle="Modify value"
         android:key="light_max_idle_to"
-        android:summary="This is the maximum time we will run in idle maintenence mode"
+        android:summary="Maximum time in light idle between maintenance windows"
         android:title="light_max_idle_to" />
     <EditTextPreference
         android:defaultValue="60000"
@@ -204,7 +204,7 @@
             android:summary="Amount of time we would like to whitelist an app that is receiving an SMS"
             android:title="sms_temp_app_whitelist_duration" />
         <EditTextPreference
-            android:defaultValue="20000"
+            android:defaultValue="30000"
             android:inputType="number"
             android:dialogMessage="Enter a new value (milliseconds)"
             android:dialogTitle="Modify value"

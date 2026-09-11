@@ -178,34 +178,8 @@ public class Utils {
 
     private static long getMillisUntilNextCustomDozePeriodBoundary(Context context) {
         Calendar now = Calendar.getInstance();
-        long nowMillis = now.getTimeInMillis();
-        long nextBoundaryMillis = Long.MAX_VALUE;
-
-        for (String period : getCustomDozePeriods(context)) {
-            int[] parsedPeriod = parseCustomDozePeriod(period);
-            if (parsedPeriod == null) {
-                continue;
-            }
-            nextBoundaryMillis = Math.min(nextBoundaryMillis, getNextBoundaryMillis(now, parsedPeriod[0]));
-            nextBoundaryMillis = Math.min(nextBoundaryMillis, getNextBoundaryMillis(now, parsedPeriod[1]));
-        }
-
-        if (nextBoundaryMillis == Long.MAX_VALUE) {
-            return -1;
-        }
-        return Math.max(1000, nextBoundaryMillis - nowMillis);
-    }
-
-    private static long getNextBoundaryMillis(Calendar now, int minuteOfDay) {
-        Calendar boundary = (Calendar) now.clone();
-        boundary.set(Calendar.HOUR_OF_DAY, minuteOfDay / 60);
-        boundary.set(Calendar.MINUTE, minuteOfDay % 60);
-        boundary.set(Calendar.SECOND, 0);
-        boundary.set(Calendar.MILLISECOND, 0);
-        if (!boundary.after(now)) {
-            boundary.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        return boundary.getTimeInMillis();
+        long boundary = DozeSchedule.nextBoundaryMillis(getCustomDozePeriods(context), now);
+        return boundary < 0 ? -1 : Math.max(1000, boundary - now.getTimeInMillis());
     }
 
     private static int getCurrentMinuteOfDay() {
@@ -214,23 +188,6 @@ public class Utils {
     }
 
     private static int[] parseCustomDozePeriod(String period) { return CommandPolicy.period(period); }
-
-    private static int parseCustomDozeTime(String time) {
-        String[] parts = time.split(":");
-        if (parts.length != 2) {
-            return -1;
-        }
-        try {
-            int hour = Integer.parseInt(parts[0]);
-            int minute = Integer.parseInt(parts[1]);
-            if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-                return -1;
-            }
-            return hour * 60 + minute;
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -425,11 +382,16 @@ public class Utils {
         return ((Settings.Secure.getInt(contentResolver, "lock_screen_lock_after_timeout", 5000) / 1000f) / 60f);
     }
 
-    public static boolean doesSettingExist(String settingName) {
-        String[] updatableSettings = {"respectHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
+    public static String[] updatableSettings() {
+        return new String[]{"respectHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
                 "dozeEnterDelay", "autoRotateAndBrightnessFix", "disableMotionSensors", "disableWhenCharging",
-                "showPersistentNotif", "waitForUnlock", "turnOnAirplaneInDoze", "turnOffBluetoothInDoze", "turnOffGPSInDoze", "turnOnBatterySaverInDoze", "whitelistMusicAppNetwork", "whitelistCurrentApp"};
-        return Arrays.asList(updatableSettings).contains(settingName);
+                "showPersistentNotif", "detailedMonitorNotification", "waitForUnlock", "turnOnAirplaneInDoze",
+                "turnOffBluetoothInDoze", "turnOffGPSInDoze", "turnOnBatterySaverInDoze",
+                "whitelistMusicAppNetwork", "whitelistCurrentApp"};
+    }
+
+    public static boolean doesSettingExist(String settingName) {
+        return Arrays.asList(updatableSettings()).contains(settingName);
     }
 
     public static void updateSettingBool(Context context, String settingName, boolean settingValue) {
@@ -525,6 +487,9 @@ public class Utils {
                 .setContentTitle(context.getString(R.string.enforcedoze_disabled_notif_title))
                 .setContentText(context.getString(R.string.enforcedoze_disabled_notif_text))
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOnlyAlertOnce(true)
+                .setSilent(true)
+                .setShowWhen(false)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setOngoing(false);
@@ -546,6 +511,8 @@ public class Utils {
             try {
                 TileService.requestListeningState(context, 
                     new ComponentName(context, ForceDozeTileService.class));
+                TileService.requestListeningState(context,
+                    new ComponentName(context, AirplaneTileService.class));
             } catch (Exception e) {
                 Log.e("Utils", "Failed to update tile state: " + e.getMessage());
             }

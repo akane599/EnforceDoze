@@ -19,7 +19,8 @@ public class DiagnosticsActivity extends UiActivity {
     private volatile int checkVersion;
     private boolean reportReady;
     private static final String[] CHECKS = {"id", "dumpsys deviceidle get deep", "dumpsys deviceidle get light",
-            "cmd connectivity airplane-mode", PrivilegedOperations.PREFIX + "hotspot get", PrivilegedOperations.PREFIX + "sensors get"};
+            "cmd connectivity airplane-mode", PrivilegedOperations.PREFIX + "hotspot get", PrivilegedOperations.PREFIX + "sensors get",
+            PrivilegedOperations.PREFIX + "motion get"};
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
         LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL);
@@ -33,6 +34,9 @@ public class DiagnosticsActivity extends UiActivity {
         TextView liveNote = new TextView(this); liveNote.setText(R.string.evidence_live_note); body.addView(liveNote);
         MaterialButton evidence = new MaterialButton(this); evidence.setText(R.string.evidence_title); body.addView(evidence);
         evidence.setOnClickListener(v -> startActivity(new android.content.Intent(this, DozeEvidenceActivity.class)));
+        TextView sensorNote = new TextView(this); sensorNote.setText(R.string.sensor_diagnostics_note); body.addView(sensorNote);
+        MaterialButton sensors = new MaterialButton(this); sensors.setText(R.string.sensor_evidence_title); body.addView(sensors);
+        sensors.setOnClickListener(v -> startActivity(new android.content.Intent(this, SensorEvidenceActivity.class)));
         run = new MaterialButton(this); run.setText(R.string.diagnostics_run); body.addView(run);
         run.setOnClickListener(v -> check());
         copy = new MaterialButton(this); copy.setText(R.string.diagnostics_copy); body.addView(copy); copy.setEnabled(false);
@@ -67,6 +71,7 @@ public class DiagnosticsActivity extends UiActivity {
         if (index == CHECKS.length) {
             text.append("\n\nLast error:\n").append(android.preference.PreferenceManager.getDefaultSharedPreferences(this).getString("lastError", "None"));
             text.append("\n\n").append(DozeEvidence.report(this));
+            text.append("\n\n").append(SensorEvidence.report(this));
             report.setText(text); run.setEnabled(true); copy.setEnabled(true); reportReady = true;
             return;
         }

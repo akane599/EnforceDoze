@@ -10,6 +10,8 @@ The current development branch adds a Material 3 dashboard, searchable app lists
 
 This revision targets Android 16 (API 36) and retains Android 6.0 (API 23) as its minimum. Samsung/One UI privileged behavior still requires physical-device validation. This branch is not a tested stable release.
 
+The **1.11.3-dev** follow-up fixes sensor restriction and saves verification on the phone, keeps the monitor notification stable by default, reduces repeated background work, and updates Android 16 option support. See the [fresh audit and phone checklist](docs/FRESH_AUDIT_1.11.3.md). Sensor restriction and Android's Sensors Off privacy switch are separate controls; neither is a measurement of physical sensor power or battery savings.
+
 ## Setup
 
 1. Install and start [Shizuku](https://shizuku.rikka.app/guide/setup/).
@@ -36,7 +38,7 @@ The [Build APK workflow](https://github.com/akane599/EnforceDoze/actions/workflo
 
 1. Sign in to GitHub in your phone's browser and open **Actions → Build APK**.
 2. Open a successful run and tap its APK under **Artifacts**, or use the download link in its summary.
-3. To build again, open a previous run and choose **Re-run all jobs**. After this workflow is merged into `master`, you can also use **Run workflow**, select a branch, and start a new build. GitHub requires the workflow on the default branch for that manual button ([GitHub instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)).
+3. To build again, choose **Run workflow**, select a branch, and start a new build, or open a previous run and choose **Re-run all jobs** ([GitHub instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)).
 
 The separate **Android checks** workflow runs Android 16 UI and Shizuku integration tests. The APK workflow does not publish a release or change the app's version.
 

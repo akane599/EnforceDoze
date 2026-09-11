@@ -3,74 +3,46 @@ package com.akylas.enforcedoze;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class TaskerBroadcastsActivity extends UiActivity {
-
-    ArrayList<TaskerBroadcastsItem> items;
-    ListView listView;
-    TaskerBroadcastsAdapter taskerBroadcastsAdapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasker_broadcasts);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        listView = (ListView) findViewById(R.id.listViewBroadcasts);
-        items = new ArrayList<>();
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ENABLE_FORCEDOZE",
-                "Broadcast values required: None"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.DISABLE_FORCEDOZE",
-                "Broadcast values required: None"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ADD_WHITELIST",
-                "Broadcast values required:\npackageName\n\npackageName has to be the full " +
-                        "package name of the app you want to add to the whitelist"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.REMOVE_WHITELIST",
-                "Broadcast values required:\npackageName\n\npackageName has to be the full " +
-                        "package name of the app you want to remove from the whitelist"));
+        ListView list = findViewById(R.id.listViewBroadcasts);
+        TextView notice = new TextView(this);
+        notice.setId(R.id.automationNotice);
+        notice.setText(R.string.automation_instructions);
+        int padding = Math.round(16 * getResources().getDisplayMetrics().density);
+        notice.setPadding(0, 0, 0, padding);
+        list.addHeaderView(notice, null, false);
+        ArrayList<TaskerBroadcastsItem> items = new ArrayList<>();
+        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ENABLE_FORCEDOZE", getString(R.string.tasker_no_extras)));
+        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.DISABLE_FORCEDOZE", getString(R.string.tasker_no_extras)));
+        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ADD_WHITELIST", getString(R.string.tasker_package_extra)));
+        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.REMOVE_WHITELIST", getString(R.string.tasker_package_extra)));
+        // Generate this list from the receiver's allowlist so documentation cannot silently drift.
         items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.CHANGE_SETTING",
-                "Broadcast values required:\nsettingName\nsettingValue\n\nsettingName can be one of the following:" +
-                        "\n1) turnOffDataInDoze\n2) turnOffWiFiInDoze\n3) ignoreLockscreenTimeout" +
-                        "\n4) dozeEnterDelay\n5) useAutoRotateAndBrightnessFix\n6) enableSensors" +
-                        "\n7) disableWhenCharging\n8) showPersistentNotif\n" +
-                        "\n\nsettingValue can be one of the " +
-                        "following:\n1) true\n2) false\n3) an integer value (ONLY in case of dozeEnterDelay)"));
-        taskerBroadcastsAdapter = new TaskerBroadcastsAdapter(this, items);
-        listView.setAdapter(taskerBroadcastsAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                ClipData broadcastData = ClipData.newPlainText("fd_broadcast", ((TextView)view.findViewById(R.id.broadcastName)).getText());
-                clipboard.setPrimaryClip(broadcastData);
-                Toast.makeText(getApplicationContext(), "Copied broadcast!", Toast.LENGTH_SHORT).show();
-            }
+                getString(R.string.tasker_settings_extras, android.text.TextUtils.join("\n", Utils.updatableSettings()))));
+        list.setAdapter(new TaskerBroadcastsAdapter(this, items));
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            Object item = parent.getItemAtPosition(position);
+            if (!(item instanceof TaskerBroadcastsItem)) return;
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            clipboard.setPrimaryClip(ClipData.newPlainText("Tasker action", ((TaskerBroadcastsItem) item).getBroadcastName()));
+            // Android 13+ already displays a clipboard overlay.
+            if (android.os.Build.VERSION.SDK_INT < 33) Toast.makeText(this, R.string.tasker_copied, Toast.LENGTH_SHORT).show();
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                getOnBackPressedDispatcher().onBackPressed();
-                return true;
-        }
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) { finish(); return true; }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -4,6 +4,7 @@ set -euo pipefail
 # Tests use a fresh emulator. Keep APK data until evidence is collected.
 gradle_args=(--no-daemon -Pandroid.injected.androidTest.leaveApksInstalledAfterRun=true)
 integration_class=com.akylas.enforcedoze.ShizukuIntegrationTest
+integration_classes="$integration_class,com.akylas.enforcedoze.SensorShizukuIntegrationTest"
 mkdir -p device-test-results
 collect_evidence() {
   adb pull /sdcard/Android/data/com.akylas.enforcedoze/files/screenshots device-screenshots
@@ -11,7 +12,7 @@ collect_evidence() {
 trap 'collect_evidence || true' EXIT
 
 ./gradlew "${gradle_args[@]}" \
-  "-Pandroid.testInstrumentationRunnerArguments.notClass=$integration_class" connectedDebugAndroidTest
+  "-Pandroid.testInstrumentationRunnerArguments.notClass=$integration_classes" connectedDebugAndroidTest
 cp -R app/build/reports/androidTests device-test-results/ui
 
 # Pin the upstream manager and its bytes; it is installed only in this test emulator.
@@ -28,7 +29,7 @@ adb shell pm grant com.akylas.enforcedoze moe.shizuku.manager.permission.API_V23
 adb shell /data/local/tmp/enforcedoze-shizuku-starter
 
 ./gradlew "${gradle_args[@]}" \
-  "-Pandroid.testInstrumentationRunnerArguments.class=$integration_class" \
+  "-Pandroid.testInstrumentationRunnerArguments.class=$integration_classes" \
   -Pandroid.testInstrumentationRunnerArguments.shizukuIntegration=true \
   -Pandroid.testInstrumentationRunnerArguments.shizukuStarter=/data/local/tmp/enforcedoze-shizuku-starter \
   connectedDebugAndroidTest

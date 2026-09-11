@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -16,22 +15,18 @@ import android.app.TimePickerDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -187,15 +182,18 @@ public class SettingsActivity extends UiActivity {
             Preference dozeDelay = (Preference) findPreference("dozeEnterDelay");
             Preference customDozePeriods = (Preference) findPreference("customDozePeriods");
             Preference showPersistentNotif = (Preference) findPreference("showPersistentNotif");
-            Preference usePermanentDoze = (Preference) findPreference("usePermanentDoze");
             Preference dozeNotificationBlocklist = (Preference) findPreference("blacklistAppNotifications");
             Preference dozeAppBlocklist = (Preference) findPreference("blacklistApps");
-            final Preference executionMode = (Preference) findPreference("executionMode");
-            final Preference disableMotionSensors = (Preference) findPreference("disableMotionSensors");
+            final ListPreference executionMode = findPreference("executionMode");
+            if (Build.VERSION.SDK_INT >= 34) {
+                executionMode.setEntries(java.util.Arrays.copyOf(getResources().getStringArray(R.array.execution_mode_entries), 2));
+                executionMode.setEntryValues(java.util.Arrays.copyOf(getResources().getStringArray(R.array.execution_mode_values), 2));
+                executionMode.setSummaryProvider((Preference.SummaryProvider<ListPreference>) value -> "adb".equals(value.getValue())
+                        ? getString(R.string.legacy_adb_unsupported) : value.getEntry());
+            }
             Preference turnOffDataInDoze = (Preference) findPreference("turnOffDataInDoze");
             Preference whitelistMusicAppNetwork = (Preference) findPreference("whitelistMusicAppNetwork");
             Preference whitelistCurrentApp = (Preference) findPreference("whitelistCurrentApp");
-            final Preference autoRotateBrightnessFix = (Preference) findPreference("autoRotateAndBrightnessFix");
             SwitchPreferenceCompat autoRotateFixPref = (SwitchPreferenceCompat) findPreference("autoRotateAndBrightnessFix");
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -255,7 +253,9 @@ public class SettingsActivity extends UiActivity {
             });
 
             clearDozeStats.setOnPreferenceClickListener(preference -> {
-                sharedPreferences.edit().remove("dozeUsageDataAdvanced").apply();
+                sharedPreferences.edit().remove("dozeUsageDataAdvanced").remove("dozeUsageData").apply();
+                DozeEvidence.clear(requireContext());
+                SensorEvidence.clear(requireContext());
                 reloadSettings(requireContext());
                 new MaterialAlertDialogBuilder(requireContext()).setMessage(R.string.doze_battery_stats_clear_msg)
                         .setPositiveButton(R.string.close_button_text, null).show();
@@ -348,6 +348,9 @@ public class SettingsActivity extends UiActivity {
             Preference turnOffGPSInDoze = (Preference) findPreference("turnOffGPSInDoze");
             turnOffGPSInDoze.setEnabled(false);
             turnOffGPSInDoze.setSummary(getString(R.string.root_or_shizuku));
+
+            findPreference("turnOffBiometricsInDoze").setOnPreferenceChangeListener((preference, value) ->
+                    !(boolean) value || Build.VERSION.SDK_INT < 36);
 
             toggleRootFeatures(useShizuku ? isShizukuAvailable : isSuAvailable);
             Preference sponsorPref = findPreference("sponsorProject");
@@ -458,7 +461,8 @@ public class SettingsActivity extends UiActivity {
             if (periods.isEmpty()) {
                 preference.setSummary(getString(R.string.custom_doze_periods_setting_summary_empty));
             } else {
-                preference.setSummary(getString(R.string.custom_doze_periods_setting_summary, android.text.TextUtils.join(", ", periods)));
+                preference.setSummary(getString(R.string.custom_doze_periods_setting_summary,
+                        android.text.TextUtils.join(", ", periods)) + "\n" + getString(R.string.schedule_timing_summary));
             }
         }
 
@@ -497,7 +501,11 @@ public class SettingsActivity extends UiActivity {
             Utils.stopForceDozeService(context);
             CommandExecutor.submit(() -> {
                 boolean restored = new RecoveryJournal(context).restore();
-                if (restored) preferences.edit().clear().putString("executionMode", "shizuku").apply();
+                if (restored) {
+                    DozeEvidence.clear(context);
+                    SensorEvidence.clear(context);
+                    preferences.edit().clear().putString("executionMode", "shizuku").apply();
+                }
                 if (getActivity() != null) getActivity().runOnUiThread(() -> {
                     if (!isAdded()) return;
                     new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.reset_complete_dialog_title)
@@ -508,74 +516,38 @@ public class SettingsActivity extends UiActivity {
         }
 
         public void toggleRootFeatures(final boolean enabled) {
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    Preference turnOffDataInDoze = (Preference) findPreference("turnOffDataInDoze");
-                    Preference dozeNotificationBlocklist = (Preference) findPreference("blacklistAppNotifications");
-                    Preference dozeAppBlocklist = (Preference) findPreference("blacklistApps");
-                    Preference turnOffAllSensorsInDoze = (Preference) findPreference("turnOffAllSensorsInDoze");
-                    Preference turnOnBatterySaverInDoze = (Preference) findPreference("turnOnBatterySaverInDoze");
-                    Preference turnOffBiometricsInDoze = (Preference) findPreference("turnOffBiometricsInDoze");
-                    Preference turnOnAirplaneInDoze = (Preference) findPreference("turnOnAirplaneInDoze");
-                    Preference turnOffBluetoothInDoze = (Preference) findPreference("turnOffBluetoothInDoze");
-                    Preference turnOffGPSInDoze = (Preference) findPreference("turnOffGPSInDoze");
-                    Preference whitelistAppsFromDozeMode = (Preference) findPreference("whitelistAppsFromDozeMode");
-                    if (enabled) {
-                        turnOffDataInDoze.setEnabled(true);
-                        turnOffDataInDoze.setSummary(getString(R.string.disable_data_during_doze_setting_summary));
-                        dozeNotificationBlocklist.setEnabled(true);
-                        dozeNotificationBlocklist.setSummary(getString(R.string.notif_blocklist_setting_summary));
-                        dozeAppBlocklist.setEnabled(true);
-                        dozeAppBlocklist.setSummary(getString(R.string.app_blocklist_setting_summary));
-                        turnOffAllSensorsInDoze.setEnabled(true);
-                        turnOffAllSensorsInDoze.setSummary(getString(R.string.disable_all_sensors_setting_summary));
-                        turnOnBatterySaverInDoze.setEnabled(true);
-                        turnOnBatterySaverInDoze.setSummary(getString(R.string.enable_battery_saver_setting_summary));
-                        turnOffBiometricsInDoze.setEnabled(true);
-                        turnOffBiometricsInDoze.setSummary(getString(R.string.disable_biometrics_setting_summary));
-                        turnOnAirplaneInDoze.setEnabled(true);
-                        turnOnAirplaneInDoze.setSummary(getString(R.string.enable_airplane_setting_summary));
-                        turnOffBluetoothInDoze.setEnabled(true);
-                        turnOffBluetoothInDoze.setSummary(getString(R.string.disable_bluetooth_setting_summary));
-                        turnOffGPSInDoze.setEnabled(true);
-                        turnOffGPSInDoze.setSummary(getString(R.string.disable_gps_setting_summary));
-                        whitelistAppsFromDozeMode.setEnabled(true);
-                        whitelistAppsFromDozeMode.setSummary(getString(R.string.whitelist_apps_setting_summary));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            Preference turnOffWiFiInDoze = (Preference) findPreference("turnOffWiFiInDoze");
-                            turnOffWiFiInDoze.setEnabled(true);
-                            turnOffWiFiInDoze.setSummary(getString(R.string.disable_wifi_during_doze_setting_summary));
-                        }
-                    } else {
-                        turnOffDataInDoze.setEnabled(false);
-                        turnOffDataInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        dozeNotificationBlocklist.setEnabled(false);
-                        dozeNotificationBlocklist.setSummary(getString(R.string.root_or_shizuku));
-                        dozeAppBlocklist.setEnabled(false);
-                        dozeAppBlocklist.setSummary(getString(R.string.root_or_shizuku));
-                        turnOffAllSensorsInDoze.setEnabled(false);
-                        turnOffAllSensorsInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        turnOnBatterySaverInDoze.setEnabled(false);
-                        turnOnBatterySaverInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        turnOffBiometricsInDoze.setEnabled(false);
-                        turnOffBiometricsInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        turnOnAirplaneInDoze.setEnabled(false);
-                        turnOnAirplaneInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        turnOffBluetoothInDoze.setEnabled(false);
-                        turnOffBluetoothInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        turnOffGPSInDoze.setEnabled(false);
-                        turnOffGPSInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        whitelistAppsFromDozeMode.setEnabled(false);
-                        whitelistAppsFromDozeMode.setSummary(getString(R.string.root_or_shizuku));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            Preference turnOffWiFiInDoze = (Preference) findPreference("turnOffWiFiInDoze");
-                            turnOffWiFiInDoze.setEnabled(false);
-                            turnOffWiFiInDoze.setSummary(getString(R.string.root_or_shizuku));
-                        }
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+                configureAccess("turnOffDataInDoze", enabled, R.string.disable_data_during_doze_setting_summary);
+                configureAccess("blacklistAppNotifications", enabled, R.string.notif_blocklist_setting_summary);
+                configureAccess("blacklistApps", enabled, R.string.app_blocklist_setting_summary);
+                configureAccess("turnOffAllSensorsInDoze", enabled, R.string.sensor_privacy_summary);
+                configureAccess("turnOnBatterySaverInDoze", enabled, R.string.enable_battery_saver_setting_summary);
+                configureAccess("turnOnAirplaneInDoze", enabled, R.string.enable_airplane_setting_summary);
+                configureAccess("turnOffBluetoothInDoze", enabled, R.string.disable_bluetooth_setting_summary);
+                configureAccess("turnOffGPSInDoze", enabled, R.string.location_control_summary);
+                configureAccess("whitelistAppsFromDozeMode", enabled, R.string.whitelist_apps_setting_summary);
+                configureAccess("turnOffWiFiInDoze", enabled || Build.VERSION.SDK_INT < 29,
+                        R.string.disable_wifi_during_doze_setting_summary);
+                configureAccess("disableMotionSensors", enabled,
+                        R.string.sensor_restriction_summary);
+                configureAccess("turnOffBiometricsInDoze", enabled && Build.VERSION.SDK_INT < 36,
+                        R.string.disable_biometrics_setting_summary);
+                if (Build.VERSION.SDK_INT >= 36) {
+                    findPreference("turnOffBiometricsInDoze").setSummary(R.string.biometrics_unsupported_summary);
+                }
+            });
+        }
 
-                    }
-                });
-            }
+        private void configureAccess(String key, boolean enabled, int summary) {
+            Preference preference = findPreference(key);
+            if (preference == null) return;
+            // Leave an enabled switch operable when access drops so it can still be turned off.
+            boolean selected = preference instanceof SwitchPreferenceCompat
+                    && ((SwitchPreferenceCompat) preference).isChecked();
+            preference.setEnabled(enabled || selected);
+            preference.setSummary(enabled ? summary : R.string.root_or_shizuku);
         }
 
         public void executeCommand(final String command) {
@@ -624,6 +596,7 @@ public class SettingsActivity extends UiActivity {
                 updateCustomDozePeriodsSummary(findPreference("customDozePeriods"), sharedPreferences);
             }
             if (getActivity() != null) {
+                toggleRootFeatures(Utils.isShizukuMode(requireContext()) ? isShizukuAvailable : isSuAvailable);
                 reloadSettings(getActivity());
             }
         }

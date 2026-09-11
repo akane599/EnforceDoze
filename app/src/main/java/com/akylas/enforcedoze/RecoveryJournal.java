@@ -26,10 +26,7 @@ final class RecoveryJournal {
             pending.put(new JSONObject().put("mode", mode).put("command", undo).put("core", core));
             if (!prefs.edit().putString("undo", pending.toString()).commit()) return false;
             CommandResult result = runner.run(mode, command);
-            if (!result.success()) {
-                Utils.logToLogcat("EnforceDoze", result.output);
-                android.preference.PreferenceManager.getDefaultSharedPreferences(context).edit().putString("lastError", command + "\nExit: " + result.exitCode + "\n" + (result.output.length() > 4096 ? result.output.substring(0, 4096) : result.output)).apply();
-            }
+            if (!result.success()) recordFailure(command, result);
             // Retain undo even after failure: a command can mutate then time out.
             return result.success();
         } catch (Exception e) {
@@ -44,19 +41,36 @@ final class RecoveryJournal {
             JSONArray pending = new JSONArray(prefs.getString("undo", "[]"));
             boolean success = true;
             for (int i = pending.length() - 1; i >= 0; i--) {
-                JSONObject item = pending.getJSONObject(i);
-                if (enhancementsOnly && item.optBoolean("core", false)) continue;
-                CommandResult result = runner.run(item.getString("mode"), item.getString("command"));
-                if (result.success()) {
-                    pending.remove(i);
-                    // A second process death must not replay already completed restorations.
-                    if (!prefs.edit().putString("undo", pending.toString()).commit()) return false;
-                } else success = false;
+                try {
+                    JSONObject item = pending.getJSONObject(i);
+                    if (enhancementsOnly && item.optBoolean("core", false)) continue;
+                    String command = item.getString("command");
+                    CommandResult result = runner.run(item.getString("mode"), command);
+                    if (result.success()) {
+                        pending.remove(i);
+                        // A second process death must not replay already completed restorations.
+                        if (!prefs.edit().putString("undo", pending.toString()).commit()) return false;
+                    } else {
+                        recordFailure("Restoration: " + command, result);
+                        success = false;
+                    }
+                } catch (Exception e) {
+                    // A denied or broken enhancement must not prevent unforcing Doze,
+                    // restoring connectivity, or attempting other independent cleanup.
+                    recordFailure("Restoration entry " + i, new CommandResult(-1, e.toString()));
+                    success = false;
+                }
             }
             return success;
         } catch (Exception e) {
             Utils.logToLogcat("EnforceDoze", "Restoration failed: " + e);
             return false;
         }
+    }
+    private void recordFailure(String command, CommandResult result) {
+        String output = result.output.length() > 4096 ? result.output.substring(0, 4096) : result.output;
+        Utils.logToLogcat("EnforceDoze", command + "\n" + output);
+        android.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putString("lastError", command + "\nExit: " + result.exitCode + "\n" + output).apply();
     }
 }
