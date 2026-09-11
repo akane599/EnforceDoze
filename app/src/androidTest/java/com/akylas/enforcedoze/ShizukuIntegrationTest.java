@@ -155,6 +155,14 @@ public class ShizukuIntegrationTest {
         assertEquals("2000", checked("id -u").output.trim());
     }
     @Test public void foregroundMonitorEntersOnScreenOffAndRestoresOnWake() throws Exception {
+        // Grant/revoke belongs to the external disposable-emulator fixture: revoking
+        // this runtime permission here could kill the instrumentation process itself.
+        if (Build.VERSION.SDK_INT >= 33) assertEquals(
+                "The privileged test fixture must grant POST_NOTIFICATIONS before this test",
+                android.content.pm.PackageManager.PERMISSION_GRANTED,
+                context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS));
+        TestUi.await("The fixture did not enable notification posting", () ->
+                context.getSystemService(android.app.NotificationManager.class).areNotificationsEnabled());
         var prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean previousCharging = prefs.getBoolean("disableWhenCharging", true);
         boolean previousSensors = prefs.getBoolean("disableMotionSensors", true);
