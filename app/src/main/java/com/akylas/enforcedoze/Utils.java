@@ -14,10 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -28,12 +25,8 @@ import android.provider.Settings;
 import android.service.quicksettings.TileService;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.Display;
 import android.content.ComponentName;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
@@ -215,24 +208,12 @@ public class Utils {
 
     private static int[] parseCustomDozePeriod(String period) { return CommandPolicy.period(period); }
 
-    private static int parseCustomDozeTime(String time) {
-        String[] parts = time.split(":");
-        if (parts.length != 2) {
-            return -1;
-        }
-        try {
-            int hour = Integer.parseInt(parts[0]);
-            int minute = Integer.parseInt(parts[1]);
-            if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-                return -1;
-            }
-            return hour * 60 + minute;
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
+    /**
+     * The dashboard asks this on every redraw. Our own service lives in this process, so its own
+     * lifecycle flag answers without the cross-process ActivityManager query this used to make.
+     */
     public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+        if (serviceClass == ForceDozeService.class) return ForceDozeService.isRunning();
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -275,19 +256,9 @@ public class Utils {
         }
         return granted;
     }
-    public static boolean isReadLogsPermissionGranted(Context context) {
-        return context.checkCallingOrSelfPermission(Manifest.permission.READ_LOGS) == PackageManager.PERMISSION_GRANTED;
-    }
-
     public static boolean isSecureSettingsPermissionGranted(Context context) {
         return context.checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
     }
-    public static boolean isSecureSensorPrivacyPermissionGranted(Context context) {
-        if (context.checkCallingOrSelfPermission("android.permission.MANAGE_SENSOR_PRIVACY") == PackageManager.PERMISSION_GRANTED)
-            return true;
-        else return false;
-    }
-
     public static boolean isConnectedToCharger(Context context) {
         Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (intent != null) {
@@ -296,12 +267,10 @@ public class Utils {
         } else return false;
     }
 
+    /** Uses the reader's own locale and clock preference rather than a fixed English pattern. */
     public static String getDateCurrentTimeZone(long timestamp) {
-        //return DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.UK).format(new Date(timestamp));
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss");
-        return dateFormat.format(cal.getTime());
+        return java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT)
+                .format(new java.util.Date(timestamp));
     }
 
     public static int getBatteryLevel(Context context) {
@@ -309,43 +278,21 @@ public class Utils {
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
     }
 
-    public static boolean checkForAutoPowerModesFlag() {
-        int id = Resources.getSystem().getIdentifier("config_enableAutoPowerModes", "bool", "android");
-        try { return id == 0 || Resources.getSystem().getBoolean(id); }
-        catch (Resources.NotFoundException e) { return true; }
-    }
-
     public static boolean isDeviceRunningOnN() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     }
 
-    public static int diffInMins(long start, long end) {
-        return (int) ((end - start) / 1000) / 60;
-    }
-
-    public static String timeSpentString(long start, long end) {
-        long diff = end - start;
-
-        if (diff < 0) {
-            throw new IllegalArgumentException("Duration must be greater than zero!");
-        }
-
+    /** Localized, compact session length such as "1 h 12 min" instead of a fixed English sentence. */
+    public static String timeSpentString(Context context, long start, long end) {
+        long diff = Math.max(0, end - start);
         long days = TimeUnit.MILLISECONDS.toDays(diff);
-        diff -= TimeUnit.DAYS.toMillis(days);
-        long hours = TimeUnit.MILLISECONDS.toHours(diff);
-        diff -= TimeUnit.HOURS.toMillis(hours);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-        diff -= TimeUnit.MINUTES.toMillis(minutes);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
-
-        return String.valueOf(days) +
-                " days, " +
-                hours +
-                " hours, " +
-                minutes +
-                " minutes, " +
-                seconds +
-                " seconds";
+        long hours = TimeUnit.MILLISECONDS.toHours(diff) % 24;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff) % 60;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(diff) % 60;
+        if (days > 0) return context.getString(R.string.duration_days, days, hours, minutes);
+        if (hours > 0) return context.getString(R.string.duration_hours, hours, minutes);
+        if (minutes > 0) return context.getString(R.string.duration_minutes, minutes, seconds);
+        return context.getString(R.string.duration_seconds, seconds);
     }
 
     public static void setAutoRotateEnabled(Context context, boolean enabled) {
@@ -398,10 +345,8 @@ public class Utils {
 
     public static boolean isWiFiEnabled(Context context) {
         WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        return wifi.isWifiEnabled();
-    }
-    public static boolean isBatterSaverEnabled(ContentResolver contentResolver) {
-        return Settings.Global.getInt(contentResolver, "low_power", 0) >= 1;
+        try { return wifi != null && wifi.isWifiEnabled(); }
+        catch (RuntimeException e) { return false; }
     }
     public static boolean isAirplaneEnabled(ContentResolver contentResolver) {
         return Settings.Global.getInt(contentResolver,
@@ -417,19 +362,16 @@ public class Utils {
         return Settings.Secure.getInt(contentResolver,
                 Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF) != Settings.Secure.LOCATION_MODE_OFF;
     }
-    public static boolean isLockscreenTimeoutValueTooHigh(ContentResolver contentResolver) {
-        return Settings.Secure.getInt(contentResolver, "lock_screen_lock_after_timeout", 5000) >= 5000;
-    }
-
-    public static float getLockscreenTimeoutValue(ContentResolver contentResolver) {
-        return ((Settings.Secure.getInt(contentResolver, "lock_screen_lock_after_timeout", 5000) / 1000f) / 60f);
-    }
+    private static final Set<String> AUTOMATION_SETTINGS = new LinkedHashSet<>(Arrays.asList(
+            "respectHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
+            "dozeEnterDelay", "autoRotateAndBrightnessFix", "disableMotionSensors", "disableWhenCharging",
+            "showPersistentNotif", "waitForUnlock", "turnOnAirplaneInDoze", "turnOffBluetoothInDoze",
+            "turnOffGPSInDoze", "turnOnBatterySaverInDoze", "whitelistMusicAppNetwork", "whitelistCurrentApp",
+            // Newer enhancement toggles were unreachable from automation until now.
+            "turnOffAllSensorsInDoze", "turnOffBiometricsInDoze", "showDisabledNotification", "disableStats"));
 
     public static boolean doesSettingExist(String settingName) {
-        String[] updatableSettings = {"respectHotspot", "turnOffDataInDoze", "turnOffWiFiInDoze", "ignoreLockscreenTimeout",
-                "dozeEnterDelay", "autoRotateAndBrightnessFix", "disableMotionSensors", "disableWhenCharging",
-                "showPersistentNotif", "waitForUnlock", "turnOnAirplaneInDoze", "turnOffBluetoothInDoze", "turnOffGPSInDoze", "turnOnBatterySaverInDoze", "whitelistMusicAppNetwork", "whitelistCurrentApp"};
-        return Arrays.asList(updatableSettings).contains(settingName);
+        return AUTOMATION_SETTINGS.contains(settingName);
     }
 
     public static void updateSettingBool(Context context, String settingName, boolean settingValue) {
@@ -468,14 +410,24 @@ public class Utils {
     static {
         init();
     }
+    /**
+     * The Shizuku user service and the root {@code app_process} entry point load these classes in a
+     * process that never runs Application.onCreate, so there is no context to read preferences from.
+     */
     private static void init() {
         applicationContext = MyApplication.getAppContext();
-        reloadSettingsReceiver = new ReloadSettingsReceiver();
-        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(reloadSettingsReceiver, new IntentFilter("reload-settings"));
-        disableLogcat = getDefaultSharedPreferences(applicationContext).getBoolean("disableLogcat", false);
+        if (applicationContext == null) return;
+        try {
+            reloadSettingsReceiver = new ReloadSettingsReceiver();
+            LocalBroadcastManager.getInstance(applicationContext).registerReceiver(reloadSettingsReceiver, new IntentFilter("reload-settings"));
+            disableLogcat = getDefaultSharedPreferences(applicationContext).getBoolean("disableLogcat", false);
+        } catch (RuntimeException e) {
+            applicationContext = null;
+        }
     }
 
     public static void reloadSettings() {
+        if (applicationContext == null) return;
         disableLogcat = getDefaultSharedPreferences(applicationContext).getBoolean("disableLogcat", false);
     }
 
@@ -559,41 +511,28 @@ public class Utils {
                 .getString("executionMode", "shizuku").equals("shizuku");
     }
 
+    /**
+     * Once Shizuku is authorized it can grant the permissions the controller needs itself, so call
+     * detection and Doze dumps work without a separate runtime prompt the user has to find.
+     */
     public static void grantPermissionsViaShizuku(Context context) {
-        ShizukuHandler shizukuHandler = ShizukuHandler.getInstance(context);
-        if (!Utils.isDumpPermissionGranted(context)) {
-            logToLogcat("Utils", "Granting android.permission.DUMP to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.DUMP",
-                    (commandCode, exitCode, stdout, stderr) -> {
-                        if (exitCode == 0) {
-                            logToLogcat("Utils", "DUMP permission granted successfully");
-                        } else {
-                            Log.e("Utils", "Failed to grant DUMP permission");
-                        }
-                    }, true);
+        ShizukuHandler shizuku = ShizukuHandler.getInstance(context);
+        if (!shizuku.isShizukuAvailable()) return;
+        String self = context.getPackageName();
+        if (!isDumpPermissionGranted(context)) grant(shizuku, self, Manifest.permission.DUMP);
+        if (!isReadPhoneStatePermissionGranted(context)) grant(shizuku, self, Manifest.permission.READ_PHONE_STATE);
+        if (!isSecureSettingsPermissionGranted(context) && isDeviceRunningOnN()) {
+            grant(shizuku, self, Manifest.permission.WRITE_SECURE_SETTINGS);
         }
-        if (!Utils.isReadPhoneStatePermissionGranted(context)) {
-            logToLogcat("Utils", "Granting android.permission.READ_PHONE_STATE to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.READ_PHONE_STATE",
-                    (commandCode, exitCode, stdout, stderr) -> {
-                        if (exitCode == 0) {
-                            logToLogcat("Utils", "READ_PHONE_STATE permission granted successfully");
-                        } else {
-                            Log.e("Utils", "Failed to grant READ_PHONE_STATE permission");
-                        }
-                    }, true);
-        }
-        if (!Utils.isSecureSettingsPermissionGranted(context) && Utils.isDeviceRunningOnN()) {
-            logToLogcat("Utils", "Granting android.permission.WRITE_SECURE_SETTINGS to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS",
-                    (commandCode, exitCode, stdout, stderr) -> {
-                        if (exitCode == 0) {
-                            logToLogcat("Utils", "WRITE_SECURE_SETTINGS permission granted successfully");
-                        } else {
-                            Log.e("Utils", "Failed to grant WRITE_SECURE_SETTINGS permission");
-                        }
-                    }, true);
-        }
+    }
+
+    private static void grant(ShizukuHandler shizuku, String packageName, String permission) {
+        logToLogcat("Utils", "Granting " + permission + " via Shizuku");
+        shizuku.executeCommand("pm grant " + packageName + " " + permission,
+                (commandCode, exitCode, stdout, stderr) -> {
+                    if (exitCode == 0) logToLogcat("Utils", permission + " granted");
+                    else Log.w("Utils", "Could not grant " + permission);
+                });
     }
 
 

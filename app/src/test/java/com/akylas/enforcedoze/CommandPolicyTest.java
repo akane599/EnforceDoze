@@ -8,6 +8,12 @@ public class CommandPolicyTest {
             assertTrue(name, CommandPolicy.protectedPackage(name));
         assertFalse(CommandPolicy.protectedPackage("com.spotify.music"));
     }
+    @Test public void launcherAndKeyboardCannotBeSuspended() {
+        // Suspending either locks the owner out of their own phone until they reboot.
+        for (String name : new String[]{"com.sec.android.app.launcher", "com.samsung.android.honeyboard",
+                "com.google.android.apps.nexuslauncher", "com.google.android.inputmethod.latin"})
+            assertTrue(name, CommandPolicy.protectedPackage(name));
+    }
     @Test public void maintenanceIsNotIdle() {
         assertEquals("IDLE_MAINTENANCE", CommandPolicy.idleState("  mState=IDLE_MAINTENANCE\n mLightState=IDLE"));
         assertEquals("UNKNOWN", CommandPolicy.idleState("permission denied"));

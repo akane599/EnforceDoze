@@ -152,7 +152,7 @@
                 android:targetPackage="com.akylas.enforcedoze" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Other">
+    <PreferenceCategory android:title="@string/settings_category_other">
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="disableStats"

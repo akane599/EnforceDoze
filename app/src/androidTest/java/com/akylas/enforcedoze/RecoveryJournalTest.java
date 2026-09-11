@@ -43,6 +43,27 @@ public class RecoveryJournalTest {
         commands.clear(); assertTrue(journal.restore());
         assertEquals(Arrays.asList("unforce"), commands);
     }
+    @Test public void aCommandTheDeviceKeepsRejectingIsReportedAndDropped() {
+        // Without a budget an unsupported undo command pins the app in recovery forever.
+        RecoveryJournal journal = new RecoveryJournal(context, (mode, cmd) -> new CommandResult(1, "Unknown command"));
+        journal.apply("shizuku", "sensors-off", "sensors-on");
+        for (int attempt = 0; attempt < 4; attempt++) {
+            assertFalse(journal.restore());
+            assertTrue("attempt " + attempt, journal.hasPending());
+        }
+        assertFalse(journal.restore());
+        assertFalse(journal.hasPending());
+        assertTrue(new RecoveryJournal(context).restore());
+        String error = android.preference.PreferenceManager.getDefaultSharedPreferences(context).getString("lastError", "");
+        assertTrue(error, error.contains("sensors-on"));
+    }
+    @Test public void lostAccessDoesNotSpendTheRetryBudget() {
+        // Exit -1 means the command never ran; a disconnected Shizuku must not abandon the undo.
+        RecoveryJournal journal = new RecoveryJournal(context, (mode, cmd) -> new CommandResult(-1, "Not authorized"));
+        journal.apply("shizuku", "wifi-off", "wifi-on");
+        for (int attempt = 0; attempt < 8; attempt++) assertFalse(journal.restore());
+        assertTrue(journal.hasPending());
+    }
     @Test public void failedRestorationIsRetriedWithoutRepeatingSuccesses() {
         RecoveryJournal journal = new RecoveryJournal(context, (mode, cmd) -> new CommandResult(cmd.equals("wifi-on") ? -1 : 0, ""));
         journal.apply("shizuku", "wifi-off", "wifi-on"); journal.apply("shizuku", "data-off", "data-on");

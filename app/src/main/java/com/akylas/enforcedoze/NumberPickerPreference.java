@@ -91,7 +91,6 @@ public class NumberPickerPreference extends Preference implements
             mCurrentValue = defaultValue instanceof Number ? ((Number) defaultValue).intValue() : mMin;
             persistInt(mCurrentValue);
         }
-        Log.e("NumberPickerPreference", "mCurrentValue: " + mCurrentValue);
         if (mBindSummary) {
             setSummary(Integer.toString(mCurrentValue));
         }
@@ -139,8 +138,8 @@ public class NumberPickerPreference extends Preference implements
 
     private void showDialog() {
         mCurrentValue = getPersistedInt(mCurrentValue);
-        mDialog = null;
-        if (mDialog == null) {
+        dismissDialog();
+        {
 
             View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_number_picker_dialog, null);
 
@@ -177,12 +176,26 @@ public class NumberPickerPreference extends Preference implements
                     .setTitle(mTitle)
                     .setView(view)
                     .setCancelable(true)
+                    .setNegativeButton(R.string.close_button_text, null)
                     .create();
 
             mDialog.setCanceledOnTouchOutside(true);
         }
 
         mDialog.show();
+    }
+
+    /** A dialog left showing when its preference detaches leaks the activity window. */
+    private void dismissDialog() {
+        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+        mDialog = null;
+        mPicker = null;
+    }
+
+    @Override
+    public void onDetached() {
+        dismissDialog();
+        super.onDetached();
     }
 
     private void save(int value) {
@@ -210,8 +223,9 @@ public class NumberPickerPreference extends Preference implements
 
     @Override
     public void onClick(View v) {
+        if (mPicker == null) return;
         save(getValue());
-        mDialog.dismiss();
+        dismissDialog();
     }
 
     private static class SavedState extends BaseSavedState {

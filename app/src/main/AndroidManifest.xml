@@ -41,6 +41,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.akylas.enforcedoze.MainActivity"
             android:exported="true">
@@ -163,41 +164,37 @@
         </service>
         <activity
             android:name="com.akylas.enforcedoze.DozeStatsActivity"
-            android:label="Doze battery stats (old)" />
+            android:label="@string/title_doze_stats_legacy" />
         <activity
             android:name="com.akylas.enforcedoze.DozeBatteryStatsActivity"
-            android:label="Doze battery stats" />
+            android:label="@string/title_doze_stats" />
         <activity
             android:name="com.akylas.enforcedoze.WhitelistAppsActivity"
-            android:label="Whitelist" />
+            android:label="@string/title_whitelist" />
         <activity
             android:name="com.akylas.enforcedoze.BlockNotificationsActivity"
-            android:label="Doze Notifications blocklist" />
+            android:label="@string/title_notification_blocklist" />
         <activity
             android:name="com.akylas.enforcedoze.BlockAppsActivity"
-            android:label="Doze App blocklist" />
+            android:label="@string/title_app_blocklist" />
         <activity
             android:name="com.akylas.enforcedoze.SettingsActivity"
-            android:label="Settings" />
+            android:label="@string/title_settings" />
         <activity
             android:name="com.akylas.enforcedoze.LogActivity"
-            android:label="Debug log" />
+            android:label="@string/title_log" />
         <activity
             android:name="com.akylas.enforcedoze.PackageChooserActivity"
-            android:label="Package chooser" />
+            android:label="@string/title_package_chooser" />
         <activity
             android:name="com.akylas.enforcedoze.AboutAppActivity"
-            android:label="About" />
+            android:label="@string/title_about" />
         <activity
             android:name="com.akylas.enforcedoze.TaskerBroadcastsActivity"
-            android:label="Tasker broadcasts" />
+            android:label="@string/title_tasker" />
         <activity
             android:name="com.akylas.enforcedoze.DozeTunablesActivity"
-            android:label="Doze Tunables" />
-        <activity android:name="com.akylas.enforcedoze.RequestIgnoreBatteryActivity"
-            android:exported="false"
-            android:theme="@style/Transparent.NoTitleBar" />
-        
+            android:label="@string/title_tunables" />
         <activity android:name=".DiagnosticsActivity" android:exported="false" />
         <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.files" android:exported="false" android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />

@@ -81,7 +81,7 @@ public class DozeBatteryStatsActivity extends UiActivity {
         for (DozeStatsParser.Session session : sessions) {
             String usage = session.batteryUsed == null ? getString(R.string.stats_charging) : session.batteryUsed + "%";
             DozeStatsCard card = new DozeStatsCard(getString(R.string.stats_session),
-                    Utils.getDateCurrentTimeZone(session.start) + "\n" + Utils.timeSpentString(session.start, session.end) + "\n" + usage,
+                    Utils.getDateCurrentTimeZone(session.start) + "\n" + Utils.timeSpentString(this, session.start, session.end) + "\n" + usage,
                     returnDrawableBattery(session.batteryUsed == null ? 0 : session.batteryUsed));
             adapter.addCard(card);
         }

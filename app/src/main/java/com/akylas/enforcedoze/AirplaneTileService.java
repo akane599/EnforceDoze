@@ -4,8 +4,6 @@ import static com.akylas.enforcedoze.Utils.logToLogcat;
 
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
@@ -17,7 +15,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 public class AirplaneTileService extends TileService {
 
     private static final String TAG = "AirplaneTileService";
-    private static final int TILE_UPDATE_DELAY_MS = 150;  // Delay to ensure tile updates properly
     private SharedPreferences settings;
     private boolean airplaneModeEnabled;
 
@@ -76,21 +73,15 @@ public class AirplaneTileService extends TileService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    /** Updates immediately; the old delay made every tap feel unresponsive for no benefit. */
     private void updateTileState(final boolean active) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Tile tile = getQsTile();
-                if (tile != null) {
-                    tile.setLabel(getString(R.string.airplane_tile_label));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        tile.setSubtitle(active ? getString(R.string.tile_subtitle_on) : getString(R.string.tile_subtitle_off));
-                    }
-                    tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-                    tile.updateTile();
-                }
-            }
-        }, TILE_UPDATE_DELAY_MS);
+        Tile tile = getQsTile();
+        if (tile == null) return;
+        tile.setLabel(getString(R.string.airplane_tile_label));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            tile.setSubtitle(active ? getString(R.string.tile_subtitle_on) : getString(R.string.tile_subtitle_off));
+        }
+        tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        tile.updateTile();
     }
 }

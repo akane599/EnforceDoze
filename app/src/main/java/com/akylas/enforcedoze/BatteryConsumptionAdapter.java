@@ -53,8 +53,9 @@ public class BatteryConsumptionAdapter extends BaseAdapter {
             long timestamp = Long.parseLong(data[0]);
             float battery = Float.parseFloat(data[1]);
             if (!Float.isFinite(battery)) throw new IllegalArgumentException("Invalid battery level");
-            holder.timestamp.setText(data[2] + " · " + Utils.getDateCurrentTimeZone(timestamp));
-            holder.batteryPerc.setText(battery < 0 ? parent.getContext().getString(R.string.stats_charging) : battery + "%");
+            holder.timestamp.setText(parent.getContext().getString(R.string.stats_event, data[2], Utils.getDateCurrentTimeZone(timestamp)));
+            holder.batteryPerc.setText(battery < 0 ? parent.getContext().getString(R.string.stats_charging)
+                    : parent.getContext().getString(R.string.percent_value, battery));
         } catch (RuntimeException e) { holder.timestamp.setText(record == null ? "" : record); }
         return convertView;
     }

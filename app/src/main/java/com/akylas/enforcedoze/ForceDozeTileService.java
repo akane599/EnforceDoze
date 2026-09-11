@@ -2,40 +2,31 @@ package com.akylas.enforcedoze;
 
 import static com.akylas.enforcedoze.Utils.logToLogcat;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import androidx.annotation.RequiresApi;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ForceDozeTileService extends TileService {
 
     static String TAG = "ForceDozeTileService";
-    SharedPreferences settings;
-    boolean serviceEnabled;
 
     private static void log(String message) {
         logToLogcat(TAG, message);
+    }
+
+    private SharedPreferences settings() {
+        return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     @Override
     public void onTileAdded() {
         super.onTileAdded();
         log("QuickTile added");
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            updateTileState(true);
-        } else {
-            updateTileState(false);
-        }
+        refresh();
     }
 
     @Override
@@ -47,47 +38,33 @@ public class ForceDozeTileService extends TileService {
     @Override
     public void onStartListening() {
         super.onStartListening();
-        log("QuickTile onStartListening");
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            updateTileState(true);
-        } else {
-            updateTileState(false);
-        }
+        refresh();
     }
-
 
     @Override
     public void onClick() {
         super.onClick();
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        serviceEnabled = settings.getBoolean("serviceEnabled", false);
-        if (serviceEnabled) {
-            log("Disabling EnforceDoze");
-            settings.edit().putBoolean("serviceEnabled", false).apply();
-            Utils.stopForceDozeService(this);
-        } else {
-            log("Enabling EnforceDoze");
-            settings.edit().putBoolean("serviceEnabled", true).apply();
-            Utils.applyForceDozeSchedule(this);
-        }
+        SharedPreferences settings = settings();
+        boolean enabled = settings.getBoolean("serviceEnabled", false);
+        log(enabled ? "Disabling EnforceDoze" : "Enabling EnforceDoze");
+        settings.edit().putBoolean("serviceEnabled", !enabled).apply();
+        if (enabled) Utils.stopForceDozeService(this); else Utils.applyForceDozeSchedule(this);
+        refresh();
     }
 
-    public void sendBroadcastToApp(boolean active) {
-        Intent intent = new Intent("update-state-from-tile");
-        intent.putExtra("isActive", active);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
-    public void updateTileState(final boolean active) {
+    /**
+     * The subtitle reports what the controller is really doing, so a tile left on after the service
+     * was killed no longer looks like a running Doze session.
+     */
+    private void refresh() {
         Tile tile = getQsTile();
-        if (tile != null) {
-            tile.setLabel(getString(R.string.app_name));
-            tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-            if (Build.VERSION.SDK_INT >= 29) tile.setSubtitle(UiSupport.statusText(this, ForceDozeService.status));
-            tile.updateTile();
-        }
-        sendBroadcastToApp(active);
+        if (tile == null) return;
+        boolean enabled = settings().getBoolean("serviceEnabled", false);
+        boolean running = ForceDozeService.isRunning();
+        String status = !enabled ? "OFF" : running ? ForceDozeService.status : "NEEDS_START";
+        tile.setLabel(getString(R.string.app_name));
+        tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        if (Build.VERSION.SDK_INT >= 29) tile.setSubtitle(UiSupport.statusText(this, status));
+        tile.updateTile();
     }
 }

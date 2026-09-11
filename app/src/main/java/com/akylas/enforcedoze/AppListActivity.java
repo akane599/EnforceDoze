@@ -31,6 +31,8 @@ public abstract class AppListActivity extends UiActivity {
     protected abstract String preferenceKey(); // null is Android's actual Doze whitelist
     protected abstract int titleResource();
     private final ArrayList<AppsItem> all = new ArrayList<>(), visible = new ArrayList<>();
+    private final android.os.Handler debounce = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable filter = this::filter;
     private AppsAdapter adapter;
     private EditText search;
     private TextView empty;
@@ -81,7 +83,7 @@ public abstract class AppListActivity extends UiActivity {
         setContentView(layout); setSupportActionBar(toolbar); getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            public void onTextChanged(CharSequence s, int start, int before, int count) { filter(); }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { scheduleFilter(); }
             public void afterTextChanged(Editable e) { }
         });
         if (state != null) search.setText(state.getString("search", ""));
@@ -120,11 +122,17 @@ public abstract class AppListActivity extends UiActivity {
             all.clear(); all.addAll(items); filter();
         });
     }
+    /** Coalesces fast typing into one pass so every keystroke does not re-diff the whole list. */
+    private void scheduleFilter() {
+        debounce.removeCallbacks(filter);
+        debounce.postDelayed(filter, 120);
+    }
+
     private void filter() {
-        String query = search.getText().toString().toLowerCase(Locale.ROOT);
+        String query = search.getText().toString().trim().toLowerCase(Locale.ROOT);
         visible.clear();
         for (AppsItem item : all) if (item.getAppName().toLowerCase(Locale.ROOT).contains(query) || item.getAppPackageName().toLowerCase(Locale.ROOT).contains(query)) visible.add(item);
-        adapter.notifyDataSetChanged();
+        adapter.submit(visible);
         if (loading) empty.setText(R.string.loading_installed_apps_text);
         else if (loadError != null) empty.setText(loadError);
         else empty.setText(visible.isEmpty() ? getString(R.string.package_empty) : getString(R.string.app_count, visible.size()));
@@ -162,6 +170,7 @@ public abstract class AppListActivity extends UiActivity {
     }
     @Override protected void onDestroy() {
         ++loadVersion;
+        debounce.removeCallbacks(filter);
         if (loadingTask != null) loadingTask.cancel(true);
         super.onDestroy();
     }

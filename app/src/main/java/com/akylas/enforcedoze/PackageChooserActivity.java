@@ -17,6 +17,8 @@ import java.util.concurrent.Future;
 /** Searchable package metadata with one adapter update per query. */
 public class PackageChooserActivity extends UiActivity {
     private final ArrayList<AppsItem> all = new ArrayList<>(), visible = new ArrayList<>();
+    private final android.os.Handler debounce = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable filter = this::filter;
     private AppsAdapter adapter;
     private EditText search;
     private TextView count;
@@ -45,7 +47,7 @@ public class PackageChooserActivity extends UiActivity {
         list.setAdapter(adapter);
         search.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int c, int after) { }
-            public void onTextChanged(CharSequence s, int start, int before, int c) { filter(); }
+            public void onTextChanged(CharSequence s, int start, int before, int c) { scheduleFilter(); }
             public void afterTextChanged(Editable s) { }
         });
         load();
@@ -68,6 +70,12 @@ public class PackageChooserActivity extends UiActivity {
         });
     }
 
+    /** Coalesces fast typing into one pass so every keystroke does not re-diff the whole list. */
+    private void scheduleFilter() {
+        debounce.removeCallbacks(filter);
+        debounce.postDelayed(filter, 120);
+    }
+
     private void filter() {
         String query = search.getText().toString().trim().toLowerCase(Locale.ROOT);
         visible.clear();
@@ -75,7 +83,7 @@ public class PackageChooserActivity extends UiActivity {
             if (item.getAppName().toLowerCase(Locale.ROOT).contains(query)
                     || item.getAppPackageName().toLowerCase(Locale.ROOT).contains(query)) visible.add(item);
         }
-        adapter.notifyDataSetChanged();
+        adapter.submit(visible);
         retry.setVisibility(error == null ? View.GONE : View.VISIBLE);
         if (loading) count.setText(R.string.loading_installed_apps_text);
         else if (error != null) count.setText(R.string.package_load_failed);
@@ -84,6 +92,7 @@ public class PackageChooserActivity extends UiActivity {
 
     @Override protected void onDestroy() {
         ++loadVersion;
+        debounce.removeCallbacks(filter);
         if (loadingTask != null) loadingTask.cancel(true);
         super.onDestroy();
     }

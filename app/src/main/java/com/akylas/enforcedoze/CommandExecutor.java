@@ -28,10 +28,10 @@ public final class CommandExecutor {
         if (Looper.myLooper() == Looper.getMainLooper()) throw new IllegalStateException("Blocking command on UI thread");
         if ("shizuku".equals(mode)) return ShizukuHandler.getInstance(context).executeBlocking(command);
         boolean root = "root".equals(mode) && PreferenceManager.getDefaultSharedPreferences(context).getBoolean("isSuAvailable", false);
-        if ("root".equals(mode) && !root) return new CommandResult(-1, "Reconnect root access before running commands");
-        if (!root && !"adb".equals(mode)) return new CommandResult(-1, "Unknown execution mode: " + mode);
+        if ("root".equals(mode) && !root) return new CommandResult(-1, context.getString(R.string.root_reconnect_needed));
+        if (!root && !"adb".equals(mode)) return new CommandResult(-1, context.getString(R.string.unknown_execution_mode, mode));
         if (command.startsWith(PrivilegedOperations.PREFIX)) {
-            if (!root) return new CommandResult(-1, "This operation needs Shizuku or root");
+            if (!root) return new CommandResult(-1, context.getString(R.string.root_or_shizuku));
             command = "CLASSPATH=" + CommandPolicy.quote(context.getApplicationInfo().sourceDir)
                     + " app_process /system/bin com.akylas.enforcedoze.PrivilegedOperations " + CommandPolicy.quote(command);
         }

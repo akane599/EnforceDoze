@@ -28,7 +28,7 @@ public class DozeTunablesActivity extends UiActivity {
     }
     private void applyTunables() {
         if (Utils.isMyServiceRunning(ForceDozeService.class, this) || new RecoveryJournal(this).hasPending()) {
-            new MaterialAlertDialogBuilder(this).setMessage("Disable EnforceDoze and restore any pending changes before applying persistent tunables, so session restoration cannot overwrite them.")
+            new MaterialAlertDialogBuilder(this).setMessage(R.string.tunables_disable_first)
                     .setPositiveButton(R.string.okay_button_text, null).show();
             return;
         }

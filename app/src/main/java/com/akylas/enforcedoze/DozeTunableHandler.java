@@ -28,6 +28,8 @@ public class DozeTunableHandler {
     }
 
     public static String TAG = "EnforceDoze";
+    /** Namespace that holds the Doze constants in {@code device_config} on Android 12 and later. */
+    public static final String DEVICE_CONFIG_NAMESPACE = "device_idle";
     public String TUNABLE_STRING = "null";
 
     private long LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = 5 * 60 * 1000L;
@@ -56,7 +58,6 @@ public class DozeTunableHandler {
     private long MMS_TEMP_APP_WHITELIST_DURATION = 60 * 1000L;
     private long SMS_TEMP_APP_WHITELIST_DURATION = 20 * 1000L;
     private long NOTIFICATION_WHITELIST_DURATION = 30 * 1000L;
-    private SharedPreferences preferences;
 
     private long readLong(SharedPreferences prefs, String key, long fallback) {
         try { long value = Long.parseLong(prefs.getString(key, Long.toString(fallback))); return value >= 0 && value <= 604800000L ? value : fallback; }
@@ -98,66 +99,57 @@ public class DozeTunableHandler {
         NOTIFICATION_WHITELIST_DURATION = readLong(preferences, DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION, 30000L);
     }
 
-    public String getTunableString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT + "=" + LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT + "=" + LIGHT_PRE_IDLE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT + "=" + LIGHT_IDLE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR + "=" + LIGHT_IDLE_FACTOR + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT + "=" + LIGHT_MAX_IDLE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET + "=" + LIGHT_IDLE_MAINTENANCE_MIN_BUDGET + ",");
-        sb.append(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET + "=" + LIGHT_IDLE_MAINTENANCE_MAX_BUDGET + ",");
-        sb.append(DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME + "=" + MIN_LIGHT_MAINTENANCE_TIME + ",");
-        sb.append(DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME + "=" + MIN_DEEP_MAINTENANCE_TIME + ",");
-        sb.append(DozeTunableConstants.KEY_INACTIVE_TIMEOUT + "=" + INACTIVE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_SENSING_TIMEOUT + "=" + SENSING_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LOCATING_TIMEOUT + "=" + LOCATING_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_LOCATION_ACCURACY + "=" + LOCATION_ACCURACY + ",");
-        sb.append(DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT + "=" + MOTION_INACTIVE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT + "=" + IDLE_AFTER_INACTIVE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT + "=" + IDLE_PENDING_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT + "=" + MAX_IDLE_PENDING_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_IDLE_PENDING_FACTOR + "=" + IDLE_PENDING_FACTOR + ",");
-        sb.append(DozeTunableConstants.KEY_IDLE_TIMEOUT + "=" + IDLE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT + "=" + MAX_IDLE_TIMEOUT + ",");
-        sb.append(DozeTunableConstants.KEY_IDLE_FACTOR + "=" + IDLE_FACTOR + ",");
-        sb.append(DozeTunableConstants.KEY_MIN_TIME_TO_ALARM + "=" + MIN_TIME_TO_ALARM + ",");
-        sb.append(DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION + "=" + MAX_TEMP_APP_WHITELIST_DURATION + ",");
-        sb.append(DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION + "=" + MMS_TEMP_APP_WHITELIST_DURATION + ",");
-        sb.append(DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION + "=" + SMS_TEMP_APP_WHITELIST_DURATION + ",");
-        sb.append(DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION + "=" + NOTIFICATION_WHITELIST_DURATION);
-        return sb.toString();
+    /** Ordered key to value view of every tunable; the single source for both output formats. */
+    public java.util.LinkedHashMap<String, String> getTunables() {
+        java.util.LinkedHashMap<String, String> values = new java.util.LinkedHashMap<>();
+        values.put(DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, Long.toString(LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT, Long.toString(LIGHT_PRE_IDLE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT, Long.toString(LIGHT_IDLE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR, Float.toString(LIGHT_IDLE_FACTOR));
+        values.put(DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT, Long.toString(LIGHT_MAX_IDLE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET, Long.toString(LIGHT_IDLE_MAINTENANCE_MIN_BUDGET));
+        values.put(DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET, Long.toString(LIGHT_IDLE_MAINTENANCE_MAX_BUDGET));
+        values.put(DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME, Long.toString(MIN_LIGHT_MAINTENANCE_TIME));
+        values.put(DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME, Long.toString(MIN_DEEP_MAINTENANCE_TIME));
+        values.put(DozeTunableConstants.KEY_INACTIVE_TIMEOUT, Long.toString(INACTIVE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_SENSING_TIMEOUT, Long.toString(SENSING_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LOCATING_TIMEOUT, Long.toString(LOCATING_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_LOCATION_ACCURACY, Float.toString(LOCATION_ACCURACY));
+        values.put(DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT, Long.toString(MOTION_INACTIVE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT, Long.toString(IDLE_AFTER_INACTIVE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT, Long.toString(IDLE_PENDING_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT, Long.toString(MAX_IDLE_PENDING_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_IDLE_PENDING_FACTOR, Float.toString(IDLE_PENDING_FACTOR));
+        values.put(DozeTunableConstants.KEY_IDLE_TIMEOUT, Long.toString(IDLE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT, Long.toString(MAX_IDLE_TIMEOUT));
+        values.put(DozeTunableConstants.KEY_IDLE_FACTOR, Float.toString(IDLE_FACTOR));
+        values.put(DozeTunableConstants.KEY_MIN_TIME_TO_ALARM, Long.toString(MIN_TIME_TO_ALARM));
+        values.put(DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION, Long.toString(MAX_TEMP_APP_WHITELIST_DURATION));
+        values.put(DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION, Long.toString(MMS_TEMP_APP_WHITELIST_DURATION));
+        values.put(DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION, Long.toString(SMS_TEMP_APP_WHITELIST_DURATION));
+        values.put(DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION, Long.toString(NOTIFICATION_WHITELIST_DURATION));
+        return values;
     }
 
+    /** Comma separated form used by {@code settings put global device_idle_constants} before API 34. */
+    public String getTunableString() {
+        StringBuilder text = new StringBuilder();
+        for (java.util.Map.Entry<String, String> entry : getTunables().entrySet()) {
+            if (text.length() > 0) text.append(',');
+            text.append(entry.getKey()).append('=').append(entry.getValue());
+        }
+        return text.toString();
+    }
+
+    /**
+     * {@code device_config put} takes a namespace before the key. Without it the shell rejects the
+     * write, so every Doze tunable silently failed to apply on Android 14 and later.
+     */
     public ArrayList<String> getCommandsList() {
-        ArrayList<String> commands = new ArrayList();
-        final String prefix = "device_config put ";
-                commands.add(prefix + DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT + " " + LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT + " " + LIGHT_PRE_IDLE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT + " " + LIGHT_IDLE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR + " " + LIGHT_IDLE_FACTOR);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT + " " + LIGHT_MAX_IDLE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET + " " + LIGHT_IDLE_MAINTENANCE_MIN_BUDGET);
-        commands.add(prefix + DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET + " " + LIGHT_IDLE_MAINTENANCE_MAX_BUDGET);
-        commands.add(prefix + DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME + " " + MIN_LIGHT_MAINTENANCE_TIME);
-        commands.add(prefix + DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME + " " + MIN_DEEP_MAINTENANCE_TIME);
-        commands.add(prefix + DozeTunableConstants.KEY_INACTIVE_TIMEOUT + " " + INACTIVE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_SENSING_TIMEOUT + " " + SENSING_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LOCATING_TIMEOUT + " " + LOCATING_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_LOCATION_ACCURACY + " " + LOCATION_ACCURACY);
-        commands.add(prefix + DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT + " " + MOTION_INACTIVE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT + " " + IDLE_AFTER_INACTIVE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT + " " + IDLE_PENDING_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT + " " + MAX_IDLE_PENDING_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_IDLE_PENDING_FACTOR + " " + IDLE_PENDING_FACTOR);
-        commands.add(prefix + DozeTunableConstants.KEY_IDLE_TIMEOUT + " " + IDLE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT + " " + MAX_IDLE_TIMEOUT);
-        commands.add(prefix + DozeTunableConstants.KEY_IDLE_FACTOR + " " + IDLE_FACTOR);
-        commands.add(prefix + DozeTunableConstants.KEY_MIN_TIME_TO_ALARM + " " + MIN_TIME_TO_ALARM);
-        commands.add(prefix + DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION + " " + MAX_TEMP_APP_WHITELIST_DURATION);
-        commands.add(prefix + DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION + " " + MMS_TEMP_APP_WHITELIST_DURATION);
-        commands.add(prefix + DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION + " " + SMS_TEMP_APP_WHITELIST_DURATION);
-        commands.add(prefix + DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION + " " + NOTIFICATION_WHITELIST_DURATION);
+        ArrayList<String> commands = new ArrayList<>();
+        for (java.util.Map.Entry<String, String> entry : getTunables().entrySet()) {
+            commands.add("device_config put " + DEVICE_CONFIG_NAMESPACE + " " + entry.getKey() + " " + entry.getValue());
+        }
         return commands;
     }
 

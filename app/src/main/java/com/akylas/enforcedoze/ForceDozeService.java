@@ -10,8 +10,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
@@ -38,16 +41,22 @@ public class ForceDozeService extends Service {
     public static final String ACTION_STOP = "stop-enforcedoze";
     public static final String ACTION_STATE = "enforcedoze-state";
     public static volatile String status = "OFF";
+    private static volatile boolean running;
+    /** The controller and the UI share a process, so the service's own flag is the cheapest answer. */
+    public static boolean isRunning() { return running; }
     private static final int NOTIFICATION_ID = 1234;
     private static final String CHANNEL = "enforcedoze_service_v2";
     private final Handler main = new Handler(Looper.getMainLooper());
     private volatile int generation;
     private volatile boolean destroyed;
     private boolean stopping;
+    private String published;
     private boolean waitingForUnlock;
     private boolean entering;
     private volatile boolean sessionActive;
     private volatile boolean maintenance;
+    /** True while the core Doze session holds but radios/sensors have been handed back to the user. */
+    private volatile boolean enhancementsSuspended;
     private long sessionStart;
     private int entryBattery;
     private volatile boolean sessionCharged;
@@ -98,6 +107,7 @@ public class ForceDozeService extends Service {
     };
     @Override public void onCreate() {
         super.onCreate();
+        running = true;
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         journal = new RecoveryJournal(this);
         power = (PowerManager) getSystemService(POWER_SERVICE);
@@ -134,6 +144,11 @@ public class ForceDozeService extends Service {
     private void publish(String next) {
         if (destroyed) return;
         status = next;
+        String summary = prefs.getBoolean("showPersistentNotif", true) ? prefs.getString("lastSessionSummary", "") : "";
+        String signature = next + "\n" + summary;
+        // Rebuilding an identical notification wakes the UI and rewrites preferences for nothing.
+        if (signature.equals(published)) return;
+        published = signature;
         prefs.edit().putString("runtimeStatus", next).apply();
         Intent open = new Intent(this, MainActivity.class);
         PendingIntent content = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -142,8 +157,8 @@ public class ForceDozeService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL)
                 .setSmallIcon(R.drawable.ic_power_settings_new_white_24dp).setContentTitle(getString(R.string.app_name))
                 .setContentText(UiSupport.statusText(this, next)).setContentIntent(content)
-                .setStyle(prefs.getBoolean("showPersistentNotif", true) && prefs.contains("lastSessionSummary")
-                        ? new NotificationCompat.BigTextStyle().bigText(UiSupport.statusText(this, next) + "\n" + prefs.getString("lastSessionSummary", "")) : null)
+                .setStyle(summary.isEmpty() ? null
+                        : new NotificationCompat.BigTextStyle().bigText(UiSupport.statusText(this, next) + "\n" + summary))
                 .setOnlyAlertOnce(true).setOngoing(true).setSilent(true).setShowWhen(false)
                 .addAction(0, getString(R.string.dashboard_stop), pause).build();
         if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
@@ -176,7 +191,9 @@ public class ForceDozeService extends Service {
         if (pauseRequested()) { leave("PAUSED", false); return; }
         if (Utils.isScreenOn(this)) { if (waitingForUnlock && sessionActive) return; leave("WAITING", false); return; }
         if (!eligible()) { leave("PAUSED", false); return; }
-        if (sessionActive || entering) return;
+        if (entering) return;
+        // A lock-screen peek hands the radios and sensors back; screen-off has to take them again.
+        if (sessionActive) { resumeEnhancements(); return; }
         cancelDelay();
         long delay = Math.max(0, Math.min(1800, prefs.getInt("dozeEnterDelay", 0))) * 1000L;
         if (!prefs.getBoolean("ignoreLockscreenTimeout", true)) {
@@ -204,11 +221,11 @@ public class ForceDozeService extends Service {
         transitionLock.acquire(60000);
         CommandExecutor.submit(() -> {
             try {
-                if (!journal.restore()) { finishEnter(token, false, "Restore pending changes before starting another session"); return; }
+                if (!journal.restore()) { finishEnter(token, false, getString(R.string.error_restore_pending)); return; }
                 if (!valid(token)) { finishEnter(token, false, ""); return; }
                 // Ensure the controller can receive events while the phone is idle.
                 CommandExecutor.run(this, mode, "dumpsys deviceidle whitelist +" + getPackageName());
-                boolean privileged = "shizuku".equals(mode) || "root".equals(mode) && bool(config, "isSuAvailable", false);
+                boolean privileged = privileged(mode, config);
                 boolean entered;
                 if (privileged || Build.VERSION.SDK_INT < 24) {
                     entered = journal.applyCore(mode, "dumpsys deviceidle force-idle" + (Build.VERSION.SDK_INT >= 24 ? " deep" : ""), "dumpsys deviceidle unforce");
@@ -220,10 +237,11 @@ public class ForceDozeService extends Service {
                     // Legacy ADB grants: scope restoration to the exact keys changed.
                     entered = applyTunables(mode);
                 }
-                if (!entered || !valid(token)) { finishEnter(token, false, "Doze command failed; check Diagnostics"); return; }
+                if (!entered || !valid(token)) { finishEnter(token, false, getString(R.string.error_doze_command_failed)); return; }
                 sessionMode = mode;
                 sessionConfig = config;
                 sessionActive = true;
+                enhancementsSuspended = false;
                 sessionStart = System.currentTimeMillis();
                 entryBattery = Utils.getBatteryLevel(this);
                 sessionCharged = Utils.isConnectedToCharger(this);
@@ -236,13 +254,14 @@ public class ForceDozeService extends Service {
     private boolean applyTunables(String mode) {
         DozeTunableHandler tunables = DozeTunableHandler.getInstance();
         if (Build.VERSION.SDK_INT >= 34) {
-            for (String command : tunables.getCommandsList()) {
-                String[] parts = command.split(" ");
-                if (parts.length != 5) return false;
-                CommandResult old = CommandExecutor.run(this, mode, "device_config get device_idle " + parts[3]);
+            String namespace = DozeTunableHandler.DEVICE_CONFIG_NAMESPACE;
+            for (Map.Entry<String, String> tunable : tunables.getTunables().entrySet()) {
+                String key = tunable.getKey();
+                CommandResult old = CommandExecutor.run(this, mode, "device_config get " + namespace + " " + key);
                 if (!old.success()) return false;
-                String undo = old.output.trim().equals("null") ? "device_config delete device_idle " + parts[3]
-                        : "device_config put device_idle " + parts[3] + " " + CommandPolicy.quote(old.output.trim());
+                String undo = old.output.trim().equals("null") ? "device_config delete " + namespace + " " + key
+                        : "device_config put " + namespace + " " + key + " " + CommandPolicy.quote(old.output.trim());
+                String command = "device_config put " + namespace + " " + key + " " + CommandPolicy.quote(tunable.getValue());
                 if (!journal.applyCore(mode, command, undo)) return false;
             }
             return true;
@@ -319,16 +338,20 @@ public class ForceDozeService extends Service {
                 mutate(token, mode, "dumpsys sensorservice restrict" + (CommandPolicy.validPackage(pkg) ? " " + pkg : ""), "dumpsys sensorservice enable");
         }
         Set<String> focused = new HashSet<>();
+        boolean suspendApps = true;
         if (bool(config, "whitelistCurrentApp", false)) {
             CommandResult apps = CommandExecutor.run(this, mode, "dumpsys activity activities");
             Matcher matcher = Pattern.compile("(?:mResumedActivity|topResumedActivity|mFocusedApp)[^\\n]*? ([A-Za-z][\\w.]*)/").matcher(apps.output);
             while (matcher.find()) focused.add(matcher.group(1));
-            if (!apps.success() || focused.isEmpty()) return; // Do not suspend an unknown foreground app.
+            // Never suspend an unknown foreground app, but the notification blocklist still applies.
+            suspendApps = apps.success() && !focused.isEmpty();
         }
-        Set<String> blocked = set(config, "dozeAppBlockList");
+        Set<String> blocked = suspendApps ? set(config, "dozeAppBlockList") : Collections.emptySet();
+        Set<String> essential = essentialPackages();
         for (String pkg : blocked) {
             if (!valid(token)) return;
-            if (!CommandPolicy.validPackage(pkg) || focused.contains(pkg) || CommandPolicy.protectedPackage(pkg)) continue;
+            if (!CommandPolicy.validPackage(pkg) || focused.contains(pkg)
+                    || CommandPolicy.protectedPackage(pkg) || essential.contains(pkg)) continue;
             try {
                 ApplicationInfo info = getPackageManager().getApplicationInfo(pkg, 0);
                 if (!info.enabled || (Build.VERSION.SDK_INT >= 24 && (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0)) continue;
@@ -347,6 +370,21 @@ public class ForceDozeService extends Service {
                     mutate(token, mode, PrivilegedOperations.PREFIX + "notifications false" + suffix, PrivilegedOperations.PREFIX + "notifications true" + suffix);
             } catch (Exception ignored) { }
         }
+    }
+    /** Suspending the live keyboard or home app would leave the phone unusable after unlock. */
+    private Set<String> essentialPackages() {
+        Set<String> essential = new HashSet<>();
+        try {
+            String ime = Settings.Secure.getString(getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+            ComponentName component = ime == null ? null : ComponentName.unflattenFromString(ime);
+            if (component != null) essential.add(component.getPackageName());
+        } catch (RuntimeException ignored) { }
+        try {
+            ResolveInfo home = getPackageManager().resolveActivity(
+                    new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY);
+            if (home != null && home.activityInfo != null) essential.add(home.activityInfo.packageName);
+        } catch (RuntimeException ignored) { }
+        return essential;
     }
     @SuppressWarnings("unchecked") private static Set<String> set(Map<String, ?> config, String key) {
         Object value = config.get(key);
@@ -374,6 +412,15 @@ public class ForceDozeService extends Service {
         final int token = ++generation;
         entering = false;
         stopping |= stop;
+        // Screen, charging and call events arrive constantly. With no session and an empty journal
+        // there is nothing to undo, so skip the wake lock, the queue hop and the RESTORING flash.
+        if (!sessionActive && !journal.hasPending()) {
+            maintenance = false;
+            enhancementsSuspended = false;
+            publish(next);
+            if (stopping) stopSelf();
+            return;
+        }
         transitionLock.acquire(60000);
         publish("RESTORING");
         CommandExecutor.submit(() -> {
@@ -390,10 +437,13 @@ public class ForceDozeService extends Service {
             }
             sessionActive = false;
             maintenance = false;
+            enhancementsSuspended = false;
             main.post(() -> {
                 if (destroyed || token != generation) return;
                 releaseLock();
-                if (!restored) prefs.edit().putString("lastError", "Some changes still need restoration. Reconnect the original access mode and tap Retry.").apply();
+                // Keep whatever specific failure the journal already recorded; it says far more.
+                if (!restored && prefs.getString("lastError", "").isEmpty())
+                    prefs.edit().putString("lastError", getString(R.string.error_restoration_incomplete)).apply();
                 publish(restored ? next : "RECOVERY");
                 if (stopping) stopSelf();
             });
@@ -402,6 +452,7 @@ public class ForceDozeService extends Service {
     private void restoreForUnlock() {
         final int token = ++generation;
         transitionLock.acquire(60000);
+        enhancementsSuspended = true;
         CommandExecutor.submit(() -> {
             boolean restored = journal.restoreEnhancements();
             main.post(() -> {
@@ -409,6 +460,31 @@ public class ForceDozeService extends Service {
                 releaseLock(); publish(restored ? "LOCKED" : "RECOVERY");
             });
         });
+    }
+    /** Re-applies the enhancements a lock-screen peek gave back, keeping the core Doze session. */
+    private void resumeEnhancements() {
+        if (!enhancementsSuspended || maintenance) return;
+        final int token = ++generation;
+        final String mode = sessionMode;
+        final Map<String, ?> config = sessionConfig;
+        if (mode == null || config == null) { enhancementsSuspended = false; publish("ACTIVE"); return; }
+        // Reuse the entering flag so a second event cannot start an overlapping re-apply.
+        entering = true;
+        transitionLock.acquire(60000);
+        publish("ENTERING");
+        CommandExecutor.submit(() -> {
+            applyEnhancements(mode, config, token, privileged(mode, config));
+            main.post(() -> {
+                if (destroyed || token != generation) return;
+                entering = false;
+                enhancementsSuspended = false;
+                releaseLock();
+                publish("ACTIVE");
+            });
+        });
+    }
+    private static boolean privileged(String mode, Map<String, ?> config) {
+        return "shizuku".equals(mode) || "root".equals(mode) && bool(config, "isSuAvailable", false);
     }
     private void handleIdleChanged() {
         if (!sessionActive || destroyed || stopping || Utils.isScreenOn(this)) return;
@@ -420,14 +496,14 @@ public class ForceDozeService extends Service {
             String state = CommandPolicy.idleState(result.output);
             if ("IDLE_MAINTENANCE".equals(state) && !maintenance) {
                 maintenance = true;
-                record("EXIT_MAINTENANCE");
+                record("ENTER_MAINTENANCE");
                 boolean restored = journal.restoreEnhancements();
                 main.post(() -> { if (!destroyed && token == generation) publish(restored ? "MAINTENANCE" : "RECOVERY"); });
             } else if ("IDLE".equals(state) && maintenance && valid(token)) {
                 if (!journal.restoreEnhancements()) return;
                 maintenance = false;
-                record("ENTER_MAINTENANCE");
-                applyEnhancements(mode, sessionConfig, token, "shizuku".equals(mode) || "root".equals(mode) && bool(sessionConfig, "isSuAvailable", false));
+                record("EXIT_MAINTENANCE");
+                applyEnhancements(mode, sessionConfig, token, privileged(mode, sessionConfig));
                 main.post(() -> { if (!destroyed && token == generation) publish("ACTIVE"); });
             }
         });
@@ -454,16 +530,25 @@ public class ForceDozeService extends Service {
         } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         catch (RuntimeException e) { prefs.edit().putString("lastError", e.toString()).apply(); }
     }
-    private void releaseLock() { if (transitionLock != null && transitionLock.isHeld()) transitionLock.release(); }
+    private void releaseLock() {
+        try { if (transitionLock != null && transitionLock.isHeld()) transitionLock.release(); }
+        catch (RuntimeException e) { Utils.logToLogcat("EnforceDoze", "Wake lock already released: " + e); }
+    }
+    private interface Teardown { void run() throws Exception; }
+    private void detach(String what, Teardown step) {
+        try { step.run(); }
+        catch (Exception e) { Utils.logToLogcat("EnforceDoze", "Unable to detach " + what + ": " + e); }
+    }
     @Override public void onDestroy() {
         destroyed = true;
+        running = false;
         ++generation;
         cancelDelay();
-        unregisterReceiver(events);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(internal);
-        shizuku.removeAvailabilityListener(accessListener);
-        try { if (callModeMonitor != null) callModeMonitor.close(); }
-        catch (Exception e) { Utils.logToLogcat("EnforceDoze", "Unable to detach audio callback: " + e); }
+        // Every step below has to run even if an earlier one throws, or device settings stay changed.
+        detach("screen and power receiver", () -> unregisterReceiver(events));
+        detach("internal receiver", () -> LocalBroadcastManager.getInstance(this).unregisterReceiver(internal));
+        detach("Shizuku listener", () -> shizuku.removeAvailabilityListener(accessListener));
+        detach("audio callback", () -> { if (callModeMonitor != null) callModeMonitor.close(); });
         main.removeCallbacksAndMessages(null);
         CommandExecutor.submit(() -> { journal.restore(); sessionActive = false; });
         releaseLock();

@@ -26,7 +26,7 @@
         android:icon="@drawable/ic_settings_applications_white_24dp"
         app:iconTint="?attr/colorControlNormal"
         android:orderInCategory="100"
-        android:title="Doze tunables"
+        android:title="@string/title_tunables"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_doze_more_info"
