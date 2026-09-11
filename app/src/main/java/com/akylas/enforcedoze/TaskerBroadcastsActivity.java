@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class TaskerBroadcastsActivity extends AppCompatActivity {
+public class TaskerBroadcastsActivity extends UiActivity {
 
     ArrayList<TaskerBroadcastsItem> items;
     ListView listView;
@@ -68,7 +68,7 @@ public class TaskerBroadcastsActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

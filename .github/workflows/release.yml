@@ -41,9 +41,9 @@ jobs:
       - uses: oleksiyrudenko/gha-git-credentials@v2-latest
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          actor: farfromrefug
-          name: Martin Guillon
-          email: dev@akylas.fr
+          actor: ${{ github.actor }}
+          name: github-actions[bot]
+          email: 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Git config
         run: |
@@ -62,8 +62,6 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "8.9" # Quotes required to prevent YAML converting to number
 
       - uses: oNaiPs/secrets-to-env-action@v1
         with:
@@ -92,10 +90,10 @@ jobs:
 
       - name: get current version
         run: | 
-          echo "CURRENT_VERSION=$(bundle exec fastlane run android_get_version_name | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" > $GITHUB_ENV
+          echo "CURRENT_VERSION=$(bundle exec fastlane run android_get_version_name | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" >> $GITHUB_ENV
       - name: get current version
         run: | 
-          echo "CURRENT_VERSION_CODE=$(bundle exec fastlane run android_get_version_code | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" > $GITHUB_ENV
+          echo "CURRENT_VERSION_CODE=$(bundle exec fastlane run android_get_version_code | grep -oP '(?<=Result:)\s*\K(\d+\.?)+' )" >> $GITHUB_ENV
 
 
       - id: release_type_string
@@ -127,7 +125,7 @@ jobs:
 
       - name: update Version Str
         run: |
-          echo "VERSION_STR=${{env.NEW_VERSION}}.${{env.NEW_VERSION_CODE}}"  >> $GITHUB_ENV
+          echo "VERSION_STR=${NEW_VERSION:-$CURRENT_VERSION}.${NEW_VERSION_CODE:-$CURRENT_VERSION_CODE}" >> "$GITHUB_ENV"
 
       - name: Bump version
         uses: Swisyn/android-version-generator-actions@v1.5
@@ -148,7 +146,7 @@ jobs:
           KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
         run: |
           mkdir -p "$(dirname "$KEYSTORE_PATH")"
-          echo $KEYSTORE_BASE64 | base64 -d > $KEYSTORE_PATH
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$KEYSTORE_PATH"
 
       # - name: publish beta
       #   if: github.event.inputs.publish == 'true'

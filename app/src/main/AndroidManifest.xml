@@ -33,9 +33,11 @@
     <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
     <uses-sdk tools:overrideLibrary="rikka.shizuku.api" />
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+
     <application
         android:name="com.akylas.enforcedoze.MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -62,9 +64,9 @@
         <receiver android:name="com.akylas.enforcedoze.AutoRestartOnUpdate"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
 
-                <data android:scheme="package" />
+
             </intent-filter>
         </receiver>
         <receiver
@@ -107,10 +109,11 @@
                 <action android:name="com.akylas.enforcedoze.CHANGE_SETTING" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".NotificationActionReceiver" android:exported="false" />
         <receiver
             android:name="com.akylas.enforcedoze.ReenterDoze"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <receiver
             android:name="com.akylas.enforcedoze.CustomDozePeriodReceiver"
             android:enabled="true"
@@ -118,7 +121,10 @@
         <service
             android:name="com.akylas.enforcedoze.ForceDozeService"
             android:enabled="true"
-            android:exported="false" android:foregroundServiceType="specialUse"/>
+            android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-enabled, ongoing screen-off Doze automation and restoration of device settings" />
+        </service>
         <service
             android:name="com.akylas.enforcedoze.ForceDozeTileService"
             android:icon="@drawable/ic_power_settings_new_white_24dp"
@@ -192,6 +198,11 @@
             android:exported="false"
             android:theme="@style/Transparent.NoTitleBar" />
         
+        <activity android:name=".DiagnosticsActivity" android:exported="false" />
+        <activity android:name=".DozeEvidenceActivity" android:exported="false" />
+        <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.files" android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+        </provider>
         <!-- Shizuku provider -->
         <provider
             android:name="rikka.shizuku.ShizukuProvider"

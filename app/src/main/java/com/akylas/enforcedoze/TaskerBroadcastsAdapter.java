@@ -36,7 +36,7 @@ public class TaskerBroadcastsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.list_row_layout_broadcasts, null);
+            convertView = layoutInflater.inflate(R.layout.list_row_layout_broadcasts, parent, false);
             holder = new ViewHolder();
             holder.broadcastName = (TextView) convertView.findViewById(R.id.broadcastName);
             holder.broadcastValues = (TextView) convertView.findViewById(R.id.broadcastValues);

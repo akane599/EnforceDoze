@@ -6,9 +6,14 @@
             android:summary="@string/sponsor_settings_summary"
             android:icon="@drawable/ic_heart" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Main" android:key="mainSettings">
+    <PreferenceCategory android:title="@string/main_settings" android:key="mainSettings">
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="allowExternalAutomation"
+            android:title="@string/automation_title"
+            android:summary="@string/automation_summary" />
         <ListPreference
-            android:defaultValue="root"
+            android:defaultValue="shizuku"
             android:entries="@array/execution_mode_entries"
             android:entryValues="@array/execution_mode_values"
             android:key="executionMode"
@@ -54,7 +59,7 @@
                 android:targetPackage="com.akylas.enforcedoze" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Doze enhancements" android:key="dozeSettings">
+    <PreferenceCategory android:title="@string/doze_enhancements" android:key="dozeSettings">
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="turnOffWiFiInDoze"
@@ -82,9 +87,9 @@
             android:title="@string/disable_gps_setting_title" />
         <SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="ignoreIfHotspot"
-            android:summary="@string/ignore_hospot_during_doze_setting_summary"
-            android:title="@string/ignore_hospot_during_doze_setting_title" />
+            android:key="respectHotspot"
+            android:summary="@string/respect_hotspot_summary"
+            android:title="@string/respect_hotspot_title" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="whitelistMusicAppNetwork"

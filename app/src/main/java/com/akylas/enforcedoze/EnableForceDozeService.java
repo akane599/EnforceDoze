@@ -15,8 +15,10 @@ public class EnableForceDozeService extends BroadcastReceiver {
     
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!android.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("allowExternalAutomation", false)) return;
+        if (!"com.akylas.enforcedoze.ENABLE_FORCEDOZE".equals(intent.getAction())) return;
         log("com.akylas.enforcedoze.ENABLE_FORCEDOZE broadcast intent received started: ");
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("serviceEnabled", true).apply();
-        Utils.startForceDozeService(context);
+        Utils.applyForceDozeSchedule(context);
     }
 }

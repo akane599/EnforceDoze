@@ -70,7 +70,7 @@ public class ForceDozeTileService extends TileService {
         } else {
             log("Enabling EnforceDoze");
             settings.edit().putBoolean("serviceEnabled", true).apply();
-            Utils.startForceDozeService(this);
+            Utils.applyForceDozeSchedule(this);
         }
     }
 
@@ -81,22 +81,13 @@ public class ForceDozeTileService extends TileService {
     }
 
     public void updateTileState(final boolean active) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Tile tile = getQsTile();
-                if (tile != null) {
-                    tile.setLabel(active ? "EnforceDoze on" : "EnforceDoze off");
-                    tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-                    tile.updateTile();
-                }
-                boolean currentValue = settings.getBoolean("serviceEnabled", false);
-                if (currentValue != active) {
-                    settings.edit().putBoolean("serviceEnabled", active).apply();
-                    sendBroadcastToApp(active);
-                }
-            }
-        }, 150);
+        Tile tile = getQsTile();
+        if (tile != null) {
+            tile.setLabel(getString(R.string.app_name));
+            tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+            if (Build.VERSION.SDK_INT >= 29) tile.setSubtitle(UiSupport.statusText(this, ForceDozeService.status));
+            tile.updateTile();
+        }
+        sendBroadcastToApp(active);
     }
 }

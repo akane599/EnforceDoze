@@ -16,7 +16,7 @@ import android.widget.NumberPicker;
 
 import androidx.preference.Preference;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /* Created by Faiz Visram on 2014-03-11 */
 
@@ -27,7 +27,7 @@ public class NumberPickerPreference extends Preference implements
     private final int DEFAULT_MIN = 0;
     private final int DEFAULT_STEP = 1;
 
-    MaterialDialog mDialog;
+    androidx.appcompat.app.AlertDialog mDialog;
     NumberPicker mPicker;
     String mTitle;
     boolean mBindSummary = DEFAULT_BIND_SUMMARY;
@@ -79,6 +79,8 @@ public class NumberPickerPreference extends Preference implements
 
     }
 
+    @Override protected Object onGetDefaultValue(android.content.res.TypedArray a, int index) { return a.getInt(index, 0); }
+
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         if (restorePersistedValue) {
@@ -86,7 +88,7 @@ public class NumberPickerPreference extends Preference implements
             mCurrentValue = this.getPersistedInt(mMin);
         } else {
             // Set default state from the XML attribute
-            mCurrentValue = (Integer) defaultValue;
+            mCurrentValue = defaultValue instanceof Number ? ((Number) defaultValue).intValue() : mMin;
             persistInt(mCurrentValue);
         }
         Log.e("NumberPickerPreference", "mCurrentValue: " + mCurrentValue);
@@ -125,7 +127,7 @@ public class NumberPickerPreference extends Preference implements
         super.onRestoreInstanceState(myState.getSuperState());
 
         // Set this Preference's widget to reflect the restored state
-        mPicker.setValue(myState.value);
+        if (mPicker != null) mPicker.setValue(Math.max(mPicker.getMinValue(), Math.min(mPicker.getMaxValue(), (myState.value - mMin) / mStep)));
         mCurrentValue = myState.value;
     }
 
@@ -136,6 +138,8 @@ public class NumberPickerPreference extends Preference implements
     }
 
     private void showDialog() {
+        mCurrentValue = getPersistedInt(mCurrentValue);
+        mDialog = null;
         if (mDialog == null) {
 
             View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_number_picker_dialog, null);
@@ -169,11 +173,11 @@ public class NumberPickerPreference extends Preference implements
             saveButton.setOnClickListener(this);
 
             // build dialog
-            mDialog = new MaterialDialog.Builder(getContext())
-                    .title(mTitle)
-                    .customView(view, true)
-                    .cancelable(true)
-                    .build();
+            mDialog = new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(mTitle)
+                    .setView(view)
+                    .setCancelable(true)
+                    .create();
 
             mDialog.setCanceledOnTouchOutside(true);
         }
@@ -182,12 +186,9 @@ public class NumberPickerPreference extends Preference implements
     }
 
     private void save(int value) {
-        if (mBindSummary) {
-            setSummary(Integer.toString(value));
-        }
-        if (getOnPreferenceChangeListener() != null) {
-            getOnPreferenceChangeListener().onPreferenceChange(this, value);
-        }
+        if (value < mMin || value > mMax || !callChangeListener(value)) return;
+        mCurrentValue = value;
+        if (mBindSummary) setSummary(Integer.toString(value));
         persistInt(value);
     }
 

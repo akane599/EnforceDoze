@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeBase" parent="Theme.Material3.Light.NoActionBar">
+    <style name="AppThemeBase" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
     <style name="AppThemeOverlay" parent="AppThemeBase">
     </style>
@@ -13,6 +13,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+<item name="colorOnPrimary">@color/colorOnPrimary</item>
+<item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
+<item name="colorOnPrimaryContainer">@color/colorOnPrimaryContainer</item>
+<item name="colorSurface">@color/colorSurface</item>
+<item name="colorOnSurface">@color/colorOnSurface</item>
+<item name="android:colorBackground">@color/colorSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
@@ -20,7 +26,7 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
-    <style name="Transparent.NoTitleBar" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Transparent.NoTitleBar" parent="Theme.Material3.DayNight.NoActionBar">
         <!--on below line we are setting background as transparent color-->
         <item name="android:background">@android:color/transparent</item>
         <!--on below line we are displaying the windowNotitle as true as we are not displaying our status bar-->

@@ -1,0 +1,29 @@
+<resources>
+    <string name="evidence_title">Screen-off evidence</string>
+    <string name="evidence_confirmed">Deep Doze confirmed · screen off</string>
+    <string name="evidence_observation">Android state observation</string>
+    <string name="evidence_explanation">Saved Android readings confirm the state at specific moments. Gaps between readings are unobserved; session duration also includes maintenance windows. “Screen off” means the phone was non-interactive, including Always On Display.</string>
+    <string name="evidence_empty">No saved readings yet. Enable EnforceDoze, turn the screen off, then return here. Earlier sessions cannot be verified retrospectively.</string>
+    <string name="evidence_none_confirmed">No confirmed screen-off sample in the saved readings.</string>
+    <string name="evidence_last_confirmed">Last confirmed deep Doze\n%1$s</string>
+    <string name="evidence_disabled">Saving is paused because statistics are disabled in Settings.</string>
+    <string name="evidence_retention">Latest 120 readings · newest first</string>
+    <string name="evidence_copy">Copy evidence</string>
+    <string name="evidence_clear">Clear evidence</string>
+    <string name="evidence_clear_question">Delete the saved Android readings?</string>
+    <string name="evidence_history_note">These durations measure automation sessions. Open screen-off evidence to see when Android reported deep Doze.</string>
+    <string name="evidence_entry">After the Doze entry command</string>
+    <string name="evidence_idle_changed">Read following an Android idle-mode notification</string>
+    <string name="evidence_idle_broadcast">Android idle-mode notification received</string>
+    <string name="evidence_restored">After restoring device settings</string>
+    <string name="evidence_restore_pending">Restoration still pending</string>
+    <string name="evidence_aborted">Entry cancelled or failed; restoration attempted</string>
+    <string name="evidence_legacy">Legacy tunables applied</string>
+    <string name="evidence_interactive">Screen interactive, before → after: %1$b → %2$b</string>
+    <string name="evidence_android_idle">Android deep idle, before → after: %1$b → %2$b</string>
+    <string name="evidence_interrupted">The session changed during this read; it cannot confirm screen-off Doze.</string>
+    <string name="evidence_no_fields">No recognizable device-idle state fields returned.</string>
+    <string name="evidence_api_only">Source: Android PowerManager. No shell query was added for this observation.</string>
+    <string name="evidence_read_time">Reading interval: %1$d ms</string>
+    <string name="evidence_live_note">Run checks shows the current state. Waking the phone can end Doze; use saved screen-off evidence to inspect earlier readings.</string>
+</resources>

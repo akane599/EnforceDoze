@@ -1,91 +1,37 @@
 package com.akylas.enforcedoze
 
-import android.app.Notification
-import android.app.Service
-import android.content.Intent
-import android.service.notification.NotificationListenerService
-import android.service.notification.StatusBarNotification
-import androidx.core.app.NotificationCompat
-import androidx.media2.common.SessionPlayer
-import androidx.media2.session.MediaController
+import android.media.session.MediaController
 import android.media.session.MediaSession
-import android.support.v4.media.session.MediaSessionCompat
-import androidx.media2.session.SessionCommandGroup
+import android.media.session.PlaybackState
+import android.service.notification.NotificationListenerService
 import java.lang.ref.WeakReference
-import java.util.concurrent.Executors
 
 class NotificationService : NotificationListenerService() {
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return Service.START_STICKY
-    }
-
     override fun onListenerConnected() {
         super.onListenerConnected()
         instance = WeakReference(this)
     }
-
-    private fun getNotifications(): List<StatusBarNotification> {
-        return try {
-            activeNotifications.sortedBy { it.postTime }
-        } catch (e: SecurityException) {
-            emptyList()
-        }
-    }
-    fun getPlayingPackageName(callback: (String?) -> (Unit?)) {
+    fun getPlayingPackageName(callback: (String?) -> Unit?) {
+        var playing: String? = null
         try {
-            val notifications = getNotifications().filter {
-                it.notification.category == Notification.CATEGORY_TRANSPORT || it.notification.category == Notification.CATEGORY_SERVICE
-            }
-            val notification = notifications.findLast {
-                it.notification.extras[NotificationCompat.EXTRA_MEDIA_SESSION] as? MediaSession.Token != null
-            }
-            if (notification != null) {
-                val token = notification.notification.extras[NotificationCompat.EXTRA_MEDIA_SESSION] as MediaSession.Token?
-                var mediaController: MediaController? = null
-                val mediaSessionCallback = object : MediaController.ControllerCallback() {
-                    override fun onConnected(
-                        controller: MediaController,
-                        allowedCommands: SessionCommandGroup
-                    ) {
-                        super.onConnected(controller, allowedCommands)
-                        if (controller != mediaController) return
-                        if (controller.playerState == SessionPlayer.PLAYER_STATE_PLAYING) {
-                            callback(notification.packageName)
-                        } else {
-                            callback(null)
-                        }
-                        try {
-                            mediaController?.close()
-                        } catch (_: Exception) {
-                        }
-                    }
-
+            for (notification in activeNotifications.orEmpty()) {
+                @Suppress("DEPRECATION")
+                val token = notification.notification.extras.getParcelable<MediaSession.Token>("android.mediaSession") ?: continue
+                val state = MediaController(this, token).playbackState?.state
+                if (state == PlaybackState.STATE_PLAYING || state == PlaybackState.STATE_BUFFERING || state == PlaybackState.STATE_CONNECTING) {
+                    playing = notification.packageName
+                    break
                 }
-                mediaController = MediaController.Builder(this)
-                    .setSessionCompatToken(MediaSessionCompat.Token.fromToken(token))
-                    .setControllerCallback(
-                        Executors.newSingleThreadExecutor(),
-                        mediaSessionCallback
-                    )
-                    .build()
-            } else {
-                callback(null)
             }
-        } catch (e: SecurityException) {
-            callback(null)
-        }
+        } catch (_: RuntimeException) { }
+        callback(playing)
     }
-
     override fun onListenerDisconnected() {
-        super.onListenerDisconnected()
         instance = null
+        super.onListenerDisconnected()
     }
-
     companion object {
         private var instance: WeakReference<NotificationService>? = null
-        @JvmStatic fun getInstance(): NotificationService? {
-            return instance?.get()
-        }
+        @JvmStatic fun getInstance(): NotificationService? = instance?.get()
     }
 }

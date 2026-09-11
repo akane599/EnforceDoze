@@ -10,14 +10,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class AboutAppActivity extends AppCompatActivity {
+public class AboutAppActivity extends UiActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_app);
 
-        CustomTabs.with(getApplicationContext()).warm();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,7 +31,7 @@ public class AboutAppActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -41,13 +40,13 @@ public class AboutAppActivity extends AppCompatActivity {
     public void showLicences(View v) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(getString(R.string.licenses));
-        builder.setMessage(getString(R.string.licenses_text));
+        builder.setMessage(getString(R.string.current_dependencies));
         builder.setPositiveButton(getString(R.string.okay_button_text), (dialog, i) -> dialog.dismiss());
         builder.show();
     }
 
     public void openSourceCode(View v) {
-        Utils.openUrl(this, "https://github.com/farfromrefug/EnforceDoze");
+        Utils.openUrl(this, "https://github.com/akane599/EnforceDoze");
     }
 
     public void openGithubSponsors(View v) {

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.provider.Settings;
 
-public class RequestIgnoreBatteryActivity extends AppCompatActivity {
+public class RequestIgnoreBatteryActivity extends UiActivity {
     public static final String ACTION_IGNORE_RESULT = "com.akylas.enforcedoze.ACTION_IGNORE_BATTERY_OPTIMIZATION_RESULT";
     public static final String EXTRA_IGNORED = "com.akylas.enforcedoze.EXTRA_IGNORED";
 
@@ -37,6 +37,8 @@ public class RequestIgnoreBatteryActivity extends AppCompatActivity {
         Intent requestIntent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         requestIntent.setData(Uri.parse("package:" + getPackageName()));
         // launch the system dialog; result callback will run when user returns
-        launcher.launch(requestIntent);
+        if (savedInstanceState == null) {
+            try { launcher.launch(requestIntent); } catch (RuntimeException e) { finish(); }
+        }
     }
 }

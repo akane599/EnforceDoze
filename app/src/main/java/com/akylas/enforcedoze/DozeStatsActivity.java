@@ -19,18 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nanotasks.BackgroundWork;
-import com.nanotasks.Completion;
-import com.nanotasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class DozeStatsActivity extends AppCompatActivity {
+public class DozeStatsActivity extends UiActivity {
 
     /* Old Doze stats activity left to show a compact view of Doze stats and to handle some edge cases */
 
@@ -38,7 +34,6 @@ public class DozeStatsActivity extends AppCompatActivity {
     Set<String> dozeUsageStats;
     ListView listView;
     BatteryConsumptionAdapter batteryConsumptionAdapter;
-    MaterialDialog progressDialog = null;
     public static String TAG = "EnforceDoze";
 
     private static void log(String message) {
@@ -100,63 +95,16 @@ public class DozeStatsActivity extends AppCompatActivity {
         if (id == R.id.action_clear_stats) {
             clearStats();
         } else if (id == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void clearStats() {
-        progressDialog = new MaterialDialog.Builder(this)
-                .title(getString(R.string.please_wait_text))
-                .cancelable(false)
-                .autoDismiss(false)
-                .content(getString(R.string.clearing_doze_stats_text))
-                .progress(true, 0)
-                .show();
-
-        Tasks.executeInBackground(DozeStatsActivity.this, new BackgroundWork<Boolean>() {
-            @Override
-            public Boolean doInBackground() throws Exception {
-                log("Clearing Doze stats");
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("dozeUsageDataAdvanced");
-                return editor.commit();
-            }
-        }, new Completion<Boolean>() {
-            @Override
-            public void onSuccess(Context context, Boolean result) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                }
-                if (result) {
-                    log("Doze stats successfully cleared");
-                    if (Utils.isMyServiceRunning(ForceDozeService.class, context)) {
-                        Intent intent = new Intent("reload-settings");
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                    }
-                    batteryConsumptionItems.clear();
-                    batteryConsumptionAdapter.notifyDataSetChanged();
-                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                    builder.setTitle(getString(R.string.cleared_text));
-                    builder.setMessage(getString(R.string.doze_battery_stats_clear_msg));
-                    builder.setPositiveButton(getString(R.string.close_button_text), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.show();
-                }
-
-            }
-
-            @Override
-            public void onError(Context context, Exception e) {
-                Log.e(TAG, "Error clearing Doze stats: " + e.getMessage());
-
-            }
-        });
+        PreferenceManager.getDefaultSharedPreferences(this).edit().remove("dozeUsageDataAdvanced").apply();
+        DozeEvidence.clear(this);
+        SettingsActivity.reloadSettings(this);
+        batteryConsumptionItems.clear(); batteryConsumptionAdapter.notifyDataSetChanged();
     }
 }
