@@ -58,12 +58,12 @@ public class DozeBatteryStatsActivity extends UiActivity {
         editor = sharedPreferences.edit();
         dozeUsageStats = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getStringSet("dozeUsageDataAdvanced", new LinkedHashSet<String>());
         mListView = findViewById(R.id.material_listview);
+        mListView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DozeStatsAdapter();
         android.view.View header = getLayoutInflater().inflate(R.layout.doze_history_header, mListView, false);
         header.findViewById(R.id.viewDozeEvidence).setOnClickListener(v -> startActivity(new Intent(this, DozeEvidenceActivity.class)));
         mListView.setAdapter(new ConcatAdapter(new ListHeaderAdapter(header), adapter));
         mListView.setItemAnimator(null);
-        mListView.setLayoutManager(new LinearLayoutManager(this));
 
         ViewCompat.setOnApplyWindowInsetsListener(mListView, (v, insets) -> {
             if (mListView != null) {
