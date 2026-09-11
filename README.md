@@ -30,6 +30,24 @@ If **Keep hotspot connected** is enabled, unknown hotspot state leaves connectiv
 
 ## Build and verify
 
+### Build an APK on GitHub, including from a phone
+
+The [Build APK workflow](https://github.com/akane599/EnforceDoze/actions/workflows/build-apk.yml) builds an installable **debug APK** after app, Gradle or APK-workflow changes are pushed to any branch. It runs JVM tests and lint, verifies the APK signature, and provides a download named with the app version and commit. The APK is a direct download; no ZIP extraction is needed. Checksums and build information are separate artifacts, and APK downloads are retained for 30 days.
+
+1. Sign in to GitHub in your phone's browser and open **Actions → Build APK**.
+2. Open a successful run and tap its APK under **Artifacts**, or use the download link in its summary.
+3. To build again, open a previous run and choose **Re-run all jobs**. After this workflow is merged into `master`, you can also use **Run workflow**, select a branch, and start a new build. GitHub requires the workflow on the default branch for that manual button ([GitHub instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)).
+
+The separate **Android checks** workflow runs Android 16 UI and Shizuku integration tests. The APK workflow does not publish a release or change the app's version.
+
+#### Reusable development signing (optional)
+
+No secrets are needed for a first build. By default, each fresh runner generates a temporary debug key, so its APK cannot update an installation signed with another key, including the APK shared in chat. For repeatable update signing, add the Actions repository secret `ENFORCEDOZE_DEBUG_KEYSTORE_BASE64` containing the base64 encoding of a development `debug.keystore` with alias `androiddebugkey` and store/key password `android`. The workflow restores that key for signing and removes it from the runner afterward; it uploads only the APK, public certificate information and reports.
+
+Keep that development key private and use the same one for future builds. Do not commit it or use an upstream/production signing key for this debug workflow. Without matching signing keys, Android requires uninstalling the old build, which clears app data; disable EnforceDoze and complete pending restoration before doing that. See [Android's signing documentation](https://developer.android.com/studio/publish/app-signing).
+
+### Build locally
+
 Install JDK 17, the Android SDK Platform 36 and Build Tools 36.0.0, then set `ANDROID_HOME` or an appropriate local `sdk.dir`.
 
 ```sh

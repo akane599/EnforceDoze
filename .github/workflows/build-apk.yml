@@ -1,0 +1,123 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['**']
+    paths:
+      - 'app/**'
+      - 'gradle/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'gradlew'
+      - '.github/workflows/build-apk.yml'
+      - '.github/scripts/package-apk.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build installable debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Android 16 SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Configure development signing
+        id: signing
+        env:
+          ENFORCEDOZE_DEBUG_KEYSTORE_BASE64: ${{ secrets.ENFORCEDOZE_DEBUG_KEYSTORE_BASE64 }}
+        shell: bash
+        run: |
+          if [[ -n "$ENFORCEDOZE_DEBUG_KEYSTORE_BASE64" ]]; then
+            umask 077
+            mkdir -p "$HOME/.android"
+            printf '%s' "$ENFORCEDOZE_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/debug.keystore"
+            keytool -list -keystore "$HOME/.android/debug.keystore" \
+              -storepass android -alias androiddebugkey > /dev/null
+            echo 'kind=Reusable development key from repository secret' >> "$GITHUB_OUTPUT"
+          else
+            echo 'kind=Temporary development key; changes between runs' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run unit tests, lint and build APK
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+
+      - name: Verify APK signature
+        run: |
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs \
+            app/build/outputs/apk/debug/app-debug.apk > "$RUNNER_TEMP/enforcedoze-apk-signature.txt"
+
+      - name: Name APK and record build information
+        id: package
+        env:
+          APK_SIGNING: ${{ steps.signing.outputs.kind }}
+        run: python3 .github/scripts/package-apk.py
+
+      - name: Upload installable APK
+        id: apk
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          path: ${{ steps.package.outputs.apk_path }}
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload checksum and build information
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: EnforceDoze-build-info-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            apk-download/SHA256SUMS.txt
+            apk-download/BUILD-INFO.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Show APK download
+        env:
+          APK_URL: ${{ steps.apk.outputs.artifact-url }}
+          APK_NAME: ${{ steps.package.outputs.apk_name }}
+          APK_SHA256: ${{ steps.package.outputs.apk_sha256 }}
+          APK_SIGNING: ${{ steps.signing.outputs.kind }}
+        shell: bash
+        run: |
+          {
+            printf '## EnforceDoze APK\n\n[Download %s](%s)\n\n' "$APK_NAME" "$APK_URL"
+            printf 'Open the link while signed in to GitHub. The download is an APK; no ZIP extraction is needed.\n\n'
+            printf '**Signing:** %s.\n\n' "$APK_SIGNING"
+            printf 'An update requires the same signing key as the installed app. See the README for reusable development signing.\n\n'
+            printf '**SHA-256:** `%s`\n\n' "$APK_SHA256"
+            printf 'Unit tests, lint and APK signature verification passed. Device/UI tests run separately in Android checks.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test and lint reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: EnforceDoze-check-reports-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            app/build/reports/
+            app/build/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Remove runner signing key
+        if: always()
+        run: rm -f "$HOME/.android/debug.keystore"
