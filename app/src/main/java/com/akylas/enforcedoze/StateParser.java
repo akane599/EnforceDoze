@@ -12,6 +12,7 @@ public final class StateParser {
     public static String read(String kind, CommandResult result) {
         if (!result.ok()) return null;
         String text = result.output.trim();
+        if (kind.startsWith("suspended:")) return match(text, "User " + kind.substring(10) + ": [^\\r\\n]*?suspended=(true|false)");
         switch (kind) {
             case "deep": return match(text, "(?:^|\\s)mState=([A-Z_]+)(?:\\s|$)");
             case "forced": return match(text, "(?:^|\\s)mForceIdle=(true|false)(?:\\s|$)");

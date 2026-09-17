@@ -21,7 +21,7 @@
 6. Final APKs, manual build workflow, delivery/PR documentation, final report; commit. Ask only for concrete optional remote publication.
 
 ## Exact next action
-Begin stage 3: replace ForceDozeService timers/booleans with event-driven serialized state transitions and the recovery journal; integrate truthful sessions and optional feature controls. Re-read this record before implementation. API 36 AVD is still offline under software emulation; investigate startup without blocking local work.
+Begin stage 4: redesign dashboard/settings/diagnostics/history and fix legacy feature screens, including unsafe reset, whitelist, tunables, tile races, and pickers. Re-read this record before editing. Keep emulator boot progressing for baseline/UI/integration tests.
 
 ## Baseline stage result
 - Source debug APK built. Unit suite cannot compile (missing JUnit). Original release and debug assemble succeeded. Lint failed: 2 errors/160 warnings (suspicious indentation, app:tint). androidTest compilation failed: removed android.test.ApplicationTestCase. Original logs retained.
@@ -36,3 +36,10 @@ Begin stage 3: replace ForceDozeService timers/booleans with event-driven serial
 - Validation: `testDebugUnitTest assembleDebug assembleDebugAndroidTest --max-workers=2` PASSED; 14 unit tests, zero failures/skips. `/tmp/enforcedoze-79dd/stage2-build.log`. No device tests run yet.
 - AOSP Android 16 SensorService source confirms `restrict` REQUIRES a second argument; an empty whitelist substring matches every client. New controller uses a nonmatching sentinel and checks `Mode : RESTRICTED`.
 - Remaining: service integration, legacy screens/access callers, full feature review, user-service runtime tests, RPC queue bounding, release signing/artifacts, UI/CI/docs.
+
+## Stage 3 result
+- Replaced ForceDozeService with serialized event-driven monitoring, stable foreground/error channels, cancellation generations, recovery on stop/access events, maintenance restoration and priority screen-on sensor recovery.
+- Added observed idle evidence, monotonic session history with charging/interruption exclusions, native media-session reads and notification-listener filtering; safe call/schedule gates and opt-in token-protected automation. Root helper and named mobile-data/hotspot Binder interfaces replace unstable transaction numbers.
+- Validation: `testDebugUnitTest assembleDebug lintDebug` PASSED for current sources; 18 unit tests, zero failures/skips, lint zero errors. `/tmp/enforcedoze-79dd/stage3-final.log`. First lint attempt caught API 23 incompatibilities; repaired with local callback interfaces and SDK guard (no lint suppression/core-desugaring dependency).
+- API 36 first boot incomplete after ~18 minutes without KVM; restarted same disposable AVD at 1536 MB / 480x960. Kernel is progressing, log `/tmp/enforcedoze-79dd/emulator-small.log`. No device tests passed yet.
+- Next: legacy UI/settings still need replacement (unsafe reset/stale access), permission setup and diagnostics, full actual device integration, feature outcomes and edge cases. Runtime claims remain unverified until those tests.

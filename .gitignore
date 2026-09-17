@@ -15,3 +15,5 @@ app/release
 /certs
 **/build/
 /artifacts/
+
+.kotlin/

@@ -17,15 +17,16 @@ public final class DeviceController implements RestorationJournal.Device {
     }
     public CommandResult command(String command) { return access.run(command); }
     public String observe(String query, String kind) { return StateParser.read(kind, command(query)); }
+    public interface Undo { String command(String original); }
     public boolean change(String key, String query, String kind, String target, String apply,
-                          java.util.function.Function<String,String> undo) {
+                          Undo undo) {
         String original = observe(query, kind);
         if (original == null) {
             evidence.record("Control unavailable", key + ": cannot read original state; left unchanged");
             return false;
         }
         return journal.apply(new RestorationJournal.Entry(key, access.mode(), query, kind, original,
-                target, apply, undo.apply(original)));
+                target, apply, undo.command(original)));
     }
     public boolean setting(String key, String namespace, String name, String target) {
         String prefix = "settings --user current ";
@@ -54,6 +55,10 @@ public final class DeviceController implements RestorationJournal.Device {
         return change("Forced Doze", "dumpsys deviceidle", "forced", "true",
                 android.os.Build.VERSION.SDK_INT >= 24 ? "dumpsys deviceidle force-idle deep" : "dumpsys deviceidle force-idle",
                 ignored -> "dumpsys deviceidle unforce");
+    }
+    public boolean restoreScreenControls() {
+        return journal.restoreMatching(e -> e.key.equals("Forced Doze") || e.key.equals("Sensor access")
+                || e.key.equals("Sensor privacy") || e.key.equals("Biometric keyguard"));
     }
     public boolean restore() { return journal.restore(); }
     public boolean maintenance() { return journal.restoreExcept("Forced Doze"); }

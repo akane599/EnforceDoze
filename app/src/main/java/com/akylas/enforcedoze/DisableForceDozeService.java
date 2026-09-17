@@ -16,6 +16,7 @@ public class DisableForceDozeService extends BroadcastReceiver {
     }
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!Automation.allowed(context, intent)) return;
         log("com.akylas.enforcedoze.DISABLE_FORCEDOZE broadcast intent received");
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("serviceEnabled", false).apply();
         Utils.stopForceDozeService(context);

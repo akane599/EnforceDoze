@@ -41,3 +41,13 @@ Additional confirmed: tunable commands omit device_idle namespace, whitelist UI 
 - Additional A06 evidence: Android 16 SensorService.cpp `changeOperatingMode` rejects restrict without a second argument. Controller supplies safe nonempty exemption sentinel.
 - Baseline actual: debug/release assemble passed; JVM tests failed compilation (JUnit absent); instrumentation failed compilation (removed android.test); lint 2 errors/160 warnings.
 - Starting APK freshly downloaded from user release link; identical SHA-256 to candidate, publisher certificate confirmed.
+
+## Stage 3 review notes
+- Replaced service timers and speculative state with serialized, invalidatable event handling and durable undo. Added actual Deep Doze samples, bounded session history, native media state reads, conservative hotspot guard and subscription-specific data control.
+- Removed unsafe notification-manager Binder-number calls; replacement uses notification-listener suppression, preserving ongoing/call/alarm/media notifications. Cancelled notifications cannot be recreated; disclosure required in redesigned settings.
+- Automation now requires opt-in and token; malformed inputs and package injection rejected. Restart/schedule paths preserve manual enabled state and catch Android background-start restrictions.
+- First stage 3 run: 18 unit tests and debug assembly passed; lint caught three API-23 compatibility errors. Fixed through API-23-compatible local callback interfaces and SDK guard. Final rerun PASSED: 18 tests, debug assembly, lint zero errors.
+- Further confirmed UX issues queued for stage 4: Settings probes root even in Shizuku mode, resets options on transient access loss, can clear state/revoke privileges before recovery; quick tile delayed callbacks can overwrite a newer toggle; package pickers/blocklists have indefinite loading/empty-state errors; whitelist mutates on UI thread and assumes valid command output.
+
+- New confirmed A13 (P1, queued): LogActivity uses file:// sharing (FileUriExposedException on modern Android), reads full device log unnecessarily, null log can crash share. Replace with local evidence + explicit text sharing.
+- New confirmed A14 (P2, queued): NumberPicker ignores rejected preference change and restores into null picker; shortcut XML has stray text. Replace/fix in UI stage.

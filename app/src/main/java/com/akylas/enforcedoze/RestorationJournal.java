@@ -50,14 +50,28 @@ public final class RestorationJournal {
         evidence.record("Unconfirmed change", entry.key + ": recovery record retained");
         return false;
     }
+    private static int restorePriority(String key) {
+        if (key.equals("Forced Doze")) return 100;
+        if (key.equals("Sensor privacy")) return 90;
+        if (key.equals("Sensor access")) return 80;
+        if (key.equals("Biometric keyguard")) return 70;
+        if (key.equals("Airplane mode")) return 60;
+        return 0;
+    }
     public boolean restore() { return restoreExcept(null); }
     /** During maintenance leave only the forced-idle lease in place. */
     public boolean restoreExcept(String retainedKey) {
+        return restoreMatching(e -> !e.key.equals(retainedKey));
+    }
+    public interface Selection { boolean test(Entry entry); }
+    public boolean restoreMatching(Selection selected) {
         List<Entry> entries = new ArrayList<>(store.load());
+        // Release controls that affect unlock/calls before potentially slow per-app recovery.
+        java.util.Collections.sort(entries, (a,b) -> Integer.compare(restorePriority(a.key),restorePriority(b.key)));
         boolean restored = true;
         for (int i = entries.size() - 1; i >= 0; i--) {
             Entry entry = entries.get(i);
-            if (entry.key.equals(retainedKey)) continue;
+            if (!selected.test(entry)) continue;
             try {
                 String before = device.read(entry);
                 // Unknown access is never interpreted as the original value.

@@ -22,3 +22,5 @@
 # Constructed by Shizuku in a separate privileged process.
 -keep class com.akylas.enforcedoze.PrivilegedService { *; }
 -keep class com.akylas.enforcedoze.IPrivilegedService** { *; }
+
+-keep class com.akylas.enforcedoze.PrivilegedCommand { *; }

@@ -23,7 +23,7 @@ public final class ShizukuHandler {
     private final Object connectionLock = new Object();
     private final Shizuku.UserServiceArgs args;
     private volatile IPrivilegedService service;
-    private boolean binding;
+    private volatile boolean binding;
     public interface OnAvailibilityChange { void onChange(Boolean available); }
     private final ServiceConnection connection = new ServiceConnection() {
         @Override public void onServiceConnected(ComponentName name, IBinder binder) {
