@@ -57,3 +57,12 @@ Additional confirmed: tunable commands omit device_idle namespace, whitelist UI 
 - Final stage 4 unit suite (18 tests), debug build and lint PASS, zero lint errors; initial orphan XML-handler errors fixed by deleting unused layouts. UI has not yet been visually reviewed.
 - Emulator limitation: first Google APIs API 36 boot did not reach activity service after ~24 minutes without KVM. Trying official Google ATD API 36; no device tests passed yet.
 - Remaining: real emulator UI/Shizuku/sensor outcomes, remaining helper cleanup, resource/documentation/release audit, CI workflow and final APKs.
+
+## Stage 5 findings and work in progress
+- A13 (confirmed): timed-out Binder writes could still land after recovery reads the original value. Shizuku now blocks subsequent transactions while the prior call remains in flight, and signals recovery when it completes.
+- A14 (confirmed): a decimal timeout such as `1.0` passed numeric UI validation but is not accepted by Android's long parser. Fixed integer syntax; regression tests added.
+- A15 (confirmed): entry-only media snapshots miss playback starting while screen is off. Replaced with native active-session/playback callbacks, conservative unknown state and event-driven service reconciliation. Runtime pending.
+- A16 (confirmed): large-font app-list actions and long access errors could consume the fixed header and hide the list. Actions now scroll in a ListView header; errors bounded. Visual review pending.
+- Latest completed check: 24 JVM tests, debug/androidTest APK builds and lint PASS, `/tmp/enforcedoze-79dd/stage5-followup.log`. Latest stage5-current.log also PASS for 24 tests, both APK builds and lint. No emulator tests have executed.
+- Resource review: stale layouts/styles removed; old unused translation resources and historical screenshots retained. Lint largely reports unused resources/typography, plus documented privileged APIs. New UI explanatory copy is English; linguistic completeness of translations is not claimed.
+- Remaining audit/release queue: website claims, safe manual build workflow, Fastlane publishing guards, final manifest/resource checks and runtime results; actual visual review and Samsung hardware limitations must remain separate.

@@ -6,15 +6,21 @@ import android.content.Context;
 final class TunableRecovery {
     static RestorationJournal journal(Context context) {
         AccessExecutor access = new AccessExecutor(context);
-        return new RestorationJournal(new RecoveryStore(context, "tunable_recovery"),
+        return new RestorationJournal(
+                new RecoveryStore(context, "tunable_recovery"),
                 new RestorationJournal.Device() {
                     public String read(RestorationJournal.Entry entry) {
                         return StateParser.read("setting", access.run(entry.mode, entry.query));
                     }
+
                     public boolean write(RestorationJournal.Entry entry, boolean undo) {
                         return access.run(entry.mode, undo ? entry.undo : entry.apply).ok();
                     }
-                }, new EvidenceStore(context));
+                },
+                new EvidenceStore(context));
     }
-    static boolean restore(Context context) { return journal(context).restore(); }
+
+    static boolean restore(Context context) {
+        return journal(context).restore();
+    }
 }
