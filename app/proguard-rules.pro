@@ -18,3 +18,7 @@
 -dontwarn com.squareup.okhttp.**
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
+
+# Constructed by Shizuku in a separate privileged process.
+-keep class com.akylas.enforcedoze.PrivilegedService { *; }
+-keep class com.akylas.enforcedoze.IPrivilegedService** { *; }

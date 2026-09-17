@@ -34,3 +34,10 @@ Baseline: `a5b7c4a`; reviewed findings below are source-path evidence, not claim
 Prioritize durable write-ahead restoration, bounded serialized commands, actual observed state and safe cancellation before UI redesign. Preserve supported root/nonroot modes with capability checks. Investigate modern replacements for Binder-number hacks; disclose unsupported OEM functions. Initial baseline stage complete. Next: stage 2 access/journal/test foundation, collect pending baseline checks. Detailed activity/resource review continues during relevant stages.
 
 Additional confirmed: tunable commands omit device_idle namespace, whitelist UI bypasses Shizuku, release/Fastlane can publish/push even through surprising branches. No remote work executed.
+
+## Stage 2 verification
+- 14 meaningful JVM tests passed, debug and androidTest APKs built (no skipped tests). Test XML in app/build/test-results/testDebugUnitTest. Integration not yet exercised.
+- A01: journal implementation complete, service integration pending. A02: live user-service transport replaces cached/reflected process access; runtime pending. A12: dependencies/test runners repaired, pinned library and Maven Central; external signing now explicit. Two baseline lint errors fixed; broader lint pending.
+- Additional A06 evidence: Android 16 SensorService.cpp `changeOperatingMode` rejects restrict without a second argument. Controller supplies safe nonempty exemption sentinel.
+- Baseline actual: debug/release assemble passed; JVM tests failed compilation (JUnit absent); instrumentation failed compilation (removed android.test); lint 2 errors/160 warnings.
+- Starting APK freshly downloaded from user release link; identical SHA-256 to candidate, publisher certificate confirmed.

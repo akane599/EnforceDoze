@@ -14,9 +14,10 @@ public class DozeTunableHandler {
     // Static method to create instance of Singleton class
     public static synchronized DozeTunableHandler getInstance()
     {
-        if (single_instance == null)
+        if (single_instance == null) {
             single_instance = new DozeTunableHandler();
-            single_instance.loadTunables();
+        }
+        single_instance.loadTunables();
 
         return single_instance;
     }

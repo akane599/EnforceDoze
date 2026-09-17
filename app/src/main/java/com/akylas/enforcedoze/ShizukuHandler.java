@@ -1,187 +1,128 @@
 package com.akylas.enforcedoze;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import org.json.JSONObject;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
 import rikka.shizuku.Shizuku;
-import rikka.shizuku.ShizukuRemoteProcess;
 
-public class ShizukuHandler {
-    private static final String TAG = "ShizukuHandler";
+/** Binder availability, authorization, and user-service readiness are deliberately separate. */
+public final class ShizukuHandler {
     private static ShizukuHandler instance;
-    private Context context;
-    private boolean isShizukuAvailable = false;
-    private OnAvailibilityChange onAvailibilityChangeListener;
-
-    interface OnAvailibilityChange {
-        public void onChange(Boolean value);
-    }
-
-
-    private final Shizuku.OnRequestPermissionResultListener REQUEST_PERMISSION_RESULT_LISTENER =
-            (requestCode, grantResult) -> {
-                boolean granted = grantResult == PackageManager.PERMISSION_GRANTED;
-                Log.i(TAG, "Shizuku permission result: " + granted);
-                isShizukuAvailable = granted;
-                if (onAvailibilityChangeListener != null) {
-                    onAvailibilityChangeListener.onChange(isShizukuAvailable);
-                }
-            };
-
-    private ShizukuHandler(Context context) {
-        this.context = context.getApplicationContext();
-        checkShizukuAvailability();
-    }
-
-    public static synchronized ShizukuHandler getInstance(Context context) {
-        if (instance == null) {
-            instance = new ShizukuHandler(context);
+    private final Handler main = new Handler(Looper.getMainLooper());
+    private final CopyOnWriteArraySet<OnAvailibilityChange> listeners = new CopyOnWriteArraySet<>();
+    private final Object connectionLock = new Object();
+    private final Shizuku.UserServiceArgs args;
+    private volatile IPrivilegedService service;
+    private boolean binding;
+    public interface OnAvailibilityChange { void onChange(Boolean available); }
+    private final ServiceConnection connection = new ServiceConnection() {
+        @Override public void onServiceConnected(ComponentName name, IBinder binder) {
+            synchronized (connectionLock) {
+                service = IPrivilegedService.Stub.asInterface(binder);
+                binding = false;
+                connectionLock.notifyAll();
+            }
+            notifyListeners();
         }
+        @Override public void onServiceDisconnected(ComponentName name) { disconnected(); }
+    };
+    private ShizukuHandler(Context context) {
+        args = new Shizuku.UserServiceArgs(new ComponentName(context, PrivilegedService.class))
+                .daemon(false).processNameSuffix("privileged").debuggable(BuildConfig.DEBUG)
+                .version(BuildConfig.VERSION_CODE);
+        Shizuku.addBinderReceivedListenerSticky(() -> { bind(); notifyListeners(); });
+        Shizuku.addBinderDeadListener(this::disconnected);
+        Shizuku.addRequestPermissionResultListener((requestCode, grant) -> { bind(); notifyListeners(); });
+    }
+    public static synchronized ShizukuHandler getInstance(Context context) {
+        if (instance == null) instance = new ShizukuHandler(context.getApplicationContext());
         return instance;
     }
-
-    public void setOnAvailibilityChangeListener(OnAvailibilityChange onAvailibilityChangeListener) {
-        this.onAvailibilityChangeListener = onAvailibilityChangeListener;
+    private void disconnected() {
+        synchronized (connectionLock) { service = null; binding = false; connectionLock.notifyAll(); }
+        notifyListeners();
     }
-
-    public void checkShizukuAvailability() {
+    public String status() {
         try {
-            isShizukuAvailable = Shizuku.pingBinder();
-            if (isShizukuAvailable) {
-                if (Shizuku.isPreV11()) {
-                    // Pre-v11 is not supported
-                    isShizukuAvailable = false;
-                    Log.w(TAG, "Shizuku pre-v11 is not supported");
-                } else {
-                    if (checkShizukuPermission() != PackageManager.PERMISSION_GRANTED) {
-                        isShizukuAvailable = false;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error checking Shizuku availability: " + e.getMessage());
-            isShizukuAvailable = false;
-        }
+            if (!Shizuku.pingBinder()) return "Shizuku is not running. Open Shizuku and start it again.";
+            if (Shizuku.isPreV11()) return "Update Shizuku to version 13 or newer.";
+            if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) return "Shizuku authorization is required.";
+            return service == null ? "Shizuku authorized; connecting…" : "Shizuku authorized and connected";
+        } catch (RuntimeException e) { return "Shizuku disconnected. Open Shizuku to reconnect."; }
     }
-
     public boolean isShizukuAvailable() {
-        return isShizukuAvailable;
+        try { return Shizuku.pingBinder() && !Shizuku.isPreV11()
+                    && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED; }
+        catch (RuntimeException e) { return false; }
     }
-
-    public int checkShizukuPermission() {
-        if (Shizuku.isPreV11()) {
-            return PackageManager.PERMISSION_DENIED;
-        }
-        return Shizuku.checkSelfPermission();
-    }
-
+    public void checkShizukuAvailability() { bind(); }
+    public int checkShizukuPermission() { return isShizukuAvailable() ? PackageManager.PERMISSION_GRANTED : PackageManager.PERMISSION_DENIED; }
     public void requestShizukuPermission() {
-        if (Shizuku.isPreV11()) {
-            Log.w(TAG, "Shizuku pre-v11 does not support runtime permission");
-            return;
-        }
-        
-        if (checkShizukuPermission() != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER);
-            Shizuku.requestPermission(0);
-        }
-    }
-
-    public void removePermissionResultListener() {
-        Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER);
-    }
-
-    /**
-     * Execute a shell command using Shizuku
-     * @param command The command to execute
-     * @param callback Callback to receive the output
-     */
-    public void executeCommand(@NonNull String command, @NonNull OnCommandResultListener callback) {
-        executeCommand(command, callback, false);
-    }
-
-    Method shizukuNewProcessMethod = null;
-    /**
-     * Execute a shell command using Shizuku
-     * @param command The command to execute
-     * @param callback Callback to receive the output
-     * @param printOutput Whether to print the output to logs
-     */
-    public void executeCommand(@NonNull String command, @NonNull OnCommandResultListener callback, boolean printOutput) {
-        new Thread(() -> {
-            List<String> stdout = new ArrayList<>();
-            List<String> stderr = new ArrayList<>();
-            int exitCode = -1;
-
-            try {
-                if (!isShizukuAvailable) {
-                    Log.e(TAG, "Shizuku is not available");
-                    callback.onCommandResult(0, -1, stdout, stderr);
-                    return;
-                }
-
-                if (checkShizukuPermission() != PackageManager.PERMISSION_GRANTED) {
-                    Log.e(TAG, "Shizuku permission not granted");
-                    callback.onCommandResult(0, -1, stdout, stderr);
-                    return;
-                }
-                if (shizukuNewProcessMethod == null) {
-                    Class<?> clazz = Class.forName("rikka.shizuku.Shizuku");
-                    shizukuNewProcessMethod = clazz.getDeclaredMethod("newProcess", String[].class,String[].class, String.class);
-                    shizukuNewProcessMethod.setAccessible(true);
-                }
-                String[] cmd = new String[] { "sh", "-c", command };
-                Object[] invokeArgs = new Object[] { cmd, null, null };
-
-                ShizukuRemoteProcess process = (ShizukuRemoteProcess) shizukuNewProcessMethod.invoke(null, invokeArgs);
-//                ShizukuRemoteProcess process = Shizuku.newProcess(new String[]{"sh", "-c", command}, null, null);
-
-                // Read stdout
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        stdout.add(line);
-                        if (printOutput) {
-                            Log.i(TAG, line);
-                        }
-                    }
-                }
-
-                // Read stderr
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        stderr.add(line);
-                        if (printOutput) {
-                            Log.e(TAG, line);
-                        }
-                    }
-                }
-
-                exitCode = process.waitFor();
-                process.destroy();
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error executing command: " + e.getMessage());
-                e.printStackTrace();
+        try {
+            if (Shizuku.pingBinder() && !Shizuku.isPreV11()) {
+                if (!isShizukuAvailable()) Shizuku.requestPermission(0); else bind();
             }
-
-            callback.onCommandResult(0, exitCode, stdout, stderr);
-        }).start();
+        } catch (RuntimeException ignored) { notifyListeners(); }
     }
-
-    /**
-     * Callback interface for command execution results
-     */
+    public void addListener(OnAvailibilityChange listener) { listeners.add(listener); }
+    public void removeListener(OnAvailibilityChange listener) { listeners.remove(listener); }
+    // Compatibility for legacy screens while callers migrate to lifecycle-scoped subscriptions.
+    public void setOnAvailibilityChangeListener(OnAvailibilityChange listener) { addListener(listener); }
+    public void removePermissionResultListener() { /* process-wide permission listener remains registered */ }
+    private void notifyListeners() {
+        main.post(() -> { for (OnAvailibilityChange listener : listeners) listener.onChange(isShizukuAvailable()); });
+    }
+    private void bind() {
+        main.post(() -> {
+            if (!isShizukuAvailable() || service != null || binding) return;
+            binding = true;
+            try { Shizuku.bindUserService(args, connection); }
+            catch (RuntimeException e) { disconnected(); }
+        });
+    }
+    CommandResult run(String command) {
+        if (!isShizukuAvailable()) return new CommandResult(-1, status());
+        bind();
+        try {
+            long end = android.os.SystemClock.elapsedRealtime() + 6000;
+            synchronized (connectionLock) {
+                while (service == null && isShizukuAvailable()) {
+                    long left = end - android.os.SystemClock.elapsedRealtime();
+                    if (left <= 0) break;
+                    connectionLock.wait(left);
+                }
+            }
+            IPrivilegedService current = service;
+            if (current == null) { binding = false; return new CommandResult(-1, "Shizuku user service did not connect. Retry access."); }
+            java.util.concurrent.Future<String> call = AccessExecutor.RPC.submit(() -> current.run(command));
+            JSONObject result = new JSONObject(call.get(12, TimeUnit.SECONDS));
+            return new CommandResult(result.getInt("code"), result.getString("output"));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return new CommandResult(-2, "Access interrupted; restoration retained.");
+        } catch (Exception e) {
+            return new CommandResult(-2, "Shizuku operation failed; outcome unknown: " + e.getClass().getSimpleName());
+        }
+    }
+    public void executeCommand(String command, OnCommandResultListener callback) { executeCommand(command, callback, false); }
+    public void executeCommand(String command, OnCommandResultListener callback, boolean printOutput) {
+        AccessExecutor.SERIAL.execute(() -> {
+            CommandResult result = run(command);
+            callback.onCommandResult(0, result.code,
+                    result.ok() ? Arrays.asList(result.output.split("\\n")) : Collections.emptyList(),
+                    result.ok() ? Collections.emptyList() : Collections.singletonList(result.output));
+        });
+    }
     public interface OnCommandResultListener {
         void onCommandResult(int commandCode, int exitCode, List<String> stdout, List<String> stderr);
     }
