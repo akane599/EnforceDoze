@@ -29,7 +29,7 @@ public final class DeviceController implements RestorationJournal.Device {
                 target, apply, undo.command(original)));
     }
     public boolean setting(String key, String namespace, String name, String target) {
-        String prefix = "settings --user current ";
+        String prefix = "settings --user " + (android.os.Process.myUid()/100000) + " ";
         return change(key, prefix + "get " + namespace + " " + name, "setting", target,
                 prefix + "put " + namespace + " " + name + " " + CommandResult.quote(target),
                 original -> prefix + (original.equals("null") ? "delete " + namespace + " " + name
@@ -42,7 +42,7 @@ public final class DeviceController implements RestorationJournal.Device {
             return false;
         }
         // Android 16 requires a second argument. An empty substring would exempt every package.
-        String allow = CommandResult.validPackage(exemptPackage) ? exemptPackage : "__enforcedoze_no_sensor_clients__";
+        String allow = CommandResult.validPackage(exemptPackage) ? exemptPackage : "!enforcedoze:no-client!";
         return change("Sensor access", "dumpsys sensorservice", "sensor", "RESTRICTED : " + allow,
                 "dumpsys sensorservice restrict " + CommandResult.quote(allow), ignored -> "dumpsys sensorservice enable");
     }

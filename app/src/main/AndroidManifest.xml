@@ -173,6 +173,8 @@
         <activity
             android:name="com.akylas.enforcedoze.BlockAppsActivity"
             android:label="Doze App blocklist" />
+        <activity android:name=".AccessActivity" android:exported="false" />
+        <activity android:name=".CompatibilityActivity" android:exported="false" />
         <activity
             android:name="com.akylas.enforcedoze.SettingsActivity"
             android:label="Settings" />

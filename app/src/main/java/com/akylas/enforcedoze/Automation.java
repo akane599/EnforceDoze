@@ -17,7 +17,8 @@ public final class Automation {
     }
     public static boolean allowed(Context c,Intent i) {
         if(i==null || !PreferenceManager.getDefaultSharedPreferences(c).getBoolean("allowAutomation",false)) return false;
-        String actual=i.getStringExtra("automationToken");
+        String actual;
+        try { actual=i.getStringExtra("automationToken"); } catch(RuntimeException malformed) { return false; }
         String expected=PreferenceManager.getDefaultSharedPreferences(c).getString("automationToken",null);
         return actual!=null && expected!=null && MessageDigest.isEqual(actual.getBytes(StandardCharsets.UTF_8),expected.getBytes(StandardCharsets.UTF_8));
     }

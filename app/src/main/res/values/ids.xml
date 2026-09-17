@@ -1,0 +1,9 @@
+<resources>
+    <item type="id" name="settings" />
+    <item type="id" name="dashboard_status" />
+    <item type="id" name="monitor_toggle" />
+    <item type="id" name="recovery_status" />
+    <item type="id" name="access_status" />
+    <item type="id" name="authorize_shizuku" />
+    <item type="id" name="evidence_text" />
+</resources>

@@ -58,6 +58,7 @@ public class Utils {
         try {
             if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(intent);
             else context.startService(intent);
+            hideDisabledNotification(context);
         } catch (RuntimeException e) {
             String error = "Android blocked background startup. Open EnforceDoze and retry. " + e.getClass().getSimpleName();
             context.getSharedPreferences("runtime", Context.MODE_PRIVATE).edit()
@@ -590,12 +591,11 @@ public class Utils {
 
 
     public static void openUrl(android.app.Activity activity, String url) {
-        CustomTabs.with(activity.getApplicationContext())
-                .setStyle(new CustomTabs.Style(activity.getApplicationContext())
-                        .setShowTitle(true)
-                        .setExitAnimation(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                        .setToolbarColor(R.color.colorPrimary))
-                .openUrl(url, activity);
+        try {
+            new androidx.browser.customtabs.CustomTabsIntent.Builder().setShowTitle(true).build()
+                    .launchUrl(activity, android.net.Uri.parse(url));
+        } catch (android.content.ActivityNotFoundException e) {
+            android.widget.Toast.makeText(activity, "No browser is installed", android.widget.Toast.LENGTH_LONG).show();
+        }
     }
-
 }

@@ -1,76 +1,24 @@
 package com.akylas.enforcedoze;
-
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
-public class TaskerBroadcastsActivity extends AppCompatActivity {
-
-    ArrayList<TaskerBroadcastsItem> items;
-    ListView listView;
-    TaskerBroadcastsAdapter taskerBroadcastsAdapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tasker_broadcasts);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        listView = (ListView) findViewById(R.id.listViewBroadcasts);
-        items = new ArrayList<>();
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ENABLE_FORCEDOZE",
-                "Broadcast values required: None"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.DISABLE_FORCEDOZE",
-                "Broadcast values required: None"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.ADD_WHITELIST",
-                "Broadcast values required:\npackageName\n\npackageName has to be the full " +
-                        "package name of the app you want to add to the whitelist"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.REMOVE_WHITELIST",
-                "Broadcast values required:\npackageName\n\npackageName has to be the full " +
-                        "package name of the app you want to remove from the whitelist"));
-        items.add(new TaskerBroadcastsItem("com.akylas.enforcedoze.CHANGE_SETTING",
-                "Broadcast values required:\nsettingName\nsettingValue\n\nsettingName can be one of the following:" +
-                        "\n1) turnOffDataInDoze\n2) turnOffWiFiInDoze\n3) ignoreLockscreenTimeout" +
-                        "\n4) dozeEnterDelay\n5) useAutoRotateAndBrightnessFix\n6) enableSensors" +
-                        "\n7) disableWhenCharging\n8) showPersistentNotif\n" +
-                        "\n\nsettingValue can be one of the " +
-                        "following:\n1) true\n2) false\n3) an integer value (ONLY in case of dozeEnterDelay)"));
-        taskerBroadcastsAdapter = new TaskerBroadcastsAdapter(this, items);
-        listView.setAdapter(taskerBroadcastsAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                ClipData broadcastData = ClipData.newPlainText("fd_broadcast", ((TextView)view.findViewById(R.id.broadcastName)).getText());
-                clipboard.setPrimaryClip(broadcastData);
-                Toast.makeText(getApplicationContext(), "Copied broadcast!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+import android.preference.PreferenceManager;
+import android.widget.LinearLayout;
+import com.google.android.material.materialswitch.MaterialSwitch;
+public class TaskerBroadcastsActivity extends BaseActivity {
+    @Override protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle); screen("Tasker automation",true);
+        LinearLayout access=card("Allow trusted automations","Each broadcast requires an automationToken string extra. Keep this token private: it authorizes the controls below. Existing automations must add it after upgrading.");
+        MaterialSwitch enabled=new MaterialSwitch(this); enabled.setText("Allow automation broadcasts"); enabled.setMinHeight(dp(56));
+        enabled.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("allowAutomation",false)); access.addView(enabled);
+        enabled.setOnCheckedChangeListener((v,value)->{ Automation.token(this); PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("allowAutomation",value).apply(); });
+        button(access,"Copy automation token",()->copy("EnforceDoze automation token",Automation.token(this)));
+        button(access,"Replace token",()->new com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle("Replace token?").setMessage("Existing automations will need the new token.").setNegativeButton("Cancel",null).setPositiveButton("Replace",(d,w)->{
+            PreferenceManager.getDefaultSharedPreferences(this).edit().remove("automationToken").apply(); Automation.token(this);
+        }).show());
+        card("Tasker Send Intent","Target: Broadcast Receiver\nPackage: com.akylas.enforcedoze\nExtra for every action: automationToken:<your token>\n\nAndroid may restrict starting monitoring from a background broadcast. Open the app if Diagnostics reports a blocked start.");
+        for(String action:new String[]{"ENABLE_FORCEDOZE","DISABLE_FORCEDOZE","ADD_WHITELIST","REMOVE_WHITELIST","CHANGE_SETTING"}) {
+            LinearLayout item=card(action,action.contains("WHITELIST")?"Extra: packageName:com.example.app":action.equals("CHANGE_SETTING")?"Extras: settingName:<key> and settingValue:<value>":"No additional extras.");
+            button(item,"Copy action",()->copy("Action","com.akylas.enforcedoze."+action));
         }
-        return super.onOptionsItemSelected(item);
+        card("Supported setting keys","dozeEnterDelay: integer seconds, 0–1800\n\nBoolean values must be true or false:\nignoreIfHotspot\nturnOffDataInDoze\nturnOffWiFiInDoze\nignoreLockscreenTimeout\ndisableMotionSensors\ndisableWhenCharging\nshowPersistentNotif\nwaitForUnlock\nturnOnBatterySaverInDoze\nwhitelistMusicAppNetwork");
     }
 }

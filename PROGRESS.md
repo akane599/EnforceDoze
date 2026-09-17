@@ -21,7 +21,7 @@
 6. Final APKs, manual build workflow, delivery/PR documentation, final report; commit. Ask only for concrete optional remote publication.
 
 ## Exact next action
-Begin stage 4: redesign dashboard/settings/diagnostics/history and fix legacy feature screens, including unsafe reset, whitelist, tunables, tile races, and pickers. Re-read this record before editing. Keep emulator boot progressing for baseline/UI/integration tests.
+Begin stage 5: add and run actual API 36 UI/Shizuku/sensor integration tests, finish remaining audit and repair issues exposed. The lighter ATD emulator is starting; no device result yet.
 
 ## Baseline stage result
 - Source debug APK built. Unit suite cannot compile (missing JUnit). Original release and debug assemble succeeded. Lint failed: 2 errors/160 warnings (suspicious indentation, app:tint). androidTest compilation failed: removed android.test.ApplicationTestCase. Original logs retained.
@@ -43,3 +43,10 @@ Begin stage 4: redesign dashboard/settings/diagnostics/history and fix legacy fe
 - Validation: `testDebugUnitTest assembleDebug lintDebug` PASSED for current sources; 18 unit tests, zero failures/skips, lint zero errors. `/tmp/enforcedoze-79dd/stage3-final.log`. First lint attempt caught API 23 incompatibilities; repaired with local callback interfaces and SDK guard (no lint suppression/core-desugaring dependency).
 - API 36 first boot incomplete after ~18 minutes without KVM; restarted same disposable AVD at 1536 MB / 480x960. Kernel is progressing, log `/tmp/enforcedoze-79dd/emulator-small.log`. No device tests passed yet.
 - Next: legacy UI/settings still need replacement (unsafe reset/stale access), permission setup and diagnostics, full actual device integration, feature outcomes and edge cases. Runtime claims remain unverified until those tests.
+
+## Stage 4 result
+- Replaced dashboard, access setup, diagnostics, history, settings, app lists/picker, Tasker help, About and tunables screens with shared Material surfaces / AndroidX controls and edge-to-edge insets. Added system/light/dark theme selection.
+- Fixed stale settings and unsafe reset; retained originals for tunable changes separately; journal and history clearing are distinct. Replaced file:// log sharing with intentional local evidence sharing.
+- Removed obsolete layouts/adapters/dialog helpers and unused shell/media/background libraries; Jetifier disabled. Initial lint found orphan XML handlers; removed unused layouts/styles. Final `testDebugUnitTest assembleDebug lintDebug` PASSED: 18 unit tests, zero failures/skips, lint zero errors. `/tmp/enforcedoze-79dd/stage4-final.log`. Device/UI review remains stage 5.
+- Reset restores both temporary and persistent tunable journals. Fixed sensor default mismatch (off until selected) and snapshots use the originating Android user. Theme/large-font layout support is implemented, not yet visually verified. New UI copy is English; existing translations retained but new copy needs localization.
+- API 36 Google APIs boot never reached activity service after ~24 minutes without KVM. Saved logs, deleted only our disposable AVD to free disk; installed official API 36 Google ATD image and launching `enforcedoze_79dd_atd36` on port 5580. Initial ATD launch failed disk-space preflight; moved generated intermediates into task temp directory. Fresh Shizuku v13.6.0 APK downloaded from official release. Exact next action: inspect ATD boot and implement/run stage 5 tests.

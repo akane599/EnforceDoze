@@ -194,7 +194,7 @@ public class ForceDozeService extends Service {
         if (protectMedia) playing=listener==null?null:listener.playingPackages();
         boolean keepNetwork=protectMedia && (playing==null || !playing.isEmpty());
         if (protectMedia && playing==null) evidence.record("Media protection","Playback state unavailable; preserving connectivity and app access.");
-        if (option("disableMotionSensors",true) && valid(epoch)) feature(device.restrictSensors(prefs.getString("sensorWhitelistPackage","")),"Sensor access");
+        if (option("disableMotionSensors",false) && valid(epoch)) feature(device.restrictSensors(prefs.getString("sensorWhitelistPackage","")),"Sensor access");
         if (option("turnOffAllSensorsInDoze",false) && valid(epoch)) feature(device.change("Sensor privacy","@sensor-privacy","boolean","true","@sensor-privacy true",o->"@sensor-privacy "+o),"Sensor privacy");
         if (option("turnOffBiometricsInDoze",false) && valid(epoch)) {
             String value=device.observe("settings --user current get secure biometric_keyguard_enabled","switch");
@@ -309,6 +309,7 @@ public class ForceDozeService extends Service {
         ShizukuHandler.getInstance(this).removeListener(accessListener);
         if (Build.VERSION.SDK_INT>=31 && audioListener!=null) ((AudioManager)getSystemService(AUDIO_SERVICE)).removeOnModeChangedListener(audioListener);
         AccessExecutor.SERIAL.execute(() -> { recover("Service stopped"); getSharedPreferences("runtime",MODE_PRIVATE).edit().putString("status",device.pending()?"Restoration pending":"Monitoring off").apply(); });
+        if (!enabled()) Utils.showDisabledNotification(this);
         super.onDestroy();
     }
 }

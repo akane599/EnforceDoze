@@ -28,7 +28,7 @@ public final class EvidenceStore implements RestorationJournal.Evidence {
                 next.put(new JSONObject().put("time", System.currentTimeMillis()).put("elapsed", SystemClock.elapsedRealtime())
                         .put("screenOn", power.isInteractive()).put("idle", power.isDeviceIdleMode())
                         .put("event", event).put("detail", detail.substring(0, Math.min(768, detail.length()))));
-                prefs.edit().putString("events", next.toString()).apply();
+                prefs.edit().putString("events", next.toString()).putString("latest", DateFormat.getDateTimeInstance().format(new Date()) + "\n" + event + "\n" + detail.substring(0, Math.min(256, detail.length()))).apply();
             } catch (Exception e) { android.util.Log.e("EnforceDoze", "Could not save observation", e); }
         }
     }
@@ -51,5 +51,5 @@ public final class EvidenceStore implements RestorationJournal.Evidence {
             return text.toString();
         }
     }
-    public void clear() { synchronized (LOCK) { prefs.edit().remove("events").apply(); } }
+    public void clear() { synchronized (LOCK) { prefs.edit().remove("events").remove("latest").apply(); } }
 }

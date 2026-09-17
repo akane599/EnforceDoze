@@ -1,0 +1,7 @@
+<resources>
+    <color name="colorPrimary">#91D6C3</color>
+    <color name="colorPrimaryDark">#173B32</color>
+    <color name="colorAccent">#91D6C3</color>
+    <color name="app_surface">#101813</color>
+    <color name="app_on_surface">#DFE8DF</color>
+</resources>

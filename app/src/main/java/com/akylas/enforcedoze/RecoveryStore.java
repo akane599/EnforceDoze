@@ -9,7 +9,8 @@ import java.util.List;
 
 public final class RecoveryStore implements RestorationJournal.Store {
     private final SharedPreferences prefs;
-    public RecoveryStore(Context context) { prefs = context.getSharedPreferences("recovery", Context.MODE_PRIVATE); }
+    public RecoveryStore(Context context) { this(context,"recovery"); }
+    public RecoveryStore(Context context,String name) { prefs = context.getSharedPreferences(name, Context.MODE_PRIVATE); }
     @Override public List<RestorationJournal.Entry> load() {
         List<RestorationJournal.Entry> entries = new ArrayList<>();
         try {
