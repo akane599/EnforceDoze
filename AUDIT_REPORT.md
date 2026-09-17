@@ -7,7 +7,7 @@ Original source `a5b7c4a`, original APK 1.10.2/86 from the user-supplied release
 - Reviewed manifest, Gradle/dependencies/wrapper, tests, workflow, Fastlane/Gem configuration, README/website/store descriptions, licenses, resource/theme/layout/shortcut structure. Resource XML parses and lint runs. Existing binary artwork/store screenshots retained as historical assets, not current visual evidence.
 - Existing translation resources were inventoried and linted; a full linguistic review is NOT complete. New explanatory UI is English. Android accessibility/layout is source-reviewed; actual Android screenshot/accessibility execution remains blocked by emulator boot.
 - Baseline APK provenance/certificate/manifest verified; original source debug/release builds pass. Original JVM and instrumentation tests fail compilation; baseline lint has 2 errors/160 warnings.
-- Final runtime coverage remains separate: no device tests or Android screen reviews have passed yet. See PROGRESS and docs/DELIVERY for current execution results.
+- Final runtime coverage remains separate: no device tests or Android screen reviews have passed yet. See [PROGRESS](PROGRESS.md) and [DELIVERY](docs/DELIVERY.md) for final execution results.
 
 ## Confirmed defects and resolutions
 | ID | Priority | Evidence in original/follow-up code | Implemented resolution; validation limit |
@@ -56,7 +56,7 @@ Earlier running notes reused A13/A14 for later findings. This final table preser
 - No measured battery-saving percentage or claim of continuous monitoring/physical sensor power-off. No remaining confirmed defect is knowingly presented as fixed without source changes; runtime compatibility suspicions remain open until execution.
 
 ## Next action
-Final build passed. Commit app/test follow-up, refresh signed APKs/reports, finalize DELIVERY/PR and PROGRESS records, then commit delivery. All remote actions still require explicit approval.
+Local implementation, full build and signed APK verification complete; final reports/artifacts prepared. Remaining validation requires a working accelerated API36 emulator. Run the prepared suites and inspect actual app screenshots there; investigate failures before treating this as runtime-validated. Physical Samsung, root/legacy and hardware behavior remain unverified. All remote actions still require explicit approval.
 
 ## Primary platform basis
 - [Android Doze](https://developer.android.com/training/monitoring-device-state/doze-standby)
@@ -68,3 +68,5 @@ Final build passed. Commit app/test follow-up, refresh signed APKs/reports, fina
 
 ## Enhancements not required for this delivery
 Full localization, on-device power profiling, broader OEM/device coverage and future dependency/API modernization are follow-up opportunities. They must not be confused with the runtime validation still required above.
+
+Final artifact verification: freshly signed debug and non-debug APKs PASS signature/zip alignment/manifest flag checks; R8 retains PrivilegedService, PrivilegedCommand and AIDL entry points. Current hashes and public certificates are in artifacts and docs/DELIVERY.md. No Android install/runtime success is claimed.

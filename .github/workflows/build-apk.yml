@@ -1,0 +1,111 @@
+name: Build and test APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      signing:
+        description: 'Signing: temporary keys cannot update APKs from another run'
+        type: choice
+        options: [Temporary test key, Configured signing key]
+        default: Temporary test key
+      device_tests:
+        description: Run Android 16 UI and real Shizuku integration tests
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@138b5fb1cf087fdb4c5f3c621466fe304d0cf2e3 # v4.0.3
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+      - name: Install Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+      - name: JVM tests, lint and APK builds
+        run: ./gradlew testDebugUnitTest lintDebug assembleDebug assembleRelease assembleDebugAndroidTest --max-workers=2 --console=plain
+      - name: Release script guard checks
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          ruby tools/check-fastlane.rb | tee artifacts/release-script-checks.txt
+      - name: Sign installable release APK
+        env:
+          SIGNING_MODE: ${{ inputs.signing }}
+          KEYSTORE_BASE64: ${{ secrets.APK_KEYSTORE_BASE64 }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.APK_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.APK_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          export RELEASE_KEYSTORE="$RUNNER_TEMP/enforcedoze-signing.jks"
+          trap 'rm -f "$RELEASE_KEYSTORE"' EXIT
+          if [[ "$SIGNING_MODE" == 'Configured signing key' ]]; then
+            : "${KEYSTORE_BASE64:?Configure APK_KEYSTORE_BASE64}"
+            : "${RELEASE_KEYSTORE_PASSWORD:?Configure APK_KEYSTORE_PASSWORD}"
+            : "${RELEASE_KEYSTORE_ALIAS:?Configure APK_KEY_ALIAS}"
+            : "${RELEASE_KEY_PASSWORD:?Configure APK_KEY_PASSWORD}"
+            printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RELEASE_KEYSTORE"
+          else
+            export RELEASE_KEYSTORE_PASSWORD="$(openssl rand -hex 24)"
+            export RELEASE_KEY_PASSWORD="$RELEASE_KEYSTORE_PASSWORD"
+            export RELEASE_KEYSTORE_ALIAS=testing
+            echo "::add-mask::$RELEASE_KEYSTORE_PASSWORD"
+            keytool -genkeypair -keystore "$RELEASE_KEYSTORE" -storetype JKS \
+              -storepass:env RELEASE_KEYSTORE_PASSWORD -keypass:env RELEASE_KEY_PASSWORD \
+              -alias testing -keyalg RSA -keysize 3072 -validity 3650 \
+              -dname 'CN=EnforceDoze Temporary Test Build' -noprompt
+          fi
+          tools/sign-apk.sh app/build/outputs/apk/release/app-release-unsigned.apk artifacts/enforcedoze-release.apk
+          cp app/build/outputs/apk/debug/app-debug.apk artifacts/enforcedoze-debug.apk
+          printf 'Commit: %s\nSigning mode: %s\nDevice tests requested: %s\nCheck test reports before installing.\n' \
+            "$GITHUB_SHA" "$SIGNING_MODE" '${{ inputs.device_tests }}' > artifacts/BUILD-INFO.txt
+          sha256sum artifacts/*.apk > artifacts/SHA256SUMS.txt
+      - name: Start disposable Android 16 emulator and Shizuku
+        if: inputs.device_tests
+        run: |
+          set -euo pipefail
+          sudo chmod 666 /dev/kvm
+          sdkmanager 'emulator' 'system-images;android-36;google_atd;x86_64'
+          echo no | avdmanager create avd --name enforcedoze_ci --package 'system-images;android-36;google_atd;x86_64' --device pixel_2
+          emulator -avd enforcedoze_ci -port 5554 -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -cores 2 -memory 2048 > artifacts/emulator.log 2>&1 &
+          timeout 120 adb -s emulator-5554 wait-for-device
+          timeout 600 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed | tr -d "\r")" == 1 ]]; do sleep 2; done'
+          adb -s emulator-5554 unroot
+          adb -s emulator-5554 wait-for-device
+          curl --fail --location --retry 3 \
+            https://github.com/RikkaApps/Shizuku/releases/download/v13.6.0/shizuku-v13.6.0.r1086.2650830c-release.apk \
+            --output "$RUNNER_TEMP/shizuku.apk"
+          echo "6e273ab0e991c4e79bc8b1bbb9b9dd739ccac1a8712a541a214078886b7b790f  $RUNNER_TEMP/shizuku.apk" | sha256sum --check
+          tools/prepare-shizuku.sh emulator-5554 "$RUNNER_TEMP/shizuku.apk"
+      - name: Android 16 UI and Shizuku tests
+        if: inputs.device_tests
+        run: ./gradlew connectedDebugAndroidTest --max-workers=2 --console=plain
+      - name: Collect emulator evidence
+        if: always() && inputs.device_tests
+        run: |
+          timeout 30 adb -s emulator-5554 logcat -d > artifacts/logcat.txt 2>&1 || true
+          timeout 30 adb -s emulator-5554 pull /sdcard/Android/data/com.akylas.enforcedoze/files/screenshots artifacts/screenshots || true
+      - name: Upload APKs and reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: enforcedoze-${{ github.run_number }}
+          retention-days: 14
+          path: |
+            artifacts/
+            app/build/reports/
+            app/build/test-results/
+            app/build/outputs/androidTest-results/
+          if-no-files-found: error

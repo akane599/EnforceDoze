@@ -1,1 +1,1 @@
-Enable Doze mode immediately after screen off and turn off motion sensing
+Control screen-off Doze with saved observations and device-setting restoration
