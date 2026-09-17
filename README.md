@@ -51,7 +51,7 @@ Use JDK 21, SDK platform/build tools 36 and the checked-in Gradle wrapper:
 
 Release is unsigned unless explicit signing configuration is supplied. Device tests are separate from JVM tests and require a disposable emulator; the Shizuku suite fails when prerequisites are missing. See [test instructions](docs/TESTING.md), [audit results](AUDIT_REPORT.md) and the current [handoff record](PROGRESS.md) for actual results and remaining verification. A build completing does not imply device tests ran.
 
-The manual GitHub build workflow is prepared locally. It builds APKs and test reports without publishing releases or pushing changes. Running it or publishing this branch requires the owner's approval.
+The manual GitHub build workflow builds APKs and test reports without publishing releases or pushing changes. See the build instructions for default-branch availability and phone download steps.
 
 ## Privacy, source and license
 
