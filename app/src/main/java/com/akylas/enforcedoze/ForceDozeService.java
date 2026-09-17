@@ -53,9 +53,18 @@ public class ForceDozeService extends Service {
             new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    boolean media = "media-changed".equals(intent.getAction());
-                    if (!media || option("whitelistMusicAppNetwork", false))
-                        signal(media ? "Media changed" : "Settings changed", true);
+                    String action = intent.getAction();
+                    boolean media = "media-changed".equals(action);
+                    if (media && !option("whitelistMusicAppNetwork", false)) return;
+                    String reason =
+                            media
+                                    ? "Media changed"
+                                    : "schedule-boundary".equals(action)
+                                            ? "Schedule boundary"
+                                            : "reenter-doze".equals(action)
+                                                    ? "Screen-off delay"
+                                                    : "Settings changed";
+                    signal(reason, true);
                 }
             };
 
@@ -342,7 +351,8 @@ public class ForceDozeService extends Service {
 
     private void applyOptions(int epoch) {
         optionalError = "";
-        if (!valid(epoch)) return;
+        // The first idle observation can already be a maintenance window.
+        if (maintenance || !valid(epoch)) return;
         Set<String> playing = Collections.emptySet();
         boolean protectMedia = option("whitelistMusicAppNetwork", false);
         NotificationService listener = NotificationService.getInstance();
@@ -389,7 +399,17 @@ public class ForceDozeService extends Service {
                             o -> "cmd power set-mode " + o),
                     "Battery saver");
         boolean protectHotspot = option("ignoreIfHotspot", true);
-        boolean hotspotOrUnknown = protectHotspot && hotspotActiveOrUnknown();
+        boolean networkSelected =
+                option("turnOnAirplaneInDoze", false)
+                        || option("turnOffWiFiInDoze", false)
+                        || option("turnOffDataInDoze", false);
+        boolean hotspotOrUnknown =
+                !keepNetwork && networkSelected && protectHotspot && hotspotActiveOrUnknown();
+        if (hotspotOrUnknown)
+            evidence.record(
+                    "Connectivity preserved",
+                    "Hotspot is active or its state is unavailable; selected connectivity controls"
+                            + " were skipped.");
         if (!keepNetwork && !hotspotOrUnknown && valid(epoch)) {
             if (option("turnOnAirplaneInDoze", false))
                 feature(
@@ -462,7 +482,9 @@ public class ForceDozeService extends Service {
         Set<String> blocked =
                 new HashSet<>(prefs.getStringSet("dozeAppBlockList", Collections.emptySet()));
         Set<String> focused =
-                option("whitelistCurrentApp", false) ? focusedPackages() : Collections.emptySet();
+                !blocked.isEmpty() && option("whitelistCurrentApp", false)
+                        ? focusedPackages()
+                        : Collections.emptySet();
         for (String pkg : blocked) {
             if (!valid(epoch)) break;
             if (protectMedia && (playing == null || playing.contains(pkg))) continue;
