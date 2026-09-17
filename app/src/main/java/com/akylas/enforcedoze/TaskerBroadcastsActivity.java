@@ -15,8 +15,8 @@ public class TaskerBroadcastsActivity extends BaseActivity {
                 card(
                         "Allow trusted automations",
                         "Each broadcast requires an automationToken string extra. Keep this token"
-                            + " private: it authorizes the controls below. Existing automations"
-                            + " must add it after upgrading.");
+                                + " private: it authorizes the controls below. Existing automations"
+                                + " must add it after upgrading.");
         MaterialSwitch enabled = new MaterialSwitch(this);
         enabled.setText("Allow automation broadcasts");
         enabled.setMinHeight(dp(56));
@@ -82,16 +82,16 @@ public class TaskerBroadcastsActivity extends BaseActivity {
         card(
                 "Supported setting keys",
                 "dozeEnterDelay: integer seconds, 0–1800\n\n"
-                    + "Boolean values must be true or false:\n"
-                    + "ignoreIfHotspot\n"
-                    + "turnOffDataInDoze\n"
-                    + "turnOffWiFiInDoze\n"
-                    + "ignoreLockscreenTimeout\n"
-                    + "disableMotionSensors\n"
-                    + "disableWhenCharging\n"
-                    + "showPersistentNotif\n"
-                    + "waitForUnlock\n"
-                    + "turnOnBatterySaverInDoze\n"
-                    + "whitelistMusicAppNetwork");
+                        + "Boolean values must be true or false:\n"
+                        + "ignoreIfHotspot\n"
+                        + "turnOffDataInDoze\n"
+                        + "turnOffWiFiInDoze\n"
+                        + "ignoreLockscreenTimeout\n"
+                        + "disableMotionSensors\n"
+                        + "disableWhenCharging\n"
+                        + "showPersistentNotif\n"
+                        + "waitForUnlock\n"
+                        + "turnOnBatterySaverInDoze\n"
+                        + "whitelistMusicAppNetwork");
     }
 }

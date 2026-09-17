@@ -51,9 +51,9 @@ public class CompatibilityActivity extends BaseActivity {
         card(
                 "Recovery limits",
                 "If access is unavailable, temporary changes may remain active until it returns. Do"
-                    + " not uninstall or clear app data while changes are pending: that removes"
-                    + " their recovery records. Existing restrictions made by older versions"
-                    + " without saved originals cannot be reconstructed safely.");
+                        + " not uninstall or clear app data while changes are pending: that removes"
+                        + " their recovery records. Existing restrictions made by older versions"
+                        + " without saved originals cannot be reconstructed safely.");
         button(
                 body,
                 "Shizuku manual",

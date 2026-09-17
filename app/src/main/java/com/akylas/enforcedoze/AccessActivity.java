@@ -24,7 +24,7 @@ public class AccessActivity extends BaseActivity {
                 card(
                         "Privileged access",
                         "Shizuku is recommended on Android 16. Start it in the Shizuku app,"
-                            + " authorize EnforceDoze, then verify the connection.");
+                                + " authorize EnforceDoze, then verify the connection.");
         status = text(card, "", 16, false);
         status.setId(R.id.access_status);
         button(
@@ -45,8 +45,8 @@ public class AccessActivity extends BaseActivity {
                                             message(
                                                     "Restore first",
                                                     "Temporary changes belong to the previous"
-                                                        + " access mode. Restore them before"
-                                                        + " switching.");
+                                                            + " access mode. Restore them before"
+                                                            + " switching.");
                                             return;
                                         }
                                         PreferenceManager.getDefaultSharedPreferences(this)
@@ -168,7 +168,7 @@ public class AccessActivity extends BaseActivity {
                 card(
                         "Keep recovery visible",
                         "Allow notifications so access failures and pending restoration remain"
-                            + " visible. Phone permission lets monitoring pause for calls.");
+                                + " visible. Phone permission lets monitoring pause for calls.");
         button(
                 permissions,
                 "Allow notifications & call protection",
@@ -181,7 +181,18 @@ public class AccessActivity extends BaseActivity {
                         list.add(Manifest.permission.READ_PHONE_STATE);
                     if (!list.isEmpty())
                         ActivityCompat.requestPermissions(this, list.toArray(new String[0]), 20);
-                    else
+                    else if (!Utils.areRecoveryNotificationsAvailable(this)) {
+                        Intent notificationSettings =
+                                Build.VERSION.SDK_INT >= 26
+                                        ? new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                                .putExtra(
+                                                        Settings.EXTRA_APP_PACKAGE,
+                                                        getPackageName())
+                                        : new Intent(
+                                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                                Uri.parse("package:" + getPackageName()));
+                        safeStart(notificationSettings);
+                    } else
                         message(
                                 "Permissions ready",
                                 "Notifications and call protection are available.");
@@ -211,7 +222,7 @@ public class AccessActivity extends BaseActivity {
                         message(
                                 "Available",
                                 "This Android version allows exact alarms without additional"
-                                    + " access.");
+                                        + " access.");
                 });
         card(
                 "Legacy ADB access",

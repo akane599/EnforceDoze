@@ -249,6 +249,13 @@ public class ForceDozeService extends Service {
             status("Waiting for screen-off delay", "");
             return;
         }
+        if (!Utils.areRecoveryNotificationsAvailable(this)) {
+            status(
+                    "Recovery notifications need permission",
+                    "Allow Notifications in access setup before automatic device changes can"
+                            + " start.");
+            return;
+        }
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
                 && !Utils.isReadPhoneStatePermissionGranted(this)) {
             status(
@@ -288,7 +295,7 @@ public class ForceDozeService extends Service {
             status(
                     "Doze could not start",
                     "Open diagnostics. Check privileged access and retry; no successful Doze"
-                        + " session is assumed.");
+                            + " session is assumed.");
             return;
         }
         active = true;
@@ -307,7 +314,7 @@ public class ForceDozeService extends Service {
             evidence.record(
                     "Deep Doze observed",
                     "DeviceIdleController mState=IDLE; screen off before and after query. This is a"
-                        + " point-in-time observation.");
+                            + " point-in-time observation.");
             if (maintenance && valid(epoch)) {
                 maintenance = false;
                 applyOptions(epoch);
@@ -503,7 +510,7 @@ public class ForceDozeService extends Service {
         java.util.regex.Matcher m =
                 java.util.regex.Pattern.compile(
                                 "(?:mResumedActivity|topResumedActivity|mFocusedApp)[^\\n"
-                                    + "]*? ([A-Za-z][A-Za-z0-9_.]+)/")
+                                        + "]*? ([A-Za-z][A-Za-z0-9_.]+)/")
                         .matcher(result.output);
         Set<String> found = new HashSet<>();
         while (m.find()) found.add(m.group(1));

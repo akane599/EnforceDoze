@@ -59,14 +59,14 @@ public class SettingsActivity extends BaseActivity {
                     "ignoreLockscreenTimeout",
                     "Ignore lock delay",
                     "Start after the screen-off delay without also waiting for Android’s lock"
-                        + " timeout.",
+                            + " timeout.",
                     true);
             Preference delay =
                     entry(
                             general,
                             "Screen-off delay",
                             "0–1800 seconds. Without exact-alarm access, Android may delay the"
-                                + " trigger.");
+                                    + " trigger.");
             delay.setKey("delayEditor");
             delay.setOnPreferenceClickListener(
                     p -> {
@@ -78,7 +78,7 @@ public class SettingsActivity extends BaseActivity {
                             general,
                             "Daily schedule",
                             "Local-time periods, including overnight. Empty means all day. Manual"
-                                + " Stop always takes priority.");
+                                    + " Stop always takes priority.");
             periods.setOnPreferenceClickListener(
                     p -> {
                         editPeriods();
@@ -89,15 +89,15 @@ public class SettingsActivity extends BaseActivity {
                     "waitForUnlock",
                     "Restore connectivity on unlock",
                     "Sensor controls and forced Doze end on screen-on. Other temporary changes may"
-                        + " remain until unlock. Charging, calls and stopping still restore"
-                        + " everything.",
+                            + " remain until unlock. Charging, calls and stopping still restore"
+                            + " everything.",
                     false);
             toggle(
                     general,
                     "showPersistentNotif",
                     "Detailed monitoring notification",
                     "Optional live status. Off keeps a quiet, stable monitoring notification."
-                        + " Errors use a separate notification.",
+                            + " Errors use a separate notification.",
                     false);
             toggle(
                     general,
@@ -111,28 +111,28 @@ public class SettingsActivity extends BaseActivity {
                             network,
                             "Delivery can be interrupted",
                             "Disabling a radio can delay messages and VoIP calls. Doze exemptions"
-                                + " cannot compensate for a disabled connection.")
+                                    + " cannot compensate for a disabled connection.")
                     .setSelectable(false);
             toggle(
                     network,
                     "ignoreIfHotspot",
                     "Protect hotspot",
                     "Keep Wi-Fi, mobile data and airplane mode unchanged when hotspot is active or"
-                        + " its state cannot be read.",
+                            + " its state cannot be read.",
                     true);
             toggle(
                     network,
                     "whitelistMusicAppNetwork",
                     "Protect media playback",
                     "Keep connectivity and playing apps available. Requires notification access;"
-                        + " unknown playback state is protected conservatively.",
+                            + " unknown playback state is protected conservatively.",
                     false);
             toggle(
                     network,
                     "turnOffWiFiInDoze",
                     "Turn off Wi-Fi",
                     "Temporarily disables Wi-Fi, then restores the observed original state. Shizuku"
-                        + " started over wireless debugging may disconnect on some devices.",
+                            + " started over wireless debugging may disconnect on some devices.",
                     false);
             toggle(
                     network,
@@ -147,29 +147,29 @@ public class SettingsActivity extends BaseActivity {
                     "turnOnAirplaneInDoze",
                     "Enable airplane mode",
                     "Intentionally disconnects cellular service, including incoming calls. Carrier"
-                        + " and OEM behavior varies. Restore is attempted on observed calls and"
-                        + " screen-on.",
+                            + " and OEM behavior varies. Restore is attempted on observed calls and"
+                            + " screen-on.",
                     false);
             toggle(
                     network,
                     "turnOffBluetoothInDoze",
                     "Turn off Bluetooth",
                     "Disconnects headphones, watches and other Bluetooth devices. Media protection"
-                        + " takes priority.",
+                            + " takes priority.",
                     false);
             toggle(
                     network,
                     "turnOffGPSInDoze",
                     "Turn off location",
                     "Disables the user’s location setting, including navigation and location-based"
-                        + " background work.",
+                            + " background work.",
                     false);
             toggle(
                     network,
                     "turnOnBatterySaverInDoze",
                     "Enable battery saver",
                     "Restores the original saver state. Android may reject battery saver while"
-                        + " charging.",
+                            + " charging.",
                     false);
 
             PreferenceCategory sensors = category("Sensor & unlock controls");
@@ -186,7 +186,7 @@ public class SettingsActivity extends BaseActivity {
                             sensors,
                             "Sensor access exemption",
                             "Optional package name. Android matches this as a substring; it may"
-                                + " match related packages too.");
+                                    + " match related packages too.");
             exemption.setOnPreferenceClickListener(
                     p -> {
                         editSensorExemption();
@@ -197,8 +197,8 @@ public class SettingsActivity extends BaseActivity {
                     "turnOffAllSensorsInDoze",
                     "Developer sensor privacy",
                     "Separate Sensors off control, including camera/microphone clients where"
-                        + " Android supports it. Uses Shizuku or root and requires a verified"
-                        + " original state.",
+                            + " Android supports it. Uses Shizuku or root and requires a verified"
+                            + " original state.",
                     false);
             toggle(
                     sensors,
@@ -227,21 +227,21 @@ public class SettingsActivity extends BaseActivity {
                     apps,
                     "Suspend selected apps",
                     "Temporary suspension interrupts app execution and notifications. System apps"
-                        + " and the access provider are protected.",
+                            + " and the access provider are protected.",
                     BlockAppsActivity.class);
             toggle(
                     apps,
                     "whitelistCurrentApp",
                     "Protect foreground app",
                     "Skips suspension when the foreground app cannot be identified. The screen-off"
-                        + " system snapshot may show the launcher or lock screen.",
+                            + " system snapshot may show the launcher or lock screen.",
                     false);
             link(
                     apps,
                     "Filter selected notifications",
                     "Dismisses new, non-ongoing notifications during monitored screen-off"
-                        + " intervals. Calls, alarms and media are protected. Dismissed"
-                        + " notifications cannot be recreated.",
+                            + " intervals. Calls, alarms and media are protected. Dismissed"
+                            + " notifications cannot be recreated.",
                     BlockNotificationsActivity.class);
             link(
                     apps,
@@ -265,7 +265,7 @@ public class SettingsActivity extends BaseActivity {
                     "disableStats",
                     "Do not save monitoring history",
                     "Diagnostic observations and recovery records remain available for safe"
-                        + " operation.",
+                            + " operation.",
                     false);
             toggle(
                     other,
@@ -294,7 +294,7 @@ public class SettingsActivity extends BaseActivity {
                             other,
                             "Reset app options",
                             "Stops monitoring and restores saved changes before clearing options."
-                                + " Recovery data is never discarded on failure.");
+                                    + " Recovery data is never discarded on failure.");
             reset.setOnPreferenceClickListener(
                     p -> {
                         reset();
@@ -416,7 +416,7 @@ public class SettingsActivity extends BaseActivity {
                                                     if (ScheduleRules.parse(line) == null) {
                                                         value.setError(
                                                                 "Use a valid period, for example"
-                                                                    + " 22:00-07:00");
+                                                                        + " 22:00-07:00");
                                                         return;
                                                     }
                                                     periods.add(line);

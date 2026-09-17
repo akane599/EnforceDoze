@@ -38,11 +38,25 @@ public abstract class PackageListActivity extends BaseActivity {
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(dp(16), 0, dp(16), 0);
         status = text(content, "Loading…", 15, false);
+        if (mode().equals("apps"))
+            text(
+                    content,
+                    "Suspension stops selected apps, including their app calls and notifications."
+                        + " System apps and the access provider are protected.",
+                    14,
+                    false);
+        if (mode().equals("exempt"))
+            text(
+                    content,
+                    "These persistent exemptions do not override a disabled radio or app"
+                        + " suspension. Android controls system exemptions.",
+                    14,
+                    false);
         if (mode().equals("notifications"))
             text(
                     content,
                     "Requires notification access in Access & permissions. New dismissible"
-                        + " notifications are removed; they cannot be restored.",
+                            + " notifications are removed; they cannot be restored.",
                     14,
                     false);
         LinearLayout actions = new LinearLayout(this);
@@ -67,7 +81,7 @@ public abstract class PackageListActivity extends BaseActivity {
                         message(
                                 "System exemption",
                                 "Android controls this exemption. It cannot be removed as a user"
-                                    + " exemption.");
+                                        + " exemption.");
                         return;
                     }
                     new MaterialAlertDialogBuilder(this)
@@ -176,7 +190,7 @@ public abstract class PackageListActivity extends BaseActivity {
                                                                 0, Math.min(300, problem.length()))
                                                 : data.isEmpty()
                                                         ? "No apps selected. Use Add app to choose"
-                                                              + " one."
+                                                                + " one."
                                                         : data.size()
                                                                 + " apps · tap an entry to remove"
                                                                 + " it");

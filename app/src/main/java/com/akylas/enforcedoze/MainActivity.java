@@ -63,6 +63,21 @@ public class MainActivity extends BaseActivity
                         "Start monitoring",
                         () -> {
                             boolean enabled = !prefs.getBoolean("serviceEnabled", false);
+                            if (enabled && !Utils.areRecoveryNotificationsAvailable(this)) {
+                                new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                                                this)
+                                        .setTitle("Allow recovery notifications")
+                                        .setMessage(
+                                                "Notifications are needed before monitoring can"
+                                                    + " make device changes, so access errors and"
+                                                    + " pending restoration stay visible.")
+                                        .setNegativeButton("Cancel", null)
+                                        .setPositiveButton(
+                                                "Set up access",
+                                                (d, w) -> open(AccessActivity.class))
+                                        .show();
+                                return;
+                            }
                             prefs.edit().putBoolean("serviceEnabled", enabled).apply();
                             if (enabled) Utils.startForceDozeService(this);
                             else Utils.stopForceDozeService(this);
@@ -95,7 +110,7 @@ public class MainActivity extends BaseActivity
                 card(
                         "Make it yours",
                         "Connectivity and sensor options are independent controls. Review their"
-                            + " effects before enabling them.");
+                                + " effects before enabling them.");
         button(controls, "Settings", () -> open(SettingsActivity.class));
         button(controls, "App exemptions", () -> open(WhitelistAppsActivity.class));
         button(controls, "Android & Samsung guidance", () -> open(CompatibilityActivity.class));
@@ -150,7 +165,7 @@ public class MainActivity extends BaseActivity
                         ? error
                         : enabled
                                 ? "Responds to screen, power and call events. Check saved evidence"
-                                      + " to confirm Deep Doze."
+                                        + " to confirm Deep Doze."
                                 : "Temporary changes are restored before monitoring stops.");
         toggle.setText(enabled ? "Stop & restore" : "Start monitoring");
         String mode = prefs.getString("executionMode", "shizuku");
@@ -161,8 +176,7 @@ public class MainActivity extends BaseActivity
                                         ? "Root mode • use Set up access to verify"
                                         : "ADB-granted app mode • limited on Android 14+")
                         + "\nNotifications: "
-                        + (Build.VERSION.SDK_INT < 33
-                                        || Utils.isPostNotificationPermissionGranted(this)
+                        + (Utils.areRecoveryNotificationsAvailable(this)
                                 ? "allowed"
                                 : "permission needed")
                         + "\nCall protection: "
@@ -175,14 +189,14 @@ public class MainActivity extends BaseActivity
                                 + "\n\n"
                                 + (enabled && running
                                         ? "These changes have saved original values. Access is"
-                                              + " needed to restore them."
+                                                + " needed to restore them."
                                         : "Restoration is pending. Reconnect the original access"
-                                              + " mode and retry.")
+                                                + " mode and retry.")
                         : "Nothing to restore.");
         last.setText(
                 evidencePrefs.getString(
                         "latest",
                         "No observations yet. Turn the screen off with monitoring enabled, then"
-                            + " review the results here."));
+                                + " review the results here."));
     }
 }

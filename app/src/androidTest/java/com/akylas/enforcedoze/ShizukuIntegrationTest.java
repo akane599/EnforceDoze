@@ -76,7 +76,13 @@ public class ShizukuIntegrationTest {
             await(
                     "Shizuku must be running and authorized",
                     () -> ShizukuHandler.getInstance(context).isShizukuAvailable());
-            assertEquals("2000", device(() -> new AccessExecutor(context).run("id -u")).output);
+            await(
+                    "Authorized user service must execute as shell UID 2000",
+                    () -> {
+                        CommandResult identity =
+                                device(() -> new AccessExecutor(context).run("id -u"));
+                        return identity.ok() && identity.output.equals("2000");
+                    });
             assertTrue(
                     "Any earlier interrupted test must recover",
                     device(() -> new DeviceController(context).restore()));
@@ -264,6 +270,26 @@ public class ShizukuIntegrationTest {
             assertEquals("NORMAL", read("dumpsys sensorservice", "sensor"));
             ApplicationTest.screenshot("recovery-completed");
         }
+    }
+
+    @Test
+    public void userServiceDeathReconnectsWhileManagerRemainsAvailable() throws Exception {
+        String before = ui.executeShellCommand("pidof com.akylas.enforcedoze:privileged").trim();
+        assertTrue("Privileged helper PID", before.matches("[0-9]+"));
+        ui.executeShellCommand("kill -9 " + before);
+        await(
+                "Rebind user service after helper death",
+                () -> {
+                    CommandResult result = device(() -> new AccessExecutor(context).run("id -u"));
+                    String after =
+                            ui.executeShellCommand("pidof com.akylas.enforcedoze:privileged")
+                                    .trim();
+                    return result.ok()
+                            && result.output.equals("2000")
+                            && !after.isEmpty()
+                            && !after.equals(before);
+                });
+        assertTrue(ShizukuHandler.getInstance(context).isShizukuAvailable());
     }
 
     private long monitorPostTime() {

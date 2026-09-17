@@ -250,6 +250,21 @@ public class Utils {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    public static boolean areRecoveryNotificationsAvailable(Context context) {
+        if (Build.VERSION.SDK_INT >= 33 && !isPostNotificationPermissionGranted(context))
+            return false;
+        if (!androidx.core.app.NotificationManagerCompat.from(context).areNotificationsEnabled())
+            return false;
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel =
+                    context.getSystemService(NotificationManager.class)
+                            .getNotificationChannel("recovery_v2");
+            return channel == null
+                    || channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        }
+        return true;
+    }
+
     public static boolean isReadPhoneStatePermissionGranted(Context context) {
         return context.checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED;

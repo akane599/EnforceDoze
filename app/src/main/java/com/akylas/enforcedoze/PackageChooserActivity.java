@@ -82,7 +82,7 @@ public class PackageChooserActivity extends BaseActivity {
                                     if (!isDestroyed())
                                         status.setText(
                                                 "Could not load apps. Close this screen and"
-                                                    + " retry.");
+                                                        + " retry.");
                                 });
                     }
                 });

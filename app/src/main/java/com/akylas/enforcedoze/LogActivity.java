@@ -15,7 +15,7 @@ public class LogActivity extends BaseActivity {
                 card(
                         "Saved on this device",
                         "Up to 200 observations are kept locally. They record individual checks,"
-                            + " not continuous monitoring. Sharing is always your choice.");
+                                + " not continuous monitoring. Sharing is always your choice.");
         button(controls, "Refresh", this::refresh);
         button(controls, "Copy diagnostics", () -> copy("EnforceDoze diagnostics", report()));
         button(
@@ -36,7 +36,7 @@ public class LogActivity extends BaseActivity {
                                 .setTitle("Clear saved observations?")
                                 .setMessage(
                                         "Recovery records and monitoring history are kept"
-                                            + " separately.")
+                                                + " separately.")
                                 .setNegativeButton("Cancel", null)
                                 .setPositiveButton(
                                         "Clear",

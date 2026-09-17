@@ -49,8 +49,8 @@ public class AboutAppActivity extends BaseActivity {
                     StringBuilder licenses =
                             new StringBuilder(
                                     "EnforceDoze: GNU GPL v3\n"
-                                        + "AndroidX, Material Components, Kotlin: Apache 2.0\n"
-                                        + "Shizuku API: MIT (RikkaW)\n\n");
+                                            + "AndroidX, Material Components, Kotlin: Apache 2.0\n"
+                                            + "Shizuku API: MIT (RikkaW)\n\n");
                     try {
                         for (String file :
                                 new String[] {

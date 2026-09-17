@@ -20,9 +20,9 @@ public class DozeTunablesActivity extends BaseActivity {
         card(
                 "Advanced timing controls",
                 "Values affect Android globally and persist until restored here. Stop monitoring"
-                    + " first. Only constants listed by this device are offered for changes."
-                    + " Android or the OEM may clamp values; stored values alone do not prove a"
-                    + " battery benefit.");
+                        + " first. Only constants listed by this device are offered for changes."
+                        + " Android or the OEM may clamp values; stored values alone do not prove a"
+                        + " battery benefit.");
         status =
                 text(
                         body,
@@ -71,7 +71,7 @@ public class DozeTunablesActivity extends BaseActivity {
             message(
                     "Stop and restore first",
                     "Stop monitoring and finish pending restoration before changing Android timing"
-                        + " values.");
+                            + " values.");
             return false;
         }
         return true;
@@ -251,13 +251,13 @@ public class DozeTunablesActivity extends BaseActivity {
                                             done
                                                     ? (restore
                                                             ? "Previous tunables restored and read"
-                                                                  + " back."
+                                                                    + " back."
                                                             : "Stored value verified. Use Restore"
-                                                                  + " previous tunables before"
-                                                                  + " editing this value again.")
+                                                                    + " previous tunables before"
+                                                                    + " editing this value again.")
                                                     : "Not verified. Check access and diagnostics."
-                                                          + " Saved original values remain"
-                                                          + " available for restoration.\n"
+                                                            + " Saved original values remain"
+                                                            + " available for restoration.\n"
                                                             + store.summary());
                             });
                 });

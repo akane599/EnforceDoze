@@ -39,6 +39,24 @@ public final class ShizukuHandler {
                         binding = false;
                         connectionLock.notifyAll();
                     }
+                    try {
+                        binder.linkToDeath(
+                                () -> {
+                                    synchronized (connectionLock) {
+                                        if (service == null || service.asBinder() != binder) return;
+                                        service = null;
+                                        binding = false;
+                                        connectionLock.notifyAll();
+                                    }
+                                    notifyListeners();
+                                    bind();
+                                },
+                                0);
+                    } catch (android.os.RemoteException e) {
+                        disconnected();
+                        bind();
+                        return;
+                    }
                     notifyListeners();
                 }
 
@@ -157,7 +175,7 @@ public final class ShizukuHandler {
             return new CommandResult(
                     -2,
                     "An earlier privileged operation is still in flight. Recovery remains pending."
-                        + " Restart Shizuku if it does not finish.");
+                            + " Restart Shizuku if it does not finish.");
         if (!isShizukuAvailable()) return new CommandResult(-1, status());
         bind();
         try {

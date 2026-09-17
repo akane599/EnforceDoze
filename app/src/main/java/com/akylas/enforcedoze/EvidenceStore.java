@@ -62,14 +62,14 @@ public final class EvidenceStore implements RestorationJournal.Evidence {
             StringBuilder text =
                     new StringBuilder(
                             "Saved observations, not continuous monitoring.\n"
-                                + "Sensor access restrictions do not prove physical sensors are"
-                                + " powered off.\n\n");
+                                    + "Sensor access restrictions do not prove physical sensors are"
+                                    + " powered off.\n\n");
             try {
                 JSONArray events = new JSONArray(prefs.getString("events", "[]"));
                 if (events.length() == 0)
                     text.append(
                             "No observations yet. Start monitoring, then turn the screen off and"
-                                + " on.\n");
+                                    + " on.\n");
                 for (int i = events.length() - 1; i >= 0; i--) {
                     JSONObject e = events.getJSONObject(i);
                     text.append(

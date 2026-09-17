@@ -66,3 +66,10 @@ Additional confirmed: tunable commands omit device_idle namespace, whitelist UI 
 - Latest completed check: 24 JVM tests, debug/androidTest APK builds and lint PASS, `/tmp/enforcedoze-79dd/stage5-followup.log`. Latest stage5-current.log also PASS for 24 tests, both APK builds and lint. No emulator tests have executed.
 - Resource review: stale layouts/styles removed; old unused translation resources and historical screenshots retained. Lint largely reports unused resources/typography, plus documented privileged APIs. New UI explanatory copy is English; linguistic completeness of translations is not claimed.
 - Remaining audit/release queue: website claims, safe manual build workflow, Fastlane publishing guards, final manifest/resource checks and runtime results; actual visual review and Samsung hardware limitations must remain separate.
+
+## Latest validation / environment finding
+- Full build including minified unsigned release PASSED in final-build.log; 24 JVM tests and lint pass. Latest notification/child-Binder follow-up also PASSED the full build in delivery-build.log (24 JVM tests, zero failures/errors/skips; debug/release/androidTest; lint zero errors).
+- API 36 ATD failed before any app installation: system_server native SIGSEGV (NetworkWatchlist) and watchdog/zygote restart under software emulation; baseline install explicitly rejected as still booting. This is an environment/platform failure, not a passing or skipped EnforceDoze test. Investigating official older emulator fallback; no physical Samsung available.
+- Manual APK workflow passes actionlint; Ruby/scripts and resource XML parse checks pass. Workflow remains local/unrun and final signing is pending.
+
+- Latest follow-up fixes gate new automatic changes on visible recovery notifications and explicitly reconnect a dead child user service even while the Shizuku manager remains alive. Sixth Shizuku regression test compiles. Actual device execution remains blocked by emulator boot.

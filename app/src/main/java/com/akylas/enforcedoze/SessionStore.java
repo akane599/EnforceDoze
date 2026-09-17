@@ -89,8 +89,8 @@ public final class SessionStore {
         StringBuilder text =
                 new StringBuilder(
                         "Monitoring duration is not time continuously spent in Deep Doze. Battery"
-                            + " changes are coarse percentage points, not savings caused by"
-                            + " EnforceDoze.\n\n");
+                                + " changes are coarse percentage points, not savings caused by"
+                                + " EnforceDoze.\n\n");
         try {
             JSONArray list = new JSONArray(prefs.getString("history", "[]"));
             if (prefs.contains("active")) text.append("A monitoring interval is in progress.\n\n");

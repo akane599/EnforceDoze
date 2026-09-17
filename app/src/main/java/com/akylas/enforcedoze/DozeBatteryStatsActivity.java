@@ -18,7 +18,7 @@ public class DozeBatteryStatsActivity extends BaseActivity {
                                 .setTitle("Clear history?")
                                 .setMessage(
                                         "This clears recorded intervals. Recovery information is"
-                                            + " preserved.")
+                                                + " preserved.")
                                 .setNegativeButton("Cancel", null)
                                 .setPositiveButton(
                                         "Clear",
