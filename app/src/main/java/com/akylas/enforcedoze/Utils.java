@@ -246,7 +246,8 @@ public class Utils {
     }
 
     public static boolean isPostNotificationPermissionGranted(Context context) {
-        return context.checkCallingOrSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+        return Build.VERSION.SDK_INT < 33
+                || context.checkCallingOrSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED;
     }
 

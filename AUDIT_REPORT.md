@@ -73,3 +73,5 @@ Additional confirmed: tunable commands omit device_idle namespace, whitelist UI 
 - Manual APK workflow passes actionlint; Ruby/scripts and resource XML parse checks pass. Workflow remains local/unrun and final signing is pending.
 
 - Latest follow-up fixes gate new automatic changes on visible recovery notifications and explicitly reconnect a dead child user service even while the Shizuku manager remains alive. Sixth Shizuku regression test compiles. Actual device execution remains blocked by emulator boot.
+
+- Confirmed backup risk: Android documents that allowBackup=false can still allow OEM device transfer. Added explicit Android 12+ domain exclusions for both cloud and device transfer, preventing device-specific undo/automation-token migration. Full backup-rules-build.log PASS: 24 JVM tests, debug/release/androidTest and lint zero errors. [Platform basis](https://developer.android.com/identity/data/autobackup).
