@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeBase" parent="Theme.Material3.Light.NoActionBar">
+    <style name="AppThemeBase" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
     <style name="AppThemeOverlay" parent="AppThemeBase">
     </style>
@@ -13,6 +13,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSurface">@color/app_surface</item>
+        <item name="colorOnSurface">@color/app_on_surface</item>
+        <item name="android:windowBackground">@color/app_surface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
@@ -20,7 +23,7 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
-    <style name="Transparent.NoTitleBar" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Transparent.NoTitleBar" parent="Theme.Material3.DayNight.NoActionBar">
         <!--on below line we are setting background as transparent color-->
         <item name="android:background">@android:color/transparent</item>
         <!--on below line we are displaying the windowNotitle as true as we are not displaying our status bar-->
@@ -35,13 +38,7 @@
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-    <style name="ThemeOverlay.App.Preference" parent="PreferenceThemeOverlay">
-        <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreference</item>
-    </style>
-
-    <style name="App.Preference.SwitchPreference" parent="Preference.SwitchPreference.Material">
-        <item name="android:widgetLayout">@layout/my_material_switch_layout</item>
-    </style>
+    <style name="ThemeOverlay.App.Preference" parent="PreferenceThemeOverlay" />
 
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>

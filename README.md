@@ -1,91 +1,60 @@
 # EnforceDoze
-EnforceDoze is a fork of [ForceDoze](https://github.com/theblixguy/ForceDoze) which is not maintained anymore. Thanks to [@theblixguy](https://github.com/theblixguy) for all his work on this.
 
-EnforceDoze allows you to forcefully enable Doze right after you turn off your screen, and on top of that, it also disables motion sensors so Doze stays active even if your device is not stationary while screen off. Doze will only deactivate periodically to execute maintenance jobs (like getting notifications, etc), otherwise it will remain active as long as your screen is off. This brings a lot more battery savings than standard Doze functionality, because even with screen off and Doze enabled, Doze is still periodically checking for movement, and disabling motion sensing improves battery life further.
+EnforceDoze requests Android Deep Doze during configured screen-off intervals. It is a GPL v3 fork of [ForceDoze](https://github.com/theblixguy/ForceDoze). This development branch targets Android 16/API 36, with Shizuku as the primary access mode and Android 6/API 23 as the minimum installation version.
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/com.akylas.enforcedoze/)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
-     alt="Get it on IzzyOnDroid"
-     height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.akylas.enforcedoze)
+A successful command or a long monitoring interval is not proof of Deep Doze. **Diagnostics** saves individual observations of Android's deep-idle state, screen state, applied controls and restoration. It keeps up to 200 local observations; history keeps up to 100 intervals. Battery changes are coarse percentage points, not measured savings attributable to this app.
 
-Or download the latest APK from the [Releases Section](https://github.com/farfromrefug/EnforceDoze/releases/latest).
+## Getting started
 
-   
-<h2 align="center">Enjoying Enforcedoze?</h2>
-<p align="center">Please consider making a small donation to help fund the project. Developing an application, especially one that is open source and completely free, takes a lot of time and effort.
-<br>
-<br>
-<div align="center">
-<a href="https://github.com/sponsors/farfromrefug">:heart: Sponsor</a>
-</div>
-<hr>
+1. Install an APK with a compatible signing certificate; see [build and signing instructions](docs/BUILDING.md).
+2. Open **Set up access**, start [Shizuku](https://shizuku.rikka.app/guide/setup/), authorize EnforceDoze and verify access. Root remains an explicit alternative. ADB-granted app access is a limited legacy mode and cannot force Deep Doze on modern Android.
+3. Allow notifications and Phone permission for visible recovery and call protection. Permit unrestricted battery use. Exact-alarm access improves schedule and delay timing; without it Android can delay alarms.
+4. Review optional controls in **Settings**, then start monitoring. Screen-on releases forced Doze and sensor controls. The unlock option can keep other temporary changes until unlock. Charging, detected calls, schedule boundaries and Stop restore changes.
+5. After a screen cycle, open **Diagnostics** to inspect actual observations and **Monitoring history** for intervals. Observations do not establish continuous idle residence.
 
-## Coverage:
- * LifeHacker: https://lifehacker.com/how-to-squeeze-more-battery-out-of-your-phone-with-andr-1791336715
- 
-# Features
-* Force Doze mode immediately after screen off or after a user specified delay
-* Add/remove apps or packages directly to system Doze whitelist
-* Disable motion sensors to prevent Doze from kicking in during movement
-* Disable Biometrics in doze mode to further improve battery life
-* Tasker support to turn on/off EnforceDoze and modify other features
-* Disable WiFi and mobile data completely during Doze
-* Enable Doze mode on devices where OEM has disabled it
-* No root mode so you can enjoy the core benefits without rooting your device
-* Free, no ads and open source
+Temporary changes are written to a recovery journal before commands run. Records are removed only after the original state is read back. If access disappears, pending changes stay visible and recovery retries when it returns. Android force-stop prevents recovery until the app is reopened. Do not uninstall or clear app data with restoration pending. Older versions did not save every original setting; those missing originals cannot be reconstructed. Upgrading pauses older monitoring options for review.
 
-Here is a table of features 
+## Features and limits
 
-| Feature              | Non Root | Root    |
-|-------------------------------|-------|--------|
-| **Disable Wifi**              | Android  < 29    | ✅      |
-| **Disable Mobile data**             | ❌     | ✅      |
-| **Disable Biometrics**                   | ❌     | Depending on device      |
-| **Disable Sensors**               | Depending on device     | ✅      | 
-| **Disable All sensors**(equivalent to the dev tile)             | ❌     | ✅  |
-| **Ignore disable with hotspot** | ✅ | ✅ |
-| **Whitelist music app**                      | ✅     | ✅      |
+| Control | Behavior and limits |
+|---|---|
+| Deep Doze | Shizuku/root force-idle request, followed by a separate state observation. Android controls maintenance and can resume natural idle after forced mode is released. |
+| Delay and daily schedule | Local-time periods, including overnight. Manual Stop takes priority. Exact alarms are optional; inexact timing can be delayed. |
+| App sensor access | SensorService restricted mode, with an optional package substring exemption. Restores NORMAL only when EnforceDoze owned the change. This does **not** prove physical sensor power-off. |
+| Developer sensor privacy | Separate Sensors off control, read and changed through named platform interfaces. Requires compatible privileged access; camera/microphone and OEM behavior vary. |
+| Wi-Fi, mobile data, airplane mode, Bluetooth, location, battery saver | Independent optional changes with saved originals and readback. Some controls/interfaces are unavailable on older Android or particular OEMs. Mobile data captures the default data subscription. Disabling connectivity intentionally interrupts delivery. |
+| Hotspot protection | Preserves affected connectivity when hotspot is active **or unreadable**. |
+| Media protection | Requires notification access. Preserves connectivity and app access when playback is active or cannot be identified reliably. |
+| Doze exemptions | Persistent system exemptions, edited through the selected access mode with verification. Cannot compensate for a disabled radio. |
+| App suspension | Temporarily suspends selected non-system apps. Protects EnforceDoze, Shizuku and selected media/foreground apps. Unknown foreground state conservatively skips suspension. |
+| Notification filtering | With notification access, dismisses newly posted selected notifications during monitoring. Protects ongoing, call, alarm and media notifications. Dismissed notifications cannot be recreated. Replaces obsolete notification-manager transaction-number calls. |
+| Biometric keyguard | Experimental: changes only an existing platform setting. Does not establish that fingerprint hardware is disabled; Samsung may ignore it. Restored on screen-on. |
+| Doze tunables | Changes one device-exposed constant, validates syntax and retains originals separately. Stored-value verification does not prove the OEM uses that value. Restore before editing the same value again. No namespace-wide reset. |
+| Tasker | Explicit opt-in and a locally generated token required for exported broadcasts. See the in-app Tasker screen for actions, extras and supported options. Existing unauthenticated tasks need updating. |
+| Quick Settings | Monitoring and airplane-in-Doze option tiles reflect stored intent. The airplane tile selects a future screen-off option, not an immediate radio toggle. |
 
-## Permissions
+The old automatic rotation/brightness toggle is retired: directly restoring SensorService avoids overwriting unrelated display preferences. Legacy history remains readable as unverified raw records. The new interface supports light/dark/system themes and scalable text; new explanatory copy currently uses English, while older translation resources are retained for migration.
 
-* `android.permission.QUERY_ALL_PACKAGES`: needed to select apps to doze
-* `android.permission.ACCESS_NETWORK_STATE`: used to detect hotspot state to not disable wifi/data if hostpot is enabled
-* `android.permission.READ_PHONE_STATE`: to check if mobile data need to be disabled on Doze if configured
-* `android.permission.ACCESS_WIFI_STATE`: to check if WiFi needs to be disabled on Doze if configured
-* `android.permission.CHANGE_WIFI_STATE`: to disable WiFi on Doze if configured
+## Samsung One UI
 
-[//]: # (# Download )
+Review EnforceDoze and Shizuku in **Battery → Background usage limits** and remove sleeping/deep-sleeping restrictions; use Never sleeping apps where available. Menu names vary. Samsung Auto Blocker can restrict debugging or installation. Shizuku's process does not survive reboot; start it again or configure its supported automatic startup.
 
-[//]: # (Play Store link: https://play.google.com/store/apps/details?id=com.akylas.enforcedoze&hl=en)
+**No physical Samsung device is available for this work.** Emulator results do not establish Samsung sensor-HAL, modem, incoming-call delivery, biometric or background-management behavior. In-app guidance and diagnostics explain these limits without claiming hardware validation. See [Samsung's application-management documentation](https://developer.samsung.com/mobile/app-management.html) and [Android Sensors off documentation](https://source.android.com/docs/core/interaction/sensors/sensors-off).
 
-## Android
-### Requirements for compiling source code and running the app:
+## Development and verification
 
-* Android 6.0 (Marshmallow) SDK platform
-* Android smartphone running 6.0 (Marshmallow)
-* Android Studio
-* Root (can work with limited functionality in non-root mode)
+Use JDK 21, SDK platform/build tools 36 and the checked-in Gradle wrapper:
 
-# License
+```sh
+./gradlew testDebugUnitTest lintDebug assembleDebug assembleRelease assembleDebugAndroidTest --max-workers=2
+```
 
-This code is licensed under GPL v3
+Release is unsigned unless explicit signing configuration is supplied. Device tests are separate from JVM tests and require a disposable emulator; the Shizuku suite fails when prerequisites are missing. See [test instructions](docs/TESTING.md), [audit results](AUDIT_REPORT.md) and the current [handoff record](PROGRESS.md) for actual results and remaining verification. A build completing does not imply device tests ran.
 
-### Having issues, suggestions and feedback?
+The manual GitHub build workflow builds APKs and test reports without publishing releases or pushing changes. See the build instructions for default-branch availability and phone download steps.
 
-You can,
-- [Create an issue here](https://github.com/farfromrefug/EnforceDoze/issues)
+## Privacy, source and license
 
-### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/enforcedoze/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/enforcedoze/?utm_source=widget)
+No ads, analytics or automatic diagnostic uploads. Options, observations, history and recovery records stay local; copying/sharing is deliberate. Source and support links open the browser. Backup of application data is disabled to avoid replaying another device's recovery commands.
 
-[<img src="https://hosted.weblate.org/widgets/enforcedoze/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/enforcedoze/)
-
-The Translations are hosted by [Weblate.org](https://hosted.weblate.org/engage/enforcedoze/).
-
-
-<p align="center">
-  <a href="https://raw.githubusercontent.com/farfromrefug/sponsorkit/main/sponsors.svg">
-	<img src='https://raw.githubusercontent.com/farfromrefug/sponsorkit/main/sponsors.svg'/>
-  </a>
-</p>
+[Source and issues](https://github.com/Akylas/EnforceDoze) · [Sponsor](https://github.com/sponsors/farfromrefug) · [Translations](https://hosted.weblate.org/engage/enforcedoze/) · [GPL v3](LICENSE.txt)

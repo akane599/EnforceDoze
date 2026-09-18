@@ -1,333 +1,265 @@
 package com.akylas.enforcedoze;
 
-import static com.akylas.enforcedoze.Utils.applicationContext;
-import static com.akylas.enforcedoze.Utils.logToLogcat;
+import android.content.*;
+import android.os.*;
+import android.text.InputType;
+import android.widget.*;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceGroup;
-import androidx.preference.PreferenceManager;
-import androidx.preference.PreferenceScreen;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nanotasks.BackgroundWork;
-import com.nanotasks.Completion;
-import com.nanotasks.Tasks;
 
-import java.util.List;
+import java.util.*;
 
-import eu.chainfire.libsuperuser.Shell;
-
-public class DozeTunablesActivity extends AppCompatActivity {
-
-    public static String TAG = "EnforceDoze";
-    public static boolean suAvailable = false;
-    static boolean isShizukuAvailable = false;
-    private static ShizukuHandler shizukuHandler;
-    private final String tunableCommand = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ? "device_config put device_idle" : "settings put global device_idle_constants";
-
-    private static void log(String message) {
-        logToLogcat(TAG, message);
-    }
+/** Edits one supported constant at a time; stores originals separately from screen-off leases. */
+public class DozeTunablesActivity extends BaseActivity {
+    private TextView status;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tunables);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content, new DozeTunablesFragment())
-                    .commit();
-        }
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        screen("Doze tunables", true);
+        card(
+                "Advanced timing controls",
+                "Values affect Android globally and persist until restored here. Stop monitoring"
+                        + " first. Only constants listed by this device are offered for changes."
+                        + " Android or the OEM may clamp values; stored values alone do not prove a"
+                        + " battery benefit.");
+        status =
+                text(
+                        body,
+                        "Choose a value to inspect its stored setting.\n"
+                                + new RecoveryStore(this, "tunable_recovery").summary(),
+                        15,
+                        false);
+        button(body, "Restore previous tunables", () -> work(true, null, null));
+        ArrayList<String> keys =
+                new ArrayList<>(
+                        Arrays.asList(
+                                DozeTunableConstants.KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT,
+                                DozeTunableConstants.KEY_LIGHT_PRE_IDLE_TIMEOUT,
+                                DozeTunableConstants.KEY_LIGHT_IDLE_TIMEOUT,
+                                DozeTunableConstants.KEY_LIGHT_IDLE_FACTOR,
+                                DozeTunableConstants.KEY_LIGHT_MAX_IDLE_TIMEOUT,
+                                DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET,
+                                DozeTunableConstants.KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET,
+                                DozeTunableConstants.KEY_MIN_LIGHT_MAINTENANCE_TIME,
+                                DozeTunableConstants.KEY_MIN_DEEP_MAINTENANCE_TIME,
+                                DozeTunableConstants.KEY_INACTIVE_TIMEOUT,
+                                DozeTunableConstants.KEY_SENSING_TIMEOUT,
+                                DozeTunableConstants.KEY_LOCATING_TIMEOUT,
+                                DozeTunableConstants.KEY_LOCATION_ACCURACY,
+                                DozeTunableConstants.KEY_MOTION_INACTIVE_TIMEOUT,
+                                DozeTunableConstants.KEY_IDLE_AFTER_INACTIVE_TIMEOUT,
+                                DozeTunableConstants.KEY_IDLE_PENDING_TIMEOUT,
+                                DozeTunableConstants.KEY_MAX_IDLE_PENDING_TIMEOUT,
+                                DozeTunableConstants.KEY_IDLE_PENDING_FACTOR,
+                                DozeTunableConstants.KEY_IDLE_TIMEOUT,
+                                DozeTunableConstants.KEY_MAX_IDLE_TIMEOUT,
+                                DozeTunableConstants.KEY_IDLE_FACTOR,
+                                DozeTunableConstants.KEY_MIN_TIME_TO_ALARM,
+                                DozeTunableConstants.KEY_MAX_TEMP_APP_WHITELIST_DURATION,
+                                DozeTunableConstants.KEY_MMS_TEMP_APP_WHITELIST_DURATION,
+                                DozeTunableConstants.KEY_SMS_TEMP_APP_WHITELIST_DURATION,
+                                DozeTunableConstants.KEY_NOTIFICATION_WHITELIST_DURATION));
+        Collections.sort(keys);
+        for (String key : keys) button(body, key, () -> inspect(key));
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        if (!suAvailable) {
-            menu.getItem(0).setVisible(false);
+    private boolean editable() {
+        if (android.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                        .getBoolean("serviceEnabled", false)
+                || new RecoveryStore(this).pending()) {
+            message(
+                    "Stop and restore first",
+                    "Stop monitoring and finish pending restoration before changing Android timing"
+                            + " values.");
+            return false;
         }
-
         return true;
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.doze_tunables_menu, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_apply_tunables) {
-            applyTunables();
-        } else if (id == R.id.action_copy_tunables) {
-            showCopyTunableDialog();
-        } else
-            if (id == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void applyTunables() {
-        String tunable_string = DozeTunableHandler.getInstance().getTunableString();
-        log("Setting device_idle_constants=" + tunable_string);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            for (String s : tunable_string.split(",")) {
-                executeCommand(tunableCommand + " " + TextUtils.join(" ", s.split("=")));
-            }
-        } else {
-            executeCommand(tunableCommand + " " + tunable_string);
-
-        }
-        Toast.makeText(this, getString(R.string.applied_success_text), Toast.LENGTH_SHORT).show();
-    }
-
-    public void showCopyTunableDialog() {
-        String tunable_string = DozeTunableHandler.getInstance().getTunableString();
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle(getString(R.string.adb_command_text));
-        builder.setMessage("You can apply the new values using ADB by running the following command:\n\nadb shell " + tunableCommand + " " + tunable_string);
-        builder.setPositiveButton(getString(R.string.close_button_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.copy_to_clipboard_button_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Copied Tunable k/v string", "adb shell " + tunableCommand + " " + tunable_string);
-                clipboard.setPrimaryClip(clip);
-                dialogInterface.dismiss();
-            }
-        });
-        builder.show();
-    }
-
-    public static void executeCommand(final String command) {
-        boolean useShizuku = Utils.isShizukuMode(applicationContext.getApplicationContext());
-
-        if (useShizuku && isShizukuAvailable) {
-            shizukuHandler.executeCommand(command, (commandCode, exitCode, stdout, stderr) -> {
-                printShellOutput(stderr);
-                if (exitCode == 0) {
-                    printShellOutput(stdout);
-
-                } else {
-                    log("Error occurred while executing command (" + command + ")");
-                }
-            }, false);
-            return;
-        }
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                List<String> output = Shell.SU.run(command);
-                if (output != null) {
-                    printShellOutput(output);
-                } else {
-                    log("Error occurred while executing command (" + command + ")");
-                }
-            }
-        });
-    }
-
-    public static void printShellOutput(List<String> output) {
-        if (!output.isEmpty()) {
-            for (String s : output) {
-                log(s);
-            }
-        }
-    }
-
-    @SuppressLint("ValidFragment")
-    public  static class DozeTunablesFragment extends PreferenceFragmentCompat {
-
-        MaterialDialog grantPermProgDialog;
-        boolean isSuAvailable = false;
-
-        private void removeIconSpace(PreferenceGroup group) {
-            for (int i = 0; i < group.getPreferenceCount(); i++) {
-                Preference pref = group.getPreference(i);
-                pref.setIconSpaceReserved(false);
-
-                if (pref instanceof PreferenceGroup) {
-                    removeIconSpace((PreferenceGroup) pref);
-                }
-            }
-        }
-
-        @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
-                RecyclerView recyclerView =
-                        v.findViewById(androidx.preference.R.id.recycler_view);
-
-                if (recyclerView != null) {
-                    int bottomInset = insets
-                            .getInsets(WindowInsetsCompat.Type.systemBars())
-                            .bottom;
-
-                    recyclerView.setPadding(
-                            recyclerView.getPaddingLeft(),
-                            recyclerView.getPaddingTop(),
-                            recyclerView.getPaddingRight(),
-                            bottomInset
-                    );
-                    recyclerView.setClipToPadding(false);
-                }
-                return insets;
-            });
-        }
-
-        @Override
-        public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-            addPreferencesFromResource(R.xml.prefs_doze_tunables);
-            removeIconSpace(getPreferenceScreen());
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            final PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference("tunablesPreferenceScreen");
-            PreferenceCategory lightDozeSettings = (PreferenceCategory) findPreference("lightDozeSettings");
-
-            if (!Utils.isDeviceRunningOnN()) {
-                preferenceScreen.removePreference(lightDozeSettings);
-            }
-
-            shizukuHandler = ShizukuHandler.getInstance(getActivity());
-            boolean useShizuku = Utils.isShizukuMode(getActivity());
-            isShizukuAvailable = false;
-            if (useShizuku) {
-                shizukuHandler.checkShizukuAvailability();
-                shizukuHandler.setOnAvailibilityChangeListener(value -> {
-                    isShizukuAvailable = value;
-                });
-                isShizukuAvailable = shizukuHandler.isShizukuAvailable();
-                log("Shizuku mode enabled, available: " + isShizukuAvailable);
-                if (isShizukuAvailable && !Utils.isSecureSettingsPermissionGranted(getActivity())) {
-                    executeCommand("pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS");
-                }
-                return;
-            }
-
-            if (!preferences.getBoolean("isSuAvailable", false)) {
-                grantPermProgDialog = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.please_wait_text))
-                        .cancelable(false)
-                        .autoDismiss(false)
-                        .content(getString(R.string.requesting_su_access_text))
-                        .progress(true, 0)
-                        .show();
-                log("Check if SU is available, and request SU permission if it is");
-                Tasks.executeInBackground(getActivity(), new BackgroundWork<Boolean>() {
-                    @Override
-                    public Boolean doInBackground() throws Exception {
-                        return Shell.SU.available();
-                    }
-                }, new Completion<Boolean>() {
-                    @Override
-                    public void onSuccess(Context context, Boolean result) {
-                        if (grantPermProgDialog != null) {
-                            grantPermProgDialog.dismiss();
-                        }
-                        isSuAvailable = result;
-                        suAvailable = isSuAvailable;
-                        log("SU available: " + Boolean.toString(result));
-                        if (isSuAvailable) {
-                            log("Phone is rooted and SU permission granted");
-                            if (!Utils.isSecureSettingsPermissionGranted(getActivity())) {
-                                executeCommand("pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS");
-                            }
-                        } else {
-                            log("SU permission denied or not available");
-                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                            builder.setTitle(getString(R.string.error_text));
-                            builder.setMessage(getString(R.string.tunables_su_not_available_error_text));
-                            builder.setPositiveButton(getString(R.string.okay_button_text), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
+    private void inspect(String key) {
+        if (!editable()) return;
+        status.setText("Reading " + key + "…");
+        AccessExecutor.SERIAL.execute(
+                () -> {
+                    AccessExecutor access = new AccessExecutor(this);
+                    CommandResult dump = access.run("dumpsys deviceidle");
+                    boolean supported =
+                            dump.ok()
+                                    && java.util.regex.Pattern.compile(
+                                                    "(?m)^\\s*"
+                                                            + java.util.regex.Pattern.quote(key)
+                                                            + "=")
+                                            .matcher(dump.output)
+                                            .find();
+                    String query =
+                            Build.VERSION.SDK_INT >= 34
+                                    ? "device_config get device_idle " + key
+                                    : "settings get global device_idle_constants";
+                    CommandResult value = access.run(query);
+                    runOnUiThread(
+                            () -> {
+                                if (isDestroyed()) return;
+                                if (!supported || !value.ok()) {
+                                    status.setText(
+                                            key
+                                                    + " is not exposed by this device; no change"
+                                                    + " made.");
+                                    return;
                                 }
+                                EditText input = new EditText(this);
+                                input.setInputType(
+                                        InputType.TYPE_CLASS_NUMBER
+                                                | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                                input.setPadding(dp(20), dp(12), dp(20), dp(12));
+                                if (Build.VERSION.SDK_INT >= 34 && !value.output.equals("null"))
+                                    input.setText(value.output);
+                                androidx.appcompat.app.AlertDialog dialog =
+                                        new MaterialAlertDialogBuilder(this)
+                                                .setTitle(key)
+                                                .setMessage(
+                                                        "Current stored value: "
+                                                                + value.output
+                                                                + "\n"
+                                                                + "Timeouts: milliseconds. Factors:"
+                                                                + " 1–10. Accuracy: meters."
+                                                                + " Original values are retained"
+                                                                + " for Restore previous tunables.")
+                                                .setView(input)
+                                                .setNegativeButton("Cancel", null)
+                                                .setPositiveButton("Apply", null)
+                                                .create();
+                                dialog.setOnShowListener(
+                                        d ->
+                                                dialog.getButton(-1)
+                                                        .setOnClickListener(
+                                                                v -> {
+                                                                    String proposed =
+                                                                            input.getText()
+                                                                                    .toString()
+                                                                                    .trim();
+                                                                    if (!TunableRules.valid(
+                                                                            key, proposed)) {
+                                                                        input.setError(
+                                                                                "Enter a finite"
+                                                                                    + " valid value"
+                                                                                    + " (timeout:"
+                                                                                    + " 0–604800000;"
+                                                                                    + " factor:"
+                                                                                    + " 1–10)");
+                                                                        return;
+                                                                    }
+                                                                    dialog.dismiss();
+                                                                    work(false, key, proposed);
+                                                                }));
+                                dialog.show();
                             });
-                            builder.show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Context context, Exception e) {
-                        Log.e(TAG, "Error querying SU: " + e.getMessage());
-                    }
                 });
-            } else {
-                suAvailable = true;
-            }
-        }
+    }
 
-
-//        public void executeCommand(final String command) {
-//            boolean useShizuku = Utils.isShizukuMode(getActivity());
-//
-//            if (useShizuku && isShizukuAvailable) {
-//                shizukuHandler.executeCommand(command, (commandCode, exitCode, stdout, stderr) -> {
-//                        printShellOutput(stdout);
-//                        printShellOutput(stderr);
-//                }, false);
-//                return;
-//            }
-//            AsyncTask.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    List<String> output = Shell.SU.run(command);
-//                    if (output != null) {
-//                        printShellOutput(output);
-//                    } else {
-//                        log("Error occurred while executing command (" + command + ")");
-//                    }
-//                }
-//            });
-//        }
-
-        public void printShellOutput(List<String> output) {
-            if (!output.isEmpty()) {
-                for (String s : output) {
-                    log(s);
-                }
-            }
-        }
+    private void work(boolean restore, String key, String value) {
+        if (!editable()) return;
+        status.setText(restore ? "Restoring previous values…" : "Applying and verifying…");
+        AccessExecutor.SERIAL.execute(
+                () -> {
+                    RecoveryStore store = new RecoveryStore(this, "tunable_recovery");
+                    AccessExecutor access = new AccessExecutor(this);
+                    EvidenceStore evidence = new EvidenceStore(this);
+                    RestorationJournal journal = TunableRecovery.journal(this);
+                    boolean ok = false;
+                    try {
+                        if (restore) ok = journal.restore();
+                        else {
+                            String query, apply, undo, target = value, id = key;
+                            if (Build.VERSION.SDK_INT >= 34) {
+                                query = "device_config get device_idle " + key;
+                                String original = StateParser.read("setting", access.run(query));
+                                apply =
+                                        "device_config put device_idle "
+                                                + key
+                                                + " "
+                                                + CommandResult.quote(value);
+                                undo =
+                                        original == null
+                                                ? ""
+                                                : original.equals("null")
+                                                        ? "device_config delete device_idle " + key
+                                                        : "device_config put device_idle "
+                                                                + key
+                                                                + " "
+                                                                + CommandResult.quote(original);
+                                ok =
+                                        journal.apply(
+                                                new RestorationJournal.Entry(
+                                                        id,
+                                                        access.mode(),
+                                                        query,
+                                                        "setting",
+                                                        original,
+                                                        target,
+                                                        apply,
+                                                        undo));
+                            } else {
+                                query = "settings get global device_idle_constants";
+                                String original = StateParser.read("setting", access.run(query));
+                                if (original != null) {
+                                    LinkedHashMap<String, String> map = new LinkedHashMap<>();
+                                    if (!original.equals("null"))
+                                        for (String pair : original.split(",")) {
+                                            String[] p = pair.split("=", 2);
+                                            if (p.length == 2) map.put(p[0], p[1]);
+                                        }
+                                    map.put(key, value);
+                                    StringBuilder combined = new StringBuilder();
+                                    for (Map.Entry<String, String> pair : map.entrySet()) {
+                                        if (combined.length() > 0) combined.append(',');
+                                        combined.append(pair.getKey())
+                                                .append('=')
+                                                .append(pair.getValue());
+                                    }
+                                    target = combined.toString();
+                                    apply =
+                                            "settings put global device_idle_constants "
+                                                    + CommandResult.quote(target);
+                                    undo =
+                                            original.equals("null")
+                                                    ? "settings delete global device_idle_constants"
+                                                    : "settings put global device_idle_constants "
+                                                            + CommandResult.quote(original);
+                                    ok =
+                                            journal.apply(
+                                                    new RestorationJournal.Entry(
+                                                            "Legacy tunables",
+                                                            access.mode(),
+                                                            query,
+                                                            "setting",
+                                                            original,
+                                                            target,
+                                                            apply,
+                                                            undo));
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        evidence.record("Tunable change failed", e.toString());
+                    }
+                    boolean done = ok;
+                    runOnUiThread(
+                            () -> {
+                                if (!isDestroyed())
+                                    status.setText(
+                                            done
+                                                    ? (restore
+                                                            ? "Previous tunables restored and read"
+                                                                    + " back."
+                                                            : "Stored value verified. Use Restore"
+                                                                    + " previous tunables before"
+                                                                    + " editing this value again.")
+                                                    : "Not verified. Check access and diagnostics."
+                                                            + " Saved original values remain"
+                                                            + " available for restoration.\n"
+                                                            + store.summary());
+                            });
+                });
     }
 }

@@ -1,21 +1,14 @@
 package com.akylas.enforcedoze;
 
-import static com.akylas.enforcedoze.Utils.logToLogcat;
+import android.content.*;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class CustomDozePeriodReceiver extends BroadcastReceiver {
-    public static String TAG = "EnforceDoze";
-
-    private static void log(String message) {
-        logToLogcat(TAG, message);
-    }
-
     @Override
-    public void onReceive(Context context, Intent intent) {
-        log("Custom Doze period boundary received");
-        Utils.applyForceDozeSchedule(context);
+    public void onReceive(Context c, Intent i) {
+        if ("screen-delay".equals(i.getAction()))
+            LocalBroadcastManager.getInstance(c).sendBroadcast(new Intent("reenter-doze"));
+        else Utils.applyForceDozeSchedule(c);
     }
 }

@@ -13,3 +13,7 @@ app/release
 /.env
 /vendor
 /certs
+**/build/
+/artifacts/
+
+.kotlin/

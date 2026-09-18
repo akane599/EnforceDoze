@@ -1,3 +1,9 @@
+# Legacy maintainer automation
+
+For phone-started APK builds, use [the manual build workflow](../docs/BUILDING.md). It does not publish releases or push commits.
+
+The lanes below are retained for maintainers. Building defaults to no publication. Publishing requires explicit `publish:true`; GitHub publication also requires `create_tag:true` and an explicitly configured signing key. Store/release/tag operations write externally and require the repository owner's authorization. These publishing paths were source-reviewed and syntax-checked, not executed during the local audit. Existing screenshots in metadata describe the old release, not the redesigned interface.
+
 fastlane documentation
 ----
 

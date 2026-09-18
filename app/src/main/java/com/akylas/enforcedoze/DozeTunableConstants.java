@@ -1,16 +1,15 @@
 package com.akylas.enforcedoze;
 
 public final class DozeTunableConstants {
-    public static final String KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT
-            = "light_after_inactive_to";
+    public static final String KEY_LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = "light_after_inactive_to";
     public static final String KEY_LIGHT_PRE_IDLE_TIMEOUT = "light_pre_idle_to";
     public static final String KEY_LIGHT_IDLE_TIMEOUT = "light_idle_to";
     public static final String KEY_LIGHT_IDLE_FACTOR = "light_idle_factor";
     public static final String KEY_LIGHT_MAX_IDLE_TIMEOUT = "light_max_idle_to";
-    public static final String KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET
-            = "light_idle_maintenance_min_budget";
-    public static final String KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET
-            = "light_idle_maintenance_max_budget";
+    public static final String KEY_LIGHT_IDLE_MAINTENANCE_MIN_BUDGET =
+            "light_idle_maintenance_min_budget";
+    public static final String KEY_LIGHT_IDLE_MAINTENANCE_MAX_BUDGET =
+            "light_idle_maintenance_max_budget";
     public static final String KEY_MIN_LIGHT_MAINTENANCE_TIME = "min_light_maintenance_time";
     public static final String KEY_MIN_DEEP_MAINTENANCE_TIME = "min_deep_maintenance_time";
     public static final String KEY_INACTIVE_TIMEOUT = "inactive_to";

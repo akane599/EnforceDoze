@@ -9,14 +9,19 @@ import android.preference.PreferenceManager;
 
 public class EnableForceDozeService extends BroadcastReceiver {
     public static String TAG = "EnforceDoze";
+
     private static void log(String message) {
         logToLogcat(TAG, message);
     }
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!Automation.allowed(context, intent)) return;
         log("com.akylas.enforcedoze.ENABLE_FORCEDOZE broadcast intent received started: ");
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("serviceEnabled", true).apply();
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean("serviceEnabled", true)
+                .apply();
         Utils.startForceDozeService(context);
     }
 }

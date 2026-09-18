@@ -5,14 +5,12 @@ import static com.akylas.enforcedoze.Utils.logToLogcat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ForceDozeTileService extends TileService {
@@ -57,7 +55,6 @@ public class ForceDozeTileService extends TileService {
         }
     }
 
-
     @Override
     public void onClick() {
         super.onClick();
@@ -81,22 +78,14 @@ public class ForceDozeTileService extends TileService {
     }
 
     public void updateTileState(final boolean active) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Tile tile = getQsTile();
-                if (tile != null) {
-                    tile.setLabel(active ? "EnforceDoze on" : "EnforceDoze off");
-                    tile.setState(active ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-                    tile.updateTile();
-                }
-                boolean currentValue = settings.getBoolean("serviceEnabled", false);
-                if (currentValue != active) {
-                    settings.edit().putBoolean("serviceEnabled", active).apply();
-                    sendBroadcastToApp(active);
-                }
-            }
-        }, 150);
+        Tile tile = getQsTile();
+        if (tile != null) {
+            boolean enabled =
+                    PreferenceManager.getDefaultSharedPreferences(this)
+                            .getBoolean("serviceEnabled", false);
+            tile.setLabel(enabled ? "EnforceDoze on" : "EnforceDoze off");
+            tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+            tile.updateTile();
+        }
     }
 }
