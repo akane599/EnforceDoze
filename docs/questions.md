@@ -13,6 +13,9 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   transaction numbers), the auto-rotate fix (obsolete), app shortcuts (v1) and upstream's other
   translations; "wait for unlock" is kept as an option, off by default, pending an ADR in P2.
   *Default:* as decided; say if any of them matters to you.
+- **Q5. The `akane599/AkaDoZe` repository.** Q1 asked to drop every other fork effort; AkaDoZe is a
+  separate public repository (last pushed 2026-10-07), not a branch of this fork, and deleting a
+  repository cannot be undone. *Default:* left untouched; say "delete AkaDoZe" and it goes.
 
 ## Answered
 

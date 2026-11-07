@@ -116,6 +116,47 @@ With `DUMP`, `WRITE_SECURE_SETTINGS` and `READ_LOGS` granted. `run-as` runs in `
   `restrict`, which fails silently.
 - Main screen: `docs/evidence/p0/upstream-main-api37.png`.
 
+### 4.4 One UI 9 on the owner's phone (read-only dumps)
+
+SM-S938B, Android 17, build `CP2A.260605.016` (`S938BXXSDDZJ1`, One UI `90000`), captured read-only
+by the owner on 2026-11-07 while the owner's own Tasker and Shizuku Doze setup was active.
+Redacted fixture: `fixtures/sm-s938b/api37_CP2A.260605.016` (ADR 0008).
+
+1. **The legacy global string is the live lever on this phone.** `device_config list device_idle`
+   is empty; `settings get global device_idle_constants` holds the owner's values
+   (`light_after_inactive_to=30000,inactive_to=180000,idle_after_inactive_to=120000,`
+   `motion_inactive_to=180000,skip_sensing=true,min_time_to_alarm=600000`), and `dumpsys deviceidle`
+   reports exactly those values. AOSP 16 and 17 build the constants with
+   `UserSettingDeviceConfigMediator.SettingsOverridesIndividualMediator(',')`
+   (`services/core/java/com/android/server/utils/UserSettingDeviceConfigMediator.java`, identical at
+   `android-16.0.0_r1` and `android-17.0.0_r1`): each key reads the settings string first and falls
+   back to `device_config`, then to the default. `DeviceIdleController` observes
+   `Settings.Global.DEVICE_IDLE_CONSTANTS` with a content observer and reloads on change. So a key
+   in the global string overrides the same key in `device_config`, key by key, and SPEC 5.2 lever A
+   and the drift check in 5.6 have to read and write both stores. ADR in P2.
+2. **One UI adds constants.** The settings block lists `skip_sensing`, `skip_locating` and
+   `dna_request_version`, which do not exist in AOSP `DeviceIdleController` at either tag. The
+   owner sets `skip_sensing=true`; the dump also shows `skip_locating=true`. Their exact effect is
+   unverified: probe in P2, never assume.
+3. **Significant motion still wakes the phone from IDLE_PENDING.** The motion sensor is real
+   (`smd  Wakeup`, Samsung, type 17; the emulators have none). In the 16 minutes of events
+   captured, deep Doze reached `IDLE_PENDING` twice (`[2,s:alarm]`) and was reset to `ACTIVE` by
+   `[0,motion]` both times, with `skip_sensing=true` set. Sensor restriction (SPEC 5.2 lever C)
+   therefore matters on this phone. Battery history shows `device_idle=full` 5 times against 27
+   `light`.
+4. **Same event-log tags and history states as AOSP.** `device_idle`, `device_idle_light`,
+   `device_idle_step`, `device_idle_light_step`, `device_idle_on_*`, `device_idle_off_*`; reasons
+   seen: `unlocked`, `no activity`, `motion`, `s:alarm`, `s:early`. The capture uses logcat's
+   `threadtime` format, not `epoch`.
+5. **Flags and sensor state match the API 37 emulator.** `remove_idle_location=true`; sensor service
+   `Mode : NORMAL`, `Sensor Privacy: disabled`; `sensor_privacy` is a registered binder service.
+6. **Another Doze manager is present.** A third-party LSPosed module writes its own dotted
+   `Settings.Global` keys. SPEC 5.7 detection must not assume the only rival is a Tasker script or
+   another app holding `DEVICE_POWER`. (The keys are dropped from the fixture because their names
+   identify the module, ADR 0008.)
+7. **The allowlist is long.** `cmd deviceidle whitelist` lists 185 entries; parser tests use it for
+   the `system-excidle`, `system` and `user` rows.
+
 ## 5. The earlier fork effort
 
 The fork's former `master` held an earlier Codex effort ("android16-reliability", 11 commits, merged
