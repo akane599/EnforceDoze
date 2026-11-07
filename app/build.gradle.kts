@@ -4,6 +4,7 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.licensee)
 }
 
 android {
@@ -74,4 +75,29 @@ dependencies {
     implementation(libs.shizuku.api)
 
     testImplementation(libs.junit)
+}
+
+// Dependency licence check (SPEC 12.5): only licences compatible with GPL-3.0 may ship in the APK.
+// Runs as part of `check` and on its own as `licenseeDebug`.
+licensee {
+    allow("Apache-2.0")
+    allow("MIT")
+    allow("BSD-2-Clause")
+    allow("BSD-3-Clause")
+    allow("GPL-3.0-or-later")
+    allow("GPL-3.0-only")
+    allow("LGPL-2.1-or-later")
+    allow("LGPL-3.0-or-later")
+    allow("MPL-2.0")
+    // Shizuku-API names only its LICENSE file, which is MIT (checked 2026-11-08 at
+    // github.com/RikkaApps/Shizuku-API/blob/master/LICENSE).
+    allowUrl("https://github.com/RikkaApps/Shizuku-API/blob/master/LICENSE") {
+        because("MIT, per the linked LICENSE file")
+    }
+    // libsu's JitPack POMs declare no licence; the project is Apache-2.0 (github.com/topjohnwu/libsu).
+    listOf("core", "service").forEach { module ->
+        allowDependency("com.github.topjohnwu.libsu", module, libs.versions.libsu.get()) {
+            because("Apache-2.0, per the repository LICENSE")
+        }
+    }
 }

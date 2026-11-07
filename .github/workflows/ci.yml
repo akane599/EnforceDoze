@@ -1,6 +1,7 @@
-# CI gate (SPEC 12.5, 14 P0). P0 skeleton: build, unit tests, Android Lint against the upstream
-# baseline, and the no-network rule (SPEC 1.3). detekt, ktlint, screenshot tests, `npx impeccable
-# detect` and the licence check join as the Kotlin modules and screens arrive (ADR 0003).
+# CI gate (SPEC 12.5). Build, unit tests, Android Lint against the upstream baseline, detekt, ktlint,
+# the dependency licence check, the no-`service call`/no-reflection scan, the module boundaries
+# (ADR 0009, 0010) and the no-network rule (SPEC 1.3). Screenshot tests and `npx impeccable detect`
+# join with the screens in P5 (ADR 0003).
 # Actions are pinned to commit SHAs; the tag is in the trailing comment. Re-resolve when bumping.
 name: CI
 
@@ -45,6 +46,19 @@ jobs:
 
       - name: Android Lint (fails on issues not in app/lint-baseline.xml)
         run: ./gradlew lintDebug
+
+      - name: detekt and ktlint (Kotlin modules)
+        run: ./gradlew detekt ktlintCheck
+
+      - name: Dependency licences (GPL-3.0 compatible only)
+        run: ./gradlew :app:licensee
+
+      # SPEC 12.4 and 15: no binder transaction numbers, no reflection outside the worker.
+      - name: No service call, no reflection
+        run: tools/ci/forbidden-calls.sh
+
+      - name: Module boundaries
+        run: tools/ci/module-graph.sh
 
       # SPEC 1.3: no network permission, checked on the merged manifest so a library cannot add it.
       - name: No network permission

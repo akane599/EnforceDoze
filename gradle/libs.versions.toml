@@ -13,6 +13,11 @@ truth = "1.4.5"
 androidx-test-runner = "1.7.0"
 androidx-test-ext-junit = "1.3.0"
 uiautomator = "2.4.1"
+# Quality gates (SPEC 12.5), run as CLIs from the root build so they do not depend on AGP's Kotlin
+# integration (ADR 0010).
+detekt = "1.23.8"
+ktlint = "1.8.0"
+licensee = "1.14.1"
 
 # Upstream 1.10.2 dependencies, kept until the classes using them are replaced (SPEC 12.1).
 upstream-appcompat = "1.7.0"
@@ -27,6 +32,8 @@ upstream-nanotasks = "1.1.0"
 upstream-process-phoenix = "2.1.2"
 
 [libraries]
+detekt-cli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
+ktlint-cli = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
@@ -57,3 +64,4 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 # Built-in Kotlin (AGP 9) compiles Kotlin in Android modules; declaring the JVM plugin in the root
 # build pins the Kotlin Gradle plugin version AGP uses and serves pure-JVM modules.
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+licensee = { id = "app.cash.licensee", version.ref = "licensee" }

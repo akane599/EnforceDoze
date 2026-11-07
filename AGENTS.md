@@ -65,8 +65,11 @@ the default in use.
 
 ```sh
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # JDK 21, Gradle 9.9, AGP 9.5 (ADR 0007)
-./gradlew assembleDebug testDebugUnitTest lintDebug    # what CI runs
+./gradlew assembleDebug testDebugUnitTest lintDebug detekt ktlintCheck :app:licensee   # CI
+tools/ci/forbidden-calls.sh && tools/ci/module-graph.sh                               # CI scripts
+./gradlew ktlintFormat                                 # fix style before committing
 ./gradlew updateLintBaseline                           # only when deleting upstream code shrinks it
+tools/ci/forbidden-calls.sh --update                   # same rule for its baseline
 tools/fixtures/capture.sh [-s SERIAL] [--walk] fixtures   # on akane-linux; --walk is emulator-only
 gh run list -R akane599/EnforceDoze --limit 5          # CI status
 ```
@@ -79,6 +82,7 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `core/parse` | Pure-JVM parsers for `dumpsys` and the event log, one per source (SPEC 8, 12.4) |
 | `core/privilege-api`, `core/privilege-worker`, `core/privilege` | `IDozeWorker` contract; the worker (only place for hidden APIs, runtime-only); tiers, clients, session, probes (SPEC 4, ADR 0009) |
 | `core/hidden-api-stubs`, `testing/fixtures` | compileOnly framework stubs for the worker; fixture access for JVM tests |
+| `config/detekt`, `.editorconfig`, `tools/ci/` | detekt overrides, ktlint style, CI scripts and the forbidden-call baseline |
 | `gradle/libs.versions.toml` | Version catalog; versions resolved from Maven metadata, never from memory |
 | `fixtures/` | Raw dumps per device and build for parser tests (`fixtures/README.md`) |
 | `tools/fixtures/` | Capture script |

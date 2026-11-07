@@ -1,0 +1,15 @@
+1	app/src/main/java/com/akylas/enforcedoze/ChromePackageHelper.java	service call
+3	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	Class.forName
+2	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	getDeclaredField
+1	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	getDeclaredMethod
+2	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	java.lang.reflect
+4	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	service call
+3	app/src/main/java/com/akylas/enforcedoze/ForceDozeService.java	setAccessible
+1	app/src/main/java/com/akylas/enforcedoze/ShizukuHandler.java	Class.forName
+1	app/src/main/java/com/akylas/enforcedoze/ShizukuHandler.java	getDeclaredMethod
+1	app/src/main/java/com/akylas/enforcedoze/ShizukuHandler.java	java.lang.reflect
+2	app/src/main/java/com/akylas/enforcedoze/ShizukuHandler.java	newProcess
+1	app/src/main/java/com/akylas/enforcedoze/ShizukuHandler.java	setAccessible
+1	app/src/main/java/com/akylas/enforcedoze/Utils.java	getDeclaredMethod
+2	app/src/main/java/com/akylas/enforcedoze/Utils.java	java.lang.reflect
+1	app/src/main/java/com/akylas/enforcedoze/Utils.java	setAccessible

@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Overrides on top of detekt's default configuration (--build-upon-default-config).
+
+style:
+  MaxLineLength:
+    maxLineLength: 140
+  MagicNumber:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+    ignoreEnums: true
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  ReturnCount:
+    max: 4
+    excludeGuardClauses: true
+  ForbiddenComment:
+    active: false
+
+complexity:
+  TooManyFunctions:
+    excludes: ['**/test/**', '**/androidTest/**']
+    thresholdInClasses: 25
+    thresholdInInterfaces: 25
+    thresholdInFiles: 25
+  LongParameterList:
+    constructorThreshold: 8
+
+exceptions:
+  TooGenericExceptionCaught:
+    # Probes, the worker and the session turn any failure into a reported result (SPEC 4.4, 12.4).
+    excludes: ['**/test/**', '**/androidTest/**']
+    allowedExceptionNameRegex: '_|(ignore|expected).*'
