@@ -5,7 +5,8 @@
 /.idea/libraries
 .idea
 .DS_Store
-/build
+# Gradle output of every module
+build/
 /captures
 *.keystore
 *.jks

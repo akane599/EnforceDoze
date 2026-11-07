@@ -32,3 +32,5 @@ dependencyResolutionManagement {
 rootProject.name = "EnforceDoze"
 
 include(":app")
+include(":core:parse")
+include(":testing:fixtures")
