@@ -14,19 +14,13 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
     var sensorsOff = false
     var eventLog: String = ""
     var batteryHistory: String = ""
+    var globalConstants: String? = null
 
     protected fun ok(stdout: String = "", vararg argv: String) = CommandOutcome(argv.toList(), 0, stdout, "", false, 0, null)
 
     override suspend fun uid(): Int = workerUid.also { calls += "uid" }
 
-    override suspend fun version(): Int = 1
-
-    override suspend fun setDeviceIdleConstants(values: Map<String, String>): List<CommandOutcome> =
-        values.map { (k, v) -> ok("", "device_config", "put", "device_idle", k, v) }
-
-    override suspend fun deleteDeviceIdleConstants(keys: List<String>): List<CommandOutcome> = keys.map { ok() }
-
-    override suspend fun resetDeviceIdleConstants(): CommandOutcome = ok()
+    override suspend fun version(): Int = 2
 
     override suspend fun forceIdle(mode: String): CommandOutcome {
         calls += "forceIdle $mode"
@@ -67,6 +61,10 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
     override suspend fun grantSelf(permission: String): CommandOutcome = ok()
 
     override suspend fun setSelfAppOp(op: String, mode: String): CommandOutcome = ok()
+
+    override suspend fun deviceIdleSettings(): CommandOutcome = ok(globalConstants ?: "null")
+
+    override suspend fun deviceIdleConfig(): CommandOutcome = ok()
 
     override suspend fun readDeviceIdle(): String = deviceIdle
 

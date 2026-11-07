@@ -19,12 +19,6 @@ public interface DozeWorkerApi {
 
     public suspend fun version(): Int
 
-    public suspend fun setDeviceIdleConstants(values: Map<String, String>): List<CommandOutcome>
-
-    public suspend fun deleteDeviceIdleConstants(keys: List<String>): List<CommandOutcome>
-
-    public suspend fun resetDeviceIdleConstants(): CommandOutcome
-
     public suspend fun forceIdle(mode: String): CommandOutcome
 
     public suspend fun unforce(): CommandOutcome
@@ -43,6 +37,12 @@ public interface DozeWorkerApi {
 
     public suspend fun setSelfAppOp(op: String, mode: String): CommandOutcome
 
+    /** `settings get global device_idle_constants`; the app writes the string itself (ADR 0012). */
+    public suspend fun deviceIdleSettings(): CommandOutcome
+
+    /** `device_config list device_idle`, to tell server values from the global string. */
+    public suspend fun deviceIdleConfig(): CommandOutcome
+
     public suspend fun readDeviceIdle(): String
 
     public suspend fun readSensorService(): String
@@ -59,13 +59,6 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun uid(): Int = io { worker.uid }
 
     override suspend fun version(): Int = io { worker.version }
-
-    override suspend fun setDeviceIdleConstants(values: Map<String, String>): List<CommandOutcome> =
-        io { worker.setDeviceIdleConstants(values) }
-
-    override suspend fun deleteDeviceIdleConstants(keys: List<String>): List<CommandOutcome> = io { worker.deleteDeviceIdleConstants(keys) }
-
-    override suspend fun resetDeviceIdleConstants(): CommandOutcome = io { worker.resetDeviceIdleConstants() }
 
     override suspend fun forceIdle(mode: String): CommandOutcome = io { worker.forceIdle(mode) }
 
@@ -84,6 +77,10 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun grantSelf(permission: String): CommandOutcome = io { worker.grantSelf(permission) }
 
     override suspend fun setSelfAppOp(op: String, mode: String): CommandOutcome = io { worker.setSelfAppOp(op, mode) }
+
+    override suspend fun deviceIdleSettings(): CommandOutcome = io { worker.deviceIdleSettings }
+
+    override suspend fun deviceIdleConfig(): CommandOutcome = io { worker.listDeviceIdleConfig() }
 
     override suspend fun readDeviceIdle(): String = read { worker.readDeviceIdle(it) }
 

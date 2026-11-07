@@ -51,12 +51,6 @@ public class DozeWorker internal constructor(
 
     override fun getUid(): Int = checked { Process.myUid() }
 
-    override fun setDeviceIdleConstants(constants: Map<*, *>?): List<CommandOutcome> = checked { core.setConstants(constants) }
-
-    override fun deleteDeviceIdleConstants(keys: List<String>?): List<CommandOutcome> = checked { core.deleteConstants(keys) }
-
-    override fun resetDeviceIdleConstants(): CommandOutcome = checked { core.resetConstants() }
-
     override fun forceIdle(mode: String?): CommandOutcome = checked { core.forceIdle(mode) }
 
     override fun unforce(): CommandOutcome = checked { core.unforce() }
@@ -74,6 +68,10 @@ public class DozeWorker internal constructor(
     override fun grantSelf(permission: String?): CommandOutcome = checked { core.grantSelf(permission) }
 
     override fun setSelfAppOp(op: String?, mode: String?): CommandOutcome = checked { core.setSelfAppOp(op, mode) }
+
+    override fun getDeviceIdleSettings(): CommandOutcome = checked { core.getDeviceIdleSettings() }
+
+    override fun listDeviceIdleConfig(): CommandOutcome = checked { core.listDeviceIdleConfig() }
 
     override fun readDeviceIdle(pipe: ParcelFileDescriptor?): Unit = stream(pipe) { core.readDeviceIdleArgv() }
 

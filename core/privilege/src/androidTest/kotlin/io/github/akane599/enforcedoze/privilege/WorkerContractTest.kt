@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.privilege
 
+import android.Manifest
 import android.app.AppOpsManager
 import android.content.pm.PackageManager
 import android.os.Process
+import android.provider.Settings
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
@@ -14,7 +16,9 @@ import io.github.akane599.enforcedoze.parse.DozeEventLog
 import io.github.akane599.enforcedoze.parse.SensorMode
 import io.github.akane599.enforcedoze.parse.SensorServiceDump
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
+import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -62,6 +66,18 @@ class WorkerContractTest {
     )
         .that(outcome.isSuccess).isTrue()
 
+    /** `DeviceIdleController` reloads the string on a content-observer callback, so the change lands shortly after the write. */
+    private suspend fun awaitDump(w: DozeWorkerApi, done: (DeviceIdleDump) -> Boolean): DeviceIdleDump {
+        repeat(DUMP_ATTEMPTS) {
+            val dump = DeviceIdleDump.parse(w.readDeviceIdle())
+            if (done(dump)) return dump
+            delay(DUMP_INTERVAL_MILLIS)
+        }
+        val last = DeviceIdleDump.parse(w.readDeviceIdle())
+        assertWithMessage("dumpsys deviceidle did not show the change: %s", last.settings).that(done(last)).isTrue()
+        return last
+    }
+
     @Test
     fun identity() = worker { w ->
         assertThat(w.uid()).isEqualTo(OnDeviceScenario.current.serverUid)
@@ -76,31 +92,47 @@ class WorkerContractTest {
         assertThat(dump.settings.keys).containsAtLeastElementsIn(AospDeviceIdle.KEYS)
     }
 
+    /**
+     * Lever A (ADR 0012): the app writes the global string itself with WRITE_SECURE_SETTINGS, which the
+     * worker grants; the worker reads it back, since the app may not read this hidden setting.
+     */
     @Test
-    fun constantsAreWrittenReadBackAndReset() = worker { w ->
+    fun globalConstantsAreWrittenByTheAppAndReadByTheWorker() = worker { w ->
+        assertOk(w.grantSelf(Manifest.permission.WRITE_SECURE_SETTINGS))
+        val before = w.deviceIdleSettings().also(::assertOk).stdout.trim()
+        val resolver = fixture.context.contentResolver
+        val written = "inactive_to=123000,light_idle_factor=2.5"
         try {
-            w.setDeviceIdleConstants(mapOf("inactive_to" to "123000", "light_idle_factor" to "2.5")).forEach(::assertOk)
-            val written = DeviceIdleDump.parse(w.readDeviceIdle())
-            assertThat(written.settings.getValue("inactive_to").durationMillis).isEqualTo(123_000L)
-            assertThat(written.settings.getValue("light_idle_factor").number).isEqualTo(2.5)
-            w.deleteDeviceIdleConstants(listOf("light_idle_factor")).forEach(::assertOk)
+            assertThat(Settings.Global.putString(resolver, DeviceIdleSettings.SETTING, written)).isTrue()
+            assertThat(w.deviceIdleSettings().stdout.trim()).isEqualTo(written)
+            val dump = awaitDump(w) { it.settings["inactive_to"]?.durationMillis == 123_000L }
+            assertThat(dump.settings.getValue("light_idle_factor").number).isEqualTo(2.5)
         } finally {
-            assertOk(w.resetDeviceIdleConstants())
+            if (before == "null") {
+                resolver.delete(Settings.Global.getUriFor(DeviceIdleSettings.SETTING), null, null)
+            } else {
+                Settings.Global.putString(resolver, DeviceIdleSettings.SETTING, before)
+            }
         }
-        val reset = DeviceIdleDump.parse(w.readDeviceIdle())
-        assertThat(reset.settings.getValue("inactive_to").durationMillis).isNotEqualTo(123_000L)
+        assertThat(w.deviceIdleSettings().stdout.trim()).isEqualTo(before)
+        awaitDump(w) { it.settings["inactive_to"]?.durationMillis != 123_000L }
     }
 
     @Test
-    fun invalidInputIsRejectedWithoutWriting() = worker { w ->
-        val before = DeviceIdleDump.parse(w.readDeviceIdle()).settings.getValue("inactive_to").raw
-        val outcomes = w.setDeviceIdleConstants(mapOf("inactive_to" to "60000", "bad key" to "1"))
-        assertThat(outcomes.none { it.isSuccess }).isTrue()
-        assertThat(DeviceIdleDump.parse(w.readDeviceIdle()).settings.getValue("inactive_to").raw).isEqualTo(before)
+    fun deviceConfigIsReadable() = worker { w ->
+        val listed = w.deviceIdleConfig()
+        assertOk(listed)
+        // Every line is key=value; the emulators set nothing (audit §4).
+        assertThat(listed.stdout.lines().filter { it.isNotBlank() && '=' !in it }).isEmpty()
+    }
+
+    @Test
+    fun invalidInputIsRejected() = worker { w ->
         assertThat(w.forceIdle("everything").isSuccess).isFalse()
         assertThat(w.setSensorRestriction("no.such.package.installed").isSuccess).isFalse()
         assertThat(w.allowlist("no.such.package.installed", true).isSuccess).isFalse()
         assertThat(w.grantSelf("android.permission.INSTALL_PACKAGES").isSuccess).isFalse()
+        assertThat(w.setSelfAppOp("CAMERA", "allow").isSuccess).isFalse()
     }
 
     @Test
@@ -172,5 +204,10 @@ class WorkerContractTest {
         val history = w.readBatteryHistory(0)
         assertThat(history).contains("Battery History")
         assertThat(w.readEventLog(System.currentTimeMillis() - 60_000)).isNotNull()
+    }
+
+    private companion object {
+        const val DUMP_ATTEMPTS = 20
+        const val DUMP_INTERVAL_MILLIS = 100L
     }
 }

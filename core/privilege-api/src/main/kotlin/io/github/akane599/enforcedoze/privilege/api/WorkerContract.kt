@@ -3,8 +3,8 @@ package io.github.akane599.enforcedoze.privilege.api
 
 /** Names and limits shared by the worker and its clients (SPEC 4.3, 12.4). */
 public object WorkerContract {
-    /** Raised whenever the AIDL or the meaning of a method changes. */
-    public const val VERSION: Int = 1
+    /** Raised whenever the AIDL or the meaning of a method changes. 2: device_config writes removed (ADR 0012). */
+    public const val VERSION: Int = 2
 
     /** The UserService class, loaded by name in the worker process (Shizuku and Sui). */
     public const val WORKER_CLASS: String = "io.github.akane599.enforcedoze.privilege.worker.DozeWorker"
@@ -45,9 +45,6 @@ public object WorkerContract {
 
     public val APP_OP_MODES: Set<String> = setOf("allow", "ignore", "default")
 
-    /** The only `device_config` namespace the worker writes. */
+    /** The only `device_config` namespace the worker reads. */
     public const val DEVICE_IDLE_NAMESPACE: String = "device_idle"
-
-    /** At most this many constants in one call. */
-    public const val MAX_CONSTANTS: Int = 64
 }

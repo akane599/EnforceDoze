@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.privilege.worker
 
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
+import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 
 /** Whether a package is installed; package names are checked before any command uses them (SPEC 4.3). */
@@ -28,26 +29,6 @@ internal class WorkerCore(
     private val sensorPrivacy: SensorPrivacyAccess,
     private val selfPackage: String,
 ) {
-    fun setConstants(constants: Map<*, *>?): List<CommandOutcome> {
-        val entries = constants.orEmpty().entries.toList()
-        val problems = constantProblems(entries)
-        if (problems.isNotEmpty()) return listOf(CommandOutcome.rejected(DEVICE_CONFIG_PUT, problems.joinToString("; ")))
-        return entries.map { (key, value) ->
-            write(listOf("device_config", "put", WorkerContract.DEVICE_IDLE_NAMESPACE, key as String, value as String))
-        }
-    }
-
-    fun deleteConstants(keys: List<String>?): List<CommandOutcome> {
-        val list = keys.orEmpty()
-        val bad = list.filterNot { KEY.matches(it) }
-        if (list.isEmpty() || list.size > WorkerContract.MAX_CONSTANTS || bad.isNotEmpty()) {
-            return listOf(CommandOutcome.rejected(DEVICE_CONFIG_DELETE, "invalid keys: $bad (count ${list.size})"))
-        }
-        return list.map { write(listOf("device_config", "delete", WorkerContract.DEVICE_IDLE_NAMESPACE, it)) }
-    }
-
-    fun resetConstants(): CommandOutcome = write(listOf("device_config", "reset", "trusted_defaults", WorkerContract.DEVICE_IDLE_NAMESPACE))
-
     fun forceIdle(mode: String?): CommandOutcome {
         val argv = listOf("cmd", "deviceidle", "force-idle", mode.orEmpty())
         return if (mode in WorkerContract.FORCE_MODES) write(argv) else CommandOutcome.rejected(argv, "mode must be deep or light")
@@ -100,6 +81,12 @@ internal class WorkerCore(
 
     fun getAllSensorsOff(): CommandOutcome = hidden(SENSOR_PRIVACY_GET) { sensorPrivacy.isEnabled().toString() }
 
+    /** Small reads that return through binder. The app cannot read this hidden, non-@Readable setting itself (ADR 0012). */
+    fun getDeviceIdleSettings(): CommandOutcome = query(listOf("settings", "get", "global", DeviceIdleSettings.SETTING))
+
+    /** Needs READ_DEVICE_CONFIG, which shell holds and the app cannot get. */
+    fun listDeviceIdleConfig(): CommandOutcome = query(listOf("device_config", "list", WorkerContract.DEVICE_IDLE_NAMESPACE))
+
     fun readDeviceIdleArgv(): List<String> = listOf("dumpsys", "deviceidle")
 
     fun readSensorServiceArgv(): List<String> = listOf("dumpsys", "sensorservice")
@@ -121,6 +108,8 @@ internal class WorkerCore(
     }
 
     private fun write(argv: List<String>): CommandOutcome = runner.run(argv, WorkerContract.WRITE_TIMEOUT_MILLIS)
+
+    private fun query(argv: List<String>): CommandOutcome = runner.run(argv, WorkerContract.WRITE_TIMEOUT_MILLIS)
 
     // Any failure of a hidden call becomes a reported outcome; the worker must never die on one (SPEC 12.4).
     @Suppress("TooGenericExceptionCaught")
@@ -147,30 +136,10 @@ internal class WorkerCore(
         else -> null
     }
 
-    private fun constantProblems(entries: List<Map.Entry<*, *>>): List<String> {
-        if (entries.isEmpty()) return listOf("no constants")
-        if (entries.size > WorkerContract.MAX_CONSTANTS) return listOf("too many constants: ${entries.size}")
-        return entries.mapNotNull { (key, value) ->
-            when {
-                key !is String || !KEY.matches(key) -> "invalid key: $key"
-                value !is String || !VALUE.matches(value) -> "invalid value for $key: $value"
-                else -> null
-            }
-        }
-    }
-
     companion object {
-        /** `device_idle` keys are lower snake case (AOSP `DeviceIdleController.Constants`). */
-        val KEY = Regex("""[a-z][a-z0-9_]{0,63}""")
-
-        /** Milliseconds, factors and flags. */
-        val VALUE = Regex("""-?\d{1,13}(\.\d{1,6})?|true|false""")
-
         /** Java package name syntax. */
         val PACKAGE = Regex("""[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+""")
 
-        private val DEVICE_CONFIG_PUT = listOf("device_config", "put", WorkerContract.DEVICE_IDLE_NAMESPACE)
-        private val DEVICE_CONFIG_DELETE = listOf("device_config", "delete", WorkerContract.DEVICE_IDLE_NAMESPACE)
         private val SENSOR_PRIVACY_SET = listOf("ISensorPrivacyManager.setSensorPrivacy")
         private val SENSOR_PRIVACY_GET = listOf("ISensorPrivacyManager.isSensorPrivacyEnabled")
         private const val MILLIS_PER_SECOND = 1_000L

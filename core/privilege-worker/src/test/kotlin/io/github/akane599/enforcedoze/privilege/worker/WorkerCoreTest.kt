@@ -35,41 +35,14 @@ class WorkerCoreTest {
     private val privacy = FakePrivacy()
     private val core = WorkerCore(runner, { it == "com.example.app" || it == SELF }, privacy, SELF)
 
-    @Test fun constantsBecomeOneDeviceConfigPutEach() {
-        val out = core.setConstants(linkedMapOf("inactive_to" to "300000", "idle_factor" to "2.0", "wait_for_unlock" to "true"))
-        assertThat(out.map { it.isSuccess }).containsExactly(true, true, true)
+    @Test fun constantReadsUseFixedArgv() {
+        assertThat(core.getDeviceIdleSettings().isSuccess).isTrue()
+        assertThat(core.listDeviceIdleConfig().isSuccess).isTrue()
         assertThat(runner.ran).containsExactly(
-            listOf("device_config", "put", "device_idle", "inactive_to", "300000"),
-            listOf("device_config", "put", "device_idle", "idle_factor", "2.0"),
-            listOf("device_config", "put", "device_idle", "wait_for_unlock", "true"),
+            listOf("settings", "get", "global", "device_idle_constants"),
+            listOf("device_config", "list", "device_idle"),
         ).inOrder()
         assertThat(runner.timeouts.toSet()).containsExactly(5_000L)
-    }
-
-    @Test fun oneBadConstantRejectsTheWholeCall() {
-        val out = core.setConstants(mapOf("inactive_to" to "300000", "x;reboot" to "1"))
-        assertThat(out).hasSize(1)
-        assertThat(out.single().error).contains("invalid key")
-        assertThat(runner.ran).isEmpty()
-        assertThat(core.setConstants(mapOf("inactive_to" to "5m")).single().error).contains("invalid value")
-        assertThat(core.setConstants(mapOf("inactive_to" to 300000)).single().error).contains("invalid value")
-        assertThat(core.setConstants(emptyMap<String, String>()).single().error).isEqualTo("no constants")
-        assertThat(core.setConstants(null).single().error).isEqualTo("no constants")
-        val tooMany = (1..65).associate { "k$it" to "1" }
-        assertThat(core.setConstants(tooMany).single().error).contains("too many")
-        assertThat(runner.ran).isEmpty()
-    }
-
-    @Test fun deleteAndReset() {
-        core.deleteConstants(listOf("inactive_to", "idle_to"))
-        core.resetConstants()
-        assertThat(runner.ran).containsExactly(
-            listOf("device_config", "delete", "device_idle", "inactive_to"),
-            listOf("device_config", "delete", "device_idle", "idle_to"),
-            listOf("device_config", "reset", "trusted_defaults", "device_idle"),
-        ).inOrder()
-        assertThat(core.deleteConstants(listOf("bad key")).single().error).isNotNull()
-        assertThat(core.deleteConstants(emptyList()).single().error).isNotNull()
     }
 
     @Test fun forceIdleAndQueriesAreWhitelisted() {

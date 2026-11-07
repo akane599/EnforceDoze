@@ -21,14 +21,9 @@ interface IDozeWorker {
     /** uid of the worker process: 0 for root, 2000 for shell. */
     int getUid() = 2;
 
-    /** device_config put device_idle KEY VALUE for each entry (String keys and values). */
-    List<CommandOutcome> setDeviceIdleConstants(in Map constants) = 10;
-
-    /** device_config delete device_idle KEY for each key. */
-    List<CommandOutcome> deleteDeviceIdleConstants(in List<String> keys) = 11;
-
-    /** device_config reset trusted_defaults device_idle. */
-    CommandOutcome resetDeviceIdleConstants() = 12;
+    // 10-12 (device_config put, delete and reset in device_idle) were removed in VERSION 2 and are
+    // never reused: shell may not write those keys on API 36 and 37, and the app writes the global
+    // device_idle_constants string itself with WRITE_SECURE_SETTINGS (ADR 0012).
 
     /** cmd deviceidle force-idle MODE, MODE being "deep" or "light". */
     CommandOutcome forceIdle(String mode) = 13;
@@ -56,6 +51,12 @@ interface IDozeWorker {
 
     /** appops set <this app> OP MODE. */
     CommandOutcome setSelfAppOp(String op, String mode) = 21;
+
+    /** settings get global device_idle_constants; stdout is the string, or "null" when unset. */
+    CommandOutcome getDeviceIdleSettings() = 22;
+
+    /** device_config list device_idle; stdout is key=value lines, empty when nothing is set. */
+    CommandOutcome listDeviceIdleConfig() = 23;
 
     /** dumpsys deviceidle */
     void readDeviceIdle(in ParcelFileDescriptor pipe) = 30;

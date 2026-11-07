@@ -25,13 +25,13 @@ class DozeWorkerTest {
 
     @Test fun appUidMayCall() {
         assertThat(worker.unforce().isSuccess).isTrue()
-        assertThat(worker.version).isEqualTo(1)
+        assertThat(worker.version).isEqualTo(2)
     }
 
     @Test fun otherUidsAreRefused() {
         caller = 10_999
         assertThrows(SecurityException::class.java) { worker.unforce() }
-        assertThrows(SecurityException::class.java) { worker.setDeviceIdleConstants(mapOf("inactive_to" to "1")) }
+        assertThrows(SecurityException::class.java) { worker.deviceIdleSettings }
         assertThrows(SecurityException::class.java) { worker.grantSelf("android.permission.DUMP") }
         caller = 2000
         assertThrows(SecurityException::class.java) { worker.forceIdle("deep") }
