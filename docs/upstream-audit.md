@@ -132,8 +132,8 @@ Redacted fixture: `fixtures/sm-s938b/api37_CP2A.260605.016` (ADR 0008).
    `android-16.0.0_r1` and `android-17.0.0_r1`): each key reads the settings string first and falls
    back to `device_config`, then to the default. `DeviceIdleController` observes
    `Settings.Global.DEVICE_IDLE_CONSTANTS` with a content observer and reloads on change. So a key
-   in the global string overrides the same key in `device_config`, key by key, and SPEC 5.2 lever A
-   and the drift check in 5.6 have to read and write both stores. ADR in P2.
+   in the global string overrides the same key in `device_config`, key by key. ADR 0012: lever A
+   writes only the global string, from the app process, and reads `device_config` for attribution.
 2. **One UI adds constants.** The settings block lists `skip_sensing`, `skip_locating` and
    `dna_request_version`, which do not exist in AOSP `DeviceIdleController` at either tag. The
    owner sets `skip_sensing=true`; the dump also shows `skip_locating=true`. Their exact effect is

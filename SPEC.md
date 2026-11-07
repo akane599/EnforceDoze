@@ -115,7 +115,7 @@ Upstream already does the right things, but through mechanisms that are fragile 
 | Official Shizuku 13.6.0 cannot authorize new apps on Android 17 ([issue #2180](https://github.com/RikkaApps/Shizuku/issues/2180)) | First run fails on the target device | Fork-agnostic client, bind timeout, durable grants (4) |
 | `service call sensor_privacy <code>` | Transaction numbers change between releases (upstream uses 4, 8 and 9; 9 is still `setSensorPrivacy` on API 36 and 37); a wrong number calls a different method (ADR 0004) | Hidden `SensorPrivacyManager` API inside the UserService, probed per build (4, 5.4) |
 | Forced idle delay timed by the app | Upstream holds a partial wakelock for up to 10 minutes and counts the delay with a `Timer`, so the phone stays awake for the whole delay (ADR 0004) | Use Doze constants for delays; force only at delay 0 (5.3) |
-| `device_config` values can be overwritten by server flag sync | A profile silently reverts | Re-verify at every screen off and log drift (5.6) |
+| `device_config` values can be overwritten by server flag sync | A profile silently reverts | Lever A writes the global `device_idle_constants` string, which overrides `device_config` key by key; re-verify at every screen off and log drift (5.6, ADR 0012) |
 | No evidence that Doze worked | Users cannot tell whether settings help | Logs from system records (8) |
 | Long single service class, legacy dialogs | Hard to extend and test | Kotlin rewrite by module (12) |
 
@@ -125,7 +125,7 @@ Upstream already does the right things, but through mechanisms that are fragile 
 
 ## 3. Platform requirements
 
-The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 34 is the floor because it gives one uniform Doze-constants path (`device_config`, as upstream already branches) and the public light-idle APIs.
+The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 34 is the floor because it gives the public light-idle APIs; the Doze constants are written through the global `device_idle_constants` string on every supported level (ADR 0012).
 
 ### 3.1 SDK
 
@@ -162,8 +162,8 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 | Tier | Source | Unlocks |
 | --- | --- | --- |
 | T0 | Normal permissions | Screen and power broadcasts, light/deep idle state, usage events (with usage access), UI |
-| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS`, `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
-| T2 Worker | Shizuku or Sui UserService as shell (uid 2000) or root | `cmd deviceidle` / `dumpsys deviceidle` writes, `device_config put device_idle`, \`dumpsys sensorservice restrict |
+| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS` (lever A: the app writes the global `device_idle_constants` string itself, ADR 0012), `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
+| T2 Worker | Shizuku or Sui UserService as shell (uid 2000) or root | `cmd deviceidle` / `dumpsys deviceidle` writes, reads of `settings get global device_idle_constants` and `device_config list device_idle` (shell may not write `device_config device_idle` on API 36–37, ADR 0012), \`dumpsys sensorservice restrict |
 | T3 Root | Shizuku as root, Sui, or libsu | Upstream root features: mobile data, Wi-Fi radio, biometrics in Doze, app suspension |
 
 ### 4.2 Shizuku client
@@ -173,7 +173,7 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 
 ### 4.3 Worker (UserService)
 
-- AIDL interface `IDozeWorker` with typed methods only, for example `setDeviceIdleConstants(map)`, `resetDeviceIdleConstants()`, `forceIdle(mode)`, `unforce()`, `setSensorRestriction(allowPackage?)`, `setAllSensorsOff(bool)`, `allowlist(pkg, add)`, `readDeviceIdle(out: ParcelFileDescriptor)`, `readSensorService(out)`, `readEventLog(sinceMs, out)`, `readBatteryHistory(fromIndex, out)`.
+- AIDL interface `IDozeWorker` with typed methods only, for example `getDeviceIdleSettings()`, `listDeviceIdleConfig()` (lever A itself is written by the app, ADR 0012), `forceIdle(mode)`, `unforce()`, `setSensorRestriction(allowPackage?)`, `setAllSensorsOff(bool)`, `allowlist(pkg, add)`, `readDeviceIdle(out: ParcelFileDescriptor)`, `readSensorService(out)`, `readEventLog(sinceMs, out)`, `readBatteryHistory(fromIndex, out)`.
 - Bind with a 5 s timeout. No callback in time marks the worker unavailable for the session and the UI explains the Android 17 Shizuku fix (compatible fork or Sui; grants over ADB as a fallback).
 - Large outputs stream through pipes, never as binder return values.
 - Every call checks the caller uid. Package names are validated against `PackageManager` before use.
@@ -181,7 +181,7 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 
 ### 4.4 Capability probes
 
-Run at first start, after an OS update and on demand; results show on a Privileges screen and export to `docs/capabilities/`. Probe each of: the `device_config` keys present in the `device_idle` namespace (read from `dumpsys deviceidle` settings section), `force-idle deep` and `unforce`, `dumpsys sensorservice restrict` and the resulting mode string, the hidden sensor-privacy method signatures, `READ_LOGS` on the events buffer and the `device_idle*` tags present, `batterystats --history` support, Samsung extra fields, and whether `device_config` writes survive 10 minutes and a reboot.
+Run at first start, after an OS update and on demand; results show on a Privileges screen and export to `docs/capabilities/`. Probe each of: the `device_idle` keys present (read from `dumpsys deviceidle` settings section), a lever A test write of the global string from the app process that shows in `dumpsys deviceidle` and is put back exactly (ADR 0012), `force-idle deep` and `unforce`, `dumpsys sensorservice restrict` and the resulting mode string, the hidden sensor-privacy method signatures, `READ_LOGS` on the events buffer and the `device_idle*` tags present, `batterystats --history` support, Samsung extra fields, and whether the global string survives 10 minutes and a reboot.
 
 ## 5. Doze engine
 
@@ -219,8 +219,8 @@ stateDiagram-v2
 
 ### 5.2 Lever A: constants
 
-- Written with `device_config put device_idle <key> <value>` through the worker; reset with `device_config reset trusted_defaults device_idle`. Only keys the probe found are written (4.4).
-- Two snapshots before the first write. `previous.json`: every value as found, which may be the owner's own Tasker setup (imported as a custom profile, 11.4). `stock.json`: the values `dumpsys deviceidle` reports after a `trusted_defaults` reset, done once during onboarding with consent. "Restore stock" returns to `stock.json`; "Return to previous setup" replays `previous.json`.
+- Written as one `Settings.Global` string, `device_idle_constants`, holding every key of the active profile, by the app itself with `WRITE_SECURE_SETTINGS` (T1). It overrides `device_config device_idle` key by key and is re-read whole on each change, so a key left out follows `device_config` or the default. `device_config` is never written: shell may not write those keys on API 36–37, and key-by-key writes drop earlier keys from the running constants (ADR 0012). Only keys the probe found are written (4.4).
+- Two snapshots before the first write. `previous.json`: the raw string as found (or "absent") with the effective values, which may be the owner's own Tasker setup (imported as a custom profile, 11.4). `stock.json`: the values `dumpsys deviceidle` reports with the string deleted, captured once during onboarding with consent and the screen on, after which the previous string is written back. "Restore stock" deletes the string; "Return to previous setup" writes the previous string back exactly (ADR 0012).
 - Constants stay applied while a profile is active (not re-written at every screen off), because the controller schedules its next step at the moment of screen off and a late write would miss that step.
 - Delays are expressed here: "deep idle 10 minutes after screen off" becomes small `inactive_to` + `idle_after_inactive_to` + short `sensing_to` and `locating_to`. No app alarm needed.
 
@@ -244,7 +244,7 @@ While any of these is true, forced idle and sensor restriction are lifted (const
 
 1. **Apply:** worker writes, then reads back `dumpsys deviceidle` (constants, state, force flag) and `dumpsys sensorservice` (mode).
 2. **Verify:** any mismatch marks the profile "partly applied" with the failing key, shown on the home screen.
-3. **Revert:** every write records the previous value; "Restore stock" replays `stock.json`, `unforce`, `sensorservice enable`, sensor privacy off, allowlist as captured.
+3. **Revert:** every write records the previous value; "Restore stock" deletes the global string (ADR 0012), `unforce`, `sensorservice enable`, sensor privacy off, allowlist as captured.
 4. **Drift:** at each screen off, read constants back (one fast dump). A changed value is logged as drift with who likely changed it (server flag sync, another app, a Tasker task) and re-applied only if "Re-apply on drift" is on (default on). Disabling server flag sync for all namespaces is never done automatically; it is an advanced, explained switch.
 
 ### 5.7 Other Doze managers
@@ -270,7 +270,7 @@ Hold-offs (5.5) apply to every profile: calls, audio, car mode, hotspot and char
 
 ### 6.2 Constant values
 
-Values in the JSON are milliseconds; the table shows them readably. "Stock" means the value in `stock.json` (5.2), what the device reports after a defaults reset, not an AOSP number: One UI may ship its own. Any key the probe did not find is skipped and the profile shows "partly applied" with the missing key. Strict and Classic leave the walk timers alone because forced idle skips the walk.
+Values in the JSON are milliseconds; the table shows them readably. "Stock" means the key is left out of the string, so the device's own value applies (shown from `stock.json`, 5.2), not an AOSP number: One UI may ship its own (ADR 0012). Any key the probe did not find is skipped and the profile shows "partly applied" with the missing key. Strict and Classic leave the walk timers alone because forced idle skips the walk.
 
 | Key | Everyday | Pocket | Night | Classic | Strict |
 | --- | --- | --- | --- | --- | --- |
@@ -288,7 +288,7 @@ The agent checks every key name and its meaning against the AOSP `DeviceIdleCont
 
 ### 6.3 Custom profiles
 
-- Clone any built-in, then edit levers and constants. Each key has a plain-language line ("how long the phone waits after screen off before checking it is still") and guardrails: `sensing_to` ≥ 10 s, `idle_to` ≥ 5 min, `max_idle_to` ≤ 24 h, `idle_factor` 1–4; out-of-range input is refused with the reason.
+- Clone any built-in, then edit levers and constants. Each key has a plain-language line ("how long the phone waits after screen off before checking it is still") and guardrails: `sensing_to` ≥ 10 s, `idle_to` ≥ 5 min, `max_idle_to` ≤ 24 h, `idle_factor` 1–4, and the SMS, MMS, notification and temporary allowlist durations never below stock (ADR 0012); out-of-range input is refused with the reason. One UI's own keys (`skip_sensing`, `skip_locating`) appear only in imported or custom profiles, marked "effect unknown on this phone".
 - Import and export as JSON (one file per profile). Unknown keys are kept but flagged as "not on this phone".
 - A custom profile can be the day or night slot of a plan.
 
@@ -320,7 +320,7 @@ The agent checks every key name and its meaning against the AOSP `DeviceIdleCont
 ### 6.5 Switching
 
 - Day to night: a non-wakeup alarm at the window start (no exact-alarm permission) applies the night profile when the phone is next awake; if the screen is already off at that moment, it applies at the next maintenance window. Night to day: at the first unlock after the window end.
-- A switch writes only the keys that change, then reads all of them back (5.6).
+- A switch writes the whole string once, then reads every key back, allowing about 2 s for the system to reload it (5.6, ADR 0012).
 - Every switch is a row in the action log with the reason (schedule, owner tap, Tasker, recommendation accepted).
 
 ## 7. Recommended
@@ -564,7 +564,7 @@ Screenshot tests (Roborazzi or Paparazzi, chosen in an ADR) for every screen: li
 
 The owner currently runs a Tasker setup ("dozectl"): display off and on profiles run a shell script through Shizuku that applies tuned Doze constants (about 10 minutes to deep idle) and restricts sensors while the screen is off. EnforceDoze replaces it without a gap:
 
-1. **Detect.** On first run, read the current `device_idle` values (`device_config list device_idle`, plus the legacy `settings get global device_idle_constants`) and the sensor mode. Values that differ from stock are shown as "set by something else".
+1. **Detect.** On first run, read the current `device_idle` values (the global `settings get global device_idle_constants` string, which the owner's setup writes, plus `device_config list device_idle`; ADR 0012) and the sensor mode. Values that differ from stock are shown as "set by something else".
 2. **Import.** Save them as a custom profile "Imported setup" (constants, plus sensors restricted if seen). Compare it to Everyday and Pocket in one table, so the owner sees the difference.
 3. **Guide.** The app cannot edit Tasker. It asks the owner to turn off the two display profiles, then verifies over the next screen off and on that no foreign writes appear (drift = 0) and shows "Switch-over complete".
 4. **Way back.** "Return to my Tasker setup" pauses the plan and replays `previous.json` (5.2), so the owner can switch back in one tap.
@@ -654,7 +654,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 | Car mode | `cmd uimode car yes` / `no` |
 | Charging | `dumpsys battery set ac 1`, then `dumpsys battery unplug` |
 | Motion | `cmd deviceidle motion` ("Simulate a motion event to bring the device out of deep doze", API 37 help). The emulators have no motion sensor (`mMotionSensor=null`), so `adb emu sensor set acceleration …` cannot reach Doze (ADR 0004). If `motion` does not behave like a real motion reset, motion tests are marked device-only in an ADR and covered by parser fixtures plus the sensor-mode read-back |
-| Foreign Doze writer | `adb shell device_config put device_idle inactive_to 1800000` during a session |
+| Foreign Doze writer | `adb shell settings put global device_idle_constants inactive_to=1800000` during a session (writes as `com.android.shell`, as Tasker through Shizuku does; ADR 0012) |
 | Privilege lost | Stop the Shizuku server mid-session; expect the banner, the plan paused and Stock restored where possible |
 
 Hotspot cannot be simulated reliably; it is covered by a unit test with a fake source.
@@ -756,15 +756,12 @@ cmd deviceidle whitelist           # list
 cmd deviceidle whitelist +<pkg>    # add; -<pkg> removes
 
 # Constants
-device_config list device_idle
-device_config put device_idle <key> <ms>
-device_config reset trusted_defaults device_idle
-settings get global device_idle_constants      # legacy, read only
+settings get global device_idle_constants      # the lever A string; the app writes it itself (ADR 0012)
+settings put global device_idle_constants <key>=<value>,...   # tests: simulated foreign writer
+settings delete global device_idle_constants   # Restore stock
+device_config list device_idle                 # read only; shell may not write device_idle on API 36-37 (ADR 0012)
 device_config get_sync_disabled_for_tests      # advanced switch only
 device_config set_sync_disabled_for_tests persistent|until_reboot|none
-device_config override device_idle <key> <ms>  # sticky local value, ignores server sync (ADR 0004)
-device_config clear_override device_idle <key>
-device_config list_local_overrides
 
 # Sensors
 dumpsys sensorservice restrict <allowPackage>   # package is mandatory (ADR 0004)
