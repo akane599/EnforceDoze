@@ -69,8 +69,9 @@ dependencies {
     implementation(libs.upstream.nanotasks)
     implementation(libs.upstream.process.phoenix)
     implementation(libs.upstream.localbroadcastmanager)
+    implementation(project(":core:privilege"))
+    // Upstream classes still call Shizuku directly until the worker replaces them (SPEC 12.1).
     implementation(libs.shizuku.api)
-    implementation(libs.shizuku.provider)
 
     testImplementation(libs.junit)
 }
