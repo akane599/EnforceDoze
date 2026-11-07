@@ -52,6 +52,12 @@ android {
         }
     }
 
+    lint {
+        // Upstream 1.10.2 ships with 2 errors and 157 warnings (docs/upstream-audit.md). The baseline
+        // freezes them so CI fails only on new issues; it shrinks as upstream classes are replaced.
+        baseline = file("lint-baseline.xml")
+    }
+
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
         includeInApk = false
@@ -84,6 +90,10 @@ dependencies {
     def shizukuVersion = '13.1.5'
     implementation "dev.rikka.shizuku:api:$shizukuVersion"
     implementation "dev.rikka.shizuku:provider:$shizukuVersion"
+
+    // Upstream's ExampleUnitTest never compiled: no test dependency was declared.
+    // Version resolved from https://repo1.maven.org/maven2/junit/junit/maven-metadata.xml (2026-11-07).
+    testImplementation 'junit:junit:4.13.2'
 
 //    def libsuVersion = '6.0.0'
 
