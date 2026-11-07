@@ -76,6 +76,9 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | Path | What |
 | --- | --- |
 | `app/` | Upstream 1.10.2 Java app (package `com.akylas.enforcedoze`, app id `io.github.akane599.enforcedoze`), replaced module by module (SPEC 12.1, 12.3) |
+| `core/parse` | Pure-JVM parsers for `dumpsys` and the event log, one per source (SPEC 8, 12.4) |
+| `core/privilege-api`, `core/privilege-worker`, `core/privilege` | `IDozeWorker` contract; the worker (only place for hidden APIs, runtime-only); tiers, clients, session, probes (SPEC 4, ADR 0009) |
+| `core/hidden-api-stubs`, `testing/fixtures` | compileOnly framework stubs for the worker; fixture access for JVM tests |
 | `gradle/libs.versions.toml` | Version catalog; versions resolved from Maven metadata, never from memory |
 | `fixtures/` | Raw dumps per device and build for parser tests (`fixtures/README.md`) |
 | `tools/fixtures/` | Capture script |

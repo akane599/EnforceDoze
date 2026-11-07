@@ -591,9 +591,13 @@ Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, k
 | Module | Holds |
 | --- | --- |
 | `:app` | Navigation, DI wiring, the foreground service, tiles, the automation receiver |
-| `:core:privilege` | Tiers, Shizuku, Sui and root clients, the `IDozeWorker` UserService, capability probes (section 4) |
+| `:core:privilege` | Tiers, Shizuku, Sui and root clients, the worker session, capability probes (section 4) |
+| `:core:privilege-api` | The `IDozeWorker` AIDL, its parcelables and the contract both processes share (ADR 0009) |
+| `:core:privilege-worker` | The `IDozeWorker` UserService; the only module that may call hidden APIs, reached at run time only (ADR 0009) |
+| `:core:hidden-api-stubs` | compileOnly framework stubs for the worker (ADR 0009) |
+| `:core:parse` | Pure-JVM parsers and their value types, shared by privilege, doze and evidence (ADR 0009) |
 | `:core:doze` | Levers, apply/verify/revert, hold-offs, drift, plan scheduling (section 5, 6.5) |
-| `:core:evidence` | Collectors, parsers, session verdicts, night report model (section 8) |
+| `:core:evidence` | Collectors, session verdicts, night report model (section 8) |
 | `:core:recommend` | The pure recommendation policy (section 7) |
 | `:core:data` | Room, DataStore, profile JSON import and export |
 | `:core:design` | Tokens generated from `DESIGN.md`, shared components including the timeline strip |
