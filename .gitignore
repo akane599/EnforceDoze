@@ -13,3 +13,8 @@ app/release
 /.env
 /vendor
 /certs
+# Raw phone dumps: personal data, never committed. Convert with tools/fixtures/import_phone_dumps.py.
+/oneui_dumps/
+
+# Python bytecode from the fixture tools
+__pycache__/

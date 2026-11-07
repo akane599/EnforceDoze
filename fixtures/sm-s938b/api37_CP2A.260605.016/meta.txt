@@ -1,0 +1,14 @@
+captured_at=2026-11-07T21:59:10Z
+mode=read-only (owner's adb capture)
+ro.product.manufacturer=samsung
+ro.product.model=SM-S938B
+ro.product.device=pa3q
+ro.build.fingerprint=samsung/pa3qxtur/pa3q:17/CP2A.260605.016/S938BXXSDDZJ1_OXMDDZJ1:user/release-keys
+ro.build.version.sdk=37
+ro.build.version.release=17
+ro.build.id=CP2A.260605.016
+ro.build.version.incremental=S938BXXSDDZJ1
+ro.build.PDA=S938BXXSDDZJ1
+ro.build.version.oneui=90000
+ro.build.version.security_patch=2026-10-05
+ro.build.type=user

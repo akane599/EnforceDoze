@@ -29,6 +29,15 @@ tools/fixtures/capture.sh -s <serial> fixtures                                  
 | `sdk_gphone64_x86_64/api35_AE3A.240806.043` | Android 15 emulator | Walks LOCATING |
 | `sdk_gphone64_x86_64/api36_BE2A.250530.026.F3` | Android 16 emulator | `remove_idle_location=true` |
 | `sdk_gphone64_x86_64/api37_CE2A.260420.051.A3` | Android 17 emulator | Same flag; its battery history also covers an upstream 1.10.2 run |
+| `sm-s938b/api37_CP2A.260605.016` | One UI 9, Android 17 (owner's phone) | Read-only capture, redacted; its own README lists files and commands |
 
-Emulator dumps contain no personal data. One UI dumps from the owner's phone go in `sm-s938b/` only
-after the owner reviews them; phone captures are always read-only (SPEC 0.4).
+Emulator dumps contain no personal data. Phone captures are always read-only (SPEC 0.4) and are
+never committed raw: the owner's dumps stay in the git-ignored `oneui_dumps/` and are converted with
+the shared Coulomb redactor (ADR 0008):
+
+```sh
+python3 -I tools/fixtures/import_phone_dumps.py oneui_dumps   # writes fixtures/<model>/api<SDK>_<build>/
+```
+
+The script fails if any unmapped package name or personal value survives. Tests must not depend on
+third-party package names in phone fixtures; they are pseudonyms.

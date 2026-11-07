@@ -1,0 +1,1 @@
+light_after_inactive_to=30000,inactive_to=180000,idle_after_inactive_to=120000,motion_inactive_to=180000,skip_sensing=true,min_time_to_alarm=600000

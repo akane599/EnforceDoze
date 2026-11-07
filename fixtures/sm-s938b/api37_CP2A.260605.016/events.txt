@@ -1,0 +1,54 @@
+11-08 00:17:42.689 13384 13490 I device_idle: [0,unlocked]
+11-08 00:17:42.690 13384 13490 I device_idle_light: [0,unlocked]
+11-08 00:17:42.691 13384 13731 I device_idle_off_start: unlocked
+11-08 00:17:42.691 13384 13731 I device_idle_off_phase: power
+11-08 00:17:42.695 13384 13731 I device_idle_off_phase: net
+11-08 00:17:42.726 13384 13731 I device_idle_off_complete: 
+11-08 00:18:12.646 13384 13384 I device_idle: [1,no activity]
+11-08 00:18:12.668 13384 13384 I device_idle_light: [1,no activity]
+11-08 00:19:42.669 13384 13731 I device_idle_light_step: 
+11-08 00:19:42.669 13384 13731 I device_idle_light: [4,s:alarm]
+11-08 00:19:42.670 13384 13731 I device_idle_on_start: 
+11-08 00:19:42.680 13384 13731 I device_idle_on_phase: net
+11-08 00:19:42.680 13384 13731 I device_idle_on_complete: 
+11-08 00:20:33.350 13384 13490 I device_idle: [0,unlocked]
+11-08 00:20:33.351 13384 13490 I device_idle_light: [0,unlocked]
+11-08 00:20:33.351 13384 13731 I device_idle_off_start: unlocked
+11-08 00:20:33.351 13384 13731 I device_idle_off_phase: net
+11-08 00:20:33.384 13384 13731 I device_idle_off_complete: 
+11-08 00:20:45.233 13384 13384 I device_idle: [1,no activity]
+11-08 00:20:45.233 13384 13384 I device_idle_light: [1,no activity]
+11-08 00:20:48.687 13384 13490 I device_idle: [0,unlocked]
+11-08 00:20:48.688 13384 13490 I device_idle_light: [0,unlocked]
+11-08 00:20:48.688 13384 13731 I device_idle_off_start: unlocked
+11-08 00:20:48.688 13384 13731 I device_idle_off_complete: 
+11-08 00:21:05.043 13384 13384 I device_idle: [1,no activity]
+11-08 00:21:05.044 13384 13384 I device_idle_light: [1,no activity]
+11-08 00:22:32.766 13384 13731 I device_idle_light_step: 
+11-08 00:22:32.768 13384 13731 I device_idle_light: [4,s:alarm]
+11-08 00:22:32.768 13384 13731 I device_idle_on_start: 
+11-08 00:22:32.779 13384 13731 I device_idle_on_phase: net
+11-08 00:22:32.779 13384 13731 I device_idle_on_complete: 
+11-08 00:25:05.045 13384 13731 I device_idle_step: 
+11-08 00:25:05.046 13384 13731 I device_idle: [2,s:alarm]
+11-08 00:26:57.147 13384 13384 I device_idle: [0,motion]
+11-08 00:26:57.148 13384 13384 I device_idle: [1,no activity]
+11-08 00:29:27.147 13384 13731 I device_idle_light_step: 
+11-08 00:29:27.148 13384 13731 I device_idle_light: [6,s:alarm]
+11-08 00:29:27.151 13384 13731 I device_idle_off_start: unknown
+11-08 00:29:27.151 13384 13731 I device_idle_off_phase: net
+11-08 00:29:27.151 13384 13731 I device_idle_off_complete: 
+11-08 00:29:32.161 13384 13731 I device_idle_light_step: 
+11-08 00:29:32.164 13384 13731 I device_idle_light: [4,s:early]
+11-08 00:29:32.166 13384 13731 I device_idle_on_start: 
+11-08 00:29:32.175 13384 13731 I device_idle_on_phase: net
+11-08 00:29:32.175 13384 13731 I device_idle_on_complete: 
+11-08 00:30:57.148 13384 13731 I device_idle_step: 
+11-08 00:30:57.149 13384 13731 I device_idle: [2,s:alarm]
+11-08 00:33:21.754 13384 13384 I device_idle: [0,motion]
+11-08 00:33:21.754 13384 13384 I device_idle: [1,no activity]
+11-08 00:33:51.722 13384 13490 I device_idle: [0,unlocked]
+11-08 00:33:51.723 13384 13490 I device_idle_light: [0,unlocked]
+11-08 00:33:51.725 13384 13731 I device_idle_off_start: unlocked
+11-08 00:33:51.725 13384 13731 I device_idle_off_phase: net
+11-08 00:33:51.746 13384 13731 I device_idle_off_complete: 

@@ -1,0 +1,991 @@
+POWER MANAGER (dumpsys power)
+
+Power Manager State:
+  Settings power_manager_constants:
+    no_cached_wake_locks=true
+  mDirty=0x0
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=false
+  mPlugType=0
+  mBatteryLevel=13
+  mDreamsBatteryLevelDrain=0
+  mDockState=0
+  mStayOn=false
+  mProximityPositive=false
+  mBootCompleted=true
+  mSystemReady=true
+  mEnhancedDischargeTimeElapsed=0
+  mLastEnhancedDischargeTimeUpdatedElapsed=0
+  mEnhancedDischargePredictionIsPersonalized=false
+  mUseAutoSuspend=true
+  mHalAutoSuspendModeEnabled=false
+  mHalInteractiveModeEnabled=true
+  mWakeLockSummary=0x1
+  mNotifyLongScheduled=+23s656ms
+  mNotifyLongDispatched=-40s425ms
+  mNotifyLongNextCheck=(none)
+  mRequestWaitForNegativeProximity=false
+  mInterceptedPowerKeyForProximity=false
+  mInterceptedKeyForProximity=false
+  mSandmanScheduled=false
+  mBatteryLevelLow=true
+  mLightDeviceIdleMode=false
+  mDeviceIdleMode=false
+  mDeviceIdleWhitelist=[1000, 1001, 2000, 5022, 5025, 5026, 5250, 5278, 10057, 10060, 10062, 10063, 10068, 10071, 10074, 10077, 10081, 10092, 10095, 10096, 10098, 10101, 10103, 10104, 10109, 10111, 10113, 10114, 10115, 10118, 10122, 10126, 10127, 10128, 10129, 10132, 10133, 10135, 10136, 10137, 10138, 10140, 10142, 10143, 10144, 10145, 10152, 10157, 10158, 10161, 10163, 10164, 10176, 10179, 10197, 10198, 10205, 10212, 10218, 10220, 10225, 10252, 10253, 10256, 10257, 10264, 10265, 10277, 10285, 10301, 10322, 10338, 10346, 10361, 10362, 10365, 10372, 10379, 10389, 10400, 10403, 10410, 10432, 10435, 10456, 10457, 10458, 10466, 10470, 10476, 10477, 10478, 10479, 10481, 10483, 10487, 10492, 10497, 10504, 10505, 10507, 10511, 10515, 10518, 10525, 10526, 10529]
+  mDeviceIdleTempWhitelist=[]
+  mLowPowerStandbyActive=false
+  mLastWakeTime=8745693 (1519969 ms ago)
+  mLastSleepTime=8516183 (1749479 ms ago)
+  mLastSleepReason=timeout
+  mLastGlobalWakeTimeRealtime=8841252 (1424410 ms ago)
+  mLastGlobalSleepTimeRealtime=8611741 (1653921 ms ago)
+  mLastInteractivePowerHintTime=10264851 (811 ms ago)
+  mLastScreenBrightnessBoostTime=0 (10265662 ms ago)
+  mScreenBrightnessBoostInProgress=false
+  mDefaultDisplayReadyByProximity=true
+  mHoldingWakeLockSuspendBlocker=true
+  mHoldingDisplaySuspendBlocker=true
+
+Settings and Configuration:
+  mDecoupleHalAutoSuspendModeFromDisplayConfig=true
+  mDecoupleHalInteractiveModeFromDisplayConfig=true
+  mWakeUpWhenPluggedOrUnpluggedConfig=true
+  mWakeUpWhenPluggedOrUnpluggedInTheaterModeConfig=false
+  mTheaterModeEnabled=false
+  mKeepDreamingWhenUnplugging=false
+  mGlobalForceDisableWakelocks=false
+  mGroupsToForceDisableWakelocks={}
+  mSuspendWhenScreenOffDueToProximityConfig=true
+  mDreamsSupportedConfig=true
+  mDreamsEnabledByDefaultConfig=false
+  mDreamsActivatedOnSleepByDefaultConfig=false
+  mDreamsActivatedOnDockByDefaultConfig=true
+  mDreamsActivatedWhilePosturedByDefaultConfig=false
+  mDreamsActivatedOnlyWhileWirelessChargingConfig=false
+  mDreamsEnabledOnBatteryConfig=false
+  mDreamsBatteryLevelMinimumWhenPoweredConfig=-1
+  mDreamsBatteryLevelMinimumWhenNotPoweredConfig=15
+  mDreamsBatteryLevelDrainCutoffConfig=5
+  mDreamsEnabledSetting=false
+  mDreamsActivateOnSleepSetting=true
+  mDreamsActivateOnDockSetting=false
+  mDreamsActivateWhilePosturedSetting=false
+  mDreamsOnlyOnWirelessChargingSetting=false
+  mDozeAfterScreenOff=true
+  mBrightWhenDozingConfig=false
+  mAttentiveWarningDurationConfig=30000
+  mStayOnWhilePluggedInSetting=0
+  mUserActivityTimeoutOverrideFromWindowManager=-1
+  mUserActivityTimeoutForDexOverrideFromWindowManager=-1
+  mUserInactiveOverrideFromWindowManager=false
+  mDozeScreenStateOverrideFromDreamManager=4
+  mDrawWakeLockOverrideFromSidekick=false
+  mDozeScreenBrightnessOverrideFromDreamManager=0.2
+  mUseNormalBrightnessForDoze=false
+  mScreenBrightnessMinimum=0.0
+  mScreenBrightnessMaximum=1.0
+  mScreenBrightnessDefault=0.5019608
+  mDoubleTapWakeEnabled=false
+  mForegroundProfile=0
+  mUserId=0
+  mWakeUpDelegate=null
+  mLastWakeUpReason: 19
+  mOutdoorModeSetting: false
+  mAutoBrightnessLowerLimit=-1
+  mAutoBrightnessUpperLimit=-1
+  mLastAutoBrightnessLimitTime=0
+  mAutoBrightnessLimitLastCaller=
+  SEC_FEATURE_USE_GED_DOZE: true
+  SEC_FEATURE_SEAMLESS_AOD: false
+  SEC_FEATURE_WA_WAITING_AOD_WHEN_WAKINGUP_FROM_DOZE: true
+  SEC_FEATURE_WAKEUP_WHEN_PLUG_CHANGED: true
+  SEC_FEATURE_AOD_LOOK_CHARGING_UI: false
+  mAodMode: true
+  mShouldWaitForTransitionToAodUi: false
+  SEC_FEATURE_DEX_DUAL_VIEW: true
+  SEC_FEATURE_FOLD_COVER_DISPLAY: false
+  SEC_FEATURE_FLIP_COVER_DISPLAY: false
+  SEC_FEATURE_FLIP_LARGE_COVER_DISPLAY: false
+  SEC_FEATURE_DUAL_DISPLAY: false
+
+Attentive timeout: -1 ms
+Sleep timeout: -1 ms
+Screen off timeout: 300000 ms
+Screen dim duration: 20000 ms
+Screen dim duration override: -1 ms
+SQD Screen dim duration override: -1 ms
+Screen off timeout for DeX: 600000 ms
+
+Smart Stay:
+  mSmartStayEnabledSetting: false
+Smart Stay:
+  USE_SMART_STAY: true
+  mSmartStayEnabled: false
+  SmartStayDelay: 2750
+  mFaceDetectRequested: false
+  PREVENT_BAD_CURRENT_CONSUMPTION: true
+
+Wakelock Blacklist App id: size=0
+
+UID states (changing=false changed=false):
+  UID 1000:   ACTIVE  count=0 state=0
+  UID 1001:   ACTIVE  count=0 state=0
+  UID 1002:   ACTIVE  count=0 state=0
+  UID 1027:   ACTIVE  count=0 state=0
+  UID 1068:   ACTIVE  count=0 state=0
+  UID 1073:   ACTIVE  count=0 state=0
+  UID 2918:   ACTIVE  count=0 state=0
+  UID 5013:   ACTIVE  count=0 state=5
+  UID 5278: INACTIVE  count=0 state=19
+  UID u0a57:   ACTIVE  count=0 state=0
+  UID u0a60: INACTIVE  count=0 state=19
+  UID u0a64:   ACTIVE  count=0 state=6
+  UID u0a66: INACTIVE  count=0 state=19
+  UID u0a70:   ACTIVE  count=0 state=19
+  UID u0a72: INACTIVE  count=0 state=19
+  UID u0a74: INACTIVE  count=0 state=19
+  UID u0a80: INACTIVE  count=0 state=16
+  UID u0a81: INACTIVE  count=0 state=19
+  UID u0a95: INACTIVE  count=0 state=19
+  UID u0a96: INACTIVE  count=0 state=19
+  UID u0a98: INACTIVE  count=0 state=19
+  UID u0a104: INACTIVE  count=0 state=19
+  UID u0a109:   ACTIVE  count=0 state=6
+  UID u0a112: INACTIVE  count=0 state=19
+  UID u0a115: INACTIVE  count=0 state=19
+  UID u0a123: INACTIVE  count=0 state=19
+  UID u0a126: INACTIVE  count=0 state=19
+  UID u0a128: INACTIVE  count=0 state=10
+  UID u0a129:   ACTIVE  count=0 state=15
+  UID u0a130: INACTIVE  count=0 state=19
+  UID u0a133: INACTIVE  count=0 state=16
+  UID u0a134:   ACTIVE  count=0 state=5
+  UID u0a135: INACTIVE  count=0 state=10
+  UID u0a136:   ACTIVE  count=0 state=19
+  UID u0a137: INACTIVE  count=0 state=19
+  UID u0a138: INACTIVE  count=0 state=19
+  UID u0a139: INACTIVE  count=0 state=19
+  UID u0a140: INACTIVE  count=0 state=19
+  UID u0a143: INACTIVE  count=0 state=19
+  UID u0a144:   ACTIVE  count=0 state=5
+  UID u0a147: INACTIVE  count=0 state=19
+  UID u0a148: INACTIVE  count=0 state=19
+  UID u0a151: INACTIVE  count=0 state=19
+  UID u0a152: INACTIVE  count=0 state=19
+  UID u0a159:   ACTIVE  count=0 state=19
+  UID u0a161: INACTIVE  count=0 state=19
+  UID u0a163: INACTIVE  count=0 state=19
+  UID u0a164: INACTIVE  count=0 state=19
+  UID u0a170:   ACTIVE  count=0 state=5
+  UID u0a207:   ACTIVE  count=0 state=19
+  UID u0a214:   ACTIVE  count=0 state=6
+  UID u0a226: INACTIVE  count=0 state=19
+  UID u0a256: INACTIVE  count=0 state=19
+  UID u0a257: INACTIVE  count=0 state=19
+  UID u0a258: INACTIVE  count=0 state=19
+  UID u0a264: INACTIVE  count=0 state=19
+  UID u0a275:   ACTIVE  count=0 state=0
+  UID u0a279: INACTIVE  count=0 state=19
+  UID u0a282:   ACTIVE  count=0 state=5
+  UID u0a288: INACTIVE  count=0 state=19
+  UID u0a292:   ACTIVE  count=0 state=5
+  UID u0a293:   ACTIVE  count=0 state=5
+  UID u0a295: INACTIVE  count=0 state=19
+  UID u0a296:   ACTIVE  count=0 state=5
+  UID u0a298: INACTIVE  count=0 state=16
+  UID u0a318:   ACTIVE  count=0 state=5
+  UID u0a319: INACTIVE  count=0 state=19
+  UID u0a322:   ACTIVE  count=0 state=0
+  UID u0a323:   ACTIVE  count=0 state=0
+  UID u0a325:   ACTIVE  count=0 state=0
+  UID u0a338:   ACTIVE  count=0 state=5
+  UID u0a339:   ACTIVE  count=0 state=5
+  UID u0a346: INACTIVE  count=0 state=19
+  UID u0a347: INACTIVE  count=0 state=19
+  UID u0a357: INACTIVE  count=0 state=19
+  UID u0a359: INACTIVE  count=0 state=16
+  UID u0a361:   ACTIVE  count=0 state=2
+  UID u0a363: INACTIVE  count=0 state=19
+  UID u0a364: INACTIVE  count=0 state=19
+  UID u0a368:   ACTIVE  count=0 state=15
+  UID u0a372:   ACTIVE  count=0 state=4
+  UID u0a384:   ACTIVE  count=0 state=5
+  UID u0a409:   ACTIVE  count=0 state=5
+  UID u0a413: INACTIVE  count=0 state=16
+  UID u0a447: INACTIVE  count=0 state=19
+  UID u0a456:   ACTIVE  count=0 state=5
+  UID u0a457: INACTIVE  count=0 state=19
+  UID u0a458:   ACTIVE  count=0 state=5
+  UID u0a460: INACTIVE  count=0 state=19
+  UID u0a461: INACTIVE  count=0 state=19
+  UID u0a466:   ACTIVE  count=0 state=4
+  UID u0a470: INACTIVE  count=0 state=19
+  UID u0a474:   ACTIVE  count=0 state=4
+  UID u0a480: INACTIVE  count=0 state=19
+  UID u0a482:   ACTIVE  count=0 state=6
+  UID u0a483:   ACTIVE  count=0 state=4
+  UID u0a487:   ACTIVE  count=0 state=4
+  UID u0a497: INACTIVE  count=0 state=16
+  UID u0a511:   ACTIVE  count=0 state=4
+  UID u0a525:   ACTIVE  count=1 state=4
+  UID u0a526:   ACTIVE  count=0 state=4
+  UID u0a529:   ACTIVE  count=0 state=6
+  UID u0ai23: INACTIVE  count=0 state=17
+  UID u0ai9000:   ACTIVE  count=0 state=5
+  UID u0i11: INACTIVE  count=0 state=17
+  UID u0i21: INACTIVE  count=0 state=17
+  UID u0i22: INACTIVE  count=0 state=17
+  UID u0i23: INACTIVE  count=0 state=17
+  UID u0i33: INACTIVE  count=0 state=19
+  UID u0i34: INACTIVE  count=0 state=19
+
+Looper state:
+  Looper (PowerManagerService, tid 65) {d629e0f}
+    (MessageQueue is using DeliQueue implementation)
+    Message 0: { when=+4m39s254ms what=1 target=android.os.Handler async=true heapIndex=1 }
+    Message 1: { when=+2s189ms callback=com.android.server.power.PowerManagerService$6 target=android.os.Handler async=true heapIndex=0 }
+    Message 2: { when=+23s655ms what=4 target=android.os.Handler async=true heapIndex=2 }
+    (Total messages: 3, polling=true, quitting=false)
+Clear Cover:
+  mIsCoverClosed: false
+  mlastUpdateCoverStateReason: isCoverClosedBySysfs called on closed = false
+  mlastUpdateCoverStateTime: = -1 (10265664 ms ago)
+  mFeatureCoverSysfs: true
+  mCoverType: -1 at 514898 (9750765 ms ago)
+  mlastUpdateCoverTypeReason: setCoverType = -1
+  mScreenBrightnessForClearCoverConfig=0.41568628
+  mBrightnessLimitByCoverConfig: -1
+BrightnessLimitController
+  BrightnessLimitRunner
+   type=MB_LIMIT
+   mLowerLimit=-1
+   mUpperLimit=1275
+   mIsRunning=false
+   mTargetLimit=1275
+   mCurrentLimit=1275
+   mPeriod=200
+
+HDR Brightness Limit Locks: size=0
+
+SEC_USE_FACTORY_BINARY: false
+
+Wake Locks: size=1
+  PARTIAL_WAKE_LOCK                 'AkaTerminal:terminal' ACQ=-2h15m3s912ms LONG (uid=10525 isFrozen=false isAttributedUidCached=false pid=32029 powerGroupId=0 displayId=0 lock=b0d2599)
+
+Suspend Blockers: size=5
+  PowerManagerService.Booting: ref count=0 []
+  PowerManagerService.WakeLocks: ref count=1 [unknown: (11-07 22:44:06.795)]
+  PowerManagerService.Display: ref count=2 [display state on: (11-08 00:33:50.893), holding display: (11-08 00:33:50.673)]
+  PowerManagerService.Broadcasts: ref count=0 []
+  PowerManagerService.WirelessChargerDetector: ref count=0 []
+
+Display Power: com.android.server.power.PowerManagerService$3@e101a47
+
+ScreenTimeoutConstants: 
+  mAttentiveTimeoutConfig=-1
+  mAttentiveTimeoutSetting=-1
+  mMinimumScreenOffTimeoutConfig=3000
+  mMaximumScreenDimDurationConfig=20000
+  mMaximumScreenDimRatioConfig=0.333
+  mMaximumScreenOffTimeoutFromDeviceAdmin=9223372036854775807 (enforced=false)
+  mScreenOffTimeoutSetting=300000
+  mSleepTimeoutSetting=-1
+
+mFreezingScreenBrightness: false
+
+PowerHistorian:
+  WakeLock Release History:
+
+  DisplayGroup History:
+
+  WakeUp History:
+   No   Timestamp          UID   ID ST  Reason                         Foreground Package             Caller (Op Package)
+  [1]   11-07 22:27:59.992 1000  0  OFF power_button                   org.ojcgpke.ekzyasw            
+  [2]   11-07 22:28:04.217 1000  0  ON  power_button                   org.ojcgpke.ekzyasw            android
+  [3]   11-07 22:28:07.396 1000  0  OFF power_button                   org.ojcgpke.ekzyasw            
+  [4]   11-07 22:28:08.198 1000  0  ON  power_button                   org.ojcgpke.ekzyasw            android
+  [5]   11-07 22:28:15.776 1000  0  OFF timeout                        org.ojcgpke.ekzyasw            
+  [6]   11-07 22:31:06.507 1000  0  ON  tap                            org.ojcgpke.ekzyasw            android
+  [7]   11-07 22:31:11.505 1000  0  OFF timeout                        org.ojcgpke.ekzyasw            
+  [8]   11-07 22:33:07.568 1000  0  ON  power_button                   org.ojcgpke.ekzyasw            android
+  [9]   11-07 22:41:09.715 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [10]  11-07 22:42:43.376 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [11]  11-07 22:53:32.568 1000  0  OFF power_button                   sw.ovbgd.app                   
+  [12]  11-07 22:53:57.297 1000  0  ON  power_button                   sw.ovbgd.app                   android
+  [13]  11-07 22:54:15.458 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [14]  11-07 22:54:23.957 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [15]  11-07 22:54:25.742 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [16]  11-07 22:55:11.381 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [17]  11-07 22:55:22.437 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [18]  11-07 22:56:29.159 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [19]  11-07 22:57:01.850 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [20]  11-07 23:05:47.571 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [21]  11-07 23:09:17.559 1000  0  OFF power_button                   com.tqggmn.mifqtfdlq           
+  [22]  11-07 23:09:17.909 1000  0  ON  wake_key                       com.tqggmn.mifqtfdlq           android
+  [23]  11-07 23:26:49.813 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [24]  11-07 23:27:08.618 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [25]  11-07 23:29:50.322 1000  0  OFF power_button                   com.ekimvwhar.vrwobs           
+  [26]  11-07 23:29:57.046 1000  0  ON  power_button                   com.ekimvwhar.vrwobs           android
+  [27]  11-07 23:30:12.461 1000  0  OFF power_button                   com.ekimvwhar.vrwobs           
+  [28]  11-07 23:51:29.982 1000  0  ON  tap                            com.ekimvwhar.vrwobs           android
+  [29]  11-07 23:51:33.202 1000  0  OFF power_button                   com.ekimvwhar.vrwobs           
+  [30]  11-07 23:56:03.822 1000  0  ON  power_button                   com.ekimvwhar.vrwobs           android
+  [31]  11-07 23:56:08.011 1000  0  OFF power_button                   com.ekimvwhar.vrwobs           
+  [32]  11-07 23:56:56.838 1000  0  ON  power_button                   com.google.android.gms         android
+  [33]  11-07 23:57:07.619 1000  0  OFF power_button                   com.ekimvwhar.vrwobs           
+  [34]  11-08 00:17:41.523 1000  0  ON  power_button                   com.ekimvwhar.vrwobs           android
+  [35]  11-08 00:18:12.194 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [36]  11-08 00:20:29.271 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [37]  11-08 00:20:44.787 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [38]  11-08 00:20:47.736 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+  [39]  11-08 00:21:04.636 1000  0  OFF power_button                   com.sec.android.app.launcher   
+  [40]  11-08 00:29:56.226 1000  0  ON  tap                            com.sec.android.app.launcher   android
+  [41]  11-08 00:30:01.227 1000  0  OFF timeout                        com.sec.android.app.launcher   
+  [42]  11-08 00:33:50.739 1000  0  ON  power_button                   com.sec.android.app.launcher   android
+
+  AutomaticBrightness History:
+  [1]   11-07 22:14:53.639 ShortTermModel: reset data, change configuration
+
+  BrightnessReason History:
+  [1]   11-07 22:14:53.639 override[128]
+  [2]   11-07 22:14:58.376 manual[35]
+
+  BrightnessSetting History
+   displayId=0
+    [1]   11-07 22:39:37.060     brt:23 uid:10057 package:com.android.systemui
+    [2]   11-07 22:55:14.738     brt:93 uid:10057 package:com.android.systemui
+
+
+screen on profiler V2: 21
+[  0][11-07 22:28:04.217][T: 252]  [Caller: 5] [WMS:148] [DSL: 1] [Panel:222] [Frame: 13]
+[  1][11-07 22:28:08.197][T: 239]  [Caller: 2] [WMS: 61] [DSL: 0] [Panel:210] [Frame: 23]
+[  2][11-07 22:31:06.507][T: 241]  [Caller: 3] [WMS: 53] [DSL: 0] [Panel:211] [Frame: 22]
+[  3][11-07 22:33:07.567][T:  41]  [Caller: 1] [WMS:  0] [DSL: 3] [Panel: 19] [Frame: -1]
+[  4][11-07 22:42:43.373][T: 296]  [Caller:57] [WMS: 66] [DSL: 1] [Panel:211] [Frame: 23]
+[  5][11-07 22:53:57.297][T:  59]  [Caller: 2] [WMS:  0] [DSL: 1] [Panel: 52] [Frame: -1]
+[  6][11-07 22:54:23.956][T:  40]  [Caller: 1] [WMS:  0] [DSL: 0] [Panel: 32] [Frame: -1]
+[  7][11-07 22:55:11.381][T:  33]  [Caller: 2] [WMS:  0] [DSL: 1] [Panel: 28] [Frame: -1]
+[  8][11-07 22:56:29.159][T: 256]  [Caller: 2] [WMS: 76] [DSL: 1] [Panel:222] [Frame: 23]
+[  9][11-07 23:05:47.570][T: 249]  [Caller: 1] [WMS: 69] [DSL: 2] [Panel:218] [Frame: 23]
+[ 10][11-07 23:09:17.908][T: 239]  [Caller: 0] [WMS: 67] [DSL: 0] [Panel:210] [Frame: 23]
+[ 11][11-07 23:27:08.617][T: 255]  [Caller: 1] [WMS: 77] [DSL: 1] [Panel:226] [Frame: 22]
+[ 12][11-07 23:29:57.045][T: 247]  [Caller: 4] [WMS: 57] [DSL: 0] [Panel:213] [Frame: 21]
+[ 13][11-07 23:51:29.981][T: 231]  [Caller: 1] [WMS: 72] [DSL: 0] [Panel:211] [Frame: 14]
+[ 14][11-07 23:56:03.822][T: 240]  [Caller: 2] [WMS: 49] [DSL: 1] [Panel:214] [Frame: 14]
+[ 15][11-07 23:56:56.838][T: 236]  [Caller: 1] [WMS: 55] [DSL: 2] [Panel:212] [Frame: 15]
+[ 16][11-08 00:17:41.522][T: 245]  [Caller: 3] [WMS: 49] [DSL: 1] [Panel:211] [Frame: 23]
+[ 17][11-08 00:20:29.270][T: 250]  [Caller: 4] [WMS: 45] [DSL: 0] [Panel:218] [Frame: 21]
+[ 18][11-08 00:20:47.735][T: 238]  [Caller: 1] [WMS: 54] [DSL: 0] [Panel:208] [Frame: 23]
+[ 19][11-08 00:29:56.225][T: 260]  [Caller: 0] [WMS: 82] [DSL: 0] [Panel:214] [Frame: 40]
+[ 20][11-08 00:33:50.738][T: 218]  [Caller: 1] [WMS: 10] [DSL: 1] [Panel: 62] [Frame: -1]
+
+screen off profiler V2: 21
+[OFF][  0][11-07 22:27:59.992][T: 529]  [Caller:300] [Cfp: 55] [Cfa:171] [Panel:160]
+[OFF][  1][11-07 22:28:07.395][T: 443]  [Caller:252] [Cfp: 18] [Cfa:173] [Panel:160]
+[OFF][  2][11-07 22:28:15.775][T: 184]  [Caller: 0] [Cfp: 13] [Cfa:170] [Panel:160]
+[OFF][  3][11-07 22:31:11.504][T: 194]  [Caller: 0] [Cfp: 19] [Cfa:174] [Panel:160]
+[OFF][  4][11-07 22:41:09.715][T: 471]  [Caller:284] [Cfp: 15] [Cfa:172] [Panel:160]
+[OFF][  5][11-07 22:53:32.567][T: 457]  [Caller:259] [Cfp: 15] [Cfa:180] [Panel:176]
+[OFF][  6][11-07 22:54:15.457][T: 470]  [Caller:282] [Cfp: 12] [Cfa:174] [Panel:157]
+[OFF][  7][11-07 22:54:25.742][T: 487]  [Caller:295] [Cfp: 22] [Cfa:170] [Panel:160]
+[OFF][  8][11-07 22:55:22.436][T: 448]  [Caller:262] [Cfp: 16] [Cfa:169] [Panel:159]
+[OFF][  9][11-07 22:57:01.850][T: 475]  [Caller:289] [Cfp: 15] [Cfa:171] [Panel:169]
+[OFF][ 10][11-07 23:09:17.559][T: 475]  [Caller:277] [Cfp: 12] [Cfa:184] [Panel:  1]
+[OFF][ 11][11-07 23:26:49.812][T: 465]  [Caller:283] [Cfp: 13] [Cfa:167] [Panel:158]
+[OFF][ 12][11-07 23:29:50.321][T: 467]  [Caller:278] [Cfp: 15] [Cfa:172] [Panel:163]
+[OFF][ 13][11-07 23:30:12.460][T: 518]  [Caller:325] [Cfp: 19] [Cfa:173] [Panel:156]
+[OFF][ 14][11-07 23:51:33.202][T: 493]  [Caller:302] [Cfp: 22] [Cfa:168] [Panel:159]
+[OFF][ 15][11-07 23:56:08.010][T: 484]  [Caller:296] [Cfp: 19] [Cfa:168] [Panel:158]
+[OFF][ 16][11-07 23:57:07.619][T: 489]  [Caller:307] [Cfp: 11] [Cfa:170] [Panel:159]
+[OFF][ 17][11-08 00:18:12.194][T: 497]  [Caller:309] [Cfp: 19] [Cfa:167] [Panel:165]
+[OFF][ 18][11-08 00:20:44.787][T: 459]  [Caller:272] [Cfp: 19] [Cfa:168] [Panel:164]
+[OFF][ 19][11-08 00:21:04.636][T: 485]  [Caller:295] [Cfp: 17] [Cfa:173] [Panel:158]
+[OFF][ 20][11-08 00:30:01.227][T: 186]  [Caller: 0] [Cfp: 18] [Cfa:166] [Panel:159]
+
+Battery saving stats:
+  Battery Saver is currently: OFF
+    Times full enabled: 0
+    Times adaptive enabled: 0
+  
+  Drain stats:
+                     Battery saver OFF                          ON
+  NonDoze NonIntr:     12m    117mAh(  2%)    572.2mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:     45m    529mAh( 10%)    697.8mAh/h          0m      0mAh(  0%)      0.0mAh/h
+  Deep    NonIntr:     32m    151mAh(  3%)    279.9mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:      0m      0mAh(  0%)      0.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+  Light   NonIntr:     35m    142mAh(  4%)    242.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:      0m      0mAh(  0%)      0.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+
+Battery saver policy (*NOTE* they only apply when battery saver is ON):
+  Settings: battery_saver_constants
+    value: 
+  Settings: (overlay)
+    value: 
+  DeviceConfig: battery_saver
+    location_mode: 
+  mAccessibilityEnabled=true
+  mAutomotiveProjectionActive=false
+  mPolicyLevel=0
+  
+  Policy 'default full'
+    advertise_is_enabled=true
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=true
+    defer_keyvalue_backup=true
+    enable_firewall=true
+    enable_datasaver=false
+    disable_launch_boost=true
+    enable_brightness_adjustment=true
+    adjust_brightness_factor=0.9
+    location_mode=1
+    force_all_apps_standby=true
+    force_background_check=true
+    disable_optional_sensors=true
+    disable_aod=true
+    soundtrigger_mode=1
+    enable_quick_doze=true
+    enable_night_mode=false
+  
+  Policy 'current full'
+    advertise_is_enabled=true
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=true
+    defer_keyvalue_backup=true
+    enable_firewall=true
+    enable_datasaver=false
+    disable_launch_boost=true
+    enable_brightness_adjustment=true
+    adjust_brightness_factor=0.9
+    location_mode=1
+    force_all_apps_standby=true
+    force_background_check=true
+    disable_optional_sensors=true
+    disable_aod=true
+    soundtrigger_mode=1
+    enable_quick_doze=true
+    enable_night_mode=false
+  
+  Policy 'default adaptive'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+  
+  Policy 'current adaptive'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+  
+  Policy 'effective'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+
+Battery saver state machine:
+  Enabled=false
+    full=false
+    adaptive=false
+  mState=1
+  mLastChangedIntReason=0
+  mLastChangedStrReason=null
+  mBootCompleted=true
+  mSettingsLoaded=true
+  mBatteryStatusSet=true
+  mIsPowered=false
+  mBatteryLevel=13
+  mIsBatteryLevelLow=true
+  mSettingAutomaticBatterySaver=0
+  mSettingBatterySaverEnabled=false
+  mSettingBatterySaverEnabledSticky=false
+  mSettingBatterySaverStickyAutoDisableEnabled=true
+  mSettingBatterySaverStickyAutoDisableThreshold=90
+  mSettingBatterySaverTriggerThreshold=0
+  mBatterySaverStickyBehaviourDisabled=false
+  mBatterySaverTurnedOffNotificationEnabled=true
+  mDynamicPowerSavingsDefaultDisableThreshold=80
+  mDynamicPowerSavingsDisableThreshold=80
+  mDynamicPowerSavingsEnableBatterySaver=false
+  mLastAdaptiveBatterySaverChangedExternallyElapsed=0
+AttentionDetector:
+ mIsSettingEnabled=false
+ mMaxExtensionMillis=900000
+ mPreDimCheckDurationMillis=2000
+ mEffectivePostDimTimeout=0
+ mLastUserActivityTime(excludingAttention)=10264917
+ mAttentionServiceSupported=false
+ mRequested=false
+
+Profile power states: size=0
+
+SuspendBlockerMonitor:
+    [Global]
+      mEvents = 0x8 ( SOME_GROUPS )
+    CallBack History = 67
+[11-07 22:14:53.642] [         display state on] [ACQ]
+[11-07 22:14:58.376] [    [0]vrr ramp animation] [ACQ]
+[11-07 22:14:58.660] [    [0]vrr ramp animation] [REL]
+[11-07 22:28:00.235] [         display state on] [REL]
+[11-07 22:28:04.229] [         display state on] [ACQ]
+[11-07 22:28:07.591] [         display state on] [REL]
+[11-07 22:28:08.202] [         display state on] [ACQ]
+[11-07 22:28:15.964] [         display state on] [REL]
+[11-07 22:31:06.512] [         display state on] [ACQ]
+[11-07 22:31:11.703] [         display state on] [REL]
+[11-07 22:33:07.588] [         display state on] [ACQ]
+[11-07 22:41:09.917] [         display state on] [REL]
+[11-07 22:42:43.378] [         display state on] [ACQ]
+[11-07 22:53:32.784] [         display state on] [REL]
+[11-07 22:53:57.302] [         display state on] [ACQ]
+[11-07 22:54:15.652] [         display state on] [REL]
+[11-07 22:54:23.963] [         display state on] [ACQ]
+[11-07 22:54:25.947] [         display state on] [REL]
+[11-07 22:55:10.930] [    [0]vrr ramp animation] [ACQ]
+[11-07 22:55:11.364] [    [0]vrr ramp animation] [REL]
+[11-07 22:55:11.384] [         display state on] [ACQ]
+[11-07 22:55:22.635] [         display state on] [REL]
+[11-07 22:56:29.168] [         display state on] [ACQ]
+[11-07 22:57:02.056] [         display state on] [REL]
+[11-07 22:58:38.034] [          [0]early wakeup] [ACQ]
+[11-07 22:58:41.036] [          [0]early wakeup] [REL]
+[11-07 23:00:32.736] [    [0]vrr ramp animation] [ACQ]
+[11-07 23:00:33.259] [    [0]vrr ramp animation] [REL]
+[11-07 23:05:47.577] [         display state on] [ACQ]
+[11-07 23:09:17.770] [         display state on] [REL]
+[11-07 23:09:17.914] [         display state on] [ACQ]
+[11-07 23:26:50.001] [         display state on] [REL]
+[11-07 23:27:08.623] [         display state on] [ACQ]
+[11-07 23:27:13.869] [    [0]vrr ramp animation] [ACQ]
+[11-07 23:27:17.344] [    [0]vrr ramp animation] [REL]
+[11-07 23:29:50.520] [         display state on] [REL]
+[11-07 23:29:57.054] [         display state on] [ACQ]
+[11-07 23:30:12.661] [         display state on] [REL]
+[11-07 23:51:29.936] [          [0]early wakeup] [ACQ]
+[11-07 23:51:29.987] [         display state on] [ACQ]
+[11-07 23:51:30.197] [          [0]early wakeup] [REL]
+[11-07 23:51:33.397] [         display state on] [REL]
+[11-07 23:56:03.833] [         display state on] [ACQ]
+[11-07 23:56:08.212] [         display state on] [REL]
+[11-07 23:56:56.845] [         display state on] [ACQ]
+[11-07 23:57:07.814] [         display state on] [REL]
+[11-08 00:17:41.530] [         display state on] [ACQ]
+[11-08 00:17:50.968] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:17:51.435] [    [0]vrr ramp animation] [REL]
+[11-08 00:17:55.300] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:17:56.122] [    [0]vrr ramp animation] [REL]
+[11-08 00:17:57.357] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:17:57.770] [    [0]vrr ramp animation] [REL]
+[11-08 00:18:05.693] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:18:06.516] [    [0]vrr ramp animation] [REL]
+[11-08 00:18:09.663] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:18:10.078] [    [0]vrr ramp animation] [REL]
+[11-08 00:18:12.400] [         display state on] [REL]
+[11-08 00:20:29.277] [         display state on] [ACQ]
+[11-08 00:20:44.983] [         display state on] [REL]
+[11-08 00:20:47.741] [         display state on] [ACQ]
+[11-08 00:21:04.840] [         display state on] [REL]
+[11-08 00:22:08.534] [    [0]vrr ramp animation] [ACQ]
+[11-08 00:22:08.946] [    [0]vrr ramp animation] [REL]
+[11-08 00:29:56.231] [         display state on] [ACQ]
+[11-08 00:30:01.418] [         display state on] [REL]
+[11-08 00:33:50.893] [         display state on] [ACQ]
+
+
+    [Group] Id = 0
+      mEvents = 0x10 ( BRIGHT_OR_DIM )
+
+Power Group User Activity:
+groupId: 0
+userActivitySummary=0x1
+mWakeLockSummary=0x1
+lastUserActivityTime=10264917 (749 ms ago)
+lastUserActivityTimeNoChangeLights=10238945 (26721 ms ago)
+mLastWakeReason=1
+mLastSleepReason=2
+mDimDuration=-1
+mWakefulness=1
+mIsDefaultGroupAdjacent=false
+mSupportsSandman=true
+mDreamManagerAttemptedDozing=false
+mLastScreenOffTimeout=300000
+mScreenOffTimeout=-1
+
+Wireless Charger Detector State:
+  mGravitySensor={Sensor name="gravity  Non-wakeup", vendor="QTI", version=1, type=9, maxRange=156.91, resolution=0.01, power=0.515, minDelay=5000}
+  mPoweredWirelessly=false
+  mAtRest=false
+  mRestX=0.0, mRestY=0.0, mRestZ=0.0
+  mDetectionInProgress=false
+  mDetectionStartTime=0 (never)
+  mMustUpdateRestPosition=false
+  mTotalSamples=0
+  mMovingSamples=0
+  mFirstSampleX=0.0, mFirstSampleY=0.0, mFirstSampleZ=0.0
+  mLastSampleX=0.0, mLastSampleY=0.0, mLastSampleZ=0.0
+Notifier:
+Partial Wakelock Log:
+Wake Lock Log
+  11-08 00:54:44.803 +3ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:54:45.111 +228ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:54:45.114 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:54:45.118 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:54:45.384 +501ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:54:47.654 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:54:47.656 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (com.android.phone) (partial)
+  11-08 00:54:47.656 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:54:47.911 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:54:51.757 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:54:52.780 0 - 10372 (com.ulycttx.android) - REL NotificationManagerService:post:com.ulycttx.android (partial)
+  11-08 00:54:53.281 +501ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:55:00.002 +2ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:55:06.168 +5ms - 1000 (System) - REL *job*r/android/com.android.server.notification.NotificationHistoryJobService (partial)
+  11-08 00:55:06.169 +1ms - 10293 (com.android.vending) - REL *job*r/com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain (partial)
+  11-08 00:55:06.170 +4ms - 1000 (System) - REL *job*r/android/com.android.server.notification.NotificationHistoryJobService (partial)
+  11-08 00:55:06.184 +16ms - 10293 (com.android.vending) - REL *job*r/com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain (partial)
+  11-08 00:55:07.019 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:55:09.488 +25ms - 10170 (com.sec.android.app.launcher) - REL *launch* (partial)
+  11-08 00:55:10.597 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:10.599 0 - 1000 (System) - REL *telephony-radio* (android.uid.system:1000) (partial)
+  11-08 00:55:10.599 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:11.771 +2ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:55:13.320 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:13.328 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (com.android.phone) (partial)
+  11-08 00:55:13.328 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:13.524 +277ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:55:14.488 +5s4ms - 10151 (com.samsung.android.ssco) - REL SemanticModel::WakeLock (partial)
+  11-08 00:55:14.997 +224ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:55:15.000 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:15.004 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:15.273 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:55:20.704 +25ms - 10525 (com.tqggmn.mifqtfdlq) - REL *launch* (partial)
+  11-08 00:55:21.574 +5ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:55:22.579 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:22.585 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (com.android.phone) (partial)
+  11-08 00:55:22.585 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:22.742 +207ms - 10525 (com.tqggmn.mifqtfdlq) - REL NotificationManagerService:post:com.tqggmn.mifqtfdlq (partial)
+  11-08 00:55:22.746 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:22.751 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:22.784 +246ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:55:23.035 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:55:30.848 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:30.850 0 - 1000 (System) - REL *telephony-radio* (android.uid.system:1000) (partial)
+  11-08 00:55:30.850 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:31.766 +2ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:55:35.265 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:55:44.806 +1ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:55:45.054 +220ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:55:45.058 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:45.060 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:55:45.335 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:55:49.729 +56ms - 10368 (com.ekimvwhar.vrwobs) - REL *launch* (partial)
+  11-08 00:55:49.846 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:55:50.852 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:55:50.854 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:55:50.854 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:00.001 +1ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:56:00.866 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:00.867 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:56:00.867 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:03.989 0 - 10338 (com.google.android.gms) - REL GCM_READ (partial)
+  11-08 00:56:03.994 +5ms - 10338 (com.google.android.gms) - REL GCM_WORK (partial)
+  11-08 00:56:04.254 +260ms - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL GOOGLE_C2DM (partial)
+  11-08 00:56:05.366 +1ms - 10372 (com.ulycttx.android) - REL NotificationManagerService:post:com.ulycttx.android (partial)
+  11-08 00:56:05.866 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:56:06.876 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:06.877 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:56:06.877 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:06.999 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:07.003 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (com.android.phone) (partial)
+  11-08 00:56:07.003 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:07.011 +2s759ms - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL wake:com.google.firebase.iid.WakeLockHolder (partial)
+  11-08 00:56:07.231 +277ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:12.229 +6ms - 10338 (com.google.android.gms) - REL *alarm* (partial)
+  11-08 00:56:12.232 +5ms - 10338 (com.google.android.gms) - REL CallbackRunner (partial)
+  11-08 00:56:12.233 +4ms - 10338 (com.google.android.gms) - REL CollectionLib-SigCollector (partial)
+  11-08 00:56:12.242 +11ms - 10338 (com.google.android.gms) - REL *gms_scheduler*:internal (partial)
+  11-08 00:56:12.245 +1ms - 10338 (com.google.android.gms) - REL PendingIntentClient (partial)
+  11-08 00:56:12.246 0 - 10338 (com.google.android.gms) - REL GCoreFlp (partial)
+  11-08 00:56:12.247 +4ms - 10338 (com.google.android.gms) - REL CallbackRunner (partial)
+  11-08 00:56:12.986 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:13.884 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:13.886 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:56:13.886 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:14.289 +2s52ms - 10338 (com.google.android.gms) - REL *gms_scheduler*/c.g.a.g/.c.u.QosUploaderService (partial)
+  11-08 00:56:14.294 +4ms - 10338 (com.google.android.gms) - REL *gms_scheduler*:internal (partial)
+  11-08 00:56:14.295 +1ms - 10338 (com.google.android.gms) - REL *gms_scheduler*:internal (partial)
+  11-08 00:56:14.999 +226ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:56:15.002 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:56:15.004 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:56:15.273 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:56:16.422 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:19.264 +2ms - 10104 (com.samsung.android.kgclient) - REL *job*r/com.samsung.android.kgclient/.alarm.AlarmService (partial)
+  11-08 00:56:19.274 +2ms - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL *job*r/com.fyosrgrvo.oszzbv.gizpezx/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:19.277 0 - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL *job*r/com.fyosrgrvo.oszzbv.gizpezx/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:19.285 +13ms - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL *job*r/com.fyosrgrvo.oszzbv.gizpezx/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:19.290 +13ms - 10480 (com.fyosrgrvo.oszzbv.gizpezx) - REL *job*r/com.fyosrgrvo.oszzbv.gizpezx/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:19.342 +80ms - 10104 (com.samsung.android.kgclient) - REL *job*r/com.samsung.android.kgclient/.alarm.AlarmService (partial)
+  11-08 00:56:20.895 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:20.897 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:56:20.897 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:56:25.052 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:29.977 +1ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*e/#SseKeepaliveWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:30.297 +30ms - 10525 (com.tqggmn.mifqtfdlq) - REL *launch* (partial)
+  11-08 00:56:30.967 +1s2ms - 10338 (com.google.android.gms) - REL Wear_Transport (partial)
+  11-08 00:56:32.231 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:33.365 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:56:33.368 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (com.android.phone) (partial)
+  11-08 00:56:33.368 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:56:33.386 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:56:33.387 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (com.android.phone) (partial)
+  11-08 00:56:33.387 0 - 1001 (android.uid.phone:1001) - REL *telephony-sem-radio* (partial)
+  11-08 00:56:34.259 +2ms - 10368 (com.ekimvwhar.vrwobs) - REL *alarm* (partial)
+  11-08 00:56:34.263 +1ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#UploadWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:34.466 +204ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#UploadWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:56:39.984 +63ms - 10368 (com.ekimvwhar.vrwobs) - REL *launch* (partial)
+  11-08 00:56:40.664 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:56:44.822 +22ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:56:45.087 +224ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:56:45.090 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:56:45.093 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:56:45.363 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:56:58.413 +4ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:56:59.632 0 - 10057 (android.uid.systemui:10057) - REL RingtonePlayer (partial)
+  11-08 00:57:00.001 +1ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:57:14.918 +44s942ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*e/#SseKeepaliveWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:57:14.983 +209ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:57:14.986 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:14.989 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:15.274 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:24.845 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:57:30.317 +36ms - 10525 (com.tqggmn.mifqtfdlq) - REL *launch* (partial)
+  11-08 00:57:34.784 +1ms - 10368 (com.ekimvwhar.vrwobs) - REL *alarm* (partial)
+  11-08 00:57:34.787 0 - 10372 (com.ulycttx.android) - REL NotificationManagerService:post:com.ulycttx.android (partial)
+  11-08 00:57:34.788 +1ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#UploadWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:57:34.993 +206ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#UploadWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:57:35.287 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:43.575 +47ms - 10368 (com.ekimvwhar.vrwobs) - REL *launch* (partial)
+  11-08 00:57:45.000 +3ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:57:45.287 +223ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:57:45.291 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.293 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.322 +258ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:45.340 +18ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:45.530 +209ms - 10057 (android.uid.systemui:10057) - REL NotificationManagerService:post:com.android.systemui (partial)
+  11-08 00:57:45.534 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.537 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.544 +204ms - 10057 (android.uid.systemui:10057) - REL NotificationManagerService:post:com.android.systemui (partial)
+  11-08 00:57:45.546 0 - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.547 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:45.832 +492ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:46.027 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:57:46.029 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:57:46.029 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:57:46.037 +205ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:57:46.040 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:46.044 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:46.332 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:46.497 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:57:48.900 +24ms - 10170 (com.sec.android.app.launcher) - REL *launch* (partial)
+  11-08 00:57:51.224 +4ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:57:52.215 +111ms - 10361 (com.yylsbh:10361) - REL *launch* (partial)
+  11-08 00:57:52.366 +209ms - 10361 (com.yylsbh:10361) - REL NotificationManagerService:post:com.yylsbh (partial)
+  11-08 00:57:52.372 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:52.376 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:57:52.459 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:57:52.658 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:57:53.899 +5s1ms - 10151 (com.samsung.android.ssco) - REL SemanticModel::WakeLock (partial)
+  11-08 00:58:00.001 +1ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:58:08.195 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:58:08.359 +2ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#EventFlushWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:58:08.361 +9ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:58:08.720 +363ms - 10368 (com.ekimvwhar.vrwobs) - REL *job*r/#EventFlushWorker#@androidx.work.systemjobscheduler@com.ekimvwhar.vrwobs/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 00:58:15.835 +26ms - 10368 (com.ekimvwhar.vrwobs) - REL *launch* (partial)
+  11-08 00:58:15.996 +222ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:58:16.274 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:58:16.387 +6ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:58:16.390 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:58:17.075 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:58:17.077 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (android.uid.phone:1001) (partial)
+  11-08 00:58:17.077 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:58:19.552 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:58:26.434 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:58:34.563 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:58:45.803 +3ms - 1000 (System) - REL NetworkStats (partial)
+  11-08 00:58:46.055 +209ms - 10526 (com.gnmiz82.caohghcxtxs) - REL NotificationManagerService:post:com.gnmiz82.caohghcxtxs (partial)
+  11-08 00:58:46.058 +2ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:58:46.062 +1ms - 10466 (net.bcvhnatvb.android.uijnnnl) - REL M (partial)
+  11-08 00:58:46.345 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:58:48.385 +200ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:58:49.331 +1ms - 10293 (com.android.vending) - REL *alarm* (partial)
+  11-08 00:58:49.335 +1ms - 10293 (com.android.vending) - REL *job*r/com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain (partial)
+  11-08 00:58:49.413 +39ms - 10361 (com.yylsbh:10361) - REL *launch* (partial)
+  11-08 00:58:50.318 0 - 10372 (com.ulycttx.android) - REL NotificationManagerService:post:com.ulycttx.android (partial)
+  11-08 00:58:50.818 +500ms - 1000 (System) - REL Prevent Sleep by AssistantDelay (partial)
+  11-08 00:58:51.323 +1s988ms - 10293 (com.android.vending) - REL *job*r/com.android.vending/com.google.android.finsky.scheduler.process.mainimpl.PhoneskyJobServiceMain (partial)
+  11-08 00:58:51.568 0 - 10057 (android.uid.systemui:10057) - REL SysUI:BroadcastSender (draw)
+  11-08 00:58:58.556 +201ms - 1001 (android.uid.phone:1001) - REL RILJ_ACK_WL (partial)
+  11-08 00:59:00.002 +2ms - 1000 (System) - REL *alarm* (partial)
+  11-08 00:59:10.419 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  11-08 00:59:10.421 0 - 1000 (System) - REL *telephony-radio* (android.uid.system:1000) (partial)
+  11-08 00:59:10.421 0 - 1001 (android.uid.phone:1001) - REL *telephony-radio* (partial)
+  -
+  Events: 203, Time-Resets: 92
+  Buffer, Bytes used: 3061
+  Tag Database: size(128), entries: 128, Bytes used: 17934
+
+Full Wakelock Log:
+Wake Lock Log
+  11-07 22:14:57.834 +383ms - 1000 (System) - REL WindowManager/displayId:0 (com.android.settings) (screen-bright,on-after-release)
+  11-07 22:21:38.942 +132ms - 10359 (vlm.vr.ubce) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:26:49.852 +9s433ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:27:07.062 +17s164ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:27:18.984 +1s288ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:27:27.507 +5s934ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:27:52.064 +5s220ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:27:58.696 +14s736ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:27:58.701 +6s618ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:33:48.693 +21ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:33:57.190 +8s472ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:33:58.599 +1s391ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:07.164 +21s461ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:34:07.178 +8s563ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:10.626 +3s340ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:34:10.648 +3s349ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:14.247 +3s548ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:34:14.262 +3s548ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:19.458 +5s131ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:34:19.478 +5s139ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:21.105 +1s558ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:34:21.123 +1s564ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:23.759 +2s561ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:34:24.819 +3s625ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:35:00.773 +25s687ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:35:21.034 +10s390ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:35:22.597 +1s524ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:35:28.177 +3s903ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:40:59.406 +5m36s736ms - 10410 (org.ojcgpke.ekzyasw.mrqgftKO:10410) - REL video-playing (screen-bright,on-after-release)
+  11-07 22:43:09.340 +3s885ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:49:09.299 +2s402ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:50:06.078 +2s409ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:51:29.247 +2s258ms - 10381 (com.nwkxoppky) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:51:59.420 +1s569ms - 10381 (com.nwkxoppky) - REL OPERATION (full)
+  11-07 22:52:02.679 +3s228ms - 10381 (com.nwkxoppky) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:52:11.243 +714ms - 10381 (com.nwkxoppky) - REL OPERATION (full)
+  11-07 22:52:15.038 +3s755ms - 10381 (com.nwkxoppky) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 22:52:19.772 +708ms - 10381 (com.nwkxoppky) - REL OPERATION (full)
+  11-07 22:52:23.551 +3s744ms - 10381 (com.nwkxoppky) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 23:08:14.631 +3s32ms - 10505 (io.github.akane599.umbra) - REL Umbra:keepAwake (screen-bright,on-after-release)
+  11-07 23:08:14.769 +3s159ms - 10505 (io.github.akane599.umbra) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 23:09:17.998 +59s365ms - 10505 (io.github.akane599.umbra) - REL Umbra:keepAwake (screen-bright,on-after-release)
+  11-07 23:13:41.860 +4m4s587ms - 10505 (io.github.akane599.umbra) - REL Umbra:keepAwake (screen-bright,on-after-release)
+  11-07 23:14:20.233 +2s427ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 23:20:09.745 +3s919ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 23:21:00.430 +3s925ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-07 23:26:49.074 +8s537ms - 10133 (com.sec.android.app.camera) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:17:55.171 +3s400ms - 10512 (com.suvantyto.android) - REL GrootPlayer:WakeLock (screen-bright)
+  11-08 00:17:55.190 +4s168ms - 10512 (com.suvantyto.android) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:18:05.643 +8s298ms - 10512 (com.suvantyto.android) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:18:11.115 +1s479ms - 10512 (com.suvantyto.android) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:49:33.210 +2s410ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:50:26.617 +2s416ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:50:40.745 +2s167ms - 10361 (com.yylsbh:10361) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:52:09.127 +2s601ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:53:03.125 +2s416ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:54:13.027 +2s396ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:57:54.435 +2s224ms - 10361 (com.yylsbh:10361) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  11-08 00:58:43.989 +2s413ms - 10057 (android.uid.systemui:10057) - REL WindowManager/displayId:0 (screen-bright,on-after-release)
+  -
+  Events: 59, Time-Resets: 50
+  Buffer, Bytes used: 1099
+  Tag Database: size(16), entries: 13, Bytes used: 1050
+
+
+Wakefulness Session Observer:
+default timeout: 300000
+override timeout: 5000
+  Wakefulness Session Power Group powerGroupId: 0
+    current wakefulness: 1
+    current user activity event: 0
+    current user activity duration: 811
+    previous user activity event: 2
+    previous user activity duration: 818
+    is in override timeout: false
+    mIsInteractive: true
+    current screen policy: 3
+    current screen policy duration: 1519975
+    previous screen policy: 1
+    past screen policy duration: 229145
+
+AmbientDisplaySuppressionController:
+ ambientDisplaySuppressed=false
+ mSuppressionTokens={}
+ mSuppressions={}
+
+Low Power Standby Controller:
+  mIsActive=false
+  mIsEnabled=false
+  mSupportedConfig=false
+  mEnabledByDefaultConfig=false
+  mStandbyTimeoutConfig=0
+  mEnableCustomPolicy=false
+  Allowed UIDs=[]
+  
+  UID allowed reasons:
+
+ScreenTimeoutOverridePolicy:
+  mScreenTimeoutOverrideConfig=5000
+  mLastAutoReleaseReason=-1
+PowerManagerFlags:
+ enable_early_screen_timeout_detector:                 true (def:true)
+ per_display_wake_by_touch:                            true (def:true)
+ lock_on_unplug:                                       true (def:true)
+ disable_frozen_process_wakelocks:                     true (def:true)
+ partial_sleep_wakelocks:                              true (def:true)
+ separate_timeouts_flicker:                            true (def:true)
+ wait_for_user_boot_complete:                          false (def:false)
