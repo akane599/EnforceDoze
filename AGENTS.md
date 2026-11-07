@@ -85,8 +85,7 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `PRODUCT.md`, `DESIGN.md` | `/impeccable` context (ADR 0005); `DESIGN.md` is the token source from P5 |
 
 Git: `origin` = `akane599/EnforceDoze`, `upstream` = `Akylas/EnforceDoze`; integrate on `main`;
-`upstream-baseline` tags the fork point. Leave the fork's `master`, `Base` and
-`codex/android16-reliability` branches alone (ADR 0002).
+`upstream-baseline` tags the fork point. `main` is the default and only branch (ADR 0006).
 
 ## SPEC section index
 

@@ -9,7 +9,7 @@ Gate: upstream builds; the section 2 audit is confirmed or corrected with real r
 Done:
 - Fork `akane599/EnforceDoze` (it already existed); `origin` / `upstream` remotes; annotated tag
   `upstream-baseline` on `a5b7c4a` (1.10.2, versionCode 86); `main` starts there. The fork's earlier
-  `master` work is left untouched (ADR 0002, `docs/questions.md` Q1).
+  `master` work was left untouched (ADR 0002) and later deleted at the owner's request (ADR 0006).
 - Upstream built unchanged: `assembleDebug` in 54 s with JDK 17. Its unit test never compiled and
   its lint failed (2 errors, 157 warnings): JUnit added and findings frozen in a baseline
   (`2b3c43c`, ADR 0003).

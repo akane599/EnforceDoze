@@ -1,6 +1,6 @@
 # 0002. Fork branches, remotes and the upstream baseline
 
-- Status: Accepted
+- Status: Accepted; the branch decisions are superseded by ADR 0006
 - Date: 2026-11-07
 - Phase: P0
 - Spec: 0.4, 12.1, 12.5, 14 (P0)

@@ -118,9 +118,9 @@ With `DUMP`, `WRITE_SECURE_SETTINGS` and `READ_LOGS` granted. `run-as` runs in `
 
 ## 5. The earlier fork effort
 
-The fork's `master` holds an earlier Codex effort ("android16-reliability", 11 commits, merged as
-fork PR #1 on 2026-10-03) that redesigned the Java app in place. ADR 0002 leaves it untouched and
-starts `main` from upstream. Its `AUDIT_REPORT.md` independently found several of the problems
+The fork's former `master` held an earlier Codex effort ("android16-reliability", 11 commits, merged
+as fork PR #1 on 2026-10-03) that redesigned the Java app in place. `main` starts from upstream
+(ADR 0002); the old branches were deleted at the owner's request (ADR 0006). Its `AUDIT_REPORT.md` independently found several of the problems
 above (unprotected receivers, root-only sensor privacy, namespace reset, renamed keys, the delay
 wakelock, the non-compiling tests and the lint errors); its emulator runs failed on a host without KVM,
 so no runtime result came out of it; this audit ran on akane-linux.
