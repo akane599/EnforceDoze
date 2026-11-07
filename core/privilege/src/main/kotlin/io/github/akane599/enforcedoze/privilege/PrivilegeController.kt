@@ -3,6 +3,10 @@ package io.github.akane599.enforcedoze.privilege
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import io.github.akane599.enforcedoze.privilege.probe.CapabilityProber
+import io.github.akane599.enforcedoze.privilege.probe.CapabilityReport
+import io.github.akane599.enforcedoze.privilege.probe.DeviceInfo
+import io.github.akane599.enforcedoze.privilege.probe.LocalReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,6 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 /**
  * The single source of privilege state (SPEC 4.2: one `PrivilegeState` flow from the binder-received,
@@ -25,6 +31,7 @@ public class PrivilegeController internal constructor(
     private val root: RootGateway,
     private val binders: Map<WorkerSource, WorkerBinder>,
     private val session: WorkerSession,
+    private val prober: CapabilityProber,
 ) {
     private val _state = MutableStateFlow(PrivilegeState.NONE)
     private var observation: AutoCloseable? = null
@@ -80,6 +87,33 @@ public class PrivilegeController internal constructor(
         return session.use(binder, block)
     }
 
+    /**
+     * Runs the capability probes (SPEC 4.4) with the worker of the current tier, or without one.
+     * [includeChanges] also runs the probes that change state and undo it; only on the user's request.
+     */
+    public suspend fun probe(includeChanges: Boolean, device: DeviceInfo = DeviceInfo.current()): CapabilityReport {
+        val before = refresh()
+        val results = if (before.workerSource == null) {
+            prober.run(null, includeChanges)
+        } else {
+            when (val run = withWorker { prober.run(it, includeChanges) }) {
+                is WorkerResult.Ok -> run.value
+                is WorkerResult.Unavailable, is WorkerResult.Failed -> prober.run(null, includeChanges)
+            }
+        }
+        val state = _state.value
+        val bound = state.worker as? WorkerStatus.Bound
+        return CapabilityReport(
+            device = device,
+            tier = state.tier,
+            workerSource = bound?.source,
+            workerUid = bound?.uid,
+            includedChanges = includeChanges,
+            capturedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+            results = results,
+        )
+    }
+
     public companion object {
         public fun create(context: Context, scope: CoroutineScope): PrivilegeController {
             val app = context.applicationContext
@@ -95,6 +129,7 @@ public class PrivilegeController internal constructor(
                     WorkerSource.ROOT to RootWorkerBinder(app),
                 ),
                 session = WorkerSession(scope),
+                prober = CapabilityProber(LocalReader(), app.packageName),
             )
         }
     }

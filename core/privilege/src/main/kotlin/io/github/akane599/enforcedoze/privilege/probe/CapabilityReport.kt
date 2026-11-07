@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.privilege.probe
 
+import android.os.Build
 import io.github.akane599.enforcedoze.privilege.Tier
 import io.github.akane599.enforcedoze.privilege.WorkerSource
 
@@ -15,7 +16,19 @@ public data class DeviceInfo(
     val sdk: Int,
     val buildId: String,
     val fingerprint: String,
-)
+) {
+    public companion object {
+        /** This device, from `android.os.Build`. */
+        public fun current(): DeviceInfo = DeviceInfo(
+            manufacturer = Build.MANUFACTURER,
+            model = Build.MODEL,
+            release = Build.VERSION.RELEASE,
+            sdk = Build.VERSION.SDK_INT,
+            buildId = Build.ID,
+            fingerprint = Build.FINGERPRINT,
+        )
+    }
+}
 
 /** The capability probe results (SPEC 4.4), shown on the Privileges screen and exported to `docs/capabilities/`. */
 public data class CapabilityReport(

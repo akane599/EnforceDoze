@@ -2,12 +2,19 @@
 package io.github.akane599.enforcedoze.privilege
 
 import com.google.common.truth.Truth.assertThat
+import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
+import io.github.akane599.enforcedoze.privilege.api.CommandRunner
+import io.github.akane599.enforcedoze.privilege.api.StreamResult
+import io.github.akane599.enforcedoze.privilege.probe.CapabilityProber
+import io.github.akane599.enforcedoze.privilege.probe.DeviceInfo
+import io.github.akane599.enforcedoze.privilege.probe.LocalReader
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import java.io.OutputStream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PrivilegeControllerTest {
@@ -63,8 +70,19 @@ class PrivilegeControllerTest {
             root = this.root,
             binders = binders,
             session = WorkerSession(scope.backgroundScope),
+            prober = CapabilityProber(LocalReader(DeniedRunner), "io.github.akane599.enforcedoze"),
         )
     }
+
+    /** The app's own process without any grant. */
+    private object DeniedRunner : CommandRunner {
+        override fun run(argv: List<String>, timeoutMillis: Long): CommandOutcome =
+            CommandOutcome(argv, 0, "Permission Denial: can't dump", "", false, 1, null)
+
+        override fun stream(argv: List<String>, timeoutMillis: Long, sink: OutputStream): StreamResult = error("not used")
+    }
+
+    private val device = DeviceInfo("Google", "sdk_gphone64_x86_64", "17", 37, "CE2A.260420.051.A3", "google/sdk/emu:17")
 
     @Test
     fun `no privilege has no worker`() = runTest {
@@ -127,6 +145,27 @@ class PrivilegeControllerTest {
         env.controller.start()
         assertThat(env.controller.state.value.rootGranted).isFalse()
         assertThat(env.controller.requestRoot().tier).isEqualTo(Tier.T3)
+    }
+
+    @Test
+    fun `the report uses the worker when there is one and names it`() = runTest {
+        val env = Env(this, shizuku = ShizukuStatus.Ready(2000, 13, sui = false))
+        env.controller.start()
+        val report = env.controller.probe(includeChanges = false, device = device)
+        assertThat(report.tier).isEqualTo(Tier.T2)
+        assertThat(report.workerSource).isEqualTo(WorkerSource.SHIZUKU)
+        assertThat(report.workerUid).isEqualTo(2000)
+        assertThat(env.binders.getValue(WorkerSource.SHIZUKU).binds).isEqualTo(1)
+    }
+
+    @Test
+    fun `the report runs without a worker below T2`() = runTest {
+        val env = Env(this)
+        env.controller.start()
+        val report = env.controller.probe(includeChanges = true, device = device)
+        assertThat(report.tier).isEqualTo(Tier.T0)
+        assertThat(report.workerSource).isNull()
+        assertThat(report.result(CapabilityProber.READ)!!.detail).contains("Permission Denial")
     }
 
     @Test
