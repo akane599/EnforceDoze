@@ -1,0 +1,2761 @@
+Battery History [Format: 2] (0% used, 39KB used of 4096KB, 261 strings using 13KB):
+  10-22 13:09:15.783 RESET:TIME: 2026-10-22-13-09-15
+  10-22 13:09:15.783 100 status=charging health=good plug=ac temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +wake_lock=-1:"screen" +sensor +screen +plugged brightness=medium +charging stats=0:"network-stats-enabled"
+  10-22 13:09:15.788 100
+  10-22 13:09:15.788 100
+  10-22 13:09:15.788 100
+  10-22 13:09:15.788 100
+  10-22 13:09:15.797 100 +userfg=0:"0"
+  10-22 13:09:15.874 100
+  10-22 13:09:15.874 100
+  10-22 13:09:15.887 100
+  10-22 13:09:15.888 100
+  10-22 13:09:15.893 100
+  10-22 13:09:15.913 100
+  10-22 13:09:15.922 100
+  10-22 13:09:16.036 100 +top=u0a180:"com.google.android.googlesdksetup"
+  10-22 13:09:16.132 100 +wifi
+  10-22 13:09:16.147 100 +tmpwhitelist=u0a196:"91cfb8a android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-22 13:09:16.278 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  10-22 13:09:16.384 100 +tmpwhitelist=u0a185:"43db80e android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-22 13:09:16.891 100 +phone_scanning phone_state=out -job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  10-22 13:09:16.907 100
+  10-22 13:09:16.926 100 +tmpwhitelist=u0a145:"2328c64 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-22 13:09:16.932 100
+  10-22 13:09:16.956 100
+  10-22 13:09:17.362 100
+  10-22 13:09:17.378 100
+  10-22 13:09:17.558 100 -phone_scanning phone_state=in phone_signal_strength=great
+  10-22 13:09:17.558 100
+  10-22 13:09:17.639 100
+  10-22 13:09:17.639 100
+  10-22 13:09:17.649 100
+  10-22 13:09:17.696 100
+  10-22 13:09:17.791 100 +wifi_scan
+  10-22 13:09:17.791 100
+  10-22 13:09:17.793 100
+  10-22 13:09:17.796 100 +tmpwhitelist=u0a214:"2463ffe android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-22 13:09:17.876 100
+  10-22 13:09:17.877 100
+  10-22 13:09:17.894 100
+  10-22 13:09:17.939 100 +tmpwhitelist=u0a140:"2463ffe android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-22 13:09:18.002 100
+  10-22 13:09:18.024 100
+  10-22 13:09:18.076 100
+  10-22 13:09:18.136 100
+  10-22 13:09:18.156 100
+  10-22 13:09:18.163 100
+  10-22 13:09:18.170 100
+  10-22 13:09:18.202 100
+  10-22 13:09:18.227 100
+  10-22 13:09:18.252 100
+  10-22 13:09:18.254 100
+  10-22 13:09:18.341 100
+  10-22 13:09:18.353 100
+  10-22 13:09:18.353 100
+  10-22 13:09:18.353 100
+  10-22 13:09:18.466 100
+  10-22 13:09:18.466 100
+  10-22 13:09:18.510 100
+  10-22 13:09:18.546 100
+  10-22 13:09:18.562 100
+  10-22 13:09:18.588 100
+  10-22 13:09:18.646 100
+  10-22 13:09:18.892 100
+  10-22 13:09:18.964 100 +tmpwhitelist=u0a109:"80e02b2 android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:18.988 100
+  10-22 13:09:19.112 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:19.262 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  10-22 13:09:19.308 100
+  10-22 13:09:19.311 100
+  10-22 13:09:19.327 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:19.385 100 +job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:19.395 100
+  10-22 13:09:19.406 100 -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:19.406 100
+  10-22 13:09:19.438 100 +job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  10-22 13:09:19.451 100
+  10-22 13:09:19.451 100
+  10-22 13:09:19.572 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  10-22 13:09:19.697 100
+  10-22 13:09:19.735 100
+  10-22 13:09:19.752 100 +tmpwhitelist=u0a98:"79f366b android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:19.779 100 -job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:19.794 100
+  10-22 13:09:19.862 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  10-22 13:09:19.968 100 data_conn=lte +job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  10-22 13:09:20.010 100 -job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  10-22 13:09:20.011 100
+  10-22 13:09:20.116 100 +mobile_radio -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  10-22 13:09:20.138 100 +top=u0a145:"com.google.android.gms.ui"
+  10-22 13:09:20.436 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-22 13:09:20.494 100 +tmpwhitelist=u0a95:"6d3e158 android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:20.495 100
+  10-22 13:09:20.591 100
+  10-22 13:09:20.652 100
+  10-22 13:09:20.792 100
+  10-22 13:09:20.793 100
+  10-22 13:09:20.799 100
+  10-22 13:09:20.800 100
+  10-22 13:09:20.800 100
+  10-22 13:09:20.840 100
+  10-22 13:09:20.840 100
+  10-22 13:09:20.878 100
+  10-22 13:09:20.888 100
+  10-22 13:09:20.899 100
+  10-22 13:09:20.910 100
+  10-22 13:09:20.910 100
+  10-22 13:09:21.037 100 +job=1000:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:21.046 100
+  10-22 13:09:22.203 100 -wifi_scan data_conn=nr -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  10-22 13:09:22.237 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  10-22 13:09:22.237 100
+  10-22 13:09:22.307 100 +tmpwhitelist=u0a104:"a4112f2 android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:22.310 100
+  10-22 13:09:22.591 100 wifi_suppl=associating -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-22 13:09:22.591 100
+  10-22 13:09:22.602 100
+  10-22 13:09:22.602 100
+  10-22 13:09:22.632 100 wifi_suppl=associated +tmpwhitelist=u0a213:"a273570 android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:22.643 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-22 13:09:22.893 100 wifi_signal_strength=4 wifi_suppl=completed -job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:22.927 100
+  10-22 13:09:23.681 100 -job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  10-22 13:09:23.716 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:09:23.966 100 +tmpwhitelist=u0a135:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:24.146 100 +wifi_radio -job=u0a135:"com.google.android.dialer/com.android.voicemail.impl.StatusCheckJobService"
+  10-22 13:09:24.170 100
+  10-22 13:09:24.291 100
+  10-22 13:09:24.525 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:24.552 100
+  10-22 13:09:24.749 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:24.873 100 conn=1:"CONNECTED"
+  10-22 13:09:24.994 100
+  10-22 13:09:25.013 100 +tmpwhitelist=u0a130:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:25.030 100
+  10-22 13:09:25.116 100 +tmpwhitelist=u0a131:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:25.189 100
+  10-22 13:09:25.201 100 +tmpwhitelist=u0a209:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:25.213 100
+  10-22 13:09:25.380 100
+  10-22 13:09:25.478 100
+  10-22 13:09:25.510 100 +tmpwhitelist=u0a143:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:25.510 100
+  10-22 13:09:25.556 100
+  10-22 13:09:25.659 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:25.665 100
+  10-22 13:09:25.709 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-22 13:09:25.745 100 -job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  10-22 13:09:25.746 100
+  10-22 13:09:25.766 100
+  10-22 13:09:25.768 100
+  10-22 13:09:25.804 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:25.818 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:25.850 100
+  10-22 13:09:25.875 100 +tmpwhitelist=u0a154:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:25.878 100
+  10-22 13:09:26.035 100 conn=1:"CONNECTED"
+  10-22 13:09:26.060 100 +tmpwhitelist=u0a112:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:26.280 100 +tmpwhitelist=u0a147:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:26.532 100 phone_signal_strength=good +fg=u0a140:"com.google.android.apps.wellbeing"
+  10-22 13:09:26.564 100 -fg=u0a140:"com.google.android.apps.wellbeing"
+  10-22 13:09:26.574 100 +tmpwhitelist=1027:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:26.586 100
+  10-22 13:09:26.592 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-22 13:09:26.693 100
+  10-22 13:09:26.761 100
+  10-22 13:09:26.792 100 +tmpwhitelist=u0a191:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:26.838 100
+  10-22 13:09:26.862 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.AiAiPersistentDownloadJobService"
+  10-22 13:09:26.883 100 +job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:26.916 100
+  10-22 13:09:26.924 100 +tmpwhitelist=2000:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:26.927 100
+  10-22 13:09:27.078 100 -job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:27.103 100 +tmpwhitelist=u0a141:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:27.136 100
+  10-22 13:09:27.245 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-22 13:09:27.311 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-22 13:09:27.316 100 +tmpwhitelist=u0a193:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:27.319 100
+  10-22 13:09:27.323 100
+  10-22 13:09:27.532 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-22 13:09:27.541 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.AiAiPersistentDownloadJobService"
+  10-22 13:09:27.555 100 +tmpwhitelist=u0a153:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:27.585 100
+  10-22 13:09:27.585 100
+  10-22 13:09:27.600 100
+  10-22 13:09:27.632 100 +tmpwhitelist=u0a210:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:27.632 100
+  10-22 13:09:27.645 100
+  10-22 13:09:27.673 100
+  10-22 13:09:27.685 100
+  10-22 13:09:27.923 100
+  10-22 13:09:27.939 100
+  10-22 13:09:27.960 100
+  10-22 13:09:28.170 100
+  10-22 13:09:28.190 100 +tmpwhitelist=u0a192:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:28.190 100
+  10-22 13:09:28.202 100
+  10-22 13:09:28.266 100
+  10-22 13:09:28.384 100
+  10-22 13:09:28.389 100 +tmpwhitelist=u0a103:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:28.390 100
+  10-22 13:09:28.450 100
+  10-22 13:09:28.457 100
+  10-22 13:09:28.476 100 +tmpwhitelist=u0a133:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:28.567 100
+  10-22 13:09:28.581 100
+  10-22 13:09:28.591 100
+  10-22 13:09:28.704 100
+  10-22 13:09:28.748 100 +tmpwhitelist=u0a137:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:28.777 100
+  10-22 13:09:28.999 100
+  10-22 13:09:29.031 100
+  10-22 13:09:29.034 100
+  10-22 13:09:29.067 100
+  10-22 13:09:29.315 100
+  10-22 13:09:29.423 100 -job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionEventCleanupJobService"
+  10-22 13:09:30.180 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.PruneDatabaseJobService"
+  10-22 13:09:30.183 100
+  10-22 13:09:30.189 100
+  10-22 13:09:30.194 100
+  10-22 13:09:30.194 100
+  10-22 13:09:30.214 100
+  10-22 13:09:30.233 100
+  10-22 13:09:30.510 100
+  10-22 13:09:30.525 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-22 13:09:30.645 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-22 13:09:30.664 100
+  10-22 13:09:30.680 100
+  10-22 13:09:30.739 100
+  10-22 13:09:30.843 100
+  10-22 13:09:30.854 100
+  10-22 13:09:30.940 100 -job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  10-22 13:09:30.983 100
+  10-22 13:09:31.120 100 +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:31.149 100 +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-22 13:09:31.152 100
+  10-22 13:09:31.420 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:09:31.422 100
+  10-22 13:09:31.464 100 +job=u0a136:"@androidx.work.systemjobscheduler@com.google.android.apps.safetyhub/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:31.545 100 +fg=u0a146:"com.google.android.apps.messaging"
+  10-22 13:09:31.566 100
+  10-22 13:09:31.666 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-22 13:09:32.072 100 -sensor -state=10145:"sensor:0x5f6c696e"
+  10-22 13:09:32.073 100
+  10-22 13:09:32.150 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:32.163 100
+  10-22 13:09:32.164 100
+  10-22 13:09:32.253 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-22 13:09:32.861 100 -sensor -fg=u0a146:"com.google.android.apps.messaging"
+  10-22 13:09:33.194 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:09:33.279 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:33.289 100
+  10-22 13:09:33.301 100
+  10-22 13:09:33.316 100
+  10-22 13:09:33.367 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:33.373 100
+  10-22 13:09:33.379 100
+  10-22 13:09:33.383 100
+  10-22 13:09:33.446 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-22 13:09:33.446 100
+  10-22 13:09:33.459 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-22 13:09:33.553 100
+  10-22 13:09:33.554 100
+  10-22 13:09:33.658 100
+  10-22 13:09:33.693 100
+  10-22 13:09:33.756 100
+  10-22 13:09:33.777 100
+  10-22 13:09:33.779 100
+  10-22 13:09:33.786 100
+  10-22 13:09:33.787 100
+  10-22 13:09:34.103 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:09:34.110 100
+  10-22 13:09:34.112 100
+  10-22 13:09:34.249 100
+  10-22 13:09:34.293 100
+  10-22 13:09:34.348 100
+  10-22 13:09:34.495 100 -sensor -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:34.497 100
+  10-22 13:09:34.499 100
+  10-22 13:09:34.541 100
+  10-22 13:09:34.542 100
+  10-22 13:09:34.573 100
+  10-22 13:09:34.861 100
+  10-22 13:09:34.883 100
+  10-22 13:09:35.498 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.AiAiPersistentDownloadJobService"
+  10-22 13:09:35.500 100
+  10-22 13:09:35.859 100 -state=10145:"sensor:0x0"
+  10-22 13:09:35.864 100
+  10-22 13:09:35.868 100
+  10-22 13:09:35.875 100
+  10-22 13:09:35.884 100
+  10-22 13:09:35.890 100
+  10-22 13:09:35.904 100
+  10-22 13:09:35.918 100
+  10-22 13:09:35.984 100 +job=u0a141:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:36.127 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:36.164 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:36.165 100
+  10-22 13:09:36.192 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:36.202 100
+  10-22 13:09:36.202 100
+  10-22 13:09:36.207 100
+  10-22 13:09:36.309 100
+  10-22 13:09:36.485 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:36.512 100 -job=u0a141:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:36.512 100
+  10-22 13:09:36.532 100
+  10-22 13:09:36.577 100
+  10-22 13:09:36.679 100
+  10-22 13:09:36.852 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:36.862 100
+  10-22 13:09:36.863 100
+  10-22 13:09:37.102 100
+  10-22 13:09:37.187 100 -sensor -state=10145:"sensor:0x5f6c696e"
+  10-22 13:09:37.193 100
+  10-22 13:09:37.193 100
+  10-22 13:09:37.726 100
+  10-22 13:09:37.979 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:37.983 100
+  10-22 13:09:37.983 100
+  10-22 13:09:38.233 100 -sensor -state=10145:"sensor:0x5f6c696e"
+  10-22 13:09:38.237 100
+  10-22 13:09:38.237 100
+  10-22 13:09:39.698 100 -job=u0a137:"@androidx.work.systemjobscheduler@com.google.android.settings.intelligence/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:39.991 100
+  10-22 13:09:39.991 100
+  10-22 13:09:39.991 100
+  10-22 13:09:42.519 100 +sensor -tmpwhitelist=u0a104:"a4112f2 android.intent.action.PRE_BOOT_COMPLETED/u0"
+  10-22 13:09:42.519 100
+  10-22 13:09:43.274 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-22 13:09:43.277 100 -job=u0a141:"com.google.android.configupdater/.MainJobService"
+  10-22 13:09:43.297 100 +job=u0a141:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:43.431 100
+  10-22 13:09:43.447 100 +job=u0a141:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:43.447 100
+  10-22 13:09:43.450 100
+  10-22 13:09:43.597 100
+  10-22 13:09:43.603 100 -job=u0a141:"DownloadManager:com.android.providers.downloads"
+  10-22 13:09:43.603 100
+  10-22 13:09:43.842 100 -tmpwhitelist=u0a185:"43db80e android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-22 13:09:43.860 100
+  10-22 13:09:44.374 100 -sensor -tmpwhitelist=1001:"a62232c android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-22 13:09:44.437 100
+  10-22 13:09:46.904 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:09:46.907 100
+  10-22 13:09:46.907 100
+  10-22 13:09:48.178 100 -sensor pkginst=11:"com.akane.inspiration"
+  10-22 13:09:48.178 100
+  10-22 13:09:48.178 100
+  10-22 13:09:48.185 100 pkginst=11:"com.akane.inspiration"
+  10-22 13:09:48.205 100
+  10-22 13:09:48.288 100
+  10-22 13:09:48.432 100 -tmpwhitelist=u0a103:"230469b android.intent.action.BOOT_COMPLETED/u0"
+  10-22 13:09:48.603 100 +top=u0a196:"com.google.android.permissioncontroller"
+  10-22 13:09:48.850 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-22 13:09:48.850 100
+  10-22 13:09:48.850 100
+  10-22 13:09:48.850 100
+  10-22 13:09:49.358 100 +sensor +state=10145:"sensor:0x0"
+  10-22 13:09:49.358 100
+  10-22 13:09:49.619 100 -tmpwhitelist=u0a140:"2463ffe android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-22 13:09:49.619 100
+  10-22 13:09:52.251 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-22 13:09:54.044 100 -sensor +top=u0a216:"com.akane.inspiration"
+  10-22 13:09:55.395 100 -state=1000:"audio"
+  10-22 13:09:55.783 100
+  10-22 13:09:55.784 100
+  10-22 13:09:55.784 100
+  10-22 13:09:55.823 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:09:57.779 100 +wifi_scan phone_signal_strength=moderate
+  10-22 13:10:01.847 100 +sensor -wifi_scan +state=10145:"sensor:0x5f726f76"
+  10-22 13:10:01.855 100
+  10-22 13:10:01.855 100
+  10-22 13:10:04.711 100 -sensor -state=1000:"audio"
+  10-22 13:10:05.788 100
+  10-22 13:10:05.788 100
+  10-22 13:10:10.716 100 -state=1000:"audio"
+  10-22 13:10:11.719 100
+  10-22 13:10:15.415 100 -mobile_radio -tmpwhitelist=u0a145:"46c2b99 com.google.android.gms.personalsafety.scanners.ACTION_ACTIVITY_DETECTED/u0"
+  10-22 13:10:21.749 100 phone_signal_strength=poor -state=1000:"audio"
+  10-22 13:10:22.395 100 -state=1000:"audio"
+  10-22 13:10:22.438 100
+  10-22 13:10:22.483 100
+  10-22 13:10:22.546 100 +job=u0a165:"com.google.android.webview/org.chromium.android_webview.services.AwVariationsSeedFetcher"
+  10-22 13:10:22.974 100 -job=u0a165:"com.google.android.webview/org.chromium.android_webview.nonembedded.AwComponentUpdateService"
+  10-22 13:10:25.446 100
+  10-22 13:10:25.447 100
+  10-22 13:10:27.423 100
+  10-22 13:10:27.426 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:10:27.460 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:10:27.484 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:10:27.489 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:10:27.489 100
+  10-22 13:10:35.869 100 +mobile_radio +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-22 13:10:35.875 100
+  10-22 13:10:35.880 100 +job=u0a137:"@androidx.work.systemjobscheduler@com.google.android.settings.intelligence/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:10:35.944 100 -longwake=u0a137:"*job*r/com.google.android.settings.intelligence/.modules.appsearchindexing.impl.AppSearchIndexUpdateJobService"
+  10-22 13:10:36.023 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-22 13:10:36.056 100 +wifi_scan
+  10-22 13:10:36.109 100
+  10-22 13:10:36.415 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.appsearchindexing.impl.AppSearchIndexUpdateJobService"
+  10-22 13:10:36.417 100
+  10-22 13:10:36.421 100
+  10-22 13:10:36.422 100
+  10-22 13:10:36.430 100
+  10-22 13:10:36.430 100
+  10-22 13:10:36.432 100
+  10-22 13:10:36.438 100
+  10-22 13:10:42.180 100 -wifi_scan -state=1000:"audio"
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.301 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:42.405 100
+  10-22 13:10:43.440 100 +audio +top=1000:"com.android.settings"
+  10-22 13:10:43.440 100
+  10-22 13:10:43.938 100 -audio -state=1000:"audio"
+  10-22 13:10:43.944 100
+  10-22 13:10:43.967 100 -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-22 13:10:47.619 100 -mobile_radio phone_signal_strength=great -job=u0a137:"@androidx.work.systemjobscheduler@com.google.android.settings.intelligence/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:10:47.620 100
+  10-22 13:10:49.445 100 -state=1000:"audio"
+  10-22 13:10:49.445 100
+  10-22 13:10:49.630 100
+  10-22 13:10:49.872 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:10:49.881 100
+  10-22 13:10:49.881 100
+  10-22 13:10:50.289 100
+  10-22 13:10:50.291 100
+  10-22 13:10:50.291 100
+  10-22 13:10:51.957 100 -sensor +top=u0a216:"com.akane.inspiration"
+  10-22 13:10:54.455 100 +fg=u0a216:"com.akane.inspiration"
+  10-22 13:10:54.455 100
+  10-22 13:10:55.632 100
+  10-22 13:10:55.835 100
+  10-22 13:10:55.867 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:10:55.868 100
+  10-22 13:10:55.872 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:10:56.149 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  10-22 13:10:57.199 100
+  10-22 13:10:59.187 100 +top=u0a216:"com.akane.inspiration"
+  10-22 13:10:59.483 100
+  10-22 13:11:02.844 100
+  10-22 13:11:03.372 100
+  10-22 13:11:03.375 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  10-22 13:11:04.647 100
+  10-22 13:11:04.647 100
+  10-22 13:11:05.408 100
+  10-22 13:11:05.440 100
+  10-22 13:11:05.913 100 +fg=u0a216:"com.akane.inspiration"
+  10-22 13:11:05.991 100
+  10-22 13:11:06.052 100
+  10-22 13:11:11.996 100 -wifi_radio
+  10-22 13:11:12.060 100
+  10-22 13:11:12.135 100
+  10-22 13:11:19.155 100
+  10-22 13:11:37.064 100 +wifi_radio +mobile_radio phone_signal_strength=good pkginst=1086:"moe.shizuku.privileged.api"
+  10-22 13:11:37.064 100
+  10-22 13:11:37.069 100
+  10-22 13:11:37.070 100
+  10-22 13:11:37.087 100
+  10-22 13:11:37.175 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:11:37.207 100 pkgactive=u0a217:"moe.shizuku.privileged.api"
+  10-22 13:11:37.305 100 +top=u0a217:"moe.shizuku.privileged.api"
+  10-22 13:11:37.543 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:11:37.547 100
+  10-22 13:11:37.547 100
+  10-22 13:11:37.815 100 -fg=u0a140:"com.google.android.apps.wellbeing"
+  10-22 13:11:37.914 100
+  10-22 13:11:38.111 100 -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-22 13:11:38.114 100
+  10-22 13:11:38.114 100
+  10-22 13:11:43.310 100 -sensor -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:11:43.837 100 +audio +state=1000:"audio"
+  10-22 13:11:45.736 100 -audio -state=1000:"audio"
+  10-22 13:11:47.145 100
+  10-22 13:11:47.145 100
+  10-22 13:11:52.220 100 -mobile_radio +tmpwhitelist=u0a217:"shell"
+  10-22 13:11:52.221 100
+  10-22 13:11:52.295 100
+  10-22 13:11:52.296 100
+  10-22 13:11:59.080 100 -wifi_radio +top=u0a216:"com.akane.inspiration"
+  10-22 13:11:59.600 100
+  10-22 13:12:04.237 100 +audio +top=u0a217:"moe.shizuku.privileged.api"
+  10-22 13:12:09.396 100 phone_signal_strength=moderate +top=u0a216:"com.akane.inspiration"
+  10-22 13:12:09.409 100
+  10-22 13:12:09.412 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:12:09.480 100
+  10-22 13:12:09.509 100
+  10-22 13:12:09.597 100 +wifi_radio -audio -state=1000:"audio"
+  10-22 13:12:09.599 100
+  10-22 13:12:09.621 100
+  10-22 13:12:09.675 100
+  10-22 13:12:09.675 100
+  10-22 13:12:09.675 100
+  10-22 13:12:09.676 100
+  10-22 13:12:09.681 100 stats=0:"dump"
+  10-22 13:12:09.755 100 +sensor +state=10145:"sensor:0x5f726f76"
+  10-22 13:12:09.759 100
+  10-22 13:12:09.759 100
+  10-22 13:12:15.513 100 -sensor -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:12:17.831 100
+  10-22 13:12:23.688 RESET:TIME: 2026-10-22-13-12-23
+  10-22 13:12:23.688 RESET:TIME: 2026-10-22-13-12-23
+  10-22 13:12:23.688 100 status=charging health=good plug=none temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +wake_lock +wifi_radio +screen +plugged data_conn=nr phone_signal_strength=moderate brightness=medium +wifi wifi_signal_strength=4 wifi_suppl=completed fg=u0a216:"com.akane.inspiration"
+  10-22 13:12:23.688 100 top=u0a216:"com.akane.inspiration"
+  10-22 13:12:23.688 100 user=0:"0"
+  10-22 13:12:23.688 100 userfg=0:"0"
+  10-22 13:12:23.688 100 tmpwhitelist=u0a216:"shell"
+  10-22 13:12:23.688 100 -plugged tmpwhitelist=u0a217:"shell"
+  10-22 13:12:23.762 100 +cellular_high_tx_power
+  10-22 13:12:23.762 100
+  10-22 13:12:23.762 100
+  10-22 13:12:23.762 100
+  10-22 13:12:23.762 100
+  10-22 13:12:23.770 100
+                 Details: cpu=0u+0s
+                          /proc/stat=0 usr, 0 sys, 0 io, 0 irq, 0 sirq, 0 idle, SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=7500 count=490 last entry=35000 state_1 name=Active time=7500 count=490 last entry=35000 subsystem_1 name=Display state_0 name=Off time=7500 count=490 last entry=35000 state_1 name=On time=7500 count=490 last entry=35000
+  10-22 13:12:23.770 100 -cellular_high_tx_power stats=0:"reset"
+  10-22 13:12:23.771 100 +cellular_high_tx_power
+  10-22 13:12:23.806 100
+  10-22 13:12:23.806 100
+  10-22 13:12:23.806 100
+  10-22 13:12:23.806 100
+  10-22 13:12:23.806 100
+  10-22 13:12:23.699 090
+  10-22 13:12:23.806 090 -cellular_high_tx_power
+                 Details: cpu=0u+0s
+                          /proc/stat=0 usr, 0 sys, 0 io, 0 irq, 0 sirq, 0 idle, SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=9000 count=588 last entry=42000 state_1 name=Active time=9000 count=588 last entry=42000 subsystem_1 name=Display state_0 name=Off time=9000 count=588 last entry=42000 state_1 name=On time=9000 count=588 last entry=42000
+  10-22 13:12:23.807 090 +mobile_radio +cellular_high_tx_power stats=0:"dump"
+  10-22 13:12:24.535 090
+  10-22 13:12:25.966 090 phone_signal_strength=poor
+  10-22 13:12:27.068 090
+  10-22 13:12:27.149 090
+  10-22 13:12:27.159 090 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-22 13:12:27.164 090 -cellular_high_tx_power +job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:12:27.167 090 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-22 13:12:27.177 090 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-22 13:12:27.183 090 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  10-22 13:12:27.184 090 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  10-22 13:12:27.224 090 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  10-22 13:12:27.225 090 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  10-22 13:12:27.229 090 +cellular_high_tx_power -job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:12:28.182 090 +job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  10-22 13:12:28.187 090 -cellular_high_tx_power -job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  10-22 13:12:29.085 090 -tmpwhitelist=u0a216:"shell"
+  10-22 13:12:30.679 090 +audio +cellular_high_tx_power +state=1000:"audio"
+  10-22 13:12:30.831 090
+  10-22 13:12:30.840 090 -audio -state=1000:"audio"
+  10-22 13:12:33.133 090
+  10-22 13:12:34.239 090 -mobile_radio
+  10-22 13:12:34.242 090 -cellular_high_tx_power -tmpwhitelist=u0a217:"shell"
+  10-22 13:12:37.226 090 +cellular_high_tx_power -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-22 13:12:37.892 090 +audio +state=1000:"audio"
+  10-22 13:12:38.051 090 -audio -state=1000:"audio"
+  10-22 13:12:38.181 090
+  10-22 13:12:39.354 090 -wifi_radio
+  10-22 13:12:39.354 090 -cellular_high_tx_power stats=0:"wifi-data: inactive"
+  10-22 13:12:41.869 090 +audio +state=1000:"audio"
+  10-22 13:12:42.028 090 -audio -state=1000:"audio"
+  10-22 13:12:49.817 085
+                 Details: cpu=1050u+4440s
+                          /proc/stat=1660 usr, 4470 sys, 60 io, 0 irq, 390 sirq, 96890 idle (6.4% of 17m 14s 700ms), SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=12000 count=784 last entry=56000 state_1 name=Active time=12000 count=784 last entry=56000 subsystem_1 name=Display state_0 name=Off time=12000 count=784 last entry=56000 state_1 name=On time=12000 count=784 last entry=56000
+  10-22 13:12:55.965 085 phone_signal_strength=great
+  10-22 13:12:57.498 085 wakeupap=u0a145:""
+  10-22 13:12:57.498 085 +wifi_radio stats=0:"wifi-data: active"
+  10-22 13:13:17.754 085 -wifi_radio stats=0:"wifi-data: inactive"
+  10-22 13:13:20.683 085 +cellular_high_tx_power
+  10-22 13:13:20.702 085
+  10-22 13:13:20.702 085 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:13:20.707 085 -cellular_high_tx_power +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:13:20.766 085 +cellular_high_tx_power -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:13:20.795 085 wakeupap=u0a145:""
+  10-22 13:13:20.795 085 +wifi_radio stats=0:"wifi-data: active"
+  10-22 13:13:21.060 085 +sensor +state=10145:"sensor:0x5f6c696e"
+  10-22 13:13:21.062 085 +state=10145:"sensor:0x5f726f76"
+  10-22 13:13:21.087 085
+  10-22 13:13:21.087 085
+  10-22 13:13:22.147 085 -sensor -state=10145:"sensor:0x5f726f76"
+  10-22 13:13:22.148 085 -cellular_high_tx_power -state=10145:"sensor:0x5f6c696e"
+  10-22 13:13:22.157 085 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-22 13:13:24.537 085 stats=0:"procstate-change"
+  10-22 13:13:26.812 085 +cellular_high_tx_power
+  10-22 13:13:29.155 085
+  10-22 13:13:35.807 085
+  10-22 13:13:35.807 085
+  10-22 13:13:36.790 085 +audio +state=1000:"audio"
+  10-22 13:13:36.932 085
+  10-22 13:13:36.933 085
+  10-22 13:13:36.934 085
+  10-22 13:13:36.978 085
+  10-22 13:13:36.978 085
+  10-22 13:13:36.978 085
+  10-22 13:13:36.978 085
+  10-22 13:13:36.978 085
+  10-22 13:13:36.949 085 -audio -state=1000:"audio"
+  10-22 13:13:36.979 085 stats=0:"dump"
+  10-22 13:13:45.964 085 phone_signal_strength=good
+  10-22 13:13:48.882 085 +audio -cellular_high_tx_power +state=1000:"audio"
+  10-22 13:13:49.041 085 -audio -state=1000:"audio"
+  10-22 13:13:55.480 085 +audio +cellular_high_tx_power +state=1000:"audio"
+  10-22 13:13:55.626 085
+  10-22 13:13:55.640 085 -audio -state=1000:"audio"
+  10-22 13:14:02.671 085 +audio -cellular_high_tx_power +state=1000:"audio"
+  10-22 13:14:02.830 085 -audio -state=1000:"audio"
+  10-22 13:14:07.287 085 stats=0:"battery-state"
+  10-22 13:14:07.287 100 plug=ac +plugged
+                 Details: cpu=1050u+4440s
+                          /proc/stat=1660 usr, 4470 sys, 60 io, 0 irq, 390 sirq, 96890 idle (6.4% of 17m 14s 700ms), SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=16500 count=1078 last entry=77000 state_1 name=Active time=16500 count=1078 last entry=77000 subsystem_1 name=Display state_0 name=Off time=16500 count=1078 last entry=77000 state_1 name=On time=16500 count=1078 last entry=77000
+  10-22 13:14:07.321 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:14:07.372 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-22 13:14:07.422 START
+  10-23 13:26:38.060 TIME: 2026-10-23-13-26-38
+  10-23 13:26:38.482 100 status=charging health=good plug=ac temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +wake_lock=-1:"screen" +screen +plugged brightness=medium +charging stats=0:"write"
+  10-23 13:26:38.934 100 +sensor +state=1000:"sensor:0x0"
+  10-23 13:26:39.069 100 +wifi stats=0:"wifi-off"
+  10-23 13:26:39.140 100 stats=0:"network-stats-enabled"
+  10-23 13:26:39.262 100
+  10-23 13:26:39.272 100
+  10-23 13:26:39.272 100
+  10-23 13:26:39.272 100
+  10-23 13:26:39.272 100
+  10-23 13:26:39.260 100 +user=0:"0"
+  10-23 13:26:39.260 100 +userfg=0:"0"
+  10-23 13:26:39.271 100
+  10-23 13:26:39.287 100
+  10-23 13:26:39.299 100
+  10-23 13:26:39.299 100
+  10-23 13:26:39.306 100
+  10-23 13:26:39.306 100
+  10-23 13:26:39.308 100
+  10-23 13:26:39.328 100
+  10-23 13:26:39.333 100
+  10-23 13:26:39.356 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  10-23 13:26:39.370 100
+  10-23 13:26:39.378 100
+  10-23 13:26:39.389 100 +job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionEventCleanupJobService"
+  10-23 13:26:39.395 100
+  10-23 13:26:39.397 100 +job=1000:"@SettingsProviderJobsNamespace@com.android.providers.settings/.WriteFallbackSettingsFilesJobService"
+  10-23 13:26:39.397 100 +job=1000:"@usagestats_mapping@android/com.android.server.usage.UsageStatsIdleService"
+  10-23 13:26:39.402 100 +job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  10-23 13:26:39.407 100 -job=1000:"@SettingsProviderJobsNamespace@com.android.providers.settings/.WriteFallbackSettingsFilesJobService"
+  10-23 13:26:39.420 100 +tmpwhitelist=1001:"53dede0 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:26:39.420 100 +tmpwhitelist=u0a196:"a410e2f android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:26:39.429 100 -job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  10-23 13:26:39.432 100 -job=1000:"@usagestats_mapping@android/com.android.server.usage.UsageStatsIdleService"
+  10-23 13:26:39.603 100 -job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionEventCleanupJobService"
+  10-23 13:26:39.604 100
+  10-23 13:26:39.668 100 +tmpwhitelist=1000:"2e665bd android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-23 13:26:39.668 100 +tmpwhitelist=1002:"2e665bd android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-23 13:26:39.834 100
+  10-23 13:26:39.950 100
+  10-23 13:26:39.965 100 +job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  10-23 13:26:39.966 100 -job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  10-23 13:26:40.009 100 +tmpwhitelist=u0a145:"f0cb9fd android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:26:40.010 100
+  10-23 13:26:40.016 100
+  10-23 13:26:40.018 100
+  10-23 13:26:40.103 100
+  10-23 13:26:40.110 100
+  10-23 13:26:40.214 100 phone_state=off
+  10-23 13:26:40.218 100
+  10-23 13:26:40.220 100
+  10-23 13:26:40.279 100
+  10-23 13:26:40.279 100 +phone_scanning phone_state=out
+  10-23 13:26:40.382 100
+  10-23 13:26:40.439 100
+  10-23 13:26:40.439 100
+  10-23 13:26:40.516 100
+  10-23 13:26:40.663 100
+  10-23 13:26:40.664 100 +tmpwhitelist=u0a135:"b307340 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  10-23 13:26:40.691 100
+  10-23 13:26:40.712 100
+  10-23 13:26:40.717 100
+  10-23 13:26:40.740 100
+  10-23 13:26:40.745 100
+  10-23 13:26:40.759 100
+  10-23 13:26:40.779 100
+  10-23 13:26:40.812 100 +job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  10-23 13:26:40.816 100 -phone_scanning phone_state=in phone_signal_strength=great -job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  10-23 13:26:40.965 100
+  10-23 13:26:41.093 100 data_conn=nr
+  10-23 13:26:41.096 100 +mobile_radio conn=0:"CONNECTED"
+  10-23 13:26:41.249 100 conn=0:"CONNECTED"
+  10-23 13:26:45.606 100 +wifi_scan
+  10-23 13:26:45.610 100
+  10-23 13:26:45.645 100 +tmpwhitelist=u0a185:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:26:45.919 100
+  10-23 13:26:45.928 100
+  10-23 13:26:45.963 100
+  10-23 13:26:45.970 100
+  10-23 13:26:46.011 100
+  10-23 13:26:46.015 100 +tmpwhitelist=u0a140:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:26:46.048 100
+  10-23 13:26:46.104 100
+  10-23 13:26:46.108 100
+  10-23 13:26:46.269 100
+  10-23 13:26:46.372 100 +job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  10-23 13:26:46.449 100
+  10-23 13:26:46.481 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:46.531 100
+  10-23 13:26:46.556 100 +job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-23 13:26:46.591 100
+  10-23 13:26:46.642 100 +job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:46.651 100
+  10-23 13:26:46.652 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.PruneDatabaseJobService"
+  10-23 13:26:46.669 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  10-23 13:26:46.713 100 +tmpwhitelist=u0a217:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:26:46.735 100 +wifi_multicast -job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  10-23 13:26:46.761 100 -wifi_multicast
+  10-23 13:26:46.772 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:46.795 100
+  10-23 13:26:46.807 100
+  10-23 13:26:46.845 100
+  10-23 13:26:46.924 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:46.932 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.029 100
+  10-23 13:26:47.093 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.PruneDatabaseJobService"
+  10-23 13:26:47.171 100
+  10-23 13:26:47.223 100
+  10-23 13:26:47.250 100
+  10-23 13:26:47.251 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.428 100
+  10-23 13:26:47.492 100 -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.493 100
+  10-23 13:26:47.546 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  10-23 13:26:47.552 100
+  10-23 13:26:47.566 100
+  10-23 13:26:47.568 100
+  10-23 13:26:47.604 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:47.616 100
+  10-23 13:26:47.621 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:47.625 100
+  10-23 13:26:47.700 100
+  10-23 13:26:47.706 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  10-23 13:26:47.729 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.730 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.759 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.780 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.796 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.805 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.821 100 +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:47.828 100 -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.040 100
+  10-23 13:26:48.248 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.325 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.387 100
+  10-23 13:26:48.423 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.ComputeNewInferencesJobService"
+  10-23 13:26:48.434 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:48.542 100 +tmpwhitelist=u0a146:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:48.551 100
+  10-23 13:26:48.552 100
+  10-23 13:26:48.599 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.ComputeNewInferencesJobService"
+  10-23 13:26:48.609 100 phone_signal_strength=good +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:48.660 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:48.774 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:48.780 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:48.880 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.897 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.898 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.903 100
+  10-23 13:26:48.904 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:48.905 100 +tmpwhitelist=u0a137:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:49.002 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:49.335 100
+  10-23 13:26:49.363 100
+  10-23 13:26:49.373 100 +tmpwhitelist=u0a131:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:49.383 100
+  10-23 13:26:49.424 100
+  10-23 13:26:49.569 100 +tmpwhitelist=u0a209:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:49.685 100
+  10-23 13:26:49.814 100
+  10-23 13:26:49.818 100 -tmpwhitelist=1002:"2e665bd android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-23 13:26:49.845 100
+  10-23 13:26:50.117 100 -wifi_scan
+  10-23 13:26:50.236 100 +wifi_multicast -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:50.495 100 -wifi_multicast +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:50.594 100 +tmpwhitelist=u0a130:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:50.691 100
+  10-23 13:26:50.748 100
+  10-23 13:26:50.981 100 wifi_suppl=authenticating
+  10-23 13:26:51.005 100
+  10-23 13:26:51.005 100 +tmpwhitelist=u0a143:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:51.014 100 wifi_suppl=associating
+  10-23 13:26:51.027 100 wifi_suppl=associated
+  10-23 13:26:51.058 100
+  10-23 13:26:51.119 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:51.207 100
+  10-23 13:26:51.244 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:51.327 100
+  10-23 13:26:51.342 100 wifi_suppl=completed
+  10-23 13:26:51.422 100
+  10-23 13:26:51.497 100 +tmpwhitelist=u0a144:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:51.535 100 wifi_signal_strength=4 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:51.559 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:51.663 100
+  10-23 13:26:51.686 100 +tmpwhitelist=u0a154:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:51.746 100
+  10-23 13:26:51.749 100
+  10-23 13:26:51.760 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:51.905 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:52.020 100 +tmpwhitelist=u0a136:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:52.144 100
+  10-23 13:26:52.227 100
+  10-23 13:26:52.235 100 conn=0:"CONNECTED"
+  10-23 13:26:52.243 100 +ble_scan -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:52.493 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:52.496 100
+  10-23 13:26:52.537 100
+  10-23 13:26:52.537 100
+  10-23 13:26:52.543 100
+  10-23 13:26:52.543 100
+  10-23 13:26:52.570 100 +wifi_radio
+  10-23 13:26:52.578 100
+  10-23 13:26:52.592 100
+  10-23 13:26:52.611 100
+  10-23 13:26:52.630 100 +tmpwhitelist=u0a112:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:52.684 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:52.687 100
+  10-23 13:26:52.732 100
+  10-23 13:26:52.764 100
+  10-23 13:26:52.837 100
+  10-23 13:26:52.851 100
+  10-23 13:26:52.880 100
+  10-23 13:26:52.942 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:52.944 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  10-23 13:26:52.979 100 +tmpwhitelist=u0a186:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:52.993 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  10-23 13:26:53.000 100 +tmpwhitelist=u0a142:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.024 100
+  10-23 13:26:53.029 100
+  10-23 13:26:53.032 100 +tmpwhitelist=u0a109:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.035 100
+  10-23 13:26:53.036 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  10-23 13:26:53.086 100
+  10-23 13:26:53.102 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  10-23 13:26:53.136 100 +tmpwhitelist=u0a153:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.166 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  10-23 13:26:53.167 100 +fg=u0a146:"com.google.android.apps.messaging"
+  10-23 13:26:53.202 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  10-23 13:26:53.380 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  10-23 13:26:53.424 100 +tmpwhitelist=u0a191:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.425 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  10-23 13:26:53.452 100
+  10-23 13:26:53.497 100
+  10-23 13:26:53.709 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  10-23 13:26:53.758 100 conn=1:"CONNECTED"
+  10-23 13:26:53.758 100 +state=10145:"sensor:0x5f6c696e"
+  10-23 13:26:53.770 100 +tmpwhitelist=u0a161:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.773 100 +state=10145:"sensor:0x5f726f76"
+  10-23 13:26:53.802 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  10-23 13:26:53.804 100 +tmpwhitelist=u0a98:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.829 100 +tmpwhitelist=u0a106:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:53.834 100
+  10-23 13:26:53.834 100
+  10-23 13:26:53.846 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  10-23 13:26:53.853 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:53.873 100 conn=1:"CONNECTED"
+  10-23 13:26:53.902 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:54.036 100
+  10-23 13:26:54.048 100
+  10-23 13:26:54.049 100 -fg=u0a146:"com.google.android.apps.messaging"
+  10-23 13:26:54.050 100 +tmpwhitelist=u0a213:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.064 100 +job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  10-23 13:26:54.097 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  10-23 13:26:54.104 100
+  10-23 13:26:54.104 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:54.113 100
+  10-23 13:26:54.118 100 +tmpwhitelist=u0a216:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.132 100 +fg=u0a216:"com.akane.inspiration"
+  10-23 13:26:54.148 100 -job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  10-23 13:26:54.212 100
+  10-23 13:26:54.213 100 +job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:54.214 100
+  10-23 13:26:54.216 100 +tmpwhitelist=u0a147:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.220 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:54.224 100 pkgactive=u0a216:"com.akane.inspiration"
+  10-23 13:26:54.226 100 +job=u0a136:"@androidx.work.systemjobscheduler@com.google.android.apps.safetyhub/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:54.279 100 -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-23 13:26:54.286 100 +tmpwhitelist=u0a149:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.295 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:54.312 100 +job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  10-23 13:26:54.362 100
+  10-23 13:26:54.394 100
+  10-23 13:26:54.397 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:54.398 100 +tmpwhitelist=2000:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.398 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:54.427 100 +job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:54.448 100
+  10-23 13:26:54.461 100
+  10-23 13:26:54.469 100
+  10-23 13:26:54.477 100
+  10-23 13:26:54.553 100
+  10-23 13:26:54.664 100 conn=1:"CONNECTED"
+  10-23 13:26:54.795 100 -job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:54.829 100 +tmpwhitelist=u0a141:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:54.845 100
+  10-23 13:26:54.846 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:54.883 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  10-23 13:26:54.884 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:54.895 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  10-23 13:26:54.991 100
+  10-23 13:26:55.012 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  10-23 13:26:55.013 100 +tmpwhitelist=u0a193:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:55.014 100
+  10-23 13:26:55.023 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:55.027 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  10-23 13:26:55.040 100 +job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  10-23 13:26:55.043 100 -job=u0a136:"@androidx.work.systemjobscheduler@com.google.android.apps.safetyhub/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:55.059 100 +job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-23 13:26:55.082 100
+  10-23 13:26:55.094 100 -job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  10-23 13:26:55.119 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:55.163 100 -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:55.190 100 +job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  10-23 13:26:55.237 100 +tmpwhitelist=u0a210:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:55.238 100
+  10-23 13:26:55.244 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:55.249 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:55.251 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:26:55.271 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:55.421 100 -job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  10-23 13:26:55.442 100
+  10-23 13:26:55.443 100 +tmpwhitelist=u0a192:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:55.448 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:55.574 100
+  10-23 13:26:55.585 100
+  10-23 13:26:55.586 100
+  10-23 13:26:55.630 100
+  10-23 13:26:55.640 100
+  10-23 13:26:55.679 100
+  10-23 13:26:55.733 100
+  10-23 13:26:55.739 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:55.866 100
+  10-23 13:26:55.867 100
+  10-23 13:26:55.868 100
+  10-23 13:26:55.871 100 +tmpwhitelist=u0a103:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:55.872 100
+  10-23 13:26:55.891 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:55.894 100 -job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  10-23 13:26:56.053 100
+  10-23 13:26:56.085 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.097 100 +job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:56.101 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:56.111 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:56.114 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:56.117 100 -job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:56.117 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:56.135 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.150 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:56.181 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.193 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:56.201 100 +tmpwhitelist=u0a139:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:56.204 100
+  10-23 13:26:56.212 100
+  10-23 13:26:56.240 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  10-23 13:26:56.291 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.295 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.327 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.331 100
+  10-23 13:26:56.334 100 +tmpwhitelist=u0a133:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:26:56.334 100
+  10-23 13:26:56.349 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:56.351 100
+  10-23 13:26:56.355 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-23 13:26:56.360 100
+  10-23 13:26:56.452 100
+  10-23 13:26:56.531 100
+  10-23 13:26:56.532 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-23 13:26:56.535 100
+  10-23 13:26:56.542 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-23 13:26:56.566 100
+  10-23 13:26:56.575 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-23 13:26:56.604 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:56.717 100
+  10-23 13:26:56.991 100 -sensor -state=10145:"sensor:0x5f726f76"
+  10-23 13:26:56.995 100 -state=10145:"sensor:0x5f6c696e"
+  10-23 13:26:57.048 100
+  10-23 13:26:57.049 100
+  10-23 13:26:57.071 100 +job=1000:"DownloadManager:com.android.providers.downloads"
+  10-23 13:26:57.075 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:26:57.079 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.162 100
+  10-23 13:26:57.208 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:57.210 100
+  10-23 13:26:57.211 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:57.212 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  10-23 13:26:57.216 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.218 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:26:57.223 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.225 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.226 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.226 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.227 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.231 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.231 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.234 100 +job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  10-23 13:26:57.239 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.249 100 -job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  10-23 13:26:57.255 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.302 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:57.334 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.338 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.348 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.358 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:26:57.439 100 -job=1000:"DownloadManager:com.android.providers.downloads"
+  10-23 13:26:57.782 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:57.882 100
+  10-23 13:26:57.882 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-23 13:26:57.902 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:57.907 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  10-23 13:26:58.103 100
+  10-23 13:26:58.103 100
+  10-23 13:26:58.103 100
+  10-23 13:26:58.103 100
+  10-23 13:26:58.103 100
+  10-23 13:26:58.103 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.104 100
+  10-23 13:26:58.175 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  10-23 13:26:58.176 100
+  10-23 13:26:58.956 100
+  10-23 13:26:58.966 100 +job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  10-23 13:26:58.973 100 -job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  10-23 13:26:59.071 100 -job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  10-23 13:26:59.077 100
+  10-23 13:26:59.138 100
+  10-23 13:26:59.138 100
+  10-23 13:27:00.573 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:00.574 100 +state=10145:"sensor:0x5f726f76"
+  10-23 13:27:00.593 100
+  10-23 13:27:00.600 100
+  10-23 13:27:00.898 100
+  10-23 13:27:00.986 100 -sensor -state=10145:"sensor:0x5f726f76"
+  10-23 13:27:00.987 100 -state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:01.000 100
+  10-23 13:27:01.002 100
+  10-23 13:27:01.653 100 +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-23 13:27:01.678 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-23 13:27:02.034 100
+  10-23 13:27:02.034 100
+  10-23 13:27:02.034 100
+  10-23 13:27:02.053 100
+  10-23 13:27:02.053 100
+  10-23 13:27:02.053 100
+  10-23 13:27:02.094 100
+  10-23 13:27:02.096 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:27:02.111 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.130 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.176 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.329 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.342 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.387 100 stats=0:"remove-uid"
+  10-23 13:27:02.403 100 stats=0:"remove-uid"
+  10-23 13:27:02.415 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.463 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.472 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:02.494 100 stats=0:"remove-uid"
+  10-23 13:27:02.604 100 stats=0:"remove-uid"
+  10-23 13:27:02.765 100 stats=0:"remove-uid"
+  10-23 13:27:02.767 100 stats=0:"remove-uid"
+  10-23 13:27:02.809 100 stats=0:"remove-uid"
+  10-23 13:27:02.832 100
+  10-23 13:27:02.859 100
+  10-23 13:27:02.879 100
+  10-23 13:27:02.881 100
+  10-23 13:27:02.882 100
+  10-23 13:27:02.893 100
+  10-23 13:27:02.906 100
+  10-23 13:27:02.915 100
+  10-23 13:27:02.918 100
+  10-23 13:27:02.923 100
+  10-23 13:27:02.942 100
+  10-23 13:27:02.952 100
+  10-23 13:27:03.008 100
+  10-23 13:27:03.025 100
+  10-23 13:27:03.253 100
+  10-23 13:27:03.260 100
+  10-23 13:27:03.260 100
+  10-23 13:27:03.449 100
+  10-23 13:27:03.599 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:03.600 100 +state=10145:"sensor:0x5f726f76"
+  10-23 13:27:03.631 100
+  10-23 13:27:03.631 100
+  10-23 13:27:04.297 100
+  10-23 13:27:04.297 100
+  10-23 13:27:05.105 100 -sensor -state=10145:"sensor:0x5f726f76"
+  10-23 13:27:05.106 100 -state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:05.106 100 +wifi_scan -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  10-23 13:27:05.686 100 -wifi_scan
+  10-23 13:27:07.060 100 -tmpwhitelist=u0a185:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:27:07.648 100
+  10-23 13:27:07.755 100
+  10-23 13:27:07.755 100 +job=u0a141:"com.google.android.configupdater/.MainJobService"
+  10-23 13:27:07.758 100 -job=u0a141:"com.google.android.configupdater/.MainJobService"
+  10-23 13:27:07.829 100 -tmpwhitelist=1001:"53dede0 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:27:08.198 100
+  10-23 13:27:08.212 100
+  10-23 13:27:09.026 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.mediamonitor.MediaMonitorJobSchedulerService"
+  10-23 13:27:09.033 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.mediamonitor.MediaMonitorJobSchedulerService"
+  10-23 13:27:09.201 100 -tmpwhitelist=u0a146:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:09.373 100 -tmpwhitelist=u0a131:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:09.402 100 -tmpwhitelist=u0a145:"f0cb9fd android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:27:09.569 100 -tmpwhitelist=u0a209:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:09.955 100 -tmpwhitelist=u0a217:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:27:10.595 100 -tmpwhitelist=u0a130:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:11.006 100 -tmpwhitelist=u0a143:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:11.553 100 -tmpwhitelist=u0a135:"b307340 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  10-23 13:27:11.686 100 -tmpwhitelist=u0a154:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:12.016 100 -tmpwhitelist=u0a144:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:12.163 100
+  10-23 13:27:12.166 100 +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-23 13:27:12.173 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  10-23 13:27:12.177 100
+  10-23 13:27:12.178 100
+  10-23 13:27:12.183 100
+  10-23 13:27:12.185 100
+  10-23 13:27:12.214 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  10-23 13:27:12.218 100
+  10-23 13:27:12.631 100 -tmpwhitelist=u0a112:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:12.870 100 -tmpwhitelist=1000:"2e665bd android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  10-23 13:27:13.001 100 -tmpwhitelist=u0a142:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.032 100 -tmpwhitelist=u0a109:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.112 100 -tmpwhitelist=u0a186:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.137 100 -tmpwhitelist=u0a153:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.411 100 -tmpwhitelist=u0a136:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.444 100 -tmpwhitelist=u0a191:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.804 100 -tmpwhitelist=u0a98:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:13.860 100 -tmpwhitelist=u0a196:"a410e2f android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  10-23 13:27:13.860 100 -tmpwhitelist=u0a106:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.113 100 -tmpwhitelist=u0a161:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.118 100 -tmpwhitelist=u0a216:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.118 100 -tmpwhitelist=u0a213:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.286 100 -tmpwhitelist=u0a149:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.399 100 -tmpwhitelist=2000:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:14.730 100 -tmpwhitelist=u0a140:"9205b54 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  10-23 13:27:14.921 100 -tmpwhitelist=u0a141:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:15.013 100 -tmpwhitelist=u0a193:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:15.238 100 -tmpwhitelist=u0a210:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:15.443 100 -tmpwhitelist=u0a192:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:15.872 100 -tmpwhitelist=u0a103:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:16.063 100 -tmpwhitelist=u0a147:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:16.257 100 -tmpwhitelist=u0a139:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:16.335 100 -tmpwhitelist=u0a133:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:18.104 100 phone_signal_strength=moderate -tmpwhitelist=u0a137:"78153a3 android.intent.action.BOOT_COMPLETED/u0"
+  10-23 13:27:20.315 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:27:20.318 100 +sensor +state=10145:"sensor:0x0"
+  10-23 13:27:20.322 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:27:22.171 100
+  10-23 13:27:22.172 100
+  10-23 13:27:23.722 100 -sensor -state=10145:"sensor:0x0"
+  10-23 13:27:23.733 100 +sensor +state=10145:"sensor:0x0"
+  10-23 13:27:25.622 100 +wifi_scan
+  10-23 13:27:25.671 100 -wifi_scan
+  10-23 13:27:26.466 100
+  10-23 13:27:27.142 100 -sensor -state=10145:"sensor:0x0"
+  10-23 13:27:28.813 100 -top=u0a183:"com.google.android.apps.nexuslauncher"
+  10-23 13:27:28.813 100 +top=u0a216:"com.akane.inspiration"
+  10-23 13:27:28.832 100
+  10-23 13:27:28.833 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  10-23 13:27:28.838 100
+  10-23 13:27:28.839 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:28.844 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  10-23 13:27:28.902 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:27:28.943 100
+  10-23 13:27:29.345 100
+  10-23 13:27:29.351 100
+  10-23 13:27:34.433 100 -mobile_radio
+  10-23 13:27:34.469 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:34.470 100 +state=10145:"sensor:0x5f726f76"
+  10-23 13:27:34.489 100 -sensor -state=10145:"sensor:0x5f726f76"
+  10-23 13:27:34.489 100 -state=10145:"sensor:0x5f6c696e"
+  10-23 13:27:34.503 100
+  10-23 13:27:34.503 100
+  10-23 13:27:35.785 100
+  10-23 13:27:38.263 100 phone_signal_strength=poor
+  10-23 13:27:39.019 100
+  10-23 13:27:39.127 100 stats=0:"procstate-change"
+  10-23 13:27:49.070 100
+  10-23 13:27:49.070 100
+  10-23 13:27:54.911 100 -wifi_radio
+  10-23 13:27:55.457 100
+  10-23 13:27:55.465 100 wakeupap=u0a147:""
+  10-23 13:27:55.465 100 +wifi_radio wakeupap=u0a146:""
+  10-23 13:27:55.474 100 +mobile_radio
+  10-23 13:28:00.459 100 +tmpwhitelist=u0a216:"shell"
+  10-23 13:28:00.461 100 +tmpwhitelist=u0a217:"shell"
+  10-23 13:28:00.463 100 pkgactive=u0a217:"moe.shizuku.privileged.api"
+  10-23 13:28:00.464 100
+  10-23 13:28:00.641 100
+  10-23 13:28:00.643 100
+  10-23 13:28:00.650 100
+  10-23 13:28:00.715 100
+  10-23 13:28:00.715 100
+  10-23 13:28:00.715 100
+  10-23 13:28:00.716 100
+  10-23 13:28:00.716 100 stats=0:"dump"
+  10-23 13:28:00.719 100
+  10-23 13:28:04.699 100
+  10-23 13:28:04.700 100
+  10-23 13:28:04.701 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.sliceindexing.impl.SliceIndexUpdateJobService"
+  10-23 13:28:04.723 100
+  10-23 13:28:04.724 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:28:04.725 100 +job=u0a137:"@androidx.work.systemjobscheduler@com.google.android.settings.intelligence/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:28:04.726 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:28:04.749 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:28:04.765 100
+  10-23 13:28:04.795 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:28:04.800 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:28:04.800 100
+  10-23 13:28:04.818 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.sliceindexing.impl.SliceIndexUpdateJobService"
+  10-23 13:28:04.825 100 +wifi_scan -job=u0a137:"@androidx.work.systemjobscheduler@com.google.android.settings.intelligence/androidx.work.impl.background.systemjob.SystemJobService"
+  10-23 13:28:04.887 100
+  10-23 13:28:04.947 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  10-23 13:28:05.027 100
+  10-23 13:28:05.299 100
+  10-23 13:28:05.300 100
+  10-23 13:28:05.303 100
+  10-23 13:28:05.314 100
+  10-23 13:28:05.343 100
+  10-23 13:28:05.349 100
+  10-23 13:28:05.368 100
+  10-23 13:28:05.400 100
+  10-23 13:28:05.623 100 -wifi_scan
+  10-23 13:28:05.626 100 +wifi_scan
+  10-23 13:28:05.679 100 -wifi_scan -mobile_radio
+  10-23 13:28:06.994 100 +mobile_radio wakeupap=u0a146:""
+  10-23 13:28:07.788 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:28:07.789 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  10-23 13:28:08.066 100
+  10-23 13:28:08.263 100 phone_signal_strength=great
+  10-23 13:28:10.902 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.130 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:11.276 100
+  10-23 13:28:17.183 100 -mobile_radio
+  10-23 13:28:28.191 100 -wifi_radio
+  10-23 13:28:30.460 100 -tmpwhitelist=u0a216:"shell"
+  10-23 13:28:30.463 100 -tmpwhitelist=u0a217:"shell"
+  10-23 13:28:31.757 100
+  10-23 13:28:31.757 100
+  10-23 13:28:31.799 100 +cellular_high_tx_power
+  10-23 13:28:31.799 100
+  10-23 13:28:31.799 100
+  10-23 13:28:31.799 100
+  10-23 13:28:31.800 100 stats=0:"dump"
+  10-23 13:28:31.834 100 -cellular_high_tx_power stats=0:"battery-state"
+  10-23 13:28:31.835 RESET:TIME: 2026-10-23-13-28-31
+  10-23 13:28:31.835 100 status=charging health=good plug=none temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +wake_lock +screen +plugged data_conn=nr phone_signal_strength=great brightness=medium +wifi wifi_signal_strength=4 wifi_suppl=completed +ble_scan +cellular_high_tx_power fg=u0a216:"com.akane.inspiration"
+  10-23 13:28:31.835 100 -cellular_high_tx_power top=u0a216:"com.akane.inspiration"
+  10-23 13:28:31.835 100 user=0:"0"
+  10-23 13:28:31.835 100 -plugged userfg=0:"0"
+  10-23 13:29:31.478 START
+  11-06 09:23:34.086 TIME: 2026-11-06-09-23-34
+  11-06 09:23:34.492 100 status=charging health=good plug=ac temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +plugged +charging stats=0:"write"
+  11-06 09:23:34.928 100 display_state_changed=-1:"display=0 state=ON reason=DEFAULT_POLICY"
+  11-06 09:23:34.928 100 +wake_lock=-1:"screen" +screen brightness=bright
+  11-06 09:25:32.152 START
+  11-06 16:23:37.034 TIME: 2026-11-06-16-23-37
+  11-06 16:23:37.432 100 status=charging health=good plug=ac temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +plugged +charging stats=0:"write"
+  11-06 16:23:37.814 100 +wake_lock=-1:"screen" +screen brightness=bright display_state_changed=-1:"display=0 state=ON reason=DEFAULT_POLICY"
+  11-06 16:23:37.814 100 +sensor brightness=medium +wifi +state=1000:"sensor:0x0"
+  11-06 16:23:37.924 100 stats=0:"wifi-off"
+  11-06 16:23:37.967 100 stats=0:"network-stats-enabled"
+  11-06 16:23:38.058 100
+  11-06 16:23:38.069 100
+  11-06 16:23:38.069 100
+  11-06 16:23:38.069 100
+  11-06 16:23:38.069 100
+  11-06 16:23:38.057 100 +user=0:"0"
+  11-06 16:23:38.057 100 +userfg=0:"0"
+  11-06 16:23:38.071 100
+  11-06 16:23:38.072 100
+  11-06 16:23:38.086 100
+  11-06 16:23:38.088 100
+  11-06 16:23:38.088 100
+  11-06 16:23:38.102 100
+  11-06 16:23:38.105 100
+  11-06 16:23:38.109 100
+  11-06 16:23:38.115 100
+  11-06 16:23:38.132 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  11-06 16:23:38.146 100
+  11-06 16:23:38.148 100 +job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.hibernation.HibernationJobService"
+  11-06 16:23:38.151 100 +job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  11-06 16:23:38.210 100
+  11-06 16:23:38.217 100 +tmpwhitelist=1001:"8fd79b8 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:23:38.217 100 +tmpwhitelist=u0a196:"8ab90fc android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:23:38.254 100 -job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  11-06 16:23:38.421 100 +tmpwhitelist=1000:"bd2875f android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:23:38.423 100
+  11-06 16:23:38.587 100 -job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.hibernation.HibernationJobService"
+  11-06 16:23:38.590 100
+  11-06 16:23:38.650 100 +tmpwhitelist=u0a185:"262d061 android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-06 16:23:38.650 100 +tmpwhitelist=1002:"262d061 android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-06 16:23:38.705 100
+  11-06 16:23:38.709 100 +tmpwhitelist=u0a145:"a9e4df2 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:23:38.710 100
+  11-06 16:23:38.717 100
+  11-06 16:23:38.720 100
+  11-06 16:23:38.725 100 +job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  11-06 16:23:38.728 100 -job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  11-06 16:23:38.790 100
+  11-06 16:23:38.978 100 phone_state=off
+  11-06 16:23:38.981 100
+  11-06 16:23:38.983 100
+  11-06 16:23:38.987 100
+  11-06 16:23:38.987 100 +phone_scanning phone_state=out
+  11-06 16:23:39.116 100
+  11-06 16:23:39.181 100
+  11-06 16:23:39.182 100
+  11-06 16:23:39.244 100
+  11-06 16:23:39.311 100
+  11-06 16:23:39.312 100 +tmpwhitelist=u0a135:"2044035 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  11-06 16:23:39.334 100
+  11-06 16:23:39.418 100
+  11-06 16:23:39.422 100
+  11-06 16:23:39.434 100
+  11-06 16:23:39.435 100
+  11-06 16:23:39.440 100
+  11-06 16:23:39.457 100
+  11-06 16:23:39.501 100 +job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  11-06 16:23:39.503 100 -phone_scanning phone_state=in phone_signal_strength=great -job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  11-06 16:23:39.713 100
+  11-06 16:23:39.829 100 data_conn=nr
+  11-06 16:23:39.832 100 +mobile_radio conn=0:"CONNECTED"
+  11-06 16:23:39.975 100 conn=0:"CONNECTED"
+  11-06 16:23:44.299 100
+  11-06 16:23:44.342 100 +wifi_scan
+  11-06 16:23:44.522 100
+  11-06 16:23:44.616 100
+  11-06 16:23:44.620 100
+  11-06 16:23:44.638 100
+  11-06 16:23:44.661 100
+  11-06 16:23:44.662 100
+  11-06 16:23:44.671 100 +tmpwhitelist=u0a140:"d3ba312 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-06 16:23:44.695 100
+  11-06 16:23:44.749 100
+  11-06 16:23:45.002 100
+  11-06 16:23:45.023 100 +job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  11-06 16:23:45.047 100
+  11-06 16:23:45.058 100 +job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  11-06 16:23:45.059 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:45.066 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:23:45.146 100 -job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  11-06 16:23:45.178 100
+  11-06 16:23:45.196 100 +tmpwhitelist=u0a170:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:45.198 100
+  11-06 16:23:45.228 100
+  11-06 16:23:45.234 100 +job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  11-06 16:23:45.235 100
+  11-06 16:23:45.320 100
+  11-06 16:23:45.348 100
+  11-06 16:23:45.415 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  11-06 16:23:45.448 100
+  11-06 16:23:45.451 100
+  11-06 16:23:45.496 100
+  11-06 16:23:45.515 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:45.582 100
+  11-06 16:23:45.696 100
+  11-06 16:23:45.719 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:23:45.749 100 +job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:45.795 100
+  11-06 16:23:45.796 100
+  11-06 16:23:45.870 100
+  11-06 16:23:45.878 100
+  11-06 16:23:45.962 100 -job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:46.003 100 +tmpwhitelist=u0a209:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:46.007 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:46.010 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:46.026 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-06 16:23:46.084 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  11-06 16:23:46.180 100
+  11-06 16:23:46.197 100
+  11-06 16:23:46.255 100 +tmpwhitelist=u0a131:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:46.297 100
+  11-06 16:23:46.580 100
+  11-06 16:23:47.060 100
+  11-06 16:23:47.099 100
+  11-06 16:23:47.102 100
+  11-06 16:23:47.233 100
+  11-06 16:23:47.243 100 +tmpwhitelist=u0a144:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:47.252 100
+  11-06 16:23:47.263 100
+  11-06 16:23:47.318 100 phone_signal_strength=good
+  11-06 16:23:47.382 100 +tmpwhitelist=u0a146:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:47.553 100 -job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-06 16:23:47.739 100 +tmpwhitelist=u0a217:"d3ba312 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-06 16:23:47.758 100
+  11-06 16:23:47.770 100 +wifi_multicast
+  11-06 16:23:47.786 100 -wifi_multicast -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:47.812 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:47.974 100 -job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  11-06 16:23:47.980 100
+  11-06 16:23:47.999 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-06 16:23:48.004 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:48.309 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-06 16:23:48.310 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  11-06 16:23:48.325 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  11-06 16:23:48.326 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  11-06 16:23:48.334 100 -wifi_scan -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:48.347 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  11-06 16:23:48.487 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  11-06 16:23:48.623 100 +job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  11-06 16:23:48.662 100 +tmpwhitelist=u0a130:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:48.666 100 -job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  11-06 16:23:48.702 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:48.714 100 -tmpwhitelist=1002:"262d061 android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-06 16:23:48.739 100 wifi_suppl=authenticating
+  11-06 16:23:48.745 100 wifi_suppl=associating -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  11-06 16:23:48.818 100 wifi_suppl=associated
+  11-06 16:23:48.874 100 wifi_signal_strength=4 wifi_suppl=completed
+  11-06 16:23:48.940 100 +tmpwhitelist=u0a143:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:48.941 100
+  11-06 16:23:48.942 100
+  11-06 16:23:48.961 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:49.072 100 +ble_scan +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:49.149 100 +tmpwhitelist=u0a142:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.175 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:49.183 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:49.222 100 +fg=u0a146:"com.google.android.apps.messaging"
+  11-06 16:23:49.254 100
+  11-06 16:23:49.256 100
+  11-06 16:23:49.272 100 +tmpwhitelist=u0a154:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.338 100 +wifi_radio +tmpwhitelist=u0a153:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.450 100
+  11-06 16:23:49.458 100
+  11-06 16:23:49.459 100 +tmpwhitelist=u0a112:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.461 100
+  11-06 16:23:49.461 100 +job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  11-06 16:23:49.487 100 -job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  11-06 16:23:49.497 100 +job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  11-06 16:23:49.506 100 +tmpwhitelist=u0a106:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.543 100 -job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  11-06 16:23:49.557 100 conn=1:"CONNECTED"
+  11-06 16:23:49.620 100 conn=1:"CONNECTED"
+  11-06 16:23:49.675 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:49.727 100
+  11-06 16:23:49.775 100 +tmpwhitelist=u0a161:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:49.777 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:49.779 100 +job=u0a142:"com.google.android.as.oss/com.google.android.gms.learning.internal.training.InAppJobService"
+  11-06 16:23:49.782 100 -job=u0a142:"com.google.android.as.oss/com.google.android.gms.learning.internal.training.InAppJobService"
+  11-06 16:23:49.827 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:49.986 100 -fg=u0a146:"com.google.android.apps.messaging"
+  11-06 16:23:50.029 100
+  11-06 16:23:50.107 100
+  11-06 16:23:50.118 100
+  11-06 16:23:50.142 100
+  11-06 16:23:50.155 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:50.169 100
+  11-06 16:23:50.169 100
+  11-06 16:23:50.181 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-06 16:23:50.230 100
+  11-06 16:23:50.239 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-06 16:23:50.269 100 +tmpwhitelist=u0a109:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.285 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:50.304 100
+  11-06 16:23:50.319 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.344 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.345 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:50.357 100 +job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.417 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.569 100 +tmpwhitelist=u0a186:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.586 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.592 100 +tmpwhitelist=u0a98:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.592 100
+  11-06 16:23:50.602 100
+  11-06 16:23:50.610 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-06 16:23:50.615 100 +tmpwhitelist=u0a213:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.620 100 -job=u0a161:"@androidx.work.systemjobscheduler@com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.638 100 +tmpwhitelist=u0a147:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.679 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.708 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  11-06 16:23:50.727 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  11-06 16:23:50.730 100 -job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-06 16:23:50.737 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  11-06 16:23:50.739 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:50.747 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  11-06 16:23:50.760 100
+  11-06 16:23:50.760 100 +tmpwhitelist=2000:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:50.770 100
+  11-06 16:23:50.773 100
+  11-06 16:23:50.778 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:50.797 100 +wifi_multicast
+  11-06 16:23:50.855 100 -wifi_multicast +state=10145:"sensor:0x5f6c696e"
+  11-06 16:23:50.871 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:50.872 100 +state=10145:"sensor:0x5f726f76"
+  11-06 16:23:51.002 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:51.013 100 +tmpwhitelist=u0a132:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:51.019 100
+  11-06 16:23:51.020 100
+  11-06 16:23:51.330 100 -top=u0a183:"com.google.android.apps.nexuslauncher"
+  11-06 16:23:51.330 100 +top=u0a185:"com.android.systemui"
+  11-06 16:23:51.425 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:51.532 100 +fg=u0a216:"com.akane.inspiration"
+  11-06 16:23:51.533 100
+  11-06 16:23:51.534 100
+  11-06 16:23:51.535 100 +tmpwhitelist=u0a136:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:51.537 100 +tmpwhitelist=u0a216:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:51.546 100 pkgactive=u0a216:"com.akane.inspiration"
+  11-06 16:23:51.547 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:51.629 100 -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  11-06 16:23:51.649 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:51.721 100 +job=u0a136:"@androidx.work.systemjobscheduler@com.google.android.apps.safetyhub/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:51.721 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:51.850 100
+  11-06 16:23:51.851 100 +tmpwhitelist=u0a141:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:51.878 100
+  11-06 16:23:51.879 100 +job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  11-06 16:23:51.886 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:51.905 100 +job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:51.911 100 -job=u0a136:"@androidx.work.systemjobscheduler@com.google.android.apps.safetyhub/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:51.928 100
+  11-06 16:23:51.965 100 -job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  11-06 16:23:51.972 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-06 16:23:51.977 100
+  11-06 16:23:51.981 100 +tmpwhitelist=u0a191:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:51.985 100
+  11-06 16:23:51.992 100
+  11-06 16:23:51.996 100 conn=1:"CONNECTED"
+  11-06 16:23:52.003 100
+  11-06 16:23:52.014 100 +tmpwhitelist=u0a149:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.050 100
+  11-06 16:23:52.051 100 +job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:52.052 100
+  11-06 16:23:52.084 100
+  11-06 16:23:52.107 100 +job=u0a149:"@androidx.work.systemjobscheduler@com.google.android.tts/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:52.108 100 +tmpwhitelist=u0a193:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.114 100
+  11-06 16:23:52.133 100
+  11-06 16:23:52.165 100
+  11-06 16:23:52.198 100 -job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:52.233 100 -job=u0a149:"@androidx.work.systemjobscheduler@com.google.android.tts/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:23:52.252 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-06 16:23:52.260 100 -state=10145:"sensor:0x5f6c696e"
+  11-06 16:23:52.351 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:23:52.386 100
+  11-06 16:23:52.392 100
+  11-06 16:23:52.393 100 +tmpwhitelist=u0a210:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.398 100
+  11-06 16:23:52.402 100
+  11-06 16:23:52.470 100
+  11-06 16:23:52.471 100 +tmpwhitelist=u0a192:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.473 100
+  11-06 16:23:52.483 100
+  11-06 16:23:52.574 100
+  11-06 16:23:52.574 100 +tmpwhitelist=u0a103:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.575 100
+  11-06 16:23:52.583 100
+  11-06 16:23:52.676 100
+  11-06 16:23:52.677 100 +tmpwhitelist=u0a139:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.681 100
+  11-06 16:23:52.692 100
+  11-06 16:23:52.722 100
+  11-06 16:23:52.722 100 +tmpwhitelist=u0a133:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.723 100
+  11-06 16:23:52.735 100
+  11-06 16:23:52.787 100
+  11-06 16:23:52.789 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-06 16:23:52.791 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  11-06 16:23:52.792 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-06 16:23:52.805 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-06 16:23:52.806 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  11-06 16:23:52.823 100
+  11-06 16:23:52.827 100
+  11-06 16:23:52.837 100
+  11-06 16:23:52.841 100 +job=1000:"DownloadManager:com.android.providers.downloads"
+  11-06 16:23:52.864 100
+  11-06 16:23:52.865 100
+  11-06 16:23:52.867 100
+  11-06 16:23:52.919 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-06 16:23:52.928 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-06 16:23:52.929 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-06 16:23:52.952 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-06 16:23:52.954 100
+  11-06 16:23:52.956 100 +tmpwhitelist=u0a137:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:23:52.964 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-06 16:23:52.984 100
+  11-06 16:23:53.006 100
+  11-06 16:23:53.006 100
+  11-06 16:23:53.008 100
+  11-06 16:23:53.008 100
+  11-06 16:23:53.012 100
+  11-06 16:23:53.014 100
+  11-06 16:23:53.027 100
+  11-06 16:23:53.028 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-06 16:23:53.090 100
+  11-06 16:23:53.091 100
+  11-06 16:23:53.101 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-06 16:23:53.102 100
+  11-06 16:23:53.205 100
+  11-06 16:23:53.219 100 -job=1000:"DownloadManager:com.android.providers.downloads"
+  11-06 16:23:53.637 100
+  11-06 16:23:53.637 100
+  11-06 16:23:53.654 100
+  11-06 16:23:53.672 100
+  11-06 16:23:53.676 100
+  11-06 16:23:53.692 100
+  11-06 16:23:53.765 100
+  11-06 16:23:53.840 100
+  11-06 16:23:53.850 100
+  11-06 16:23:54.264 100
+  11-06 16:23:54.333 100
+  11-06 16:23:54.536 100
+  11-06 16:23:54.565 100
+  11-06 16:23:55.490 100 +wifi_multicast
+  11-06 16:23:55.605 100
+  11-06 16:23:55.619 100 +job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  11-06 16:23:55.633 100 -job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  11-06 16:23:55.971 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-06 16:23:55.984 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-06 16:23:56.055 100
+  11-06 16:23:56.056 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.703 100
+  11-06 16:23:56.768 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  11-06 16:23:56.769 100 +state=10145:"sensor:0x5f726f76"
+  11-06 16:23:56.780 100
+  11-06 16:23:56.780 100
+  11-06 16:23:56.978 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-06 16:23:56.978 100 -state=10145:"sensor:0x5f6c696e"
+  11-06 16:23:58.483 100 -wifi_multicast +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-06 16:23:58.681 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-06 16:23:59.212 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:23:59.627 100
+  11-06 16:24:00.199 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-06 16:24:00.200 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-06 16:24:01.747 100
+  11-06 16:24:01.874 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:01.916 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:01.923 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:01.937 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:04.349 100 +wifi_scan
+  11-06 16:24:04.401 100 -wifi_scan -tmpwhitelist=u0a170:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:05.497 100 -tmpwhitelist=1001:"8fd79b8 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:24:06.004 100 -tmpwhitelist=u0a209:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:06.174 100 -tmpwhitelist=u0a145:"a9e4df2 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:24:06.255 100 -tmpwhitelist=u0a131:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:06.695 100 -tmpwhitelist=u0a185:"262d061 android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-06 16:24:07.225 100 -tmpwhitelist=u0a135:"2044035 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  11-06 16:24:07.346 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:24:07.351 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:24:07.502 100 -tmpwhitelist=u0a144:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:07.784 100 -tmpwhitelist=u0a146:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:07.899 100
+  11-06 16:24:08.663 100 -tmpwhitelist=u0a130:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:08.940 100 -tmpwhitelist=u0a143:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.150 100 -tmpwhitelist=u0a142:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.272 100 -tmpwhitelist=u0a154:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.334 100 -tmpwhitelist=u0a196:"8ab90fc android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:24:09.406 100 -tmpwhitelist=u0a153:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.459 100 -tmpwhitelist=u0a112:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.563 100 -tmpwhitelist=u0a106:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:09.741 100 -tmpwhitelist=1000:"bd2875f android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-06 16:24:10.270 100 -tmpwhitelist=u0a109:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.461 100 -tmpwhitelist=u0a161:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.589 100 -tmpwhitelist=u0a186:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.592 100 -tmpwhitelist=u0a98:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.619 100 -tmpwhitelist=u0a213:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.760 100 -tmpwhitelist=2000:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:10.760 100 -tmpwhitelist=u0a217:"d3ba312 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-06 16:24:11.013 100 -tmpwhitelist=u0a132:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:11.479 100 -tmpwhitelist=u0a140:"d3ba312 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-06 16:24:11.537 100 -tmpwhitelist=u0a216:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:11.852 100 -tmpwhitelist=u0a147:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:11.969 100 -tmpwhitelist=u0a141:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:11.992 100 -tmpwhitelist=u0a191:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.014 100 -tmpwhitelist=u0a149:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.050 100 -tmpwhitelist=u0a136:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.087 100
+  11-06 16:24:12.108 100 -tmpwhitelist=u0a193:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.393 100 -tmpwhitelist=u0a210:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.471 100 -tmpwhitelist=u0a192:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.574 100 -tmpwhitelist=u0a103:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.689 100 -tmpwhitelist=u0a139:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:12.723 100 -tmpwhitelist=u0a133:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:13.008 100 -tmpwhitelist=u0a137:"896b316 android.intent.action.BOOT_COMPLETED/u0"
+  11-06 16:24:13.868 100 +sensor +state=10145:"sensor:0x0"
+  11-06 16:24:13.869 100 +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-06 16:24:13.872 100 -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-06 16:24:13.965 100 +tmpwhitelist=u0a218:"shell"
+  11-06 16:24:13.968 100
+  11-06 16:24:14.154 100 +tmpwhitelist=u0a216:"shell"
+  11-06 16:24:14.156 100 +tmpwhitelist=u0a217:"shell"
+  11-06 16:24:14.158 100 pkgactive=u0a217:"moe.shizuku.privileged.api"
+  11-06 16:24:14.161 100
+  11-06 16:24:15.764 100 -mobile_radio
+  11-06 16:24:17.305 100 -sensor phone_signal_strength=moderate -state=10145:"sensor:0x0"
+  11-06 16:24:17.345 100 +sensor +state=10145:"sensor:0x0"
+  11-06 16:24:18.339 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:24:18.340 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:18.342 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:24:18.367 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:20.748 100 -sensor -state=10145:"sensor:0x0"
+  11-06 16:24:21.520 100 +mobile_radio
+  11-06 16:24:22.029 100
+  11-06 16:24:22.497 100
+  11-06 16:24:22.505 100 +tmpwhitelist=1000:"keychain"
+  11-06 16:24:22.507 100 pkginst=1:"io.github.akane599.coulomb"
+  11-06 16:24:22.509 100 pkginst=1:"io.github.akane599.coulomb"
+  11-06 16:24:22.530 100
+  11-06 16:24:22.530 100
+  11-06 16:24:22.530 100
+  11-06 16:24:22.530 100
+  11-06 16:24:22.530 100
+  11-06 16:24:22.530 100
+  11-06 16:24:22.531 100
+  11-06 16:24:22.719 100
+  11-06 16:24:22.723 100 +fg=u0a218:"io.github.akane599.coulomb"
+  11-06 16:24:22.723 100
+  11-06 16:24:22.745 100 pkgactive=u0a218:"io.github.akane599.coulomb"
+  11-06 16:24:22.773 100
+  11-06 16:24:22.773 100
+  11-06 16:24:22.775 100
+  11-06 16:24:22.838 100
+  11-06 16:24:22.838 100
+  11-06 16:24:22.838 100 stats=0:"dump"
+  11-06 16:24:22.876 100
+  11-06 16:24:22.914 100 +cellular_high_tx_power
+  11-06 16:24:22.914 100
+  11-06 16:24:22.914 100
+  11-06 16:24:22.914 100
+  11-06 16:24:22.914 100
+  11-06 16:24:22.914 100 stats=0:"dump"
+  11-06 16:24:22.922 100 -cellular_high_tx_power pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:24:22.923 100 pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:24:22.925 100 +cellular_high_tx_power pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:24:22.934 100
+  11-06 16:24:24.343 100 +wifi_scan
+  11-06 16:24:24.394 100 -wifi_scan -cellular_high_tx_power
+  11-06 16:24:29.122 100 +cellular_high_tx_power
+  11-06 16:24:29.122 100
+  11-06 16:24:29.122 100
+  11-06 16:24:29.122 100
+  11-06 16:24:29.122 100
+  11-06 16:24:29.671 100
+  11-06 16:24:29.672 100 -fg=u0a218:"io.github.akane599.coulomb"
+  11-06 16:24:29.674 100
+  11-06 16:24:29.952 100
+  11-06 16:24:30.307 100
+  11-06 16:24:30.309 100
+  11-06 16:24:30.538 100
+  11-06 16:24:30.558 100
+  11-06 16:24:30.558 100
+  11-06 16:24:30.558 100
+  11-06 16:24:30.558 100
+  11-06 16:24:30.558 100
+  11-06 16:24:30.559 100 stats=0:"dump"
+  11-06 16:24:30.568 100
+  11-06 16:24:30.598 100
+  11-06 16:24:30.598 100
+  11-06 16:24:30.598 100
+  11-06 16:24:30.598 100
+  11-06 16:24:30.598 100
+  11-06 16:24:30.598 100 stats=0:"dump"
+  11-06 16:24:30.630 100
+  11-06 16:24:30.630 100
+  11-06 16:24:30.646 100
+  11-06 16:24:30.646 100
+  11-06 16:24:30.646 100
+  11-06 16:24:30.646 100 stats=0:"dump"
+  11-06 16:24:30.654 100
+  11-06 16:24:30.686 100
+  11-06 16:24:30.686 100
+  11-06 16:24:30.686 100
+  11-06 16:24:30.686 100
+  11-06 16:24:30.686 100
+  11-06 16:24:30.686 100 stats=0:"dump"
+  11-06 16:24:30.710 100
+  11-06 16:24:30.726 100
+  11-06 16:24:30.726 100
+  11-06 16:24:30.726 100
+  11-06 16:24:30.726 100
+  11-06 16:24:30.726 100
+  11-06 16:24:30.726 100 stats=0:"dump"
+  11-06 16:24:30.753 100
+  11-06 16:24:31.630 100 -mobile_radio
+  11-06 16:24:32.953 100
+  11-06 16:24:32.953 100
+  11-06 16:24:37.305 100 phone_signal_strength=poor
+  11-06 16:24:37.487 100 -cellular_high_tx_power +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:24:37.496 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-06 16:24:37.555 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  11-06 16:24:37.556 100 +state=10145:"sensor:0x5f726f76"
+  11-06 16:24:37.565 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-06 16:24:37.565 100 +cellular_high_tx_power -state=10145:"sensor:0x5f6c696e"
+  11-06 16:24:44.154 100 -tmpwhitelist=u0a216:"shell"
+  11-06 16:24:44.158 100 -cellular_high_tx_power -tmpwhitelist=u0a217:"shell"
+  11-06 16:24:47.883 100 +cellular_high_tx_power
+  11-06 16:24:47.884 100
+  11-06 16:24:52.205 100
+  11-06 16:24:52.221 100 wakeupap=u0a146:""
+  11-06 16:24:52.221 100 +mobile_radio -cellular_high_tx_power -tmpwhitelist=1000:"keychain"
+  11-06 16:24:53.988 100 +cellular_high_tx_power
+  11-06 16:24:53.989 100
+  11-06 16:24:55.515 100 +tmpwhitelist=1000:"keychain"
+  11-06 16:24:55.515 100 -cellular_high_tx_power pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:24:55.518 100 +cellular_high_tx_power pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:24:55.518 100
+  11-06 16:24:55.518 100
+  11-06 16:24:55.518 100
+  11-06 16:24:55.518 100
+  11-06 16:24:55.519 100
+  11-06 16:24:55.529 100
+  11-06 16:24:55.696 100
+  11-06 16:24:55.973 100
+  11-06 16:24:56.136 100
+  11-06 16:24:56.138 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:56.150 100
+  11-06 16:24:56.151 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.sliceindexing.impl.SliceIndexUpdateJobService"
+  11-06 16:24:56.202 100 +wifi_scan -job=u0a137:"com.google.android.settings.intelligence/.modules.sliceindexing.impl.SliceIndexUpdateJobService"
+  11-06 16:24:56.219 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:24:56.227 100
+  11-06 16:24:56.228 100
+  11-06 16:24:56.228 100
+  11-06 16:24:56.322 100
+  11-06 16:24:56.324 100
+  11-06 16:24:56.564 100
+  11-06 16:24:56.564 100
+  11-06 16:24:56.564 100
+  11-06 16:24:56.582 100
+  11-06 16:24:56.582 100
+  11-06 16:24:56.582 100
+  11-06 16:24:56.582 100 stats=0:"dump"
+  11-06 16:24:56.585 100
+  11-06 16:24:56.606 100
+  11-06 16:24:56.606 100
+  11-06 16:24:56.606 100
+  11-06 16:24:56.622 100
+  11-06 16:24:56.622 100
+  11-06 16:24:56.622 100
+  11-06 16:24:56.622 100 stats=0:"dump"
+  11-06 16:24:56.637 100
+  11-06 16:24:56.637 100
+  11-06 16:24:56.674 100
+  11-06 16:24:56.674 100
+  11-06 16:24:56.674 100
+  11-06 16:24:56.674 100
+  11-06 16:24:56.674 100 stats=0:"dump"
+  11-06 16:24:56.681 100
+  11-06 16:24:56.714 100
+  11-06 16:24:56.714 100
+  11-06 16:24:56.714 100
+  11-06 16:24:56.714 100
+  11-06 16:24:56.714 100
+  11-06 16:24:56.714 100 stats=0:"dump"
+  11-06 16:24:56.722 100
+  11-06 16:24:56.766 100
+  11-06 16:24:56.766 100
+  11-06 16:24:56.766 100
+  11-06 16:24:56.766 100
+  11-06 16:24:56.766 100
+  11-06 16:24:56.766 100 stats=0:"dump"
+  11-06 16:24:56.784 100
+  11-06 16:24:56.987 100 -wifi_scan
+  11-06 16:25:00.337 100
+  11-06 16:25:00.363 100
+  11-06 16:25:00.750 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  11-06 16:25:00.753 100 -cellular_high_tx_power +state=10145:"sensor:0x5f726f76"
+  11-06 16:25:00.781 100 -sensor +cellular_high_tx_power -state=10145:"sensor:0x5f726f76"
+  11-06 16:25:00.782 100 -state=10145:"sensor:0x5f6c696e"
+  11-06 16:25:00.795 100
+  11-06 16:25:00.795 100
+  11-06 16:25:01.595 100
+  11-06 16:25:01.595 100
+  11-06 16:25:03.630 100 -mobile_radio
+  11-06 16:25:04.343 100 +wifi_scan -cellular_high_tx_power
+  11-06 16:25:04.394 100 -wifi_scan
+  11-06 16:25:05.534 100 +cellular_high_tx_power
+  11-06 16:25:05.534 100
+  11-06 16:25:06.707 100
+  11-06 16:25:06.979 100
+  11-06 16:25:06.999 100
+  11-06 16:25:07.046 100
+  11-06 16:25:07.046 100
+  11-06 16:25:07.046 100
+  11-06 16:25:07.046 100
+  11-06 16:25:07.046 100
+  11-06 16:25:07.046 100 stats=0:"dump"
+  11-06 16:25:07.106 100
+  11-06 16:25:07.106 100
+  11-06 16:25:07.122 100
+  11-06 16:25:07.122 100
+  11-06 16:25:07.122 100
+  11-06 16:25:07.122 100 stats=0:"dump"
+  11-06 16:25:07.180 100
+  11-06 16:25:07.210 100
+  11-06 16:25:07.210 100
+  11-06 16:25:07.210 100
+  11-06 16:25:07.210 100
+  11-06 16:25:07.210 100
+  11-06 16:25:07.210 100 stats=0:"dump"
+  11-06 16:25:07.305 100 phone_signal_strength=great
+  11-06 16:25:07.631 100
+  11-06 16:25:07.649 100
+  11-06 16:25:08.273 100
+  11-06 16:25:11.137 100
+  11-06 16:25:11.137 100
+  11-06 16:25:11.166 100
+  11-06 16:25:11.167 100
+  11-06 16:25:11.201 100
+  11-06 16:25:11.201 100
+  11-06 16:25:13.225 100
+  11-06 16:25:13.508 100
+  11-06 16:25:13.540 100
+  11-06 16:25:22.830 100 -wifi_radio
+  11-06 16:25:25.523 100 -cellular_high_tx_power -tmpwhitelist=1000:"keychain"
+  11-06 16:25:34.998 100 +cellular_high_tx_power
+  11-06 16:25:35.022 100
+  11-06 16:25:35.023 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:25:35.024 100
+  11-06 16:25:35.024 100 +job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:25:35.026 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-06 16:25:35.053 100 -job=u0a135:"@androidx.work.systemjobscheduler@com.google.android.dialer/androidx.work.impl.background.systemjob.SystemJobService"
+  11-06 16:25:35.076 100
+  11-06 16:25:35.088 100
+  11-06 16:25:41.928 100 pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:25:41.929 100 -cellular_high_tx_power pkginst=0:"io.github.akane599.coulomb.test"
+  11-06 16:25:41.932 100 +cellular_high_tx_power +tmpwhitelist=1000:"keychain"
+  11-06 16:25:41.937 100
+  11-06 16:25:41.937 100
+  11-06 16:25:41.938 100
+  11-06 16:25:42.112 100
+  11-06 16:25:42.112 100
+  11-06 16:25:42.394 100
+  11-06 16:25:42.416 100
+  11-06 16:25:42.459 100
+  11-06 16:25:42.459 100
+  11-06 16:25:42.459 100
+  11-06 16:25:42.459 100
+  11-06 16:25:42.459 100
+  11-06 16:25:42.429 100
+  11-06 16:25:42.460 100 stats=0:"dump"
+  11-06 16:25:42.538 100
+  11-06 16:25:42.538 100
+  11-06 16:25:42.562 100
+  11-06 16:25:42.562 100
+  11-06 16:25:42.562 100
+  11-06 16:25:42.562 100 stats=0:"dump"
+  11-06 16:25:42.634 100
+  11-06 16:25:42.634 100
+  11-06 16:25:42.650 100
+  11-06 16:25:42.650 100
+  11-06 16:25:42.650 100
+  11-06 16:25:42.650 100 stats=0:"dump"
+  11-06 16:25:42.662 START
+  11-07 23:06:13.121 TIME: 2026-11-07-23-06-13
+  11-07 23:06:13.543 100 status=charging health=good plug=ac temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +plugged +charging stats=0:"write"
+  11-07 23:06:13.989 100 +wake_lock=-1:"screen" +screen brightness=bright display_state_changed=-1:"display=0 state=ON reason=DEFAULT_POLICY"
+  11-07 23:06:13.990 100 +sensor brightness=medium +wifi +state=1000:"sensor:0x0"
+  11-07 23:06:14.114 100 stats=0:"wifi-off"
+  11-07 23:06:14.197 100 stats=0:"network-stats-enabled"
+  11-07 23:06:14.312 100
+  11-07 23:06:14.313 100
+  11-07 23:06:14.313 100
+  11-07 23:06:14.313 100
+  11-07 23:06:14.301 100
+  11-07 23:06:14.302 100 +user=0:"0"
+  11-07 23:06:14.302 100 +userfg=0:"0"
+  11-07 23:06:14.320 100
+  11-07 23:06:14.372 100
+  11-07 23:06:14.378 100
+  11-07 23:06:14.378 100
+  11-07 23:06:14.386 100
+  11-07 23:06:14.395 100
+  11-07 23:06:14.405 100
+  11-07 23:06:14.406 100
+  11-07 23:06:14.411 100
+  11-07 23:06:14.427 100 +top=u0a183:"com.google.android.apps.nexuslauncher"
+  11-07 23:06:14.470 100
+  11-07 23:06:14.487 100
+  11-07 23:06:14.513 100 +tmpwhitelist=1001:"330a16 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:14.569 100
+  11-07 23:06:14.575 100 +job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionEventCleanupJobService"
+  11-07 23:06:14.579 100 +job=1000:"@usagestats_mapping@android/com.android.server.usage.UsageStatsIdleService"
+  11-07 23:06:14.582 100 +job=1000:"@SettingsProviderJobsNamespace@com.android.providers.settings/.WriteFallbackSettingsFilesJobService"
+  11-07 23:06:14.585 100 +job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  11-07 23:06:14.600 100 -job=1000:"@SettingsProviderJobsNamespace@com.android.providers.settings/.WriteFallbackSettingsFilesJobService"
+  11-07 23:06:14.602 100 +tmpwhitelist=u0a196:"b1b7fc0 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:14.631 100 -job=1000:"@usagestats_mapping@android/com.android.server.usage.UsageStatsIdleService"
+  11-07 23:06:14.631 100 -job=1000:"android/com.android.server.notification.NotificationHistoryJobService"
+  11-07 23:06:14.962 100 +tmpwhitelist=1000:"37cbe39 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:14.963 100
+  11-07 23:06:15.035 100
+  11-07 23:06:15.040 100 +tmpwhitelist=u0a185:"ec8007d android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-07 23:06:15.041 100 +tmpwhitelist=1002:"ec8007d android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-07 23:06:15.054 100 -job=u0a196:"com.google.android.permissioncontroller/com.android.permissioncontroller.permission.service.PermissionEventCleanupJobService"
+  11-07 23:06:15.146 100
+  11-07 23:06:15.169 100 +job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  11-07 23:06:15.172 100 +tmpwhitelist=u0a145:"ab27d17 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:15.172 100 -job=1000:"com.android.settings/.sim.receivers.SimSlotChangeService"
+  11-07 23:06:15.180 100
+  11-07 23:06:15.260 100
+  11-07 23:06:15.270 100
+  11-07 23:06:15.383 100 phone_state=off
+  11-07 23:06:15.391 100
+  11-07 23:06:15.393 100
+  11-07 23:06:15.397 100
+  11-07 23:06:15.397 100
+  11-07 23:06:15.467 100 +phone_scanning phone_state=out
+  11-07 23:06:15.470 100
+  11-07 23:06:15.487 100
+  11-07 23:06:15.591 100
+  11-07 23:06:15.592 100
+  11-07 23:06:15.664 100
+  11-07 23:06:15.787 100
+  11-07 23:06:15.787 100 +tmpwhitelist=u0a135:"793c7a8 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  11-07 23:06:15.815 100
+  11-07 23:06:15.853 100
+  11-07 23:06:15.858 100
+  11-07 23:06:15.877 100
+  11-07 23:06:15.879 100
+  11-07 23:06:15.889 100
+  11-07 23:06:15.903 100
+  11-07 23:06:15.934 100 +job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  11-07 23:06:15.936 100 -phone_scanning phone_state=in phone_signal_strength=great -job=1000:"com.android.settings/.sim.PrimarySubscriptionListChangedService"
+  11-07 23:06:16.159 100
+  11-07 23:06:16.280 100 data_conn=nr
+  11-07 23:06:16.284 100 +mobile_radio conn=0:"CONNECTED"
+  11-07 23:06:16.422 100 conn=0:"CONNECTED"
+  11-07 23:06:20.551 100
+  11-07 23:06:20.566 100 +wifi_scan
+  11-07 23:06:20.809 100
+  11-07 23:06:20.828 100
+  11-07 23:06:20.846 100
+  11-07 23:06:20.849 100
+  11-07 23:06:20.868 100 +tmpwhitelist=u0a140:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:20.907 100
+  11-07 23:06:20.909 100
+  11-07 23:06:20.955 100
+  11-07 23:06:21.002 100
+  11-07 23:06:21.066 100
+  11-07 23:06:21.101 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:21.259 100
+  11-07 23:06:21.260 100 +job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  11-07 23:06:21.260 100
+  11-07 23:06:21.261 100 +job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:21.261 100
+  11-07 23:06:21.263 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.ComputeNewInferencesJobService"
+  11-07 23:06:21.306 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-07 23:06:21.462 100
+  11-07 23:06:21.560 100 -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:21.601 100
+  11-07 23:06:21.625 100
+  11-07 23:06:21.732 100
+  11-07 23:06:21.763 100 +job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-07 23:06:21.919 100
+  11-07 23:06:21.923 100
+  11-07 23:06:21.980 100
+  11-07 23:06:22.007 100
+  11-07 23:06:22.018 100
+  11-07 23:06:22.028 100
+  11-07 23:06:22.070 100
+  11-07 23:06:22.109 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:22.128 100
+  11-07 23:06:22.134 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:22.135 100
+  11-07 23:06:22.138 100
+  11-07 23:06:22.146 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.ComputeNewInferencesJobService"
+  11-07 23:06:22.163 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:22.200 100
+  11-07 23:06:22.268 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-07 23:06:22.281 100 +job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:22.287 100 +tmpwhitelist=u0a153:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:22.313 100
+  11-07 23:06:22.331 100
+  11-07 23:06:22.369 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:22.390 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:22.419 100 -job=u0a161:"com.google.android.apps.photos/.dbprocessor.impl.DatabaseProcessorJobService"
+  11-07 23:06:22.430 100 +job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:22.579 100
+  11-07 23:06:22.666 100
+  11-07 23:06:22.685 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-07 23:06:22.708 100 +tmpwhitelist=u0a209:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:22.712 100
+  11-07 23:06:22.832 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:22.999 100
+  11-07 23:06:23.059 100
+  11-07 23:06:23.078 100
+  11-07 23:06:23.082 100
+  11-07 23:06:23.084 100 +tmpwhitelist=u0a131:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:23.085 100 +tmpwhitelist=u0a137:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:23.114 100
+  11-07 23:06:23.132 100
+  11-07 23:06:23.156 100
+  11-07 23:06:23.301 100 phone_signal_strength=good
+  11-07 23:06:23.354 100
+  11-07 23:06:23.410 100 -job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:23.449 100 +tmpwhitelist=u0a170:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:23.458 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  11-07 23:06:23.483 100
+  11-07 23:06:23.505 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  11-07 23:06:23.554 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:23.634 100 +job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:23.646 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.brella.service.AiAiExampleStoreTtlService"
+  11-07 23:06:23.658 100
+  11-07 23:06:24.148 100
+  11-07 23:06:24.193 100 -job=u0a140:"@androidx.work.systemjobscheduler@com.google.android.apps.wellbeing/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:24.246 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:24.260 100 +tmpwhitelist=u0a146:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:24.288 100 -job=u0a144:"@androidx.work.systemjobscheduler@com.google.android.as/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:24.391 100 +tmpwhitelist=u0a136:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:24.484 100
+  11-07 23:06:24.485 100 +tmpwhitelist=u0a217:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:24.497 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.fedass.ekho.service.EkhoTtlService"
+  11-07 23:06:24.629 100 +wifi_multicast
+  11-07 23:06:24.634 100
+  11-07 23:06:24.730 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:24.731 100 -wifi_scan -wifi_multicast +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:25.034 100 +tmpwhitelist=u0a144:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:25.035 100 -job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-07 23:06:25.104 100 -tmpwhitelist=1002:"ec8007d android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-07 23:06:25.456 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:25.516 100 +tmpwhitelist=u0a130:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:25.520 100
+  11-07 23:06:25.586 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:25.624 100
+  11-07 23:06:25.624 100
+  11-07 23:06:25.625 100
+  11-07 23:06:25.630 100
+  11-07 23:06:25.636 100
+  11-07 23:06:25.647 100 +tmpwhitelist=u0a142:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.019 100
+  11-07 23:06:26.086 100
+  11-07 23:06:26.096 100 wifi_suppl=authenticating
+  11-07 23:06:26.130 100 wifi_suppl=associating +tmpwhitelist=u0a186:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.191 100 wifi_suppl=associated
+  11-07 23:06:26.204 100 +tmpwhitelist=u0a143:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.206 100
+  11-07 23:06:26.216 100
+  11-07 23:06:26.261 100
+  11-07 23:06:26.276 100
+  11-07 23:06:26.291 100 wifi_suppl=completed
+  11-07 23:06:26.293 100 wifi_signal_strength=4
+  11-07 23:06:26.434 100 +tmpwhitelist=u0a154:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.436 100
+  11-07 23:06:26.437 100
+  11-07 23:06:26.522 100 +job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  11-07 23:06:26.658 100
+  11-07 23:06:26.663 100 +tmpwhitelist=u0a112:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.667 100
+  11-07 23:06:26.690 100 +wifi_radio
+  11-07 23:06:26.797 100 +tmpwhitelist=u0a106:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:26.860 100 +ble_scan conn=0:"CONNECTED"
+  11-07 23:06:26.903 100 +job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  11-07 23:06:26.905 100 -job=u0a146:"com.google.android.apps.messaging/com.google.android.ims.metrics.PeriodicMetricsJobService"
+  11-07 23:06:26.928 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:26.969 100
+  11-07 23:06:27.044 100
+  11-07 23:06:27.058 100 +tmpwhitelist=u0a161:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.231 100
+  11-07 23:06:27.234 100 +tmpwhitelist=u0a109:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.244 100
+  11-07 23:06:27.245 100
+  11-07 23:06:27.424 100
+  11-07 23:06:27.437 100 +fg=u0a146:"com.google.android.apps.messaging"
+  11-07 23:06:27.491 100
+  11-07 23:06:27.504 100 conn=1:"CONNECTED"
+  11-07 23:06:27.509 100
+  11-07 23:06:27.515 100
+  11-07 23:06:27.548 100 +tmpwhitelist=u0a98:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.559 100 +job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-07 23:06:27.565 100 conn=1:"CONNECTED"
+  11-07 23:06:27.572 100 -job=u0a170:"com.google.android.deskclock/com.android.deskclock.indexing.IndexingJobService"
+  11-07 23:06:27.599 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-07 23:06:27.638 100 +tmpwhitelist=u0a213:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.669 100 +wifi_multicast -fg=u0a146:"com.google.android.apps.messaging"
+  11-07 23:06:27.792 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-07 23:06:27.823 100 -top=u0a183:"com.google.android.apps.nexuslauncher"
+  11-07 23:06:27.823 100 +top=u0a185:"com.android.systemui"
+  11-07 23:06:27.861 100 +job=u0a142:"com.google.android.as.oss/com.google.android.gms.learning.internal.training.InAppJobService"
+  11-07 23:06:27.868 100 -job=u0a213:"com.google.android.providers.media.module/com.android.providers.media.MediaService"
+  11-07 23:06:27.872 100
+  11-07 23:06:27.872 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:27.873 100 +tmpwhitelist=2000:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.876 100
+  11-07 23:06:27.886 100
+  11-07 23:06:27.898 100 +tmpwhitelist=u0a216:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.905 100 +fg=u0a216:"com.akane.inspiration"
+  11-07 23:06:27.915 100 -job=u0a142:"com.google.android.as.oss/com.google.android.gms.learning.internal.training.InAppJobService"
+  11-07 23:06:27.922 100 -wifi_multicast +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:27.968 100 pkgactive=u0a216:"com.akane.inspiration"
+  11-07 23:06:27.990 100 -job=u0a216:"com.akane.inspiration/.capture.ChargingCaptureJobService"
+  11-07 23:06:27.994 100 +tmpwhitelist=u0a149:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:27.997 100
+  11-07 23:06:27.999 100 +job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  11-07 23:06:28.007 100 +tmpwhitelist=u0a147:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.085 100
+  11-07 23:06:28.115 100
+  11-07 23:06:28.117 100
+  11-07 23:06:28.131 100 +tmpwhitelist=u0a132:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.186 100 -job=u0a131:"com.android.imsserviceentitlement/.fcm.FcmRegistrationService"
+  11-07 23:06:28.199 100 +job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:28.209 100
+  11-07 23:06:28.209 100
+  11-07 23:06:28.297 100
+  11-07 23:06:28.298 100
+  11-07 23:06:28.306 100 -job=u0a136:"com.google.android.apps.safetyhub/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:28.318 100 +tmpwhitelist=u0a141:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.322 100
+  11-07 23:06:28.346 100
+  11-07 23:06:28.346 100
+  11-07 23:06:28.382 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:28.435 100 +state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:28.442 100 +state=10145:"sensor:0x5f726f76"
+  11-07 23:06:28.469 100
+  11-07 23:06:28.472 100
+  11-07 23:06:28.503 100
+  11-07 23:06:28.571 100
+  11-07 23:06:28.572 100 +tmpwhitelist=u0a193:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.602 100
+  11-07 23:06:28.614 100
+  11-07 23:06:28.668 100
+  11-07 23:06:28.699 100
+  11-07 23:06:28.722 100
+  11-07 23:06:28.727 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:28.759 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:28.789 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:28.811 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:28.824 100 +job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  11-07 23:06:28.840 100 +tmpwhitelist=u0a210:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.840 100
+  11-07 23:06:28.890 100 -job=u0a161:"com.google.android.apps.photos/.account.full.SyncAccountsForLoginService"
+  11-07 23:06:28.894 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  11-07 23:06:28.941 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.echo.scheduler.EchoJobService"
+  11-07 23:06:28.951 100
+  11-07 23:06:28.967 100 +tmpwhitelist=u0a192:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:28.968 100
+  11-07 23:06:29.000 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-07 23:06:29.009 100
+  11-07 23:06:29.071 100
+  11-07 23:06:29.110 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.139 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.PruneDatabaseJobService"
+  11-07 23:06:29.147 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.common.superpacks.impl.PeriodicCleanupService"
+  11-07 23:06:29.153 100 +tmpwhitelist=u0a103:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:29.153 100
+  11-07 23:06:29.181 100 +job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  11-07 23:06:29.190 100
+  11-07 23:06:29.197 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.PruneDatabaseJobService"
+  11-07 23:06:29.211 100
+  11-07 23:06:29.213 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  11-07 23:06:29.214 100 -job=1000:"@class com.android.server.healthconnect.migration.MigrationStateChangeJob@android/com.android.server.healthconnect.HealthConnectDailyService"
+  11-07 23:06:29.227 100 +job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  11-07 23:06:29.234 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosJobQueueJobsService"
+  11-07 23:06:29.242 100 +job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-07 23:06:29.246 100 -job=u0a161:"com.google.android.apps.photos/.jobqueue.PhotosOfflineJobQueueJobsService"
+  11-07 23:06:29.252 100 +tmpwhitelist=u0a139:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:29.260 100
+  11-07 23:06:29.318 100 +job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  11-07 23:06:29.319 100
+  11-07 23:06:29.329 100 -job=u0a137:"com.google.android.settings.intelligence/.modules.routines.impl.RoutinesJobIntentService"
+  11-07 23:06:29.349 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.364 100 conn=1:"CONNECTED"
+  11-07 23:06:29.364 100 +tmpwhitelist=u0a133:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:29.406 100
+  11-07 23:06:29.416 100 -job=u0a140:"com.google.android.apps.wellbeing/.autodnd.impl.AutoDndJobService"
+  11-07 23:06:29.439 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-07 23:06:29.454 100
+  11-07 23:06:29.475 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.481 100 +job=1000:"DownloadManager:com.android.providers.downloads"
+  11-07 23:06:29.503 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-07 23:06:29.533 100 +tmpwhitelist=u0a191:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:29.534 100
+  11-07 23:06:29.569 100
+  11-07 23:06:29.634 100
+  11-07 23:06:29.683 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-07 23:06:29.720 100 +job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  11-07 23:06:29.749 100 +job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.834 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-07 23:06:29.836 100 -state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:29.843 100 -job=u0a191:"@androidx.work.systemjobscheduler@com.google.android.rkpdapp/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.848 100 +job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-07 23:06:29.938 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-07 23:06:29.945 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:29.945 100 -job=u0a139:"com.google.android.partnersetup/.PhenotypeJobService"
+  11-07 23:06:29.953 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.953 100 -job=u0a139:"com.google.android.partnersetup/.AppHidingJobService"
+  11-07 23:06:29.961 100
+  11-07 23:06:29.976 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.976 100 +job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:29.977 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.libraries.notifications.entrypoints.scheduled.ScheduledTaskService"
+  11-07 23:06:29.977 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.982 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.983 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.988 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.989 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.996 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.998 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:29.998 100 -job=1000:"DownloadManager:com.android.providers.downloads"
+  11-07 23:06:29.999 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.003 100 +job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  11-07 23:06:30.008 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.008 100 -job=u0a144:"com.google.android.as/com.google.android.apps.miphone.aiai.interestsmodel.storage.privacy.TtlExpiryService"
+  11-07 23:06:30.014 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.015 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.025 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.027 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.030 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.032 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.036 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.037 100 +job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-07 23:06:30.050 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.051 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.052 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.053 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.053 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.054 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.060 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.083 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.085 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.094 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.095 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.095 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.097 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.097 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.099 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.100 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.103 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.104 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.107 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.107 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.111 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.116 100 -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:30.144 100 +tmpwhitelist=u0a218:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:30.144 100
+  11-07 23:06:30.154 100 +fg=u0a218:"io.github.akane599.coulomb"
+  11-07 23:06:30.154 100
+  11-07 23:06:30.184 100 pkgactive=u0a218:"io.github.akane599.coulomb"
+  11-07 23:06:30.191 100
+  11-07 23:06:30.191 100
+  11-07 23:06:30.202 100
+  11-07 23:06:30.228 100
+  11-07 23:06:30.284 100
+  11-07 23:06:30.284 100
+  11-07 23:06:30.285 100
+  11-07 23:06:30.285 100
+  11-07 23:06:30.219 100
+  11-07 23:06:30.224 100
+  11-07 23:06:30.243 100 -job=u0a139:"com.google.android.partnersetup/.ClientIdJobService"
+  11-07 23:06:30.246 100 -job=u0a147:"@androidx.work.systemjobscheduler@com.google.android.googlequicksearchbox/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:30.286 100 stats=0:"dump"
+  11-07 23:06:30.337 100
+  11-07 23:06:30.373 100 +cellular_high_tx_power
+  11-07 23:06:30.377 100
+  11-07 23:06:30.377 100
+  11-07 23:06:30.377 100
+  11-07 23:06:30.377 100
+  11-07 23:06:30.378 100 stats=0:"dump"
+  11-07 23:06:30.683 100
+  11-07 23:06:32.063 100 +job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:32.063 100
+  11-07 23:06:32.067 100 +job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:32.137 100 -cellular_high_tx_power -job=u0a147:"com.google.android.googlequicksearchbox/com.google.android.apps.gsa.tasks.BackgroundTasksJobService"
+  11-07 23:06:32.152 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:32.174 100 +cellular_high_tx_power -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:32.231 100
+  11-07 23:06:32.246 100
+  11-07 23:06:32.260 100
+  11-07 23:06:32.542 100
+  11-07 23:06:32.542 100 +job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  11-07 23:06:32.545 100 -job=u0a98:"com.android.providers.calendar/.CalendarProviderJobService"
+  11-07 23:06:32.641 100
+  11-07 23:06:32.824 100
+  11-07 23:06:32.824 100
+  11-07 23:06:32.824 100
+  11-07 23:06:32.948 100
+  11-07 23:06:33.018 100
+  11-07 23:06:33.025 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.026 100
+  11-07 23:06:33.027 100
+  11-07 23:06:33.401 100 +wifi_multicast
+  11-07 23:06:34.012 100 +sensor -cellular_high_tx_power +state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:34.012 100 +cellular_high_tx_power +state=10145:"sensor:0x5f726f76"
+  11-07 23:06:34.019 100
+  11-07 23:06:34.019 100
+  11-07 23:06:34.243 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-07 23:06:34.243 100 -cellular_high_tx_power -state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:34.510 100 +sensor +state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:34.510 100 +cellular_high_tx_power +state=10145:"sensor:0x5f726f76"
+  11-07 23:06:34.516 100
+  11-07 23:06:34.516 100
+  11-07 23:06:34.677 100 +job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-07 23:06:34.681 100 -cellular_high_tx_power -job=u0a146:"com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionJobService"
+  11-07 23:06:34.712 100 -sensor -state=10145:"sensor:0x5f726f76"
+  11-07 23:06:34.712 100 -state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:36.007 100 +cellular_high_tx_power
+  11-07 23:06:36.248 100
+  11-07 23:06:36.388 100 -wifi_multicast
+  11-07 23:06:36.407 100
+  11-07 23:06:36.418 100
+  11-07 23:06:38.166 100
+  11-07 23:06:38.166 100
+  11-07 23:06:38.166 100
+  11-07 23:06:38.166 100
+  11-07 23:06:38.166 100
+  11-07 23:06:38.263 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:38.319 100 -cellular_high_tx_power -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:38.321 100 +job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:38.325 100 -job=u0a146:"@androidx.work.systemjobscheduler@com.google.android.apps.messaging/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:39.534 100 +cellular_high_tx_power
+  11-07 23:06:39.841 100
+  11-07 23:06:40.582 100 +wifi_scan
+  11-07 23:06:40.634 100 -wifi_scan -cellular_high_tx_power stats=0:"battery-state"
+  11-07 23:06:41.050 RESET:TIME: 2026-11-07-23-06-41
+  11-07 23:06:41.050 100 status=charging health=good plug=none temp=250 volt=5000 charge=10 modemRailChargemAh=0 wifiRailChargemAh=0 +running +wake_lock +wifi_radio +mobile_radio +screen +plugged data_conn=nr phone_signal_strength=good brightness=medium +wifi wifi_signal_strength=4 wifi_suppl=completed +ble_scan +cellular_high_tx_power fg=u0a218:"io.github.akane599.coulomb"
+  11-07 23:06:41.050 100 -cellular_high_tx_power fg=u0a216:"com.akane.inspiration"
+  11-07 23:06:41.050 100 top=u0a185:"com.android.systemui"
+  11-07 23:06:41.050 100 job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:41.050 100 user=0:"0"
+  11-07 23:06:41.050 100 userfg=0:"0"
+  11-07 23:06:41.050 100 tmpwhitelist=1000:"37cbe39 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a196:"b1b7fc0 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a185:"ec8007d android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a135:"793c7a8 android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=2000:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a98:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a103:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a106:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a109:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a112:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a130:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a131:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a132:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a133:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a136:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a137:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a139:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a141:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a142:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a143:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a144:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a146:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a147:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a149:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a153:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a154:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a161:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a186:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a191:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a192:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a193:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a209:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a210:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a213:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a216:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a218:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=1001:"330a16 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a140:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a170:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 tmpwhitelist=u0a217:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:41.050 100 -plugged +cellular_high_tx_power tmpwhitelist=u0a145:"ab27d17 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:41.154 100
+  11-07 23:06:41.154 100
+  11-07 23:06:41.154 100
+  11-07 23:06:41.154 TIME: 2026-11-07-23-06-41
+  11-07 23:06:41.154 100
+  11-07 23:06:41.156 100
+  11-07 23:06:41.157 100
+                 Details: cpu=0u+0s
+                          /proc/stat=0 usr, 0 sys, 0 io, 0 irq, 0 sirq, 0 idle, SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=6000 count=392 last entry=28000 state_1 name=Active time=6000 count=392 last entry=28000 subsystem_1 name=Display state_0 name=Off time=6000 count=392 last entry=28000 state_1 name=On time=6000 count=392 last entry=28000
+  11-07 23:06:41.157 100 -cellular_high_tx_power stats=0:"reset"
+  11-07 23:06:41.166 100 +cellular_high_tx_power
+  11-07 23:06:41.561 100
+  11-07 23:06:41.607 100
+  11-07 23:06:41.607 100
+  11-07 23:06:41.607 100
+  11-07 23:06:41.607 100
+  11-07 23:06:41.608 100
+  11-07 23:06:41.615 100 stats=0:"dump"
+  11-07 23:06:41.642 100
+  11-07 23:06:41.642 100
+  11-07 23:06:41.700 100
+  11-07 23:06:41.700 100
+  11-07 23:06:41.700 100
+  11-07 23:06:41.700 100
+  11-07 23:06:41.701 100 stats=0:"dump"
+  11-07 23:06:41.703 100 -cellular_high_tx_power display_state_changed=-1:"display=0 state=OFF reason=DEFAULT_POLICY"
+  11-07 23:06:41.703 100 -screen +cellular_high_tx_power
+  11-07 23:06:41.713 100 -state=1000:"sensor:0x0"
+  11-07 23:06:41.737 100 -cellular_high_tx_power +job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:41.743 100 -ble_scan +cellular_high_tx_power -job=u0a153:"@androidx.work.systemjobscheduler@com.google.android.inputmethod.latin/androidx.work.impl.background.systemjob.SystemJobService"
+  11-07 23:06:41.779 100
+  11-07 23:06:41.834 100
+  11-07 23:06:41.834 100
+  11-07 23:06:41.834 100
+  11-07 23:06:41.834 100
+  11-07 23:06:41.834 100 stats=0:"dump"
+  11-07 23:06:41.850 100
+  11-07 23:06:41.850 100
+  11-07 23:06:41.890 100
+  11-07 23:06:41.890 100
+  11-07 23:06:41.890 100
+  11-07 23:06:41.890 100
+  11-07 23:06:41.890 100 stats=0:"dump"
+  11-07 23:06:41.986 100 -cellular_high_tx_power -tmpwhitelist=1001:"330a16 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:42.130 100 -tmpwhitelist=u0a185:"ec8007d android.bluetooth.adapter.action.STATE_CHANGED/u-1"
+  11-07 23:06:42.130 100 -job=u0a161:"com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:42.130 100 -wake_lock=u0a161:"*job*r/com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService"
+  11-07 23:06:42.207 100 +wake_lock=1000:"deviceidle_going_idle"
+  11-07 23:06:42.211 100 -wake_lock=1000:"deviceidle_going_idle" device_idle=light +cellular_high_tx_power
+  11-07 23:06:42.216 100 +wake_lock=1000:"deviceidle_maint" -cellular_high_tx_power
+  11-07 23:06:42.216 100 device_idle=off +cellular_high_tx_power
+  11-07 23:06:42.227 100 device_idle=light
+  11-07 23:06:42.233 100 +sensor device_idle=off +state=1000:"sensor:0x0"
+  11-07 23:06:42.284 100 -cellular_high_tx_power -tmpwhitelist=u0a140:"5b82d05 android.intent.action.LOCKED_BOOT_COMPLETED/u0"
+  11-07 23:06:42.287 100 -sensor device_idle=full +cellular_high_tx_power -state=1000:"sensor:0x0"
+  11-07 23:06:42.290 100 -cellular_high_tx_power -tmpwhitelist=u0a153:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:42.307 100 device_idle=off +cellular_high_tx_power
+  11-07 23:06:42.326 100 device_idle=full stats=0:"battery-state"
+  11-07 23:06:42.544 100 plug=ac +plugged -cellular_high_tx_power
+                 Details: cpu=0u+0s
+                          /proc/stat=0 usr, 0 sys, 0 io, 0 irq, 0 sirq, 0 idle, SubsystemPowerState SubsystemPowerState subsystem_0 name=CPU state_0 name=Idle time=9000 count=588 last entry=42000 state_1 name=Active time=9000 count=588 last entry=42000 subsystem_1 name=Display state_0 name=Off time=9000 count=588 last entry=42000 state_1 name=On time=9000 count=588 last entry=42000
+  11-07 23:06:42.552 100 active=1000:"charging"
+  11-07 23:06:42.552 100 device_idle=off +charging +cellular_high_tx_power screenwake=1000:"android.policy:KEY"
+  11-07 23:06:42.560 100 -cellular_high_tx_power display_state_changed=-1:"display=0 state=ON reason=KEY"
+  11-07 23:06:42.560 100 +screen brightness=dark
+  11-07 23:06:42.562 100 brightness=medium +cellular_high_tx_power
+  11-07 23:06:42.564 100 -tmpwhitelist=u0a145:"ab27d17 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0"
+  11-07 23:06:42.565 100 +sensor -cellular_high_tx_power +state=1000:"sensor:0x0"
+  11-07 23:06:42.600 100 conn=1:"CONNECTED"
+  11-07 23:06:42.677 100 +ble_scan +cellular_high_tx_power
+  11-07 23:06:42.739 100
+  11-07 23:06:42.739 100
+  11-07 23:06:42.739 100
+  11-07 23:06:42.739 100
+  11-07 23:06:42.739 100
+  11-07 23:06:42.711 100 -tmpwhitelist=u0a209:"70d48c0 android.intent.action.BOOT_COMPLETED/u0"
+  11-07 23:06:42.740 100
+  11-07 23:06:42.784 100
+  11-07 23:06:42.784 100
+  11-07 23:06:42.784 100
+  11-07 23:06:42.784 100
+  11-07 23:06:42.784 100
+  11-07 23:06:42.729 100 +state=10145:"sensor:0x5f6c696e"
+  11-07 23:06:42.730 100 -cellular_high_tx_power +state=10145:"sensor:0x5f726f76"
+  11-07 23:06:42.784 100 stats=0:"dump"
+  11-07 23:06:42.790 100 stats=0:"dump"
+
+Per process state tracking available: true
+Total cpu time reads: 0
+Batching Duration (min): 0
+All UID cpu time reads since the later of device start or stats reset: 32
+UIDs removed since the later of device start or stats reset: 0
+Currently mapped isolated uids:
+  1037->1000 (ref count = 1)
+
+BatteryStats constants:
+    track_cpu_active_cluster_time=true
+    kernel_uid_readers_throttle_time=1000
+    external_stats_collection_rate_limit_ms=600000
+    battery_level_collection_delay_ms=300000
+    procstate_change_collection_delay_ms=60000
+    max_history_size=4194304
+    max_history_buffer_kb=128
+    battery_charged_delay_ms=900000
+    battery_charging_enforce_level=90
+    per_uid_modem_power_model=modem_activity_info_rx_tx
+    phone_on_external_stats_collection=true
+    reset_while_plugged_in_minimum_duration_hours=47
+
+CPU power brackets; cluster/freq in MHz(avg current in mA):
+    0: 0/0(0.0), 0/0(0.0), 1/0(0.0), 1/0(0.0), 2/0(0.0), 2/0(0.0), 3/0(0.0), 3/0(0.0)
+
+On-battery energy consumer stats (microcoulombs) 
+    global usage:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0, CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 3000
+    uid 1000:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 1001:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 1002:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 1068:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 1073:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 2000:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10094:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10095:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10098:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10103:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10106:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10109:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10112:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10128:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10130:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10131:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10132:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10133:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10135:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10136:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10137:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10139:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10140:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10141:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10142:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10143:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10144:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10145:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10146:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10147:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10149:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10153:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10154:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10160:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10161:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10163:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10167:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10170:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10183:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10185:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10186:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10191:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10192:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10193:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10196:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10201:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10207:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10209:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10210:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10212:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10213:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10216:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10217:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+    uid 10218:
+           SCREEN_ON : -1 (unsupported), SCREEN_DOZE : -1 (unsupported), SCREEN_OTHER : -1 (unsupported), CPU : -1 (unsupported), WIFI : -1 (unsupported), BLUETOOTH : -1 (unsupported), GNSS : -1 (unsupported), MOBILE_RADIO : 0 [unspecified: 0 fg: 0 bg: 0 fgs: 0 cached: 0], CAMERA : -1 (unsupported), PHONE : 0, CUSTOM_0(GPU) : 0
+
+CPU wakeup stats:
+  Config:
+    wakeup_stats_retention_ms=+3d0h0m0s0ms
+    wakeup_matching_window_ms=+1s0ms
+    waking_activity_retention_ms=+5m0s0ms
+  
+  Irq device map:
+    Loaded from xml resource: 0x117000d
+    Map:
+      rtc0: [Alarm]
+  
+  Recent waking activity:
+    Subsystem Alarm:
+      -1s983ms: u0a145 [BFGS], 
+      -10s271ms: u0a98 [CEM ], 
+      -10s454ms: 1073 [PER ], 
+      -10s716ms: u0a185 [PERU], 
+      -12s782ms: 1000 [PER ], 
+      -13s27ms: 1000 [PER ], 
+      -13s317ms: 1000 [PER ], 
+      -13s469ms: 1000 [PER ], 
+  
+  Current proc-state map (55):
+    1000:PER , 1001:PER , 1002:PER , 1037:NONE, 1068:PER , 1073:PER , 2000:CEM , u0a94:CEM , u0a95:LAST, u0a98:CEM , u0a103:CEM , u0a106:LAST, u0a109:CEM , u0a112:CEM , u0a128:CEM , u0a130:CEM , u0a131:CEM , u0a132:BFGS, u0a133:CEM , u0a135:CEM , u0a136:CEM , u0a137:SVC , u0a139:CEM , u0a140:BFGS, u0a141:CEM , u0a142:BFGS, u0a143:CEM , u0a144:BFGS, u0a145:BFGS, u0a146:BFGS, u0a147:BFGS, u0a149:CEM , u0a153:BFGS, u0a154:CEM , u0a160:CEM , u0a161:BFGS, u0a163:CEM , u0a167:CEM , u0a170:LAST, u0a183:TOP , u0a185:PERU, u0a186:LAST, u0a191:CEM , u0a192:CEM , u0a193:CEM , u0a196:IMPF, u0a201:BFGS, u0a207:BFGS, u0a209:CEM , u0a210:CEM , u0a212:CEM , u0a213:PER , u0a216:FGS , u0a217:CEM , u0a218:FGS 
+  
+  Wakeup events:
+  Attribution stats:
+    Total: 0
+

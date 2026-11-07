@@ -1,0 +1,14 @@
+Now forced in to deep idle mode
+deep=IDLE
+light=OVERRIDE
+force=true
+screen=false
+charging=false
+Light state: OVERRIDE, deep state: IDLE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false
+deep=IDLE
+light=OVERRIDE
+force=false
+screen=false
+charging=false

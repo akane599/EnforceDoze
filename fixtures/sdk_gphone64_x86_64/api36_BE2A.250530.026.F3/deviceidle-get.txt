@@ -1,0 +1,5 @@
+deep=ACTIVE
+light=ACTIVE
+force=false
+screen=true
+charging=true

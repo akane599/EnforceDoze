@@ -1,0 +1,174 @@
+Captured at: 23:06:42.474
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: android.sensor.accelerometer(1) | perm: n/a | flags: 0x00000050
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, has-additional-info, 
+0x00000001) Goldfish 3-axis Gyroscope | The Android Open Source Project | ver: 1 | type: android.sensor.gyroscope(4) | perm: n/a | flags: 0x00000050
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, has-additional-info, 
+0x00000002) Goldfish 3-axis Magnetic field sensor | The Android Open Source Project | ver: 1 | type: android.sensor.magnetic_field(2) | perm: n/a | flags: 0x00000010
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, 
+0x00000003) Goldfish Orientation sensor | The Android Open Source Project | ver: 1 | type: android.sensor.orientation(3) | perm: n/a | flags: 0x00000010
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, 
+0x00000004) Goldfish Ambient Temperature sensor | The Android Open Source Project | ver: 1 | type: android.sensor.ambient_temperature(13) | perm: n/a | flags: 0x00000012
+	on-change | maxDelay=0us | minDelay=0us | no batching | non-wakeUp | data-injection, 
+0x00000005) Goldfish Proximity sensor | The Android Open Source Project | ver: 1 | type: android.sensor.proximity(8) | perm: n/a | flags: 0x00000013
+	on-change | maxDelay=0us | minDelay=0us | no batching | wakeUp | data-injection, 
+0x00000006) Goldfish Light sensor     | The Android Open Source Project | ver: 1 | type: android.sensor.light(5) | perm: n/a | flags: 0x00000012
+	on-change | maxDelay=0us | minDelay=0us | no batching | non-wakeUp | data-injection, 
+0x00000007) Goldfish Pressure sensor  | The Android Open Source Project | ver: 1 | type: android.sensor.pressure(6) | perm: n/a | flags: 0x00000010
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, 
+0x00000008) Goldfish Humidity sensor  | The Android Open Source Project | ver: 1 | type: android.sensor.relative_humidity(12) | perm: n/a | flags: 0x00000012
+	on-change | maxDelay=0us | minDelay=0us | no batching | non-wakeUp | data-injection, 
+0x00000009) Goldfish 3-axis Magnetic field sensor (uncalibrated) | The Android Open Source Project | ver: 1 | type: android.sensor.magnetic_field_uncalibrated(14) | perm: n/a | flags: 0x00000010
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, 
+0x0000000a) Goldfish 3-axis Gyroscope (uncalibrated) | The Android Open Source Project | ver: 1 | type: android.sensor.gyroscope_uncalibrated(16) | perm: n/a | flags: 0x00000010
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, 
+0x00000011) Goldfish 3-axis Accelerometer Uncalibrated | The Android Open Source Project | ver: 1 | type: android.sensor.accelerometer_uncalibrated(35) | perm: n/a | flags: 0x00000050
+	continuous | minRate=2.00Hz | maxRate=100.00Hz | no batching | non-wakeUp | data-injection, has-additional-info, 
+0x5f636779) Corrected Gyroscope Sensor | AOSP            | ver: 1 | type: android.sensor.gyroscope(4) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f676172) Game Rotation Vector Sensor | AOSP            | ver: 3 | type: android.sensor.game_rotation_vector(15) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f676273) Gyroscope Bias (debug)    | AOSP            | ver: 1 | type: android.sensor.accelerometer(1) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f67656f) GeoMag Rotation Vector Sensor | AOSP            | ver: 3 | type: android.sensor.geomagnetic_rotation_vector(20) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f677276) Gravity Sensor            | AOSP            | ver: 3 | type: android.sensor.gravity(9) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f6c696e) Linear Acceleration Sensor | AOSP            | ver: 3 | type: android.sensor.linear_acceleration(10) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f726f76) Rotation Vector Sensor    | AOSP            | ver: 3 | type: android.sensor.rotation_vector(11) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+0x5f797072) Orientation Sensor        | AOSP            | ver: 1 | type: android.sensor.orientation(3) | perm: n/a | flags: 0x00000000
+	continuous | maxDelay=0us | maxRate=100.00Hz | no batching | non-wakeUp | 
+Fusion States:
+9-axis fusion disabled (0 clients), gyro-rate= 200.00Hz, q=< 0.677231, 2.95707e-06, 5.388e-05, 0.73577 > (1), b=< 1.20158e-12, 1.28959e-12, 1.00357e-12 >
+game fusion(no mag) disabled (0 clients), gyro-rate= 200.00Hz, q=< 0.486815, -0.470801, -0.51146, 0.528929 > (1), b=< 0, 0, 0 >
+geomag fusion (no gyro) disabled (0 clients), gyro-rate= 200.00Hz, q=< 0, 0, 0, 0 > (0), b=< 0, 0, 0 >
+Recent Sensor events:
+Rotation Vector Sensor: last 10 events
+	 1 (ts=29.562927650, wall=23:06:34.239) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 2 (ts=29.869595650, wall=23:06:34.545) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 3 (ts=29.889595650, wall=23:06:34.565) 0.68, -0.00, 0.00, 0.74, 0.00, 
+	 4 (ts=29.909595650, wall=23:06:34.585) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 5 (ts=29.929595650, wall=23:06:34.605) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 6 (ts=29.949595650, wall=23:06:34.625) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 7 (ts=29.969595650, wall=23:06:34.645) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 8 (ts=29.989595650, wall=23:06:34.665) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	 9 (ts=30.009595650, wall=23:06:34.685) 0.68, 0.00, 0.00, 0.74, 0.00, 
+	10 (ts=30.029595650, wall=23:06:34.705) 0.68, 0.00, 0.00, 0.74, 0.00, 
+Goldfish 3-axis Gyroscope (uncalibrated): last 10 events
+	 1 (ts=29.989256484, wall=23:06:34.665) 0.00, 0.00, 0.00, -0.00, 0.00, 0.00, 
+	 2 (ts=29.994256484, wall=23:06:34.670) 0.00, 0.00, 0.00, 0.00, 0.00, -0.00, 
+	 3 (ts=29.999256484, wall=23:06:34.675) 0.00, 0.00, 0.00, 0.00, 0.00, -0.00, 
+	 4 (ts=30.004256484, wall=23:06:34.680) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	 5 (ts=30.009256484, wall=23:06:34.685) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	 6 (ts=30.014256484, wall=23:06:34.690) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	 7 (ts=30.019256484, wall=23:06:34.695) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	 8 (ts=30.024256484, wall=23:06:34.700) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	 9 (ts=30.029256484, wall=23:06:34.705) 0.00, 0.00, 0.00, 0.00, -0.00, 0.00, 
+	10 (ts=30.034256484, wall=23:06:34.711) 0.00, 0.00, 0.00, -0.00, -0.00, 0.00, 
+Linear Acceleration Sensor: last 10 events
+	 1 (ts=29.562927650, wall=23:06:34.239) -0.00, 0.00, 0.00, 
+	 2 (ts=29.869595650, wall=23:06:34.545) 0.00, 0.00, 0.00, 
+	 3 (ts=29.889595650, wall=23:06:34.565) -0.00, 0.00, 0.00, 
+	 4 (ts=29.909595650, wall=23:06:34.585) -0.00, 0.00, 0.00, 
+	 5 (ts=29.929595650, wall=23:06:34.605) -0.00, 0.00, 0.00, 
+	 6 (ts=29.949595650, wall=23:06:34.625) -0.00, 0.00, 0.00, 
+	 7 (ts=29.969595650, wall=23:06:34.645) -0.00, 0.00, 0.00, 
+	 8 (ts=29.989595650, wall=23:06:34.665) -0.00, 0.00, 0.00, 
+	 9 (ts=30.009595650, wall=23:06:34.685) -0.00, 0.00, 0.00, 
+	10 (ts=30.029595650, wall=23:06:34.705) -0.00, 0.00, 0.00, 
+Goldfish 3-axis Magnetic field sensor: last 10 events
+	 1 (ts=29.944591524, wall=23:06:34.620) 0.00, 9.88, -47.75, 
+	 2 (ts=29.954591524, wall=23:06:34.630) 0.00, 9.88, -47.75, 
+	 3 (ts=29.964591524, wall=23:06:34.640) 0.00, 9.88, -47.75, 
+	 4 (ts=29.974591524, wall=23:06:34.650) 0.00, 9.88, -47.75, 
+	 5 (ts=29.984591524, wall=23:06:34.660) 0.00, 9.88, -47.75, 
+	 6 (ts=29.994591524, wall=23:06:34.670) 0.00, 9.88, -47.75, 
+	 7 (ts=30.004591524, wall=23:06:34.680) 0.00, 9.88, -47.75, 
+	 8 (ts=30.014591524, wall=23:06:34.690) 0.00, 9.88, -47.75, 
+	 9 (ts=30.024591524, wall=23:06:34.700) 0.00, 9.88, -47.75, 
+	10 (ts=30.034591524, wall=23:06:34.711) 0.00, 9.88, -47.75, 
+Goldfish 3-axis Accelerometer: last 50 events
+	 1 (ts=33.716280650, wall=23:06:38.392) 0.00, 9.78, 0.81, 
+	 2 (ts=33.782947650, wall=23:06:38.459) 0.00, 9.78, 0.81, 
+	 3 (ts=33.849614650, wall=23:06:38.525) 0.00, 9.78, 0.81, 
+	 4 (ts=33.916281650, wall=23:06:38.592) 0.00, 9.78, 0.81, 
+	 5 (ts=33.982948650, wall=23:06:38.659) 0.00, 9.78, 0.81, 
+	 6 (ts=34.049615650, wall=23:06:38.725) 0.00, 9.78, 0.81, 
+	 7 (ts=34.116282650, wall=23:06:38.792) 0.00, 9.78, 0.81, 
+	 8 (ts=34.182949650, wall=23:06:38.859) 0.00, 9.78, 0.81, 
+	 9 (ts=34.249616650, wall=23:06:38.925) 0.00, 9.78, 0.81, 
+	10 (ts=34.316283650, wall=23:06:38.992) 0.00, 9.78, 0.81, 
+	11 (ts=34.382950650, wall=23:06:39.059) 0.00, 9.78, 0.81, 
+	12 (ts=34.449617650, wall=23:06:39.125) 0.00, 9.78, 0.81, 
+	13 (ts=34.516284650, wall=23:06:39.192) 0.00, 9.78, 0.81, 
+	14 (ts=34.582951650, wall=23:06:39.259) 0.00, 9.78, 0.81, 
+	15 (ts=34.649618650, wall=23:06:39.328) 0.00, 9.78, 0.81, 
+	16 (ts=34.716285650, wall=23:06:39.395) 0.00, 9.78, 0.81, 
+	17 (ts=34.782952650, wall=23:06:39.461) 0.00, 9.78, 0.81, 
+	18 (ts=34.849619650, wall=23:06:39.526) 0.00, 9.78, 0.81, 
+	19 (ts=34.916286650, wall=23:06:39.595) 0.00, 9.78, 0.81, 
+	20 (ts=34.982953650, wall=23:06:39.659) 0.00, 9.78, 0.81, 
+	21 (ts=35.049620650, wall=23:06:39.729) 0.00, 9.78, 0.81, 
+	22 (ts=35.116287650, wall=23:06:39.792) 0.00, 9.78, 0.81, 
+	23 (ts=35.182954650, wall=23:06:39.859) 0.00, 9.78, 0.81, 
+	24 (ts=35.249621650, wall=23:06:39.926) 0.00, 9.78, 0.81, 
+	25 (ts=35.316288650, wall=23:06:39.992) 0.00, 9.78, 0.81, 
+	26 (ts=35.382955650, wall=23:06:40.059) 0.00, 9.78, 0.81, 
+	27 (ts=35.449622650, wall=23:06:40.125) 0.00, 9.78, 0.81, 
+	28 (ts=35.516289650, wall=23:06:40.192) 0.00, 9.78, 0.81, 
+	29 (ts=35.582956650, wall=23:06:40.259) 0.00, 9.78, 0.81, 
+	30 (ts=35.649623650, wall=23:06:40.325) 0.00, 9.78, 0.81, 
+	31 (ts=35.716290650, wall=23:06:40.392) 0.00, 9.78, 0.81, 
+	32 (ts=35.782957650, wall=23:06:40.459) 0.00, 9.78, 0.81, 
+	33 (ts=35.849624650, wall=23:06:40.525) 0.00, 9.78, 0.81, 
+	34 (ts=35.916291650, wall=23:06:40.592) 0.00, 9.78, 0.81, 
+	35 (ts=35.982958650, wall=23:06:40.659) 0.00, 9.78, 0.81, 
+	36 (ts=36.049625650, wall=23:06:40.725) 0.00, 9.78, 0.81, 
+	37 (ts=36.116292650, wall=23:06:40.792) 0.00, 9.78, 0.81, 
+	38 (ts=36.182959650, wall=23:06:40.859) 0.00, 9.78, 0.81, 
+	39 (ts=36.249626650, wall=23:06:40.925) 0.00, 9.78, 0.81, 
+	40 (ts=36.316293650, wall=23:06:40.992) 0.00, 9.78, 0.81, 
+	41 (ts=36.382960650, wall=23:06:41.059) 0.00, 9.78, 0.81, 
+	42 (ts=36.449627650, wall=23:06:41.125) 0.00, 9.78, 0.81, 
+	43 (ts=36.516294650, wall=23:06:41.192) 0.00, 9.78, 0.81, 
+	44 (ts=36.582961650, wall=23:06:41.259) 0.00, 9.78, 0.81, 
+	45 (ts=36.649628650, wall=23:06:41.329) 0.00, 9.78, 0.81, 
+	46 (ts=36.716295650, wall=23:06:41.392) 0.00, 9.78, 0.81, 
+	47 (ts=36.782962650, wall=23:06:41.459) 0.00, 9.78, 0.81, 
+	48 (ts=36.849629650, wall=23:06:41.527) 0.00, 9.78, 0.81, 
+	49 (ts=36.916296650, wall=23:06:41.592) 0.00, 9.78, 0.81, 
+	50 (ts=36.982963650, wall=23:06:41.659) 0.00, 9.78, 0.81, 
+Active sensors:
+Socket Buffer size = 39 events
+WakeLock Status: not held 
+Mode : NORMAL
+Sensor Privacy: disabled
+0 open event connections
+0 open direct connections
+Previous Registrations:
+23:06:42 - 0x00000000 pid=  700 uid= 1000 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.AnyMotionDetector$1)
+23:06:42 + 0x00000000 pid=  700 uid= 1000 samplingPeriod=   40000us batchingPeriod=       0us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.AnyMotionDetector$1)
+23:06:41 - 0x00000000 pid=  700 uid= 1000 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.power.FaceDownDetector)
+23:06:41 - 0x00000000 pid=  700 uid= 1000 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.wm.WindowOrientationListener$AccelSensorJudge)
+23:06:34 - 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 - 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 + 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 + 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 - 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 - 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 + 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:34 + 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 - 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 - 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 - 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 - 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   N/A  us batchingPeriod=   N/A  us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 + 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:29 + 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:28 + 0x5f726f76 pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Rotation Vector Sensor     , com.google.ccc.abuse.droidguard.events.b)
+23:06:28 + 0x5f6c696e pid= 2949 uid=10145 samplingPeriod=   20000us batchingPeriod=       0us result=OK (sensor, package): (Linear Acceleration Sensor , com.google.ccc.abuse.droidguard.events.b)
+23:06:19 + 0x00000000 pid=  700 uid= 1000 samplingPeriod=   66667us batchingPeriod=  100000us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.wm.WindowOrientationListener$AccelSensorJudge)
+23:06:13 + 0x00000000 pid=  700 uid= 1000 samplingPeriod=  200000us batchingPeriod= 2000000us result=OK (sensor, package): (Goldfish 3-axis Accelerometer, com.android.server.power.FaceDownDetector)

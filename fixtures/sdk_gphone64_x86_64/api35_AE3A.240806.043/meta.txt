@@ -1,0 +1,10 @@
+captured_at=2026-11-07T20:07:32Z
+mode=walk
+ro.build.fingerprint=google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.043/12960925:userdebug/dev-keys
+ro.build.version.sdk=35
+ro.build.version.release=15
+ro.build.id=AE3A.240806.043
+ro.build.version.incremental=12960925
+ro.product.model=sdk_gphone64_x86_64
+ro.product.device=emu64xa
+ro.kernel.qemu=1

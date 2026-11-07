@@ -1,0 +1,185 @@
+  Settings:
+    flex_time_short=+1m0s0ms
+    light_after_inactive_to=+1m0s0ms
+    light_idle_to=+5m0s0ms
+    light_idle_to_initial_flex=+1m0s0ms
+    light_max_idle_to_flex=+15m0s0ms
+    light_idle_factor=2.0
+    light_idle_increase_linearly=true
+    light_idle_linear_increase_factor_ms=300000
+    light_idle_flex_linear_increase_factor_ms=60000
+    light_max_idle_to=+30m0s0ms
+    light_idle_maintenance_min_budget=+1m0s0ms
+    light_idle_maintenance_max_budget=+5m0s0ms
+    min_light_maintenance_time=+5s0ms
+    min_deep_maintenance_time=+30s0ms
+    inactive_to=+1m0s0ms
+    sensing_to=+30s0ms
+    locating_to=+15s0ms
+    location_accuracy=20.0m
+    motion_inactive_to=+10m0s0ms
+    motion_inactive_to_flex=+1m0s0ms
+    idle_after_inactive_to=+1m0s0ms
+    idle_pending_to=+5m0s0ms
+    max_idle_pending_to=+10m0s0ms
+    idle_pending_factor=2.0
+    quick_doze_delay_to=+1m0s0ms
+    idle_to=+15m0s0ms
+    max_idle_to=+6h0m0s0ms
+    idle_factor=2.0
+    min_time_to_alarm=+1h0m0s0ms
+    max_temp_app_allowlist_duration_ms=+5m0s0ms
+    mms_temp_app_allowlist_duration_ms=+1m0s0ms
+    sms_temp_app_allowlist_duration_ms=+20s0ms
+    notification_allowlist_duration_ms=+30s0ms
+    wait_for_unlock=true
+    use_window_alarms=true
+    use_mode_manager=false
+  Idling history:
+     light-idle: -124ms
+    light-maint: -116ms
+     light-idle: -108ms
+    light-maint: -100ms
+      deep-idle: -29ms
+     deep-maint: -8ms
+  Whitelist (except idle) system apps:
+    com.android.providers.calendar
+    com.android.providers.downloads
+    com.google.android.apps.safetyhub
+    com.android.vending
+    com.google.android.devicelockcontroller
+    com.android.cellbroadcastreceiver
+    com.google.android.gms
+    com.android.proxyhandler
+    com.android.imsserviceentitlement
+    com.android.shell
+    com.android.emergency
+    com.google.android.cellbroadcastreceiver
+    com.android.providers.contacts
+  Whitelist system apps:
+    com.android.providers.calendar
+    com.android.providers.downloads
+    com.google.android.apps.safetyhub
+    com.google.android.devicelockcontroller
+    com.android.cellbroadcastreceiver
+    com.google.android.gms
+    com.android.shell
+    com.android.emergency
+    com.google.android.cellbroadcastreceiver
+  Whitelist (except idle) all app ids:
+    2000
+    10091
+    10092
+    10094
+    10100
+    10108
+    10129
+    10138
+    10143
+    10153
+    10183
+    10188
+    10206
+  Whitelist all app ids:
+    2000
+    10094
+    10100
+    10108
+    10129
+    10143
+    10183
+    10188
+    10206
+  Temp whitelist schedule:
+    UID=1000: +2s403ms - 412f007 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0
+    UID=1001: +1s486ms - b16c0a0 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0
+    UID=2000: +3s26ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10094: +1s451ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10100: +2s904ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10101: +3s725ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10102: +2s741ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10129: +3s458ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10131: +2s699ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10132: +3s863ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10135: +3s57ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10136: +3s440ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10137: +3s353ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10138: +2s46ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10139: +3s121ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10140: +18s838ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10142: +19s396ms - e0d8dac android.intent.action.LOCKED_BOOT_COMPLETED/u0
+    UID=10143: +8s655ms - 31a34e6 android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0
+    UID=10144: +3s96ms - MediaSessionRecord:android.support.v4.media.session.command.GET_EXTRA_BINDER
+    UID=10148: +2s699ms - e0d8dac android.intent.action.LOCKED_BOOT_COMPLETED/u0
+    UID=10154: +2s238ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10157: +1s663ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10165: +2s829ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10168: +2s699ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10176: +2s586ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10188: +1s748ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10189: +3s598ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10192: +2s809ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10198: +3s851ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10200: +2s867ms - ec7a40b android.safetycenter.action.REFRESH_SAFETY_SOURCES/u0
+    UID=10204: +3s672ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10205: +3s488ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10209: +2s963ms - a5ba081 android.intent.action.BOOT_COMPLETED/u0
+    UID=10210: +2s874ms - e0d8dac android.intent.action.LOCKED_BOOT_COMPLETED/u0
+  Temp whitelist app ids:
+    1000
+    1001
+    2000
+    10094
+    10100
+    10101
+    10102
+    10129
+    10131
+    10132
+    10135
+    10136
+    10137
+    10138
+    10139
+    10140
+    10142
+    10143
+    10144
+    10148
+    10154
+    10157
+    10165
+    10168
+    10176
+    10188
+    10189
+    10192
+    10198
+    10200
+    10204
+    10205
+    10209
+    10210
+  mLightEnabled=true  mDeepEnabled=true
+  mForceIdle=false
+  mUseMotionSensor=true mMotionSensor=null
+  mScreenOn=false
+  mScreenLocked=false
+  mNetworkConnected=true
+  mCharging=false
+  activeEmergencyCall=false
+  mMotionActive=false
+  mNotMoving=false
+  mMotionListener.activatedTimeElapsed=0
+  mLastMotionEventElapsed=0
+  0 stationary listeners registered
+  mLocating=false mHasGps=true mHasFused=true mLocated=false
+  mState=IDLE_MAINTENANCE mLightState=OVERRIDE
+  mInactiveTimeout=+1m0s0ms
+  mActiveIdleOpCount=1
+  mNextAlarmTime=+4m59s992ms
+  mNextIdlePendingDelay=+10m0s0ms
+  mNextIdleDelay=+30m0s0ms
+  mNextLightIdleDelay=+15m0s0ms (flex=+3m0s0ms)
+  mCurLightIdleBudget=+1m59s992ms
+  mMaintenanceStartTime=-8ms

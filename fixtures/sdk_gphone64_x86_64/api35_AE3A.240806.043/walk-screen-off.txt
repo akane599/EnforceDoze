@@ -1,0 +1,5 @@
+deep=INACTIVE
+light=INACTIVE
+force=false
+screen=false
+charging=false

@@ -1,0 +1,154 @@
+--------- beginning of events
+         1794081724.038   652  2493 I sysui_multi_action: [757,1417,758,5,1418,100,1419,100,1420,20134,1421,1]
+         1794081724.038   652  2493 I battery_status: [2,2,1,0,Li-ion]
+         1794081724.040   652   652 I battery_saving_stats: [0,1,0,20096,0,0,234350,0,0]
+         1794081724.042   652   750 I am_unfreeze: [1130,com.android.settings,3]
+         1794081724.043   652   695 I am_cpu  : [1,0,init,86379,0,10]
+         1794081724.043   652   695 I am_cpu  : [12,0,kworker/u16:0-events_unbound,35797,0,10]
+         1794081724.043   652   695 I am_cpu  : [20,0,rcuop/0,86379,0,10]
+         1794081724.043   652   695 I am_cpu  : [64,0,kworker/1:1-virtio_vsock,21081,0,10]
+         1794081724.043   652   695 I am_cpu  : [66,0,kworker/3:1-events,35797,0,10]
+         1794081724.043   652   695 I am_cpu  : [79,0,khvcd,21081,0,10]
+         1794081724.043   652   695 I am_cpu  : [296,1036,logd,21081,0,20]
+         1794081724.043   652   695 I am_cpu  : [298,1000,servicemanager,21081,0,10]
+         1794081724.043   652   695 I am_cpu  : [322,1000,android.system.,21081,0,40]
+         1794081724.043   652   695 I am_cpu  : [446,1066,statsd,86379,10,10]
+         1794081724.043   652   695 I am_cpu  : [458,1041,audio.service,21081,0,30]
+         1794081724.043   652   695 I am_cpu  : [472,1000,android.hardwar,35797,0,10]
+         1794081724.043   652   695 I am_cpu  : [481,1000,android.hardwar,21081,20,880]
+         1794081724.043   652   695 I am_cpu  : [506,1041,audioserver,21081,10,10]
+         1794081724.043   652   695 I am_cpu  : [512,1000,surfaceflinger,21081,60,220]
+         1794081724.043   652   695 I am_cpu  : [520,2000,adbd,21081,10,110]
+         1794081724.043   652   695 I am_cpu  : [521,1000,android.hardwar,86379,0,10]
+         1794081724.043   652   695 I am_cpu  : [559,1036,logcat,21081,10,40]
+         1794081724.043   652   695 I am_cpu  : [571,1040,mediaextractor,231623,10,0]
+         1794081724.043   652   695 I am_cpu  : [573,1013,mediaserver,21081,30,10]
+         1794081724.043   652   695 I am_cpu  : [578,1046,mediaswcodec,21081,10,10]
+         1794081724.043   652   695 I am_cpu  : [652,1000,system_server,21081,340,360]
+         1794081724.043   652   695 I am_cpu  : [915,10189,ndroid.systemui,21081,260,1110]
+         1794081724.043   652   695 I am_cpu  : [993,1073,rkstack.process,21081,20,0]
+         1794081724.043   652   695 I am_cpu  : [996,1001,m.android.phone,21081,20,0]
+         1794081724.043   652   695 I am_cpu  : [1015,10198,s.nexuslauncher,21081,10,10]
+         1794081724.043   652   695 I am_cpu  : [1130,1000,ndroid.settings,21081,20,0]
+         1794081724.043   652   695 I am_cpu  : [1178,10212,.gms.persistent,21081,30,10]
+         1794081724.043   652   695 I am_cpu  : [1575,10212,gle.android.gms,21081,0,10]
+         1794081724.043   652   695 I am_cpu  : [1652,10161,ogle.android.as,86378,10,0]
+         1794081724.043   652   695 I am_cpu  : [1723,10160,.apps.wellbeing,21081,10,0]
+         1794081724.043   652   695 I am_cpu  : [2622,0,kworker/0:2-events,226504,0,10]
+         1794081724.043   652   695 I am_cpu  : [3051,10235,kane599.coulomb,21080,200,20]
+         1794081724.043   652   695 I am_cpu  : [3465,10239,las.enforcedoze,21080,30,140]
+         1794081724.045   652   695 I commit_sys_config_file: [batterystats,2]
+         1794081724.046   652   695 I commit_sys_config_file: [batterystats,1]
+         1794081724.053   652   971 I power_sleep_requested: 0
+         1794081724.061   915  1108 I jank_cuj_events_begin_request: [160,1794081724061285000,244450190472,244450190532,DEFAULT]
+         1794081724.125   652   707 I sysui_multi_action: [757,1696,758,6,759,0]
+         1794081724.545   652   707 I wm_pause_activity: [0,236850507,com.akylas.enforcedoze/.MainActivity,userLeaving=false,sleep]
+         1794081724.546  3465  3465 I wm_on_top_resumed_lost_called: [236850507,com.akylas.enforcedoze.MainActivity,topStateChangedWhenResumed]
+         1794081724.546  3465  3465 I wm_on_paused_called: [236850507,com.akylas.enforcedoze.MainActivity,performPause,0]
+         1794081724.546   652   977 I wm_add_to_stopping: [0,236850507,com.akylas.enforcedoze/.MainActivity,completePauseLocked]
+         1794081724.548   652   652 I screen_toggled: 0
+         1794081724.548   652   652 I sysui_multi_action: [757,804,799,screen_timeout,801,2147483,802,1]
+         1794081724.548   652   676 I sysui_multi_action: [757,803,799,window_time_0,802,21]
+         1794081724.548   652   679 I wm_stop_activity: [0,236850507,com.akylas.enforcedoze/.MainActivity]
+         1794081724.548   652   680 I input_focus: [Requesting to set focus to null window,reason=UpdateInputWindows]
+         1794081724.548   652   652 I sysui_multi_action: [757,1594,758,4,759,-2147483647,1359,20612]
+         1794081724.548   652   652 I sysui_multi_action: [757,198,758,2,759,2,1359,496,1695,6]
+         1794081724.548   652   652 I power_screen_state: [0,2,0,0,496]
+         1794081724.548   652   652 I power_screen_broadcast_send: 1
+         1794081724.550  3465  3465 I wm_on_stop_called: [236850507,com.akylas.enforcedoze.MainActivity,STOP_ACTIVITY_ITEM,0]
+         1794081724.557   652   652 I battery_saving_stats: [0,1,0,517,0,0,1997,0,0]
+         1794081724.557   652   652 I device_idle: [1,no activity]
+         1794081724.557   652   652 I device_idle_light: [1,no activity]
+         1794081724.566   652   676 I power_screen_broadcast_done: [0,18,1]
+         1794081724.566  3465  3465 I viewroot_draw_event: [VRI[MainActivity]c656588,Not drawing due to not visible. Reason=!mAppVisible && !mForceDecorViewVisibility]
+         1794081724.569   652   761 I input_focus: [Focus leaving 1988c79 com.akylas.enforcedoze/com.akylas.enforcedoze.MainActivity,reason=Waiting for window because NO_WINDOW]
+         1794081724.569  3465  3465 I input_focus: ViewRootImpl focus=false for com.akylas.enforcedoze/com.akylas.enforcedoze.MainActivity
+         1794081724.635   652   967 I device_idle_light_step: 
+         1794081724.635   652   967 I device_idle_light: [4,s:shell]
+         1794081724.635   652   742 I device_idle_on_start: 
+         1794081724.638   652   742 I device_idle_on_phase: net
+         1794081724.639   652   742 I device_idle_on_complete: 
+         1794081724.639   652   652 I battery_saving_stats: [0,0,0,82,0,0,209,0,0]
+         1794081724.647   652   695 I commit_sys_config_file: [batterystats,3]
+         1794081724.647   652  2493 I device_idle_light_step: 
+         1794081724.647   652  2493 I device_idle_light: [6,s:shell]
+         1794081724.647   652   742 I device_idle_off_start: unknown
+         1794081724.648   652   742 I device_idle_off_phase: net
+         1794081724.653   652   695 I commit_sys_config_file: [batterystats,5]
+         1794081724.655   652   742 I device_idle_off_complete: 
+         1794081724.658   652   668 I device_idle_light_step: 
+         1794081724.658   652   668 I device_idle_light: [4,s:shell]
+         1794081724.660   652   652 I battery_saving_stats: [0,0,1,21,0,0,21,0,0]
+         1794081724.660   652   742 I device_idle_on_start: 
+         1794081724.666   652   742 I device_idle_on_phase: net
+         1794081724.666   652   742 I device_idle_on_complete: 
+         1794081724.669   652   652 I battery_saving_stats: [0,0,0,8,0,0,217,0,0]
+         1794081724.675   652   977 I device_idle_light_step: 
+         1794081724.675   652   977 I device_idle_light: [6,s:shell]
+         1794081724.676   652   742 I device_idle_off_start: unknown
+         1794081724.676   652   742 I device_idle_off_phase: net
+         1794081724.676   652   742 I device_idle_off_complete: 
+         1794081724.678   652   652 I battery_saving_stats: [0,0,1,10,0,0,31,0,0]
+         1794081724.695   652   668 I device_idle_step: 
+         1794081724.695   652   668 I device_idle: [2,s:shell]
+         1794081724.704   652   750 I am_unfreeze: [2931,com.google.android.gms.unstable,6]
+         1794081724.712   652  1169 I device_idle_step: 
+         1794081724.712   652  1169 I device_idle: [3,s:shell]
+         1794081724.730   652   967 I device_idle_step: 
+         1794081724.730   652   967 I device_idle: [4,s:shell]
+         1794081724.730   652   967 I device_idle: [5,s:shell]
+         1794081724.730   652   967 I device_idle_light: [7,deep]
+         1794081724.730   652   742 I device_idle_on_start: 
+         1794081724.730   652   742 I device_idle_on_phase: power
+         1794081724.733   652   742 I device_idle_on_phase: net
+         1794081724.734   652   742 I device_idle_on_complete: 
+         1794081724.734   652   652 I battery_saving_stats: [0,0,0,56,0,0,273,0,0]
+         1794081724.747   652   967 I device_idle_step: 
+         1794081724.747   652   967 I device_idle: [6,s:shell]
+         1794081724.748   652   742 I device_idle_off_start: unknown
+         1794081724.748   652   742 I device_idle_off_phase: power
+         1794081724.748   652   742 I device_idle_off_phase: net
+         1794081724.748   652   742 I device_idle_off_complete: 
+         1794081724.749   652   652 I battery_saving_stats: [0,0,2,14,0,0,522,0,0]
+         1794081724.764   652  2493 I device_idle_step: 
+         1794081724.764   652  2493 I device_idle: [5,s:shell]
+         1794081724.764   652   742 I device_idle_on_start: 
+         1794081724.764   652   742 I device_idle_on_phase: power
+         1794081724.766   652   742 I device_idle_on_phase: net
+         1794081724.767   652   652 I battery_saving_stats: [0,0,0,19,0,0,292,0,0]
+         1794081724.767   652   742 I device_idle_on_complete: 
+         1794081724.768   652   695 I commit_sys_config_file: [batterystats,1]
+         1794081724.771   652   695 I commit_sys_config_file: [batterystats,2]
+         1794081724.973   652  1169 I sysui_multi_action: [757,1417,758,4,1418,100,1421,1]
+         1794081724.973   652  1169 I battery_status: [2,2,1,1,Li-ion]
+         1794081724.974   652   652 I battery_saving_stats: [0,0,2,207,0,0,729,0,0]
+         1794081724.975   652   652 I device_idle: [0,charging]
+         1794081724.975   652   652 I device_idle_light: [0,charging]
+         1794081724.978   652   742 I device_idle_off_start: charging
+         1794081724.978   652   742 I device_idle_off_phase: power
+         1794081724.979   652   742 I device_idle_off_phase: net
+         1794081724.980   652   742 I device_idle_off_complete: 
+         1794081724.980   652   652 I battery_saving_stats: [0,0,2,6,0,0,22,0,0]
+         1794081724.985   652   652 I screen_toggled: 1
+         1794081724.987   652   707 I wm_set_resumed_activity: [0,com.akylas.enforcedoze/.MainActivity,resumeTopActivity - onActivityStateChanged]
+         1794081724.987   652   707 I wm_resume_activity: [0,236850507,13,com.akylas.enforcedoze/.MainActivity]
+         1794081724.987   652   652 I power_screen_broadcast_send: 1
+         1794081724.988   652   707 I sysui_multi_action: [757,1696,758,6,759,3]
+         1794081724.988  3465  3465 I wm_on_restart_called: [236850507,com.akylas.enforcedoze.MainActivity,performRestart,0]
+         1794081724.988  3465  3465 I wm_on_start_called: [236850507,com.akylas.enforcedoze.MainActivity,handleStartActivity,0]
+         1794081724.988  3465  3465 I wm_on_resume_called: [236850507,com.akylas.enforcedoze.MainActivity,RESUME_ACTIVITY,0]
+         1794081724.988  3465  3465 I wm_on_top_resumed_gained_called: [236850507,com.akylas.enforcedoze.MainActivity,topWhenResuming]
+         1794081724.992   652   707 I sysui_latency: [5,8]
+         1794081724.994   652   652 I sysui_multi_action: [757,198,758,1,759,1,1359,8,1694,6]
+         1794081724.994   652   652 I power_screen_state: [1,0,0,0,8]
+         1794081724.997   652   652 I battery_saving_stats: [0,0,0,17,0,0,73,0,0]
+         1794081725.004   652   680 I input_focus: [Focus request 1988c79 com.akylas.enforcedoze/com.akylas.enforcedoze.MainActivity,reason=UpdateInputWindows]
+         1794081725.004  3465  3465 I viewroot_draw_event: [VRI[MainActivity]c656588,applyTransactionOnDraw applyImmediately]
+         1794081725.005  3465  3465 I viewroot_draw_event: [VRI[MainActivity]c656588,Start draw after previous draw not visible]
+         1794081725.012  3465  3465 I viewroot_draw_event: [VRI[MainActivity]c656588,reportDrawFinished seqId=1]
+         1794081725.020   915   915 I viewroot_draw_event: [VRI[Wired Charging Animation]2d0460a,applyTransactionOnDraw applyImmediately]
+         1794081725.029   915   915 I viewroot_draw_event: [VRI[Wired Charging Animation]2d0460a,reportDrawFinished seqId=1]
+         1794081725.042   915  1108 I jank_cuj_events_end_request: [160,1794081725041460000,245430365459,245430365509]
+         1794081725.043   652   761 I input_focus: [Focus entering 1988c79 com.akylas.enforcedoze/com.akylas.enforcedoze.MainActivity,reason=Window became focusable. Previous reason: NO_WINDOW]
+         1794081725.043  3465  3465 I input_focus: ViewRootImpl focus=true for com.akylas.enforcedoze/com.akylas.enforcedoze.MainActivity
+         1794081725.045   652   676 I power_screen_broadcast_done: [1,58,1]

@@ -15,3 +15,6 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Raw captures stay byte-for-byte for parser tests (fixtures/README.md); still diffable.
+fixtures/** -text diff
