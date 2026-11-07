@@ -101,8 +101,8 @@ Upstream already does the right things, but through mechanisms that are fragile 
 | Code | 43 Java files, 2 Kotlin; `ForceDozeService.java` alone is 1,636 lines; about 8,100 lines in total |
 | Build | Gradle 8.13, Java 17 |
 | Privileges | Root via libsuperuser, or Shizuku api 13.1.5 |
-| Doze control | `dumpsys deviceidle force-idle deep` / `unforce` with root or Shizuku; without them, Doze constants through `device_config put device_idle` on API 34+ and `settings put global device_idle_constants` below |
-| Sensors | `dumpsys sensorservice restrict <package>` / `enable`; the all-sensors toggle through `service call sensor_privacy <code>`; the non-root sensor workaround was removed on 2026-04-18 |
+| Doze control | `dumpsys deviceidle force-idle deep` / `unforce` with root or Shizuku; without them, Doze constants through `device_config put device_idle` on API 34+ and `settings put global device_idle_constants` below. On API 34+ that non-root path cannot work: SELinux denies the app process the `device_config` binary, nothing is applied, and the service still logs "Entering Doze" (ADR 0004) |
+| Sensors | `dumpsys sensorservice restrict [package]` / `enable`; without a chosen package upstream sends a bare `restrict`, which API 35–37 reject with `INVALID_OPERATION` (ADR 0004); the all-sensors toggle through `service call sensor_privacy <code>`, run through root only even in Shizuku mode; the non-root sensor workaround was removed on 2026-04-18 |
 | Features | Force Doze after screen off with a delay, Doze allowlist, motion sensing off, biometrics off, Wi-Fi and data off, app suspension, Doze periods, hotspot and music exceptions, Tasker broadcasts, Quick Settings tiles, stats and log screens |
 | UI | Activities with XML layouts, `material-dialogs` 0.9.3, AppCompat |
 | License | GPL-3.0, forked from ForceDoze |
@@ -113,8 +113,8 @@ Upstream already does the right things, but through mechanisms that are fragile 
 | --- | --- | --- |
 | Shizuku `newProcess` via reflection on a private method | Shizuku removed public `newProcess`; reflection breaks with any API change and Android 17's ART changes | Typed Shizuku UserService (4) |
 | Official Shizuku 13.6.0 cannot authorize new apps on Android 17 ([issue #2180](https://github.com/RikkaApps/Shizuku/issues/2180)) | First run fails on the target device | Fork-agnostic client, bind timeout, durable grants (4) |
-| `service call sensor_privacy <code>` | Transaction numbers change between releases; a wrong number calls a different method | Hidden `SensorPrivacyManager` API inside the UserService, probed per build (4, 5.4) |
-| Forced idle delay timed by the app | Each delay needs a wakeup alarm | Use Doze constants for delays; force only at delay 0 (5.3) |
+| `service call sensor_privacy <code>` | Transaction numbers change between releases (upstream uses 4, 8 and 9; 9 is still `setSensorPrivacy` on API 36 and 37); a wrong number calls a different method (ADR 0004) | Hidden `SensorPrivacyManager` API inside the UserService, probed per build (4, 5.4) |
+| Forced idle delay timed by the app | Upstream holds a partial wakelock for up to 10 minutes and counts the delay with a `Timer`, so the phone stays awake for the whole delay (ADR 0004) | Use Doze constants for delays; force only at delay 0 (5.3) |
 | `device_config` values can be overwritten by server flag sync | A profile silently reverts | Re-verify at every screen off and log drift (5.6) |
 | No evidence that Doze worked | Users cannot tell whether settings help | Logs from system records (8) |
 | Long single service class, legacy dialogs | Hard to extend and test | Kotlin rewrite by module (12) |
@@ -162,7 +162,7 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 | Tier | Source | Unlocks |
 | --- | --- | --- |
 | T0 | Normal permissions | Screen and power broadcasts, light/deep idle state, usage events (with usage access), UI |
-| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`, `batterystats`), `WRITE_SECURE_SETTINGS`, `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
+| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS`, `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
 | T2 Worker | Shizuku or Sui UserService as shell (uid 2000) or root | `cmd deviceidle` / `dumpsys deviceidle` writes, `device_config put device_idle`, \`dumpsys sensorservice restrict |
 | T3 Root | Shizuku as root, Sui, or libsu | Upstream root features: mobile data, Wi-Fi radio, biometrics in Doze, app suspension |
 
@@ -192,6 +192,7 @@ The engine has four levers on Android's own Doze state machine: shorten its time
 - **Deep path:** ACTIVE → INACTIVE (after `inactive_to`) → IDLE\_PENDING (after `idle_after_inactive_to`) → SENSING (motion check, up to `sensing_to`) → LOCATING (up to `locating_to`) → IDLE. IDLE alternates with IDLE\_MAINTENANCE: windows start at `idle_to`, grow by `idle_factor`, cap at `max_idle_to`.
 - **Light path:** starts sooner (`light_after_inactive_to`), alternates light IDLE and maintenance (`light_idle_to`, `light_idle_factor`, `light_max_idle_to`); it does not need the phone to be still.
 - **Exits:** screen on, charging, or motion detected while not forced. Motion is what keeps a phone in a pocket from ever reaching deep idle.
+- **LOCATING on API 36 and 37:** the flag `com.android.server.deviceidle.remove_idle_location=true` skips it (SENSING goes straight to IDLE on the emulators); API 35 still walks it (ADR 0004).
 
 &#91;embedded content: deep Doze walk · 7 states, 4 levers\]
 
@@ -231,7 +232,7 @@ stateDiagram-v2
 
 ### 5.4 Lever C: sensors
 
-- **Restricted mode:** `dumpsys sensorservice restrict <allowPackage?>` at screen off, `dumpsys sensorservice enable` at screen on. With motion signals cut, deep idle survives a moving pocket. Verify the mode by reading `dumpsys sensorservice` back.
+- **Restricted mode:** `dumpsys sensorservice restrict <allowPackage>` at screen off, `dumpsys sensorservice enable` at screen on. The allow package is mandatory (API 35–37 reject a bare `restrict` with `INVALID_OPERATION`); with nothing to exempt, pass the app's own package, which holds no sensor connections (ADR 0004). With motion signals cut, deep idle survives a moving pocket. Verify the mode by reading `dumpsys sensorservice` back (`Mode : RESTRICTED : <package>`).
 - **All sensors off** (the developer tile): hidden `SensorPrivacyManager` call inside the worker with `MANAGE_SENSOR_PRIVACY`; method and parameters verified per API. Never `service call` with transaction numbers.
 - Side effects stated in the UI: phone step counting pauses while the screen is off (the watch still counts), lift-to-wake and pocket detection may stop, proximity is restored before any call (hold-off).
 
@@ -583,7 +584,7 @@ Upstream uses a different app id, so its settings cannot be read. If it is insta
 
 ### 12.2 Stack
 
-Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, kotlinx.serialization (profile JSON), Shizuku API (current release, not upstream's 13.1.5), libsu for the root tier, AIDL for the UserService. Dependency injection: Hilt unless an ADR picks otherwise. Gradle version catalog, JDK 21, `compileSdk` and `targetSdk` 37, `minSdk` 34 (section 3).
+Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, kotlinx.serialization (profile JSON), Shizuku API (current release; on 2026-11-07 that is still 13.1.5, so the change is the typed UserService instead of reflection on `newProcess`, ADR 0004), libsu for the root tier, AIDL for the UserService. Dependency injection: Hilt unless an ADR picks otherwise. Gradle version catalog, JDK 21, `compileSdk` and `targetSdk` 37, `minSdk` 34 (section 3).
 
 ### 12.3 Modules
 
@@ -648,7 +649,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 | Audio playing | A small test APK that plays a silent media stream |
 | Car mode | `cmd uimode car yes` / `no` |
 | Charging | `dumpsys battery set ac 1`, then `dumpsys battery unplug` |
-| Motion | `adb emu sensor set acceleration …` in a loop. If the emulator's motion detection does not respond, motion tests are marked device-only in an ADR and covered by parser fixtures plus the sensor-mode read-back |
+| Motion | `cmd deviceidle motion` ("Simulate a motion event to bring the device out of deep doze", API 37 help). The emulators have no motion sensor (`mMotionSensor=null`), so `adb emu sensor set acceleration …` cannot reach Doze (ADR 0004). If `motion` does not behave like a real motion reset, motion tests are marked device-only in an ADR and covered by parser fixtures plus the sensor-mode read-back |
 | Foreign Doze writer | `adb shell device_config put device_idle inactive_to 1800000` during a session |
 | Privilege lost | Stop the Shizuku server mid-session; expect the banner, the plan paused and Stock restored where possible |
 
@@ -744,6 +745,8 @@ cmd deviceidle get deep            # also: light, force, screen, charging
 cmd deviceidle force-idle deep
 cmd deviceidle unforce
 cmd deviceidle step deep           # tests only
+cmd deviceidle motion              # tests only: simulated motion event (ADR 0004)
+cmd deviceidle get offbody         # also: force-modemanager-quickdoze true|false (ADR 0004)
 dumpsys deviceidle                 # constants, state, allowlists
 cmd deviceidle whitelist           # list
 cmd deviceidle whitelist +<pkg>    # add; -<pkg> removes
@@ -755,15 +758,20 @@ device_config reset trusted_defaults device_idle
 settings get global device_idle_constants      # legacy, read only
 device_config get_sync_disabled_for_tests      # advanced switch only
 device_config set_sync_disabled_for_tests persistent|until_reboot|none
+device_config override device_idle <key> <ms>  # sticky local value, ignores server sync (ADR 0004)
+device_config clear_override device_idle <key>
+device_config list_local_overrides
 
 # Sensors
-dumpsys sensorservice restrict <allowPackage>
+dumpsys sensorservice restrict <allowPackage>   # package is mandatory (ADR 0004)
 dumpsys sensorservice enable
 dumpsys sensorservice              # mode and active connections
 
 # Evidence
 logcat -b events -d -v epoch       # filter device_idle* tags
-dumpsys batterystats --history     # check -h on API 37 for a start-time option
+dumpsys batterystats --history     # needs DUMP and the usage-stats appop
+dumpsys batterystats --history-start <num>     # start at a time offset (API 37 help, ADR 0004)
+dumpsys batterystats --wakeups     # CPU wakeup history and attribution (API 37 help)
 
 # Tests and grants
 dumpsys battery unplug | reset | set ac 1
@@ -794,7 +802,7 @@ The agent decides each with an ADR and keeps going; none blocks a phase.
 2. **Signing key (owner, when convenient).** Same key as Coulomb is recommended (11.3, 12.6).
 3. Which Shizuku option to document for Android 17 (4.2).
 4. Hilt or Koin; Roborazzi or Paparazzi.
-5. Whether the emulator can simulate motion well enough (13.3).
+5. Whether the emulator can simulate motion well enough (13.3). Not through its sensors; through `cmd deviceidle motion`, verified in P2 (ADR 0004).
 
 ### 16.4 Paste-ready note for the Coulomb agent
 
