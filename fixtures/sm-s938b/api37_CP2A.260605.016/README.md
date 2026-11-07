@@ -24,5 +24,5 @@ Real Galaxy S25 Ultra dumps captured read-only by the owner over adb on 2026-11-
 Same-length masks (Coulomb's `redact.py`): none.
 Packages that are not system packages of this firmware are replaced by consistent pseudonyms shared
 with Coulomb's fixtures: 247 packages, 3876 occurrences; UIDs unchanged. The
-owner's own `io.github.akane599.*` apps keep their names. `getprop` is reduced to `meta.txt`, and the
+owner's own apps (`io.github.akane599.*`, `com.akane.*`, Coulomb's default keep prefixes) keep their names. `getprop` is reduced to `meta.txt`, and the
 global settings to platform power and Doze keys (keys written by third-party modules are dropped). Parsers must not depend on third-party package names.

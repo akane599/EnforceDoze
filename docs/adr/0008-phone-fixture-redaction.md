@@ -32,7 +32,8 @@ pseudonym mapping kept outside its repository, so one app gets one pseudonym in 
     catches apps installed after Coulomb's list was taken. Platform and library namespaces
     (`android.`, `androidx.`, `com.google.android.gms.` and others listed in the script) and
     prefixes shared with system packages are left alone.
-  - The owner's own `io.github.akane599.*` apps keep their names.
+  - The owner's own apps keep their names: `io.github.akane599.*` and `com.akane.*`, the default
+    keep prefixes of Coulomb's redactor (the P0 emulator fixtures already show one of them).
   - Every output file is scanned again. The run fails on any unmapped package-like token or
     anything that looks personal, and the fixture README records the counts.
 - The system package list, Coulomb's third-party list and the mapping live in

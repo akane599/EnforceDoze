@@ -11,7 +11,7 @@ settings_global.txt, services.txt). It is personal data and stays outside git (.
 
 Redaction is Coulomb's tools/fixtures/redact.py (copied unchanged): same-length masks for e-mail
 addresses, account names, SSIDs, phone numbers, MAC addresses and serials, and consistent pseudonyms for
-every package that is not a system package of the device (owner's own io.github.akane599.* apps keep
+every package that is not a system package of the device (the owner's own io.github.akane599.* and com.akane.* apps keep
 their names). The system package list and the pseudonym mapping are shared with Coulomb and live
 outside the repository (~/.config/coulomb-fixtures/), so one app has one pseudonym in both projects.
 
@@ -206,7 +206,7 @@ Real Galaxy S25 Ultra dumps captured read-only by the owner over adb on {meta[0]
 Same-length masks (Coulomb's `redact.py`): {counts}.
 Packages that are not system packages of this firmware are replaced by consistent pseudonyms shared
 with Coulomb's fixtures: {len(pseudo.targets)} packages, {pseudo.count} occurrences; UIDs unchanged. The
-owner's own `io.github.akane599.*` apps keep their names. `getprop` is reduced to `meta.txt`, and the
+owner's own apps (`io.github.akane599.*`, `com.akane.*`, Coulomb's default keep prefixes) keep their names. `getprop` is reduced to `meta.txt`, and the
 global settings to platform power and Doze keys (keys written by third-party modules are dropped). Parsers must not depend on third-party package names.
 """)
     pseudo.save()
