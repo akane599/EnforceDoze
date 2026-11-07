@@ -64,7 +64,7 @@ the default in use.
 ## Commands
 
 ```sh
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64   # upstream toolchain until P1 (ADR 0003)
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # JDK 21, Gradle 9.9, AGP 9.5 (ADR 0007)
 ./gradlew assembleDebug testDebugUnitTest lintDebug    # what CI runs
 ./gradlew updateLintBaseline                           # only when deleting upstream code shrinks it
 tools/fixtures/capture.sh [-s SERIAL] [--walk] fixtures   # on akane-linux; --walk is emulator-only
@@ -75,7 +75,8 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 
 | Path | What |
 | --- | --- |
-| `app/` | Upstream 1.10.2 Java app (`com.akylas.enforcedoze`), replaced module by module (SPEC 12.1, 12.3) |
+| `app/` | Upstream 1.10.2 Java app (package `com.akylas.enforcedoze`, app id `io.github.akane599.enforcedoze`), replaced module by module (SPEC 12.1, 12.3) |
+| `gradle/libs.versions.toml` | Version catalog; versions resolved from Maven metadata, never from memory |
 | `fixtures/` | Raw dumps per device and build for parser tests (`fixtures/README.md`) |
 | `tools/fixtures/` | Capture script |
 | `docs/adr/` | Decisions (`0000-template.md`) |

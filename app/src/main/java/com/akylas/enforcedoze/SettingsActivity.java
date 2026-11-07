@@ -339,8 +339,8 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     if (isSuAvailable) {
                         log("Phone is rooted and SU permission granted");
-                        log("Granting android.permission.READ_PHONE_STATE to com.akylas.enforcedoze");
-                        executeCommand("pm grant com.akylas.enforcedoze android.permission.READ_PHONE_STATE");
+                        log("Granting android.permission.READ_PHONE_STATE to " + BuildConfig.APPLICATION_ID);
+                        executeCommand("pm grant " + BuildConfig.APPLICATION_ID + " android.permission.READ_PHONE_STATE");
                         return true;
                     } else {
                         log("SU permission denied or not available");
@@ -592,11 +592,11 @@ public class SettingsActivity extends AppCompatActivity {
             log("Resetting app preferences");
             PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
             log("Trying to revoke android.permission.DUMP");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.DUMP");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.READ_LOGS");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.READ_PHONE_STATE");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS");
-            executeCommand("pm revoke com.akylas.enforcedoze android.permission.WRITE_SETTINGS");
+            executeCommand("pm revoke " + BuildConfig.APPLICATION_ID + " android.permission.DUMP");
+            executeCommand("pm revoke " + BuildConfig.APPLICATION_ID + " android.permission.READ_LOGS");
+            executeCommand("pm revoke " + BuildConfig.APPLICATION_ID + " android.permission.READ_PHONE_STATE");
+            executeCommand("pm revoke " + BuildConfig.APPLICATION_ID + " android.permission.WRITE_SECURE_SETTINGS");
+            executeCommand("pm revoke " + BuildConfig.APPLICATION_ID + " android.permission.WRITE_SETTINGS");
             log("ForceDoze reset procedure complete");
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
             builder.setTitle(getString(R.string.reset_complete_dialog_title));

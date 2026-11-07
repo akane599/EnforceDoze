@@ -601,8 +601,8 @@ public class Utils {
     public static void grantPermissionsViaShizuku(Context context) {
         ShizukuHandler shizukuHandler = ShizukuHandler.getInstance(context);
         if (!Utils.isDumpPermissionGranted(context)) {
-            logToLogcat("Utils", "Granting android.permission.DUMP to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.DUMP",
+            logToLogcat("Utils", "Granting android.permission.DUMP to " + BuildConfig.APPLICATION_ID + " via Shizuku");
+            shizukuHandler.executeCommand("pm grant " + BuildConfig.APPLICATION_ID + " android.permission.DUMP",
                     (commandCode, exitCode, stdout, stderr) -> {
                         if (exitCode == 0) {
                             logToLogcat("Utils", "DUMP permission granted successfully");
@@ -612,8 +612,8 @@ public class Utils {
                     }, true);
         }
         if (!Utils.isReadPhoneStatePermissionGranted(context)) {
-            logToLogcat("Utils", "Granting android.permission.READ_PHONE_STATE to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.READ_PHONE_STATE",
+            logToLogcat("Utils", "Granting android.permission.READ_PHONE_STATE to " + BuildConfig.APPLICATION_ID + " via Shizuku");
+            shizukuHandler.executeCommand("pm grant " + BuildConfig.APPLICATION_ID + " android.permission.READ_PHONE_STATE",
                     (commandCode, exitCode, stdout, stderr) -> {
                         if (exitCode == 0) {
                             logToLogcat("Utils", "READ_PHONE_STATE permission granted successfully");
@@ -623,8 +623,8 @@ public class Utils {
                     }, true);
         }
         if (!Utils.isSecureSettingsPermissionGranted(context) && Utils.isDeviceRunningOnN()) {
-            logToLogcat("Utils", "Granting android.permission.WRITE_SECURE_SETTINGS to com.akylas.enforcedoze via Shizuku");
-            shizukuHandler.executeCommand("pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS",
+            logToLogcat("Utils", "Granting android.permission.WRITE_SECURE_SETTINGS to " + BuildConfig.APPLICATION_ID + " via Shizuku");
+            shizukuHandler.executeCommand("pm grant " + BuildConfig.APPLICATION_ID + " android.permission.WRITE_SECURE_SETTINGS",
                     (commandCode, exitCode, stdout, stderr) -> {
                         if (exitCode == 0) {
                             logToLogcat("Utils", "WRITE_SECURE_SETTINGS permission granted successfully");
