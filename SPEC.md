@@ -284,11 +284,11 @@ Values in the JSON are milliseconds; the table shows them readably. "Stock" mean
 | `max_idle_to` | stock | stock | 8 h | stock | 12 h |
 | `idle_factor` | stock | stock | 2 | stock | 2 |
 
-The agent checks every key name and its meaning against the AOSP `DeviceIdleController` source for API 37 before P2 and records it in an ADR. If a key was renamed or removed, the profile's intent stays and the ADR maps it to the new key.
+The agent checks every key name and its meaning against the AOSP `DeviceIdleController` source for API 37 before P2 and records it in an ADR. Done in ADR 0013: no key was renamed or removed on API 36 or 37; `locating_to` has no effect where `remove_idle_location=true`. If a key was renamed or removed, the profile's intent stays and the ADR maps it to the new key.
 
 ### 6.3 Custom profiles
 
-- Clone any built-in, then edit levers and constants. Each key has a plain-language line ("how long the phone waits after screen off before checking it is still") and guardrails: `sensing_to` ≥ 10 s, `idle_to` ≥ 5 min, `max_idle_to` ≤ 24 h, `idle_factor` 1–4, and the SMS, MMS, notification and temporary allowlist durations never below stock (ADR 0012); out-of-range input is refused with the reason. One UI's own keys (`skip_sensing`, `skip_locating`) appear only in imported or custom profiles, marked "effect unknown on this phone".
+- Clone any built-in, then edit levers and constants. Each key has a plain-language line ("how long the phone waits after screen off before checking it is still") and guardrails: `sensing_to` ≥ 10 s, `idle_to` ≥ 5 min, `max_idle_to` ≤ 24 h, `idle_factor` 1–4, `idle_after_inactive_to` ≥ 1 s (0 behaves differently on API 36 and 37, ADR 0013), and the SMS, MMS, notification and temporary allowlist durations never below stock (ADR 0012); out-of-range input is refused with the reason. One UI's own keys (`skip_sensing`, `skip_locating`) appear only in imported or custom profiles, marked "effect unknown on this phone".
 - Import and export as JSON (one file per profile). Unknown keys are kept but flagged as "not on this phone".
 - A custom profile can be the day or night slot of a plan.
 
