@@ -114,7 +114,6 @@ class WakersTest {
         assertThat(summary.mobileRadio).isEqualTo(Duration.ofSeconds(5))
         assertThat(summary.unattributedWakelock).isEqualTo(Duration.ofSeconds(1))
         assertThat(summary.historyCoverage).isEqualTo(session)
-        assertThat(Wakers.historyDeepIdle(history, session)).containsExactly(Interval(at("23:05:00"), at("23:15:00")))
     }
 
     @Test fun ownRunsCountOnlyWhenTheyStartInDeepIdle() {

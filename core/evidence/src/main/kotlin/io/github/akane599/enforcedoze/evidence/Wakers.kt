@@ -5,7 +5,6 @@ import io.github.akane599.enforcedoze.parse.AlarmStats
 import io.github.akane599.enforcedoze.parse.AlarmTagStats
 import io.github.akane599.enforcedoze.parse.AppAlarmStats
 import io.github.akane599.enforcedoze.parse.BatteryHistory
-import io.github.akane599.enforcedoze.parse.HistoryItem
 import java.time.Duration
 import java.time.Instant
 
@@ -143,24 +142,6 @@ public object Wakers {
         }
     }
 
-    /** Stretches of `device_idle=full` in [window]: the history's deep IDLE, for when the event log has a gap (ADR 0018). */
-    public fun historyDeepIdle(history: BatteryHistory, window: Interval): List<Interval> {
-        val stretches = mutableListOf<Interval>()
-        var since: Instant? = null
-        for (line in history.lines) {
-            val mode = line.items.filterIsInstance<HistoryItem.Value>()
-                .lastOrNull { it.name == DEVICE_IDLE }?.value ?: continue
-            val time = Instant.ofEpochMilli(line.time)
-            if (mode == FULL && since == null) since = time
-            if (mode != FULL && since != null) {
-                stretches += Interval(since, time)
-                since = null
-            }
-        }
-        since?.let { stretches += Interval(it, maxOf(it, window.end)) }
-        return stretches.mapNotNull { it.clip(window) }
-    }
-
     private fun delta(now: Int, before: Int?): Int = if (before == null || now < before) now else now - before
 
     private fun own(input: WakerInput, runs: List<Run>, points: List<Point>, alarms: List<AppAlarmStats>): OwnWakeups {
@@ -202,9 +183,6 @@ public object Wakers {
             )
         }.sortedWith(compareByDescending<AppWakers> { it.wakeups }.thenByDescending { it.wakelockTime }.thenBy { it.uid })
     }
-
-    private const val DEVICE_IDLE = "device_idle"
-    private const val FULL = "full"
 }
 
 internal const val WAKEUP_AP = "wakeupap"
