@@ -162,6 +162,8 @@ internal data class StateFile(
     val ownerAllowlist: List<String>? = null,
     val reapplyOnDrift: Boolean = true,
     val allowlistKeep: List<String>? = null,
+    /** While the quick proof has the battery frozen (SPEC 8.6). */
+    val proofStartedAt: String? = null,
 ) {
     fun toState(): PersistedState = PersistedState(
         mode = Mode.valueOf(mode),
@@ -172,6 +174,7 @@ internal data class StateFile(
         ownerAllowlist = ownerAllowlist?.toSet(),
         reapplyOnDrift = reapplyOnDrift,
         allowlistKeep = allowlistKeep?.toSet(),
+        proofStartedAt = proofStartedAt?.let(Instant::parse),
     )
 
     companion object {
@@ -184,6 +187,7 @@ internal data class StateFile(
             ownerAllowlist = state.ownerAllowlist?.sorted(),
             reapplyOnDrift = state.reapplyOnDrift,
             allowlistKeep = state.allowlistKeep?.sorted(),
+            proofStartedAt = state.proofStartedAt?.toString(),
         )
     }
 }

@@ -3,7 +3,10 @@ package io.github.akane599.enforcedoze.privilege
 
 import android.Manifest
 import android.app.AppOpsManager
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.os.BatteryManager
 import android.os.Process
 import android.provider.Settings
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -151,6 +154,31 @@ class WorkerContractTest {
         assertThat(log.events).isNotEmpty()
     }
 
+    /** `dumpsys battery unplug` freezes the state as unplugged and `reset` gives back what the emulator reported before. */
+    @Test
+    fun batteryUnplugAndReset() = worker { w ->
+        val before = awaitPlugged { true }
+        try {
+            assertOk(w.setBatteryUnplugged(true))
+            assertThat(awaitPlugged { it == 0 }).isEqualTo(0)
+        } finally {
+            assertOk(w.setBatteryUnplugged(false))
+        }
+        assertThat(awaitPlugged { it == before }).isEqualTo(before)
+    }
+
+    /** EXTRA_PLUGGED of the sticky ACTION_BATTERY_CHANGED; BatteryService sends it from its handler, so it may lag. */
+    private suspend fun awaitPlugged(done: (Int) -> Boolean): Int {
+        var plugged = -1
+        repeat(POLLS) {
+            val sticky = fixture.context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            plugged = sticky?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+            if (done(plugged)) return plugged
+            delay(POLL_MILLIS)
+        }
+        return plugged
+    }
+
     @Test
     fun sensorRestrictionAllowsOnePackageAndIsUndone() = worker { w ->
         try {
@@ -215,5 +243,7 @@ class WorkerContractTest {
     private companion object {
         const val DUMP_ATTEMPTS = 20
         const val DUMP_INTERVAL_MILLIS = 100L
+        const val POLLS = 30
+        const val POLL_MILLIS = 100L
     }
 }

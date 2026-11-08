@@ -97,6 +97,12 @@ internal object DeviceMapping {
         }
     }
 
+    /** A short answer such as `cmd deviceidle get deep`, as printed. */
+    fun printed(outcome: CommandOutcome): DeviceResult<String> {
+        val output = outcome.stdout.trim()
+        return if (outcome.isSuccess) DeviceResult.Ok(output, output.take(MAX_DETAIL)) else DeviceResult.Failed(describe(outcome))
+    }
+
     /** Whether a dump answered with its text rather than a `Permission Denial`. */
     fun answered(outcome: CommandOutcome): Boolean = outcome.isSuccess && !outcome.stdout.trimStart().startsWith(PERMISSION_DENIAL)
 

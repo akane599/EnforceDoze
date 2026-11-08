@@ -4,6 +4,7 @@ package io.github.akane599.enforcedoze.privilege.worker
 import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
+import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.io.OutputStream
@@ -25,7 +26,7 @@ class DozeWorkerTest {
 
     @Test fun appUidMayCall() {
         assertThat(worker.unforce().isSuccess).isTrue()
-        assertThat(worker.version).isEqualTo(2)
+        assertThat(worker.version).isEqualTo(WorkerContract.VERSION)
     }
 
     @Test fun otherUidsAreRefused() {

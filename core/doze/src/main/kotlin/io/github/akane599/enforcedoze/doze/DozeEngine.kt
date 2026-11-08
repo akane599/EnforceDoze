@@ -91,6 +91,9 @@ public class DozeEngine(
     /** Captures `stock.json`; only with the owner's consent and the screen on (SPEC 5.2). */
     public suspend fun captureStock(): JobResult = submit { captureStock() }
 
+    /** The quick proof (SPEC 8.6): the levers for real with the screen on, then undone. */
+    public suspend fun quickProof(): QuickProof = submit { quickProof() }
+
     @Suppress("TooGenericExceptionCaught")
     private suspend fun <T> submit(block: suspend EngineCore.() -> T): T {
         val done = CompletableDeferred<T>()

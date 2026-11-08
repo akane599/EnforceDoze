@@ -70,6 +70,8 @@ public data class EngineStatus(
     val stockCaptured: Boolean = false,
     /** The engine's state could not be saved; it is tried again after every command. */
     val storeError: String? = null,
+    /** A quick proof froze the battery as unplugged and giving it back is not confirmed yet (SPEC 8.6). */
+    val batteryFrozen: Boolean = false,
 ) {
     /** "Partly applied" on the home screen (SPEC 5.6 step 2). */
     val partlyApplied: Boolean get() = missingKeys.isNotEmpty() || levers.values.any { it.state in PARTLY_STATES }
@@ -99,4 +101,43 @@ public data class JobResult(
     val ok: Boolean
         get() = refused == null && notWritable.isEmpty() && skipped.isEmpty() && unverified == null &&
             stockDifferences.isNullOrEmpty() && actions.all { it.outcome == ActionRecord.Outcome.OK }
+}
+
+/** The quick proof's steps (SPEC 8.6): what was applied and confirmed, then what was undone. */
+public enum class ProofStepKind {
+    /** 1. The profile's constants, read back. */
+    CONSTANTS,
+
+    /** 2. `dumpsys battery unplug`. */
+    UNPLUG,
+
+    /** 2. `cmd deviceidle force-idle deep`, read back from `dumpsys deviceidle`. */
+    FORCE_IDLE,
+
+    /** 2. `cmd deviceidle get deep` reports IDLE. */
+    DEEP_IDLE,
+
+    /** 3. Sensors restricted, the mode read back from `dumpsys sensorservice`. */
+    SENSORS,
+
+    /** 4. `cmd deviceidle unforce`. */
+    UNDO_FORCE_IDLE,
+
+    /** 4. `dumpsys sensorservice enable`. */
+    UNDO_SENSORS,
+
+    /** 4. `dumpsys battery reset`. */
+    UNDO_BATTERY,
+}
+
+/** One line of the result card: the step, whether it passed, and the raw line it was judged on (SPEC 8.6 step 5). */
+public data class ProofStep(val kind: ProofStepKind, val ok: Boolean, val line: String)
+
+public data class QuickProof(
+    val steps: List<ProofStep> = emptyList(),
+    /** Why the proof did not run, or null when it ran. */
+    val refused: String? = null,
+) {
+    /** Ran, and every step passed, the undo included. */
+    val ok: Boolean get() = refused == null && steps.isNotEmpty() && steps.all { it.ok }
 }

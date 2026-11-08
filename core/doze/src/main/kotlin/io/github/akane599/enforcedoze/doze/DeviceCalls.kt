@@ -13,24 +13,27 @@ import kotlinx.coroutines.withTimeoutOrNull
 /**
  * Runs each device call in its own coroutine and waits for it at most [timeoutMillis] (SPEC 12.4,
  * ADR 0015). Binder calls block, so cancelling cannot cut one short: an overrunning call keeps running
- * in [scope] and the caller moves on with null. Calls for the same lever run in order, so a late write
- * can never land after the one that replaced it.
+ * in [scope] and the caller moves on with null. Calls with the same key (a [Lever], or [BATTERY]) run in
+ * order, so a late write can never land after the one that replaced it.
  */
 internal class DeviceCalls(private val scope: CoroutineScope, private val timeoutMillis: Long) {
-    private val last = mutableMapOf<Lever, Deferred<*>>()
+    private val last = mutableMapOf<Any, Deferred<*>>()
 
     /** The result, or null when the call did not answer in time. Exceptions become [DeviceResult.Failed]. */
-    suspend fun <T> run(lever: Lever?, block: suspend () -> DeviceResult<T>): DeviceResult<T>? {
-        val before = lever?.let { last[it] }
+    suspend fun <T> run(key: Any?, block: suspend () -> DeviceResult<T>): DeviceResult<T>? {
+        val before = key?.let { last[it] }
         val call = scope.async {
             before?.join()
             guarded(block)
         }
-        if (lever != null) last[lever] = call
+        if (key != null) last[key] = call
         val result = withTimeoutOrNull(timeoutMillis) { call.await() }
         last.entries.removeAll { it.value.isCompleted }
         return result
     }
+
+    /** The key of the quick proof's battery freeze and its undo, which is not a lever (SPEC 8.6). */
+    object BATTERY
 
     /** No call is still running, reads included. */
     val idle: Boolean get() = scope.coroutineContext.job.children.none { it.isActive }

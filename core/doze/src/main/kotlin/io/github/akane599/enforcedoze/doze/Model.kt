@@ -141,6 +141,9 @@ public enum class Cause {
     RETURN_TO_PREVIOUS,
     STOCK_CAPTURE,
     OWNER,
+
+    /** The quick proof's writes and their undo (SPEC 8.6). */
+    QUICK_PROOF,
 }
 
 /** Why the plan's profile changed (SPEC 6.5). */

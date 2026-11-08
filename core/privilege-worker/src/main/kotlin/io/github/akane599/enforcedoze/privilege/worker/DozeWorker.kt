@@ -57,6 +57,8 @@ public class DozeWorker internal constructor(
 
     override fun getIdleState(which: String?): CommandOutcome = checked { core.getIdleState(which) }
 
+    override fun setBatteryUnplugged(unplugged: Boolean): CommandOutcome = checked { core.setBatteryUnplugged(unplugged) }
+
     override fun setSensorRestriction(allowPackage: String?): CommandOutcome = checked { core.setSensorRestriction(allowPackage) }
 
     override fun setAllSensorsOff(off: Boolean): CommandOutcome = checked { core.setAllSensorsOff(off) }

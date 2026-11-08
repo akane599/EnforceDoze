@@ -49,6 +49,7 @@ class EngineFilesTest {
             ownerAllowlist = setOf("a", "b", "c"),
             reapplyOnDrift = false,
             allowlistKeep = emptySet(),
+            proofStartedAt = time,
         )
         val files = files()
         files.save(state)

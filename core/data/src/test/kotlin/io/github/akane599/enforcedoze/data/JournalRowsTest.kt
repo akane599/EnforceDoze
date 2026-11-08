@@ -55,5 +55,8 @@ class JournalRowsTest {
         assertThat(JournalRows.of(EngineEvent.ModeChanged(time, Mode.PAUSED)).mode).isEqualTo("PAUSED")
         val switched = JournalRows.of(EngineEvent.ProfileSwitched(time, "night", SwitchReason.SCHEDULE))
         assertThat(switched.profileId to switched.reason).isEqualTo("night" to "SCHEDULE")
+        val reset = JournalRows.of(EngineEvent.Battery(time, unplugged = false, ok = false, line = "no worker: Shizuku stopped"))
+        assertThat(listOf(reset.kind, reset.expected, reset.found, reset.reason))
+            .containsExactly("BATTERY", "reset", "no worker: Shizuku stopped", "FAILED").inOrder()
     }
 }

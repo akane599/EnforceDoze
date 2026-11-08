@@ -41,7 +41,9 @@ class PrivilegedDozeDeviceTest {
 
         override suspend fun unforce() = record("unforce()")
 
-        override suspend fun idleState(which: String) = record("idleState($which)")
+        override suspend fun idleState(which: String) = record("idleState($which)", "IDLE\n")
+
+        override suspend fun setBatteryUnplugged(unplugged: Boolean) = record("setBatteryUnplugged($unplugged)")
 
         override suspend fun setSensorRestriction(allowPackage: String?) = record("setSensorRestriction($allowPackage)")
 
@@ -132,6 +134,19 @@ class PrivilegedDozeDeviceTest {
             "worker:deviceIdleSettings()",
         ).inOrder()
         assertThat((constants as DeviceResult.Ok).value.value).isEqualTo(ConstantsValue.Absent)
+    }
+
+    @Test
+    fun `the quick proof's battery and deep state go through the worker, even with DUMP`() = runTest {
+        grants = setOf(Grant.DUMP)
+        device.write(DeviceWrite.Battery(unplugged = true))
+        device.write(DeviceWrite.Battery(unplugged = false))
+        assertThat(device.readDeepState()).isEqualTo(DeviceResult.Ok("IDLE", "IDLE"))
+        assertThat(calls).containsExactly(
+            "worker:setBatteryUnplugged(true)",
+            "worker:setBatteryUnplugged(false)",
+            "worker:idleState(deep)",
+        ).inOrder()
     }
 
     @Test

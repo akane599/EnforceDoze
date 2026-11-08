@@ -26,6 +26,7 @@ internal class EngineCore(
     private val book = Book(PersistedState())
     private val observer = Observer(device, calls, book)
     private val executor = Executor(device, calls, observer, book, journal, clock) { persist() }
+    private val proof = ProofSteps(device, calls, observer, book, executor, journal, clock)
     private var saved: PersistedState? = null
     private var storeError: String? = null
     private var started = false
@@ -57,6 +58,8 @@ internal class EngineCore(
         val drifted = if (mode == Mode.MANAGED) drifts(Lever.entries, whileStopped = true) else emptyList()
         capturePrevious()
         reconcile(Cause.START, corrections(drifted))
+        // A quick proof cut short: its forced idle and sensors were released above from the book; the battery is not a lever.
+        if (writable.forceIdle) resetProofBattery()
     }
 
     suspend fun setProfile(next: Profile, reason: SwitchReason) {
@@ -98,6 +101,7 @@ internal class EngineCore(
     suspend fun setWritable(next: Writable) {
         writable = next
         reconcile(Cause.PRIVILEGE)
+        if (started && writable.forceIdle) resetProofBattery()
     }
 
     /** The app's observer saw the global string change (ADR 0014); the engine's own writes read back as no drift. */
@@ -203,6 +207,69 @@ internal class EngineCore(
         return JobResult(actions, stock = captured)
     }
 
+    /**
+     * The quick proof (SPEC 8.6), with the screen on: the plan's constants read back, then forced idle and
+     * restricted sensors for real, then all undone in a `finally`. Lever writes are booked before they are
+     * made, as always, and [PersistedState.proofStartedAt] marks the battery freeze, so a run cut short is
+     * undone at the next start.
+     */
+    suspend fun quickProof(): QuickProof {
+        refuseProof()?.let { return QuickProof(refused = it) }
+        reconcile(Cause.QUICK_PROOF)
+        val steps = mutableListOf(proof.constants(targets().wanted[Lever.CONSTANTS]))
+        book.persisted = book.persisted.copy(proofStartedAt = clock.now())
+        if (!persist()) {
+            book.persisted = book.persisted.copy(proofStartedAt = null)
+            return QuickProof(steps, refused = UNSAVED_PROOF)
+        }
+        try {
+            steps += proof.battery(unplugged = true)
+            steps += proof.write(Setting.FORCED, ProofStepKind.FORCE_IDLE, stock)
+            steps += proof.deepIdle()
+            steps += proof.write(Setting.Sensors(SensorValue.Restricted(allowPackage)), ProofStepKind.SENSORS, stock)
+        } finally {
+            withContext(NonCancellable) { steps += undoProof() }
+        }
+        return QuickProof(steps)
+    }
+
+    /** Step 4: forced idle released and sensors enabled whatever the proof got to, the battery given back, then the plan's state. */
+    private suspend fun undoProof(): List<ProofStep> {
+        val steps = listOf(
+            proof.write(Setting.RELEASED, ProofStepKind.UNDO_FORCE_IDLE, stock),
+            proof.write(Setting.SENSORS_NORMAL, ProofStepKind.UNDO_SENSORS, stock),
+        ) + listOfNotNull(resetProofBattery())
+        reconcile(Cause.QUICK_PROOF)
+        return steps
+    }
+
+    /** Gives the battery back if a quick proof froze it; the mark stays until the device confirms, so it is tried again. */
+    private suspend fun resetProofBattery(): ProofStep? {
+        if (book.persisted.proofStartedAt == null) return null
+        val step = proof.battery(unplugged = false)
+        if (step.ok) book.persisted = book.persisted.copy(proofStartedAt = null)
+        return step
+    }
+
+    private fun refuseProof(): String? = when {
+        !started -> NOT_STARTED
+
+        !screenOn || locked -> "the screen must be on and the phone unlocked"
+
+        // Device safety (SPEC 0.3): a call, audio or car mode is never interrupted by forced idle.
+        holdOffs.isNotEmpty() -> "a hold-off is active (${holdOffs.sorted().joinToString()}), so nothing is forced now"
+
+        mode == Mode.PAUSED -> "the plan is paused, so its profile is not applied"
+
+        mode == Mode.HANDS_OFF -> "the previous setup is in charge, so nothing is written"
+
+        profile == null -> "no profile is active"
+
+        !writable.forceIdle -> "forced idle needs the worker (Shizuku, Sui or root)"
+
+        else -> null
+    }
+
     /** Writes the string found before the capture back, and once more if the read-back does not show it. */
     private suspend fun putBack(string: Setting.Constants, actions: MutableList<ActionRecord>) {
         repeat(PUT_BACK_TRIES) {
@@ -259,6 +326,7 @@ internal class EngineCore(
             previousCaptured = previous != null,
             stockCaptured = stock != null,
             storeError = storeError,
+            batteryFrozen = book.persisted.proofStartedAt != null,
         )
     }
 
@@ -478,5 +546,6 @@ internal class EngineCore(
         const val UNSAVED_STRING =
             "the global string could not be read and is not in previous.json, so it was left as is: deleting it could not be undone"
         const val PUT_BACK_TRIES = 2
+        const val UNSAVED_PROOF = "the engine's state could not be saved, so nothing was turned on"
     }
 }

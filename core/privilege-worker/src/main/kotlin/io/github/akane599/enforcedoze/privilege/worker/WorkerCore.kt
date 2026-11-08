@@ -40,6 +40,13 @@ internal class WorkerCore(
         return if (which in WorkerContract.IDLE_QUERIES) write(argv) else CommandOutcome.rejected(argv, "unknown state $which")
     }
 
+    /**
+     * `dumpsys battery unplug` freezes the battery state as unplugged; `reset` unfreezes it to the hardware
+     * values. Both need DEVICE_POWER, which shell holds (BatteryService.onShellCommand, android-16.0.0_r1
+     * lines 1414 and 1563, android-17.0.0_r1 lines 1404 and 1545). Only the quick proof uses them (SPEC 8.6).
+     */
+    fun setBatteryUnplugged(unplugged: Boolean): CommandOutcome = write(listOf("dumpsys", "battery", if (unplugged) "unplug" else "reset"))
+
     /** API 35–37 reject a bare `restrict`; the allow package is mandatory (ADR 0004). */
     fun setSensorRestriction(allowPackage: String?): CommandOutcome {
         if (allowPackage == null) return write(listOf("dumpsys", "sensorservice", "enable"))

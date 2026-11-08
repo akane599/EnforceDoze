@@ -11,6 +11,7 @@ import io.github.akane599.enforcedoze.doze.DozeEngine
 import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.JobResult
 import io.github.akane599.enforcedoze.doze.Lever
+import io.github.akane599.enforcedoze.doze.QuickProof
 import io.github.akane599.enforcedoze.doze.SwitchReason
 import io.github.akane599.enforcedoze.doze.android.EngineHost
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ import kotlinx.coroutines.withTimeout
  * Commands: `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
- * `events <count>`, `actions <count>`.
+ * `quick-proof`, `events <count>`, `actions <count>`.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -83,6 +84,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
             if (profile == null) "unknown profile $arg" else after(host) { setProfile(profile, SwitchReason.OWNER) }
         },
         "capture-stock" to { host, _ -> describe(host.engine.captureStock()) },
+        "quick-proof" to { host, _ -> describe(host.engine.quickProof()) },
         "restore-stock" to { host, _ -> describe(host.engine.restoreStock()) },
         "return-to-previous" to { host, _ -> describe(host.engine.returnToPrevious()) },
         "pause" to { host, _ -> after(host) { pause() } },
@@ -112,9 +114,16 @@ class DebugCommandReceiver : BroadcastReceiver() {
         appendLine("missingKeys=${status.missingKeys.sorted()}")
         appendLine("constantsWriter=${status.constantsWriter} previous=${status.previousCaptured} stock=${status.stockCaptured}")
         appendLine("forcedWithoutWorker=${status.forcedWithoutWorker} storeError=${status.storeError}")
+        appendLine("batteryFrozen=${status.batteryFrozen}")
         status.levers.toSortedMap().forEach { (lever, it) ->
             appendLine("lever $lever ${it.state} wanted=${it.wanted} written=${it.written} seen=${it.seen} reason=${it.reason}")
         }
+    }.trimEnd()
+
+    /** The result card (SPEC 8.6 step 5), one line per step. */
+    private fun describe(proof: QuickProof): String = buildString {
+        appendLine("ok=${proof.ok} refused=${proof.refused}")
+        proof.steps.forEach { appendLine("step ${it.kind} ${if (it.ok) "ok" else "failed"} ${it.line}") }
     }.trimEnd()
 
     private fun describe(result: JobResult): String = buildString {

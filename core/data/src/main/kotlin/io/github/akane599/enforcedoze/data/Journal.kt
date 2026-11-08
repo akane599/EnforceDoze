@@ -181,6 +181,7 @@ public object JournalRows {
     public const val LOOP_GUARD: String = "LOOP_GUARD"
     public const val MODE: String = "MODE"
     public const val PROFILE: String = "PROFILE"
+    public const val BATTERY: String = "BATTERY"
 
     public fun of(record: ActionRecord): ActionRow = ActionRow(
         time = record.time.toEpochMilli(),
@@ -219,6 +220,15 @@ public object JournalRows {
                 kind = PROFILE,
                 profileId = event.profileId,
                 reason = event.reason.name,
+            )
+
+            // The quick proof's battery freeze (SPEC 8.6): what was asked, and what the device answered.
+            is EngineEvent.Battery -> EventRow(
+                time = time,
+                kind = BATTERY,
+                expected = if (event.unplugged) "unplugged" else "reset",
+                found = event.line,
+                reason = if (event.ok) "OK" else "FAILED",
             )
         }
     }

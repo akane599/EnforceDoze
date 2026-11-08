@@ -81,6 +81,9 @@ internal class PrivilegedDozeDevice(
         is DeviceWrite.SensorPrivacy -> onWorker { setAllSensorsOff(write.on) }
 
         is DeviceWrite.Allowlist -> onWorker { allowlist(write.packageName, write.add) }
+
+        // DEVICE_POWER, which only the worker holds.
+        is DeviceWrite.Battery -> onWorker { setBatteryUnplugged(write.unplugged) }
     }
 
     override suspend fun readConstants(): DeviceResult<ConstantsReading> {
@@ -101,6 +104,9 @@ internal class PrivilegedDozeDevice(
     /** Only through the worker: `cmd deviceidle whitelist` is a shell command, not a dump. */
     override suspend fun readAllowlist(): DeviceResult<Set<String>> =
         DeviceMapping.worker(worker.run { it.readAllowlist() }, DeviceMapping::allowlist)
+
+    override suspend fun readDeepState(): DeviceResult<String> =
+        DeviceMapping.worker(worker.run { it.idleState(DEEP) }, DeviceMapping::printed)
 
     /** `dumpsys sensorservice restrict <pkg>` or `enable`: with `DUMP` from the app (ADR 0004), else the worker. */
     private suspend fun sensors(allowPackage: String?): DeviceResult<Unit> {

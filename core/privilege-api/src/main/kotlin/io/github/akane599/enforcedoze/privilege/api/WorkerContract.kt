@@ -3,8 +3,11 @@ package io.github.akane599.enforcedoze.privilege.api
 
 /** Names and limits shared by the worker and its clients (SPEC 4.3, 12.4). */
 public object WorkerContract {
-    /** Raised whenever the AIDL or the meaning of a method changes. 2: device_config writes removed (ADR 0012). */
-    public const val VERSION: Int = 2
+    /**
+     * Raised whenever the AIDL or the meaning of a method changes. 2: device_config writes removed (ADR 0012).
+     * 3: setBatteryUnplugged for the quick proof (SPEC 8.6).
+     */
+    public const val VERSION: Int = 3
 
     /** The UserService class, loaded by name in the worker process (Shizuku and Sui). */
     public const val WORKER_CLASS: String = "io.github.akane599.enforcedoze.privilege.worker.DozeWorker"

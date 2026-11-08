@@ -25,6 +25,9 @@ public interface DozeWorkerApi {
 
     public suspend fun idleState(which: String): CommandOutcome
 
+    /** `dumpsys battery unplug`, or `reset` when false; for the quick proof only (SPEC 8.6). */
+    public suspend fun setBatteryUnplugged(unplugged: Boolean): CommandOutcome
+
     public suspend fun setSensorRestriction(allowPackage: String?): CommandOutcome
 
     public suspend fun setAllSensorsOff(off: Boolean): CommandOutcome
@@ -68,6 +71,8 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun unforce(): CommandOutcome = io { worker.unforce() }
 
     override suspend fun idleState(which: String): CommandOutcome = io { worker.getIdleState(which) }
+
+    override suspend fun setBatteryUnplugged(unplugged: Boolean): CommandOutcome = io { worker.setBatteryUnplugged(unplugged) }
 
     override suspend fun setSensorRestriction(allowPackage: String?): CommandOutcome = io { worker.setSensorRestriction(allowPackage) }
 

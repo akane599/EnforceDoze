@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.privilege
 
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
+import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 
 /** A scriptable worker for JVM tests: state lives in fields, every call is recorded in [calls]. */
 open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
@@ -21,7 +22,7 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
 
     override suspend fun uid(): Int = workerUid.also { calls += "uid" }
 
-    override suspend fun version(): Int = 2
+    override suspend fun version(): Int = WorkerContract.VERSION
 
     override suspend fun forceIdle(mode: String): CommandOutcome {
         calls += "forceIdle $mode"
@@ -35,6 +36,14 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
         forced = false
         deep = "ACTIVE"
         return ok("Light state: ACTIVE, deep state: ACTIVE")
+    }
+
+    var unplugged = false
+
+    override suspend fun setBatteryUnplugged(unplugged: Boolean): CommandOutcome {
+        calls += if (unplugged) "battery unplug" else "battery reset"
+        this.unplugged = unplugged
+        return ok()
     }
 
     override suspend fun idleState(which: String): CommandOutcome = when (which) {

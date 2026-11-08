@@ -28,6 +28,9 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
     var privacy = false
     var allowlist: Set<String> = emptySet()
 
+    /** `dumpsys battery unplug` froze the state; `reset` gives it back. */
+    var batteryUnplugged = false
+
     var canReadConstants = true
     var canReadDeviceIdle = true
 
@@ -90,6 +93,8 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
                 is DeviceWrite.SensorPrivacy -> privacy = write.on
 
                 is DeviceWrite.Allowlist -> allowlist = if (write.add) allowlist + write.packageName else allowlist - write.packageName
+
+                is DeviceWrite.Battery -> batteryUnplugged = write.unplugged
             }
             return DeviceResult.Ok(Unit)
         }
@@ -111,6 +116,9 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
         override suspend fun readSensors(): DeviceResult<SensorReading> = read("sensors", true) { SensorReading(sensors, privacy) }
 
         override suspend fun readAllowlist(): DeviceResult<Set<String>> = read("allowlist", true) { allowlist }
+
+        /** Forced idle steps straight to IDLE, as `force-idle deep` does; otherwise the screen-on state. */
+        override suspend fun readDeepState(): DeviceResult<String> = read("deepState", true) { if (forced) "IDLE" else "ACTIVE" }
 
         private suspend fun <T> read(name: String, allowed: Boolean, value: () -> T): DeviceResult<T> {
             log += "read:$name"

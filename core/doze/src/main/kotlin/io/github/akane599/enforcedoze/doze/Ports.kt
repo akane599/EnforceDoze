@@ -39,6 +39,11 @@ public sealed interface DeviceWrite {
     public data class Allowlist(val packageName: String, val add: Boolean) : DeviceWrite {
         override val label: String get() = "cmd deviceidle whitelist ${if (add) "+" else "-"}$packageName"
     }
+
+    /** The quick proof's battery freeze (SPEC 8.6), not a lever: frozen as unplugged, or back to the hardware values. */
+    public data class Battery(val unplugged: Boolean) : DeviceWrite {
+        override val label: String get() = if (unplugged) "dumpsys battery unplug" else "dumpsys battery reset"
+    }
 }
 
 /** The outcome of one device call. [detail] is the raw line it was judged on, kept for the action log. */
@@ -72,6 +77,9 @@ public interface DozeDevice {
 
     /** The packages on the user allowlist (`user,…` rows of `cmd deviceidle whitelist`). */
     public suspend fun readAllowlist(): DeviceResult<Set<String>>
+
+    /** `cmd deviceidle get deep`: the deep state's name as printed, for the quick proof (SPEC 8.6). */
+    public suspend fun readDeepState(): DeviceResult<String>
 }
 
 public fun interface EngineClock {
@@ -130,6 +138,9 @@ public sealed interface EngineEvent {
     public data class ModeChanged(override val time: Instant, val mode: Mode) : EngineEvent
 
     public data class ProfileSwitched(override val time: Instant, val profileId: String, val reason: SwitchReason) : EngineEvent
+
+    /** The quick proof froze the battery as unplugged or gave it back (SPEC 8.6); [line] is what the device answered. */
+    public data class Battery(override val time: Instant, val unplugged: Boolean, val ok: Boolean, val line: String) : EngineEvent
 }
 
 public interface EngineJournal {
@@ -151,6 +162,8 @@ public data class PersistedState(
     val reapplyOnDrift: Boolean = true,
     /** Apps the owner marked "keep" for a trimmed allowlist; null until chosen, and nothing is trimmed before. */
     val allowlistKeep: Set<String>? = null,
+    /** Set while the quick proof has the battery frozen (SPEC 8.6): a run cut short is undone at the next start. */
+    val proofStartedAt: Instant? = null,
 )
 
 /** The `previous.json` snapshot (SPEC 5.2, ADR 0012): the string as found, or absent, and who wrote it. */

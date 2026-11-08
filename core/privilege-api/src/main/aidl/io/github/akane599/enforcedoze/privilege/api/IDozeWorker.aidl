@@ -57,6 +57,8 @@ interface IDozeWorker {
 
     /** device_config list device_idle; stdout is key=value lines, empty when nothing is set. */
     CommandOutcome listDeviceIdleConfig() = 23;
+    /** dumpsys battery unplug, or dumpsys battery reset when false; for the quick proof only (SPEC 8.6). */
+    CommandOutcome setBatteryUnplugged(boolean unplugged) = 24;
 
     /** dumpsys deviceidle */
     void readDeviceIdle(in ParcelFileDescriptor pipe) = 30;

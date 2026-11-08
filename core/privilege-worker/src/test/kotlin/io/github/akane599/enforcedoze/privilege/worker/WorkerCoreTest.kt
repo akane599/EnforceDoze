@@ -61,6 +61,13 @@ class WorkerCoreTest {
         ).inOrder()
     }
 
+    @Test fun batteryUnplugAndResetUseFixedArgv() {
+        core.setBatteryUnplugged(true)
+        core.setBatteryUnplugged(false)
+        assertThat(runner.ran).containsExactly(listOf("dumpsys", "battery", "unplug"), listOf("dumpsys", "battery", "reset")).inOrder()
+        assertThat(runner.timeouts.distinct()).containsExactly(5_000L)
+    }
+
     @Test fun sensorRestrictionNeedsAnInstalledPackage() {
         assertThat(core.setSensorRestriction(SELF).isSuccess).isTrue()
         assertThat(core.setSensorRestriction(null).isSuccess).isTrue()
