@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Only the shell (DUMP) can ask it to play. It keeps no data, so backup rules do not apply. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application
+        android:label="Silent audio (test)"
+        tools:ignore="MissingApplicationIcon,DataExtractionRules">
+        <receiver
+            android:name=".PlayReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP" />
+    </application>
+</manifest>

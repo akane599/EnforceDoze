@@ -21,7 +21,8 @@ import kotlinx.coroutines.withTimeout
  *     adb shell am broadcast -n io.github.akane599.enforcedoze/io.github.akane599.enforcedoze.app.DebugCommandReceiver \
  *         --es cmd profile --es arg test-everyday
  *
- * Commands: `start`, `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
+ * Start the engine first with `am start -n io.github.akane599.enforcedoze/io.github.akane599.enforcedoze.app.DebugStartActivity`.
+ * Commands: `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `events <count>`, `actions <count>`.
  */
@@ -53,11 +54,6 @@ class DebugCommandReceiver : BroadcastReceiver() {
 
     /** Commands that do not need the engine running. */
     private val appCommands: Map<String, suspend (EngineGraph, String?) -> String> = mapOf(
-        "start" to { graph, _ ->
-            graph.switch.enabled = true
-            EngineService.start(graph.app)
-            "starting"
-        },
         "stop" to { graph, _ ->
             graph.switch.enabled = false
             EngineService.stop(graph.app)

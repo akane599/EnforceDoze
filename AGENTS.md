@@ -85,11 +85,11 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `core/data` | The engine's JSON files (`state`, `previous`, `stock`) and the Room evidence log (SPEC 8.3) |
 | `core/evidence` | Pure-JVM session verdicts from the records (SPEC 8.4) |
 | `core/privilege-api`, `core/privilege-worker`, `core/privilege` | `IDozeWorker` contract; the worker (only place for hidden APIs, runtime-only); tiers, clients, session, probes (SPEC 4, ADR 0009) |
-| `core/hidden-api-stubs`, `testing/fixtures` | compileOnly framework stubs for the worker; fixture access for JVM tests |
+| `core/hidden-api-stubs`, `testing/fixtures`, `testing/silent-audio` | compileOnly framework stubs for the worker; fixture access for JVM tests; a silent player for the audio hold-off test |
 | `config/detekt`, `.editorconfig`, `tools/ci/` | detekt overrides, ktlint style, CI scripts and the forbidden-call baseline |
 | `gradle/libs.versions.toml` | Version catalog; versions resolved from Maven metadata, never from memory |
 | `fixtures/` | Raw dumps per device and build for parser tests (`fixtures/README.md`) |
-| `tools/fixtures/` | Capture script |
+| `tools/fixtures/`, `tools/emulator/` | Capture script; the phase gate runs on the emulator (`p1-privilege.sh`, `p2-engine.sh`) |
 | `docs/adr/` | Decisions (`0000-template.md`) |
 | `docs/upstream-audit.md` | SPEC 2 audit and the feature parity table (kept current) |
 | `docs/progress.md`, `docs/questions.md` | Phase log, open questions with defaults |
