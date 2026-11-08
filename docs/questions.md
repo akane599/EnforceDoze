@@ -17,6 +17,11 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   separate public repository (last pushed 2026-10-07), not a branch of this fork, and deleting a
   repository cannot be undone. *Default:* left untouched; say "delete AkaDoZe" and it goes.
 
+- **Q7. Design direction (SPEC 10.5).** Three directions for Home and the night report are in
+  `docs/design/directions/` and in the P5 review ZIP: A night timetable, B sleep lab (hypnogram),
+  C seismograph drum (stacked nights). *Default:* A, with C's stacked nights for comparisons
+  (ADR 0028). Say "B" or "C" and the tokens change in `:core:design`.
+
 ## Answered
 
 - **Q1. The earlier fork work and the default branch.** *Answer 2026-11-08:* delete every other
