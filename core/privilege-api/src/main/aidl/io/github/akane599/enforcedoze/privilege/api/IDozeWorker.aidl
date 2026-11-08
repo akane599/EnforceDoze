@@ -72,4 +72,7 @@ interface IDozeWorker {
 
     /** cmd deviceidle whitelist */
     void readAllowlist(in ParcelFileDescriptor pipe) = 34;
+
+    /** dumpsys alarm; its Alarm Stats counters, read at screen off and screen on (ADR 0019). */
+    void readAlarms(in ParcelFileDescriptor pipe) = 35;
 }

@@ -9,6 +9,7 @@ import android.provider.Settings
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import io.github.akane599.enforcedoze.parse.AlarmStats
 import io.github.akane599.enforcedoze.parse.Allowlist
 import io.github.akane599.enforcedoze.parse.AospDeviceIdle
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
@@ -206,6 +207,9 @@ class WorkerContractTest {
         // A cursor read ends with the next cursor (ADR 0018).
         assertThat(history.trimEnd().lines().last()).matches("""\s*NEXT: \d+""")
         assertThat(w.readEventLog(System.currentTimeMillis() - 60_000)).isNotNull()
+        val alarms = AlarmStats.parse(w.readAlarms())
+        assertThat(alarms.found).isTrue()
+        assertThat(alarms.unparsed).isEmpty()
     }
 
     private companion object {

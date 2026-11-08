@@ -68,6 +68,8 @@ class PrivilegedDozeDeviceTest {
         override suspend fun readBatteryHistory(historyStart: Long) = read("readBatteryHistory")
 
         override suspend fun readAllowlist() = read("readAllowlist")
+
+        override suspend fun readAlarms() = read("readAlarms")
     }
 
     private val worker = object : WorkerPort {

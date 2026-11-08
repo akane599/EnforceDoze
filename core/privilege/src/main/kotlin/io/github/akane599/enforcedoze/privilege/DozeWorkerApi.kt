@@ -52,6 +52,9 @@ public interface DozeWorkerApi {
     public suspend fun readBatteryHistory(historyStart: Long): String
 
     public suspend fun readAllowlist(): String
+
+    /** `dumpsys alarm`, for the alarm wakeups of a session (ADR 0019). */
+    public suspend fun readAlarms(): String
 }
 
 /** [DozeWorkerApi] over the binder. Calls run on the IO dispatcher. */
@@ -91,6 +94,8 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun readBatteryHistory(historyStart: Long): String = read { worker.readBatteryHistory(historyStart, it) }
 
     override suspend fun readAllowlist(): String = read { worker.readAllowlist(it) }
+
+    override suspend fun readAlarms(): String = read { worker.readAlarms(it) }
 
     private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 

@@ -122,6 +122,7 @@ class WorkerCoreTest {
         assertThat(core.readBatteryHistoryArgv(0)).containsExactly("dumpsys", "batterystats", "--history-start", "0").inOrder()
         assertThat(core.readBatteryHistoryArgv(-5)).containsExactly("dumpsys", "batterystats", "--history-start", "0").inOrder()
         assertThat(core.readBatteryHistoryArgv(42)).containsExactly("dumpsys", "batterystats", "--history-start", "42").inOrder()
+        assertThat(core.readAlarmsArgv()).containsExactly("dumpsys", "alarm").inOrder()
     }
 
     private companion object {

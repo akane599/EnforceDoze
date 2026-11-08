@@ -92,6 +92,9 @@ internal class WorkerCore(
 
     fun readAllowlistArgv(): List<String> = listOf("cmd", "deviceidle", "whitelist")
 
+    /** `dumpsys alarm` takes no section filter, only `--proto` (AlarmManagerService.dump, android-17.0.0_r1 line 3080). */
+    fun readAlarmsArgv(): List<String> = listOf("dumpsys", "alarm")
+
     /** `logcat -T` accepts `sssss.mmm` (seconds since the epoch) and does not imply `-d` (logcat help). */
     fun readEventLogArgv(sinceMillis: Long): List<String> {
         val base = listOf("logcat", "-b", "events", "-d", "-v", "epoch")

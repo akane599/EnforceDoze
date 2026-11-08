@@ -14,6 +14,7 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
     var sensorsOff = false
     var eventLog: String = ""
     var batteryHistory: String = ""
+    var alarms: String = ""
     var globalConstants: String? = null
 
     protected fun ok(stdout: String = "", vararg argv: String) = CommandOutcome(argv.toList(), 0, stdout, "", false, 0, null)
@@ -75,4 +76,6 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
     override suspend fun readBatteryHistory(historyStart: Long): String = batteryHistory
 
     override suspend fun readAllowlist(): String = ""
+
+    override suspend fun readAlarms(): String = alarms
 }

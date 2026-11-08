@@ -84,6 +84,8 @@ public class DozeWorker internal constructor(
 
     override fun readAllowlist(pipe: ParcelFileDescriptor?): Unit = stream(pipe) { core.readAllowlistArgv() }
 
+    override fun readAlarms(pipe: ParcelFileDescriptor?): Unit = stream(pipe) { core.readAlarmsArgv() }
+
     private inline fun <T> checked(block: () -> T): T {
         val uid = callingUid()
         if (uid != allowedUid) throw SecurityException("uid $uid may not call the worker")
