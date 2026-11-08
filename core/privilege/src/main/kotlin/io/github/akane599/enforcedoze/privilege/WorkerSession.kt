@@ -87,6 +87,7 @@ public class WorkerSession(
             return WorkerResult.Ok(current to generation)
         }
         disconnectLocked()
+        with.awaitUnbound()
         val bound = ++generation
         val connected = try {
             withTimeoutOrNull(bindTimeoutMillis) { with.bind(onLost = { lost(bound) }) }

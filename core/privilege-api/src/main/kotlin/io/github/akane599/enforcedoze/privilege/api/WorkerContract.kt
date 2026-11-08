@@ -24,6 +24,9 @@ public object WorkerContract {
     /** No connection within this time marks the worker unavailable for the session (SPEC 4.3). */
     public const val BIND_TIMEOUT_MILLIS: Long = 5_000
 
+    /** Longest wait for an unbound worker's disconnect before the next bind; not counted in [BIND_TIMEOUT_MILLIS]. */
+    public const val UNBIND_SETTLE_MILLIS: Long = 3_000
+
     /** The worker unbinds this long after its last call (SPEC 4.3). */
     public const val IDLE_UNBIND_MILLIS: Long = 60_000
 

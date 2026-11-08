@@ -5,9 +5,11 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -21,6 +23,8 @@ class WorkerSessionTest {
     ) : WorkerBinder {
         var binds = 0
         var unbinds = 0
+        var settleMillis = 0L
+        var settledBeforeBind = 0
         var onLost: (() -> Unit)? = null
         val worker = FakeDozeWorker()
 
@@ -34,6 +38,11 @@ class WorkerSessionTest {
 
         override fun unbind() {
             unbinds++
+        }
+
+        override suspend fun awaitUnbound() {
+            delay(settleMillis)
+            settledBeforeBind = binds + 1
         }
     }
 
@@ -55,6 +64,20 @@ class WorkerSessionTest {
         runCurrent()
         assertThat(binder.unbinds).isEqualTo(1)
         assertThat(session.status.value).isEqualTo(WorkerStatus.Idle)
+    }
+
+    @Test
+    fun `waits for the previous worker to go before binding, outside the bind timeout`() = runTest {
+        val session = session()
+        val binder = FakeBinder()
+        session.use(binder) { it.uid() }
+        session.close()
+        binder.settleMillis = 6_000 // longer than the 5 s bind timeout
+        binder.connects = true
+        val started = currentTime
+        assertThat(session.use(binder) { it.uid() }).isEqualTo(WorkerResult.Ok(2000))
+        assertThat(binder.settledBeforeBind).isEqualTo(2)
+        assertThat(currentTime - started).isEqualTo(6_000)
     }
 
     @Test
