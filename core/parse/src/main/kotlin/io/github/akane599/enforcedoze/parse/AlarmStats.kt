@@ -42,6 +42,9 @@ public data class AlarmStats(
             val section = lines.drop(1).takeWhile { it.isNotBlank() }
             val apps = mutableListOf<AppAlarmStats>()
             val unparsed = mutableListOf<String>()
+            // Tag lines belong to the app line just above them; after a line that did not parse they belong to
+            // no app this parser read, so they are not given to the one before it.
+            var open = false
             var index = 0
             while (index < section.size) {
                 val line = section[index]
@@ -49,15 +52,21 @@ public data class AlarmStats(
                 val tag = if (app == null) TAG.matchEntire(line)?.let(::counts) else null
                 val tagName = section.getOrNull(index + 1)?.trim()
                 when {
-                    app != null -> apps += app
+                    app != null -> {
+                        apps += app
+                        open = true
+                    }
 
-                    tag != null && apps.isNotEmpty() && tagName != null -> {
+                    tag != null && open && tagName != null -> {
                         val last = apps.removeAt(apps.lastIndex)
                         apps += last.copy(tags = last.tags + AlarmTagStats(tagName, tag.first, tag.second))
                         index++
                     }
 
-                    else -> unparsed += line
+                    else -> {
+                        unparsed += line
+                        open = false
+                    }
                 }
                 index++
             }

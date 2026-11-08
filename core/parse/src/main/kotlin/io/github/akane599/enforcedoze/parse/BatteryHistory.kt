@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.parse
 
+import java.time.DateTimeException
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -78,9 +80,12 @@ public data class BatteryHistory(
             "*OVERFLOW*" to HistoryCommand.OVERFLOW,
         )
 
-        /** Parses [text]; [fallbackYear] dates Format 2 lines printed before any `TIME:` line. */
-        public fun parse(text: String, zone: ZoneId, fallbackYear: Int): BatteryHistory {
-            val reader = Reader(zone, fallbackYear)
+        /**
+         * Parses [text], read at [readAt]. Format 2 lines printed before any `TIME:` line take the year that
+         * puts them nearest the read.
+         */
+        public fun parse(text: String, zone: ZoneId, readAt: Instant): BatteryHistory {
+            val reader = Reader(zone, LocalDateTime.ofInstant(readAt, zone))
             for (raw in text.lineSequence()) reader.read(raw)
             return reader.result()
         }
@@ -164,14 +169,17 @@ public data class BatteryHistory(
         }
 
         /** Reads one history in order and keeps the time anchor the next lines need. */
-        private class Reader(private val zone: ZoneId, fallbackYear: Int) {
+        private class Reader(private val zone: ZoneId, readAt: LocalDateTime) {
             private var format = HistoryFormat.UNKNOWN
             private val lines = mutableListOf<HistoryLine>()
             private val unparsed = mutableListOf<String>()
             private var next: Long? = null
 
             /** The local date and time of the last `TIME:` line, for the year of Format 2 lines. */
-            private var anchorLocal: LocalDateTime = LocalDateTime.of(fallbackYear, 1, 1, 0, 0)
+            private var anchorLocal: LocalDateTime = readAt
+
+            /** The last Format 2 time, to place a line inside a repeated hour (daylight saving ends). */
+            private var lastEpoch: Long? = null
 
             /** Legacy: the offset and the epoch milliseconds of the last `TIME:` line. */
             private var anchorOffset: Long? = null
@@ -188,7 +196,7 @@ public data class BatteryHistory(
                 when {
                     header != null -> format = if (header.groupValues[1].isEmpty()) HistoryFormat.LEGACY else HistoryFormat.FORMAT_2
 
-                    next != null -> this.next = next.groupValues[1].toLong()
+                    next != null -> cursor(raw, next)
 
                     format2 != null -> format2(raw, format2)
 
@@ -199,26 +207,40 @@ public data class BatteryHistory(
                 }
             }
 
+            private fun cursor(raw: String, match: MatchResult) {
+                val value = match.groupValues[1].toLongOrNull()
+                if (value == null) unparsed += raw else next = value
+            }
+
             private fun format2(raw: String, match: MatchResult) {
-                val body = match.text("body")
-                val time = TIME.matchEntire(body.trim())
-                if (time != null) {
-                    val local = local(time)
-                    anchorLocal = local
-                    val epoch = epoch(local)
-                    lines += HistoryLine(epoch(stamp(match)), null, listOf(HistoryItem.Command(command(time), epoch)))
-                    return
-                }
-                val parsed = body(body)
-                if (parsed == null) unparsed += raw else lines += HistoryLine(epoch(stamp(match)), parsed.first, parsed.second)
+                val time = TIME.matchEntire(match.text("body").trim())
+                val line = if (time != null) timeLine(time, match) else record(match)
+                if (line == null) unparsed += raw else lines += line
+            }
+
+            /** A `TIME:` line: the wall clock, which also dates the Format 2 lines after it. */
+            private fun timeLine(time: MatchResult, match: MatchResult): HistoryLine? {
+                val local = localOrNull(time) ?: return null
+                anchorLocal = local
+                // The clock value and its stamp are the same moment, so both take the offset the stamp takes.
+                val previous = lastEpoch
+                val stamp = stamp(match) ?: return null
+                return HistoryLine(stampEpoch(stamp), null, listOf(HistoryItem.Command(command(time), epoch(local, previous))))
+            }
+
+            private fun record(match: MatchResult): HistoryLine? {
+                val parsed = body(match.text("body")) ?: return null
+                val stamp = stamp(match) ?: return null
+                return HistoryLine(stampEpoch(stamp), parsed.first, parsed.second)
             }
 
             private fun legacy(raw: String, match: MatchResult) {
                 val offset = AndroidDuration.parseMillis(match.text("offset"))
                 val body = match.text("body")
                 val time = TIME.matchEntire(body.trim())
-                if (offset != null && time != null) {
-                    anchorEpoch = epoch(local(time))
+                val local = time?.let { localOrNull(it) }
+                if (offset != null && time != null && local != null) {
+                    anchorEpoch = epoch(local, near = null)
                     anchorOffset = offset
                     lines += HistoryLine(anchorEpoch, null, listOf(HistoryItem.Command(command(time), anchorEpoch)))
                     return
@@ -232,15 +254,29 @@ public data class BatteryHistory(
                 }
             }
 
-            /** The year of a Format 2 stamp: whichever of the anchor's year and its neighbours lies nearest. */
-            private fun stamp(match: MatchResult): LocalDateTime {
+            /**
+             * The year of a Format 2 stamp: whichever of the anchor's year and its neighbours lies nearest; null for a
+             * date no year has.
+             */
+            private fun stamp(match: MatchResult): LocalDateTime? {
                 val year = anchorLocal.year
                 return listOf(year - 1, year, year + 1)
-                    .mapNotNull { y -> runCatching { local(match, y) }.getOrNull() }
-                    .minBy { abs(ChronoUnit.MINUTES.between(anchorLocal, it)) }
+                    .mapNotNull { y -> localOrNull(match, y) }
+                    .minByOrNull { abs(ChronoUnit.MINUTES.between(anchorLocal, it)) }
             }
 
-            private fun epoch(local: LocalDateTime): Long = local.atZone(zone).toInstant().toEpochMilli()
+            private fun stampEpoch(local: LocalDateTime): Long = epoch(local, near = lastEpoch).also { lastEpoch = it }
+
+            /**
+             * Local time to epoch. In the hour that repeats when daylight saving ends, the earlier offset would
+             * put a line of the second pass before the line printed just above it, so the later one is taken.
+             */
+            private fun epoch(local: LocalDateTime, near: Long?): Long {
+                val zoned = local.atZone(zone)
+                val earlier = zoned.toInstant().toEpochMilli()
+                if (near == null || earlier >= near) return earlier
+                return zoned.withLaterOffsetAtOverlap().toInstant().toEpochMilli()
+            }
         }
     }
 }
@@ -253,7 +289,14 @@ private fun MatchResult.int(group: String): Int = text(group).toIntOrNull() ?: 0
 
 private fun command(time: MatchResult) = if (time.text("reset").isEmpty()) HistoryCommand.TIME else HistoryCommand.RESET
 
-private fun local(time: MatchResult, year: Int = time.int("y")): LocalDateTime = LocalDateTime.of(
+/** Null for a date or time no calendar has (`13-01`, `02-30`), which makes the line unparsed rather than throw. */
+private fun localOrNull(time: MatchResult, year: Int = time.int("y")): LocalDateTime? = try {
+    local(time, year)
+} catch (_: DateTimeException) {
+    null
+}
+
+private fun local(time: MatchResult, year: Int): LocalDateTime = LocalDateTime.of(
     year,
     time.int("mo"),
     time.int("d"),

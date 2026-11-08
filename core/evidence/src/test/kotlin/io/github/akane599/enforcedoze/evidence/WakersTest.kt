@@ -13,6 +13,9 @@ import java.time.Duration
 import java.time.Instant
 import java.time.ZoneOffset
 
+/** When the test histories were read: Format 2 lines before a `TIME:` line take the year nearest it. */
+private val READ_AT = Instant.parse("2026-11-09T00:00:00Z")
+
 class WakersTest {
     private fun at(time: String): Instant = Instant.parse("2026-11-08T${time}Z")
 
@@ -50,7 +53,7 @@ class WakersTest {
         |  NEXT: 987654
         """.trimMargin(),
         ZoneOffset.UTC,
-        2026,
+        READ_AT,
     )
 
     private val before = AlarmStats.parse(
@@ -138,8 +141,11 @@ class WakersTest {
             |  11-08 23:05:01.000 090 -running
             """.trimMargin(),
             ZoneOffset.UTC,
-            2026,
+            READ_AT,
         )
+        val unread = after.copy(unparsed = listOf("  u0a99:self ?? running, 1 wakeups:"))
+        assertWithMessage("an alarm line that did not parse may be the app's own").that(summary(alarmsAfter = unread).ownWakeups).isNull()
+        assertThat(summary(alarmsAfter = unread).alarmsRead).isFalse()
         assertWithMessage("a history that starts 5 min late does not cover the session").that(summary(history = late).ownWakeups).isNull()
         assertThat(summary(history = late).historyCoverage).isEqualTo(Interval(at("23:05:00"), session.end))
     }
@@ -155,7 +161,7 @@ class WakersTest {
 
     @Test fun everyCapturedHistoryReplays() {
         Fixtures.with("batterystats-history.txt").forEach { capture ->
-            val history = BatteryHistory.parse(capture.text("batterystats-history.txt"), ZoneOffset.UTC, 2026)
+            val history = BatteryHistory.parse(capture.text("batterystats-history.txt"), ZoneOffset.UTC, READ_AT)
             val whole = Interval(Instant.ofEpochMilli(history.start!!), Instant.ofEpochMilli(history.end!!))
             val summary = Wakers.summarize(WakerInput(whole, history, null, null, emptyList(), self))
             val text = capture.text("batterystats-history.txt")

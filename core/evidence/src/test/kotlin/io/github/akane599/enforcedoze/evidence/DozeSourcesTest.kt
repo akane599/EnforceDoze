@@ -12,6 +12,9 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+/** When the test histories were read: Format 2 lines before a `TIME:` line take the year nearest it. */
+private val READ_AT = Instant.parse("2026-11-09T00:00:00Z")
+
 class DozeSourcesTest {
     private val t0 = Instant.parse("2026-11-08T23:00:00Z")
 
@@ -49,7 +52,7 @@ class DozeSourcesTest {
             |  ${stamp.format(at(-60))} TIME: 2026-11-08-22-59-00
             |$lines
         """.trimMargin()
-        return BatteryHistory.parse(text, ZoneOffset.UTC, 2026)
+        return BatteryHistory.parse(text, ZoneOffset.UTC, READ_AT)
     }
 
     @Test fun oneReadCoversTheSession() {
@@ -123,7 +126,7 @@ class DozeSourcesTest {
             |  ${stamp.format(at(min(5)))} 090 device_idle=full
             """.trimMargin(),
             ZoneOffset.UTC,
-            2026,
+            READ_AT,
         )
         assertWithMessage("the cursor read starts a second after screen off (ADR 0020)")
             .that(DozeSources.merge(session, listOf(late), startingAt(2)).historyFilled)

@@ -89,7 +89,7 @@ public object SessionAssembly {
             SessionRecord(base.copy(note = "shorter than ${input.minimum.seconds} s: not judged"), emptyList(), emptyList(), snapshots),
             nextCursor = null,
         )
-        val history = reads.history?.let { BatteryHistory.parse(it, input.zone, end.atZone(input.zone).year) }
+        val history = reads.history?.let { BatteryHistory.parse(it, input.zone, Instant.ofEpochMilli(reads.readAt)) }
         val eventReads = input.copied.map { (at, text) -> EventLogRead(DozeEventLog.parse(text), Instant.ofEpochMilli(at)) } +
             listOfNotNull(reads.eventLog?.let { EventLogRead(DozeEventLog.parse(it), Instant.ofEpochMilli(reads.readAt)) })
         val analysis = Sessions.analyze(
@@ -117,9 +117,10 @@ public object SessionAssembly {
             EvidenceRows.snapshot(reads.readAt, SCREEN_ON, SensorServiceDump.parse(it), SensorConnections.parse(it))
         }
         val record = EvidenceRows.record(base, analysis, snapshots + listOfNotNull(screenOn), input.selfUid)
-        val withheld = withheld(input, expected, analysis.doze.gaps, history)
+        val withheld = withheld(input, expected, analysis.doze.gaps, history, eventReads.sumOf { it.log.unparsed.size })
         val motion = noMotionSensor(analysis.result.verdict, reads.deviceIdle).takeIf { withheld.isEmpty() }
-        val notes = reads.failures + withheld + listOfNotNull(missing(input, reads, analysis.wakers), motion)
+        val unreadHistory = history?.unparsed?.size?.takeIf { it > 0 }?.let { "$it battery history lines could not be read" }
+        val notes = reads.failures + withheld + listOfNotNull(missing(input, reads, analysis.wakers), motion, unreadHistory)
         val session = record.session.let { if (withheld.isEmpty()) it else it.copy(verdict = null, cause = null, lateByMillis = null) }
         return ClosedSession(record.copy(session = session.copy(note = notes.joinToString("\n").ifEmpty { null })), history?.next)
     }
@@ -158,15 +159,24 @@ public object SessionAssembly {
         )
     }
 
-    /** Why the session gets no verdict (ADR 0020); empty when it gets one. */
-    private fun withheld(input: SessionClose, expected: Duration?, gaps: List<Interval>, history: BatteryHistory?): List<String> =
-        listOfNotNull(
-            "the walk to deep idle is unknown: no stock or previous values".takeIf { expected == null },
-            gaps.takeIf { it.isNotEmpty() }?.let { spans ->
-                "no Doze record for ${spans.fold(Duration.ZERO) { sum, span -> sum + span.duration }.toMinutes()} min: not judged"
-            },
-            input.open.resumedAt?.let { screenOnInside(input, history) },
-        )
+    /**
+     * Why the session gets no verdict (ADR 0020); empty when it gets one. A Doze line that could not be read may be
+     * a state change the verdict would miss, so [unreadDoze] withholds it too.
+     */
+    private fun withheld(
+        input: SessionClose,
+        expected: Duration?,
+        gaps: List<Interval>,
+        history: BatteryHistory?,
+        unreadDoze: Int,
+    ): List<String> = listOfNotNull(
+        "the walk to deep idle is unknown: no stock or previous values".takeIf { expected == null },
+        "$unreadDoze Doze lines of the event log could not be read: not judged".takeIf { unreadDoze > 0 },
+        gaps.takeIf { it.isNotEmpty() }?.let { spans ->
+            "no Doze record for ${spans.fold(Duration.ZERO) { sum, span -> sum + span.duration }.toMinutes()} min: not judged"
+        },
+        input.open.resumedAt?.let { screenOnInside(input, history) },
+    )
 
     /** A resumed session is judged only when the history shows the screen stayed off (ADR 0020). */
     private fun screenOnInside(input: SessionClose, history: BatteryHistory?): String? {

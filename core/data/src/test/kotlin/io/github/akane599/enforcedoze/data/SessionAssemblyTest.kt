@@ -158,6 +158,15 @@ class SessionAssemblyTest {
         assertWithMessage("an unknown cursor is not advanced").that(closed.nextCursor).isNull()
     }
 
+    @Test fun aDozeLineThatCouldNotBeReadWithholdsTheVerdict() {
+        val vendor = walk + "\n" + line("23:20:00", "device_idle", "[8,vendor state]")
+        val unreadHistory = quietHistory.replace("  NEXT:", "  11-08 23:20:00.000 089 +new_layout:x:y\n  NEXT:")
+        val session = close(reads = reads(eventLog = vendor, history = unreadHistory)).record.session
+        assertThat(session.verdict).isNull()
+        assertThat(session.note).contains("1 Doze lines of the event log could not be read: not judged")
+        assertThat(session.note).contains("1 battery history lines could not be read")
+    }
+
     @Test fun theHistoryFillsWhatTheEventLogLost() {
         val rolled = walk.lines().filter { at("23:15:00") <= epoch(it) }.joinToString("\n")
         val session = close(reads = reads(eventLog = rolled)).record.session

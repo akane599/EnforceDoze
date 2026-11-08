@@ -61,6 +61,24 @@ class AlarmStatsTest {
         assertThat(stats.apps.first().alarms).isEqualTo(9)
     }
 
+    @Test fun tagsAfterAnAppLineThatDidNotParseAreNotGivenToTheAppBefore() {
+        val text = """
+            |  Alarm Stats:
+            |  1000:android 0 running, 0 wakeups:
+            |  u0a5:com.example.next running with a new layout:
+            |    +600ms 2 wakes 2 alarms, last -5s0ms:
+            |      *walarm*:sync now
+            |  u0a6:com.example.after +1s0ms running, 1 wakeups:
+            |    +1s0ms 1 wakes 1 alarms, last -5s0ms:
+            |      *walarm*:tick
+            |
+        """.trimMargin()
+        val stats = AlarmStats.parse(text)
+        assertThat(stats.apps.single { it.packageName == "android" }.tags).isEmpty()
+        assertThat(stats.apps.single { it.packageName == "com.example.after" }.tags).containsExactly(AlarmTagStats("*walarm*:tick", 1, 1))
+        assertThat(stats.unparsed).hasSize(3)
+    }
+
     @Test fun aDumpWithoutTheSectionSaysSo() {
         val stats = AlarmStats.parse("Current Alarm Manager state:\n  Settings:\n")
         assertThat(stats.found).isFalse()

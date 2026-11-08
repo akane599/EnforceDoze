@@ -52,6 +52,18 @@ class DozeEventLogTest {
         assertThat(DozeEventLog.parse("--------- beginning of events\n").firstTime).isNull()
     }
 
+    @Test fun aStateThisParserDoesNotKnowIsUnparsedNotDropped() {
+        val text = """
+            |         1794082053.012   587   587 I device_idle: [8,vendor state]
+            |         1794082053.100   587   587 I device_idle_light: [2,unused code]
+            |         1794082053.200   587   587 I device_idle: [99999999999,overflow]
+            |         1794082053.300   587   587 I device_idle_wake_from_idle: [3,any value]
+        """.trimMargin()
+        val log = DozeEventLog.parse(text)
+        assertThat(log.events.map { it.tag }).containsExactly(DozeTag.WAKE_FROM_IDLE)
+        assertThat(log.unparsed).hasSize(3)
+    }
+
     @Test fun copyKeepsTheFirstLineAndTheDozeLines() {
         val text = """
             |--------- beginning of events

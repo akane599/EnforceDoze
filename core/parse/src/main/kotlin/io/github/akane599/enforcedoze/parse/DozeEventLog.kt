@@ -69,7 +69,8 @@ public data class DozeEvent(
 
 /**
  * `logcat -b events` output in `epoch` (what the worker requests) or `threadtime` format. Lines with
- * other tags are counted, not kept; `device_idle*` lines that do not parse are kept in [unparsed].
+ * other tags are counted, not kept; `device_idle*` lines that do not parse, or that carry a state code
+ * [DeepState] or [LightState] does not know, are kept in [unparsed].
  */
 public data class DozeEventLog(
     val events: List<DozeEvent>,
@@ -139,7 +140,15 @@ public data class DozeEventLog(
             val body = stamped.payload.trim()
             if (tag !in WITH_STATE) return DozeEvent(stamped.time, tag, null, body, stamped.line)
             val match = STATE_REASON.matchEntire(body) ?: return null
-            return DozeEvent(stamped.time, tag, match.groupValues[1].toInt(), match.groupValues[2], stamped.line)
+            // A state this parser does not know (a vendor addition) is not a state change it may draw.
+            val state = match.groupValues[1].toIntOrNull()?.takeIf { known(tag, it) } ?: return null
+            return DozeEvent(stamped.time, tag, state, match.groupValues[2], stamped.line)
+        }
+
+        private fun known(tag: DozeTag, state: Int): Boolean = when (tag) {
+            DozeTag.DEEP -> DeepState.fromCode(state) != null
+            DozeTag.LIGHT -> LightState.fromCode(state) != null
+            else -> true
         }
     }
 }

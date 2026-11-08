@@ -64,7 +64,7 @@ public data class WakerSummary(
     val unattributedWakelock: Duration,
     /** The part of the session the battery history covered; null when it covered none. */
     val historyCoverage: Interval?,
-    /** Both alarm reads were present, so the alarm wakeups are known. */
+    /** Both alarm reads were present and every line of their sections was read, so the alarm wakeups are known. */
     val alarmsRead: Boolean,
     val own: OwnWakeups,
     /** [OwnWakeups.total], or null when the alarm reads or the history do not cover the session: never a guessed 0. */
@@ -101,11 +101,9 @@ public object Wakers {
         val replay = input.history?.let { HistoryReplay.of(it, session.end) }
         val runs = replay?.runs.orEmpty().filter { it.interval.touches(session) }
         val points = replay?.points.orEmpty().filter { it.time in session }
-        val alarms = if (input.alarmsBefore?.found == true && input.alarmsAfter?.found == true) {
-            alarmDelta(input.alarmsBefore, input.alarmsAfter)
-        } else {
-            null
-        }
+        val before = input.alarmsBefore?.takeIf(::complete)
+        val after = input.alarmsAfter?.takeIf(::complete)
+        val alarms = if (before != null && after != null) alarmDelta(before, after) else null
         val coverage = input.history?.start?.let { start ->
             Interval(maxOf(session.start, Instant.ofEpochMilli(start)), session.end).takeIf { it.duration > Duration.ZERO }
         }
@@ -124,6 +122,9 @@ public object Wakers {
             ownWakeups = own.total.takeIf { alarms != null && covered },
         )
     }
+
+    /** A line of the section that did not parse may be any app's, the app's own included, so it leaves the count unknown. */
+    private fun complete(stats: AlarmStats): Boolean = stats.found && stats.unparsed.isEmpty()
 
     /**
      * The alarms each app delivered between two reads of `dumpsys alarm`, per tag. A counter that is

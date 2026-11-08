@@ -5,9 +5,13 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import io.github.akane599.enforcedoze.testing.fixtures.Fixtures
 import org.junit.Test
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+
+/** When the test histories were read: Format 2 lines before a `TIME:` line take the year nearest it. */
+private val READ_AT = Instant.parse("2026-11-09T00:00:00Z")
 
 class BatteryHistoryTest {
     private val utc = ZoneOffset.UTC
@@ -15,14 +19,14 @@ class BatteryHistoryTest {
     private fun epoch(text: String, zone: ZoneId = utc) = LocalDateTime.parse(text).atZone(zone).toInstant().toEpochMilli()
 
     private fun history(capture: String, build: String) =
-        BatteryHistory.parse(Fixtures.capture(capture, build).text("batterystats-history.txt"), utc, 2026)
+        BatteryHistory.parse(Fixtures.capture(capture, build).text("batterystats-history.txt"), utc, READ_AT)
 
     private fun BatteryHistory.items() = lines.flatMap { it.items }
 
     @Test fun everyCaptureParsesEveryRecord() {
         Fixtures.with("batterystats-history.txt").forEach { capture ->
             val text = capture.text("batterystats-history.txt")
-            val history = BatteryHistory.parse(text, utc, 2026)
+            val history = BatteryHistory.parse(text, utc, READ_AT)
             assertWithMessage("$capture").that(history.unparsed).isEmpty()
             assertWithMessage("$capture").that(history.format)
                 .isEqualTo(if (capture.sdk >= 36) HistoryFormat.FORMAT_2 else HistoryFormat.LEGACY)
@@ -89,7 +93,7 @@ class BatteryHistoryTest {
             |  11-08 05:02:31.500 087 device_idle=full wakeupap=u0a42:""
             |  NEXT: 123456789
         """.trimMargin()
-        val history = BatteryHistory.parse(text, ZoneId.of("Europe/Istanbul"), 2020)
+        val history = BatteryHistory.parse(text, ZoneId.of("Europe/Istanbul"), READ_AT)
         assertThat(history.next).isEqualTo(123_456_789)
         assertThat(BatteryHistory.nextCursor(text)).isEqualTo(123_456_789)
         assertWithMessage(
@@ -108,8 +112,58 @@ class BatteryHistoryTest {
             |  12-31 23:59:00.000 TIME: 2026-12-31-23-59-00
             |  01-01 00:01:00.000 050 +screen
         """.trimMargin()
-        val history = BatteryHistory.parse(text, utc, 2026)
+        val history = BatteryHistory.parse(text, utc, READ_AT)
         assertThat(history.lines[1].time).isEqualTo(epoch("2027-01-01T00:01:00"))
+    }
+
+    @Test fun aReadWithoutATimeLineTakesTheYearNearestTheRead() {
+        val text = """
+            |Battery History [Format: 2] (1% used, 40KB used of 4096KB, 10 strings using 1KB):
+            |  11-08 05:01:31.500 087 -screen device_idle=light
+            |  NEXT: 42
+        """.trimMargin()
+        val november = BatteryHistory.parse(text, utc, Instant.parse("2026-11-08T06:00:00Z"))
+        assertThat(november.lines.single().time).isEqualTo(epoch("2026-11-08T05:01:31.500"))
+        val december = text.replace("11-08 05:01:31.500", "12-31 23:50:00.000")
+        assertWithMessage("read just after new year")
+            .that(BatteryHistory.parse(december, utc, Instant.parse("2027-01-01T00:10:00Z")).lines.single().time)
+            .isEqualTo(epoch("2026-12-31T23:50:00"))
+    }
+
+    @Test fun theHourThatRepeatsWhenDaylightSavingEndsKeepsTimeMovingForward() {
+        // Europe/Berlin goes from 03:00 CEST back to 02:00 CET on 2026-10-25.
+        val berlin = ZoneId.of("Europe/Berlin")
+        val text = """
+            |Battery History [Format: 2] (1% used, 40KB used of 4096KB, 10 strings using 1KB):
+            |  10-25 02:30:00.000 TIME: 2026-10-25-02-30-00
+            |  10-25 02:59:00.000 050 -screen
+            |  10-25 02:01:00.000 050 device_idle=full
+            |  10-25 03:30:00.000 050 +screen
+        """.trimMargin()
+        val history = BatteryHistory.parse(text, berlin, READ_AT)
+        assertThat(history.lines.map { Instant.ofEpochMilli(it.time).toString() }).containsExactly(
+            "2026-10-25T00:30:00Z",
+            "2026-10-25T00:59:00Z",
+            "2026-10-25T01:01:00Z",
+            "2026-10-25T02:30:00Z",
+        ).inOrder()
+        assertWithMessage("the clock value takes the stamp's offset")
+            .that((history.lines.first().items.single() as HistoryItem.Command).wallTime)
+            .isEqualTo(Instant.parse("2026-10-25T00:30:00Z").toEpochMilli())
+    }
+
+    @Test fun impossibleDatesAndOversizedNumbersAreUnparsedNotThrown() {
+        val text = """
+            |Battery History [Format: 2] (1% used, 40KB used of 4096KB, 10 strings using 1KB):
+            |  11-08 05:01:30.000 TIME: 2026-13-01-05-01-30
+            |  02-30 05:01:31.000 087 +screen
+            |  11-08 05:01:32.000 087 -screen
+            |  NEXT: 99999999999999999999
+        """.trimMargin()
+        val history = BatteryHistory.parse(text, utc, READ_AT)
+        assertThat(history.unparsed).hasSize(3)
+        assertThat(history.lines.single().items).containsExactly(HistoryItem.Flag("screen", false))
+        assertThat(history.next).isNull()
     }
 
     @Test fun tagsWithSpacesAndDoubledQuotesAreOneToken() {
@@ -133,7 +187,7 @@ class BatteryHistoryTest {
             |Companion Device Baterry Infos:
             |    [ 000000_0, 2, 13, -1, -1, -1, 3 ]
         """.trimMargin()
-        val history = BatteryHistory.parse(text, utc, 2026)
+        val history = BatteryHistory.parse(text, utc, READ_AT)
         assertThat(history.unparsed).hasSize(1)
         assertThat(history.lines.last().items.single()).isEqualTo(HistoryItem.Command(HistoryCommand.SHUTDOWN, null))
     }
