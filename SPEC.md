@@ -642,7 +642,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 1. `dumpsys battery unplug`.
 2. Apply a test profile: `inactive_to` 30 s, `idle_after_inactive_to` 30 s, `sensing_to` 10 s, `locating_to` 5 s, `idle_to` 60 s, `max_idle_to` 120 s.
 3. Set the night-report threshold to 4 minutes (an injectable test config, never in release).
-4. Screen off with `input keyevent KEYCODE_SLEEP`; wait 5 minutes; screen on with `KEYCODE_WAKEUP`.
+4. Screen off with `input keyevent KEYCODE_SLEEP`; wait 5 minutes; screen on with `KEYCODE_WAKEUP`. On a device without a motion sensor (`mUseMotionSensor=true mMotionSensor=null`, as on the emulators) the system schedules no alarm before IDLE, so the script steps `cmd deviceidle step deep` at the profile's walk timers until IDLE and leaves everything after IDLE to the system (ADR 0016).
 5. Assert: transitions in the expected order with timings within tolerance, at least 2 maintenance windows, verdict Held, a night report exists, and the app's own wakeups are 0.
 6. Always finish with `dumpsys battery reset` and Restore stock, in a `finally`.
 
