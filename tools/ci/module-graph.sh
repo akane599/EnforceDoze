@@ -53,6 +53,9 @@ require :core:data debugRuntimeClasspath :core:doze
 # Verdicts come from the records alone (SPEC 8.4): no engine, storage or privilege.
 forbid :core:evidence runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':feature:[a-z-]+' :app
 require :core:evidence runtimeClasspath :core:parse
+# ADR 0026: the recommender sees sessions and profiles only; the adapters that build sessions live outside.
+forbid :core:recommend runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':core:evidence' ':feature:[a-z-]+' :app
+require :core:recommend runtimeClasspath :core:profile
 
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status

@@ -357,6 +357,8 @@ The first recommendation appears during onboarding, from history the phone alrea
 
 Every threshold is a named constant in `RecommendationPolicy.kt` with its unit and a comment saying why; each has a unit test, and changing one needs an ADR. The numbers above are starting points, not facts about all phones.
 
+Definitions (ADR 0026): a daytime session is any session that is not an N night; the short share counts unplugged time only; an available night is one in which an N session could start and still fit inside the history; rule 1 counts screen-off time from any source. D and R count only sessions run under stock settings, and M counts only sessions with the sensors free that outlast the expected walk to deep idle by 2 minutes. When no stock time exists, D and R are shown as not measured and rule 4 is skipped.
+
 &#91;embedded content: Recommended decision path · 5 questions, 6 plan pieces\]
 
 Movement picks Pocket, short sessions with patient messaging pick Classic, everything else stays on Everyday; long unplugged nights add Night, and a phone that already dozes well is not pushed further.
@@ -382,7 +384,7 @@ flowchart TD
 
 ### 7.4 What the owner sees
 
-- The plan, with a confidence chip: Low (< 24 h of history), Medium (1–6 days), High (≥ 7 days).
+- The plan, with a confidence chip: Low (rule 1), High (≥ 7 days of history with D and R measured under stock settings), Medium otherwise (ADR 0026).
 - A "why" card: the 2–3 strongest signals with their numbers, in plain words. Example: "Your phone is screen-off about 9 hours a day. In 6 of the last 10 long sessions, movement kept it out of deep idle. Pocket keeps deep idle while you move."
 - A "what you give up" line taken from the profile's cost (6.1).
 - Apply, or pick something else. Picking something else is fine and is remembered; the recommendation does not nag.
@@ -392,10 +394,11 @@ flowchart TD
 - Re-evaluated after each night report and weekly. A changed recommendation shows a card; it is applied only on a tap, unless the owner turned on "Follow Recommended automatically" (off by default).
 - After 3 unplugged nights on the plan, the night report compares drain against the Stock baseline. If the gain is under 10%, the next recommendation steps one notch gentler and says why.
 - "Something arrived late" in the night report records the time and app, steps the plan one notch gentler (Strict → Classic → Night off → Everyday) and offers to add that app to the allowlist.
+- A step applies to the plan in use; Pocket and custom day profiles step to Everyday, and the Right-away cap still holds after it. Only feedback since that plan was applied counts, for 30 days at most (ADR 0026).
 
 ### 7.6 Testing it
 
-The policy is a pure function: `recommend(history, answers) -> Recommendation`. At least 12 fixture histories cover each rule and each boundary (thin history, pocket-heavy commuter, desk worker, night charger, unplugged sleeper, Right-away owner, already-dozing phone, low battery). Fixtures are synthetic or anonymized dumps; tests run in milliseconds, no device.
+The policy is a pure function: `recommend(history, answers) -> Recommendation`; `history` holds the screen-off sessions and the feedback of 7.5 (ADR 0026). At least 12 fixture histories cover each rule and each boundary (thin history, pocket-heavy commuter, desk worker, night charger, unplugged sleeper, Right-away owner, already-dozing phone, low battery). Fixtures are synthetic or anonymized dumps; tests run in milliseconds, no device.
 
 ## 8. Evidence: logs, proof and the night report
 
