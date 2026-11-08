@@ -148,3 +148,79 @@ Carried over to P3:
   - whether `protect_device_config_flags` is on;
   - the hotspot hold-off's initial state.
 - A forced-idle delay is not implemented; the lever reports why (SPEC 5.3 alarm).
+
+## P3 Evidence — gate passed 2026-11-08
+
+Gate: compressed night produces a complete report; the app's own wakeups are 0; parser fixtures for
+the API 37 emulator and the owner's phone pass (ADR 0021; the spec said API 35–37).
+
+Done:
+- Evidence sources (ADR 0018): Doze transitions from the `device_idle` and `device_idle_light`
+  event-log tags, with `batterystats --history-start <cursor>` as the fallback; the history in its
+  legacy (API 35) and Format 2 (API 36+) layouts. Alarm wakeups come from the `Alarm Stats:` section
+  of `dumpsys alarm`, read at screen off and screen on, not from the history's `wakeupap`
+  (ADR 0019).
+- Recorder (ADR 0020): one worker call at screen off, a copy of the Doze lines and a sensor snapshot
+  at each deep maintenance window (on `ACTION_DEVICE_IDLE_MODE_CHANGED`, no job), one timed batch at
+  screen on. The open session survives the process. A gap withholds the verdict, and the timeline
+  never draws what was not seen.
+- Session record: verdict, battery drain (%/h and mAh), wakers per app (alarm and network wakeups,
+  jobs, syncs, wakelock time), kernel wake reasons, sensor holders, and the app's own wakeups
+  (unknown, never a guessed 0, when a source is missing).
+- Night report (SPEC 8.5) at the first unlock after an unplugged session of 4 h (4 min in tests),
+  with the last 7 nights and the stock nights as comparison. Without a secure lock the system sends
+  `USER_PRESENT` before `SCREEN_ON` (seen on the emulator), so a session stored while the keyguard
+  is already unlocked is reported at once.
+- Quick proof (SPEC 8.6): the levers run for real with the screen on and are undone in a
+  `finally`, `dumpsys battery reset` included. A persisted mark makes the next start or worker
+  change undo an interrupted proof. Worker contract version 3 adds `setBatteryUnplugged`.
+- Export (SPEC 8.7): one ZIP per session or range (manifest, sessions JSON, action and event CSV,
+  raw dumps, the profile files in SPEC 6.4 format) through a non-exported `FileProvider`.
+- Independent parser review (`0b95993`):
+  - history lines before a `TIME:` line take their year from the read;
+  - the repeated daylight-saving hour keeps time moving forward;
+  - impossible dates and oversized numbers are unparsed instead of thrown;
+  - unknown Doze state codes withhold the verdict;
+  - unread alarm lines leave the app's own wakeups unknown.
+
+- ADR 0021 (owner's decision): device tests run on API 37 only, on the project's own AVD
+  `ed-api37` and the phone; `minSdk` stays 34 without tests below 37; the `pixel-api*` AVDs are
+  left to the other projects.
+- The gate runs found and fixed:
+  - without a secure lock, `USER_PRESENT` comes before `SCREEN_ON`, so no night was reported;
+  - the engine's screen-off writes, logged 114 ms before the recorder's start, were missing from
+    the report and the session export;
+  - two contract tests assumed the battery was not held and that `NEXT:` is the last line.
+
+Gate evidence (API 37 emulator, own AVD `ed-api37`, `CE2A.260420.051.A3`,
+`tools/emulator/p3-evidence.sh`, about 11 minutes):
+- 60 checks pass, 0 fail (`docs/evidence/p3/summary.txt`).
+- Test Everyday (4 min) and Test Classic (5 min) nights: both Held, the app's own wakeups 0, alarm
+  stats read at both ends, the screen-on collection took 119 ms and 76 ms, sensor snapshots at screen
+  off, each maintenance window and screen on, no gap in the Doze record.
+- Each night report: the verdict line, a timeline with deep idle and maintenance windows, the
+  comparison with earlier nights and with stock, the wakers without the app itself; the Classic
+  report lists the screen-off writes and their release at screen on.
+- Quick proof: eight steps ok, deep idle confirmed, every lever and the battery given back.
+- Export: the all-sessions ZIP (manifest, sessions, action and event CSV, profile files, raw dumps)
+  and a one-session ZIP.
+- Restore stock: no key differs from `stock.json`, the global string, forced idle, sensors and the
+  allowlist as before the run.
+- Worker contract 17/17 as Shizuku; Room DAO 3/3.
+- The same gate had passed once on `pixel-api37` (same image) before ADR 0021; that run's evidence
+  was replaced by this one.
+- Parser fixtures: every parser runs on the API 37 emulator capture and the One UI 9 phone
+  capture, and `alarm.txt` was added to the API 37 emulator capture. The API 35 and 36 captures
+  still pass as extra cases (ADR 0021).
+- CI green on the last code commit (`2cff021`):
+  https://github.com/akane599/EnforceDoze/actions/runs/42452906340
+
+Carried over to P4:
+- The battery history rewrites a record changed within 1 s of the previous one at its old time
+  (`BatteryStatsHistory`, 17 lines 1679–1729). So a change merged into the record at the
+  screen-off cursor can fall before it and be missed by the screen-on read. The impact is small;
+  revisit if a phone night shows it.
+- A history read cut off before `NEXT:` is still used for coverage; the pipe makes this unlikely.
+- Phone session items from P2 still stand (One UI `dumpsys settings`, `skip_sensing`,
+  `protect_device_config_flags`, hotspot initial state).
+- The forced-idle delay alarm (SPEC 5.3) is still not implemented; the lever reports why.
