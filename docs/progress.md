@@ -124,7 +124,8 @@ Gate evidence (API 37 emulator, `CE2A.260420.051.A3`, `tools/emulator/p2-engine.
   - charging, car mode, audio and call hold-offs lift and restore on the device;
   - drift re-applied twice, the loop guard trips the third time, and clearing the guard re-applies;
   - forced idle is released once a lost worker is back;
-  - persistence over 10 minutes and a reboot (`persistence-after-reboot.txt`);
+  - persistence over 10 minutes and a reboot (`persistence-after-reboot.txt`; this run added the
+    `persistence` scenario, which the default run leaves out to stay under SPEC 13's 20 minutes);
   - Restore stock reports `stockDifferences=[]`, and the string and allowlist match the start
     (`restore-stock.txt`).
 - Room DAO tests on the emulator: 2 of 2, `docs/evidence/p2/journal-dao-test.txt`.

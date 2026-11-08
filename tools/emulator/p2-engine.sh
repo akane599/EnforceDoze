@@ -5,13 +5,16 @@
 # idle is forced (ADR 0015), and Restore stock checked against stock.json.
 # Runs on build-server: builds the debug app and the silent-audio test APK, copies them with
 # tools/emulator/p2-engine-remote.sh to akane-linux and runs it there. Logs land in docs/evidence/p2/.
+# The default run takes about 12 minutes. `persistence` (SPEC 4.4: 10 minutes and a reboot) adds 11 more,
+# so it is left out of the default to keep the emulator suite under 20 minutes (SPEC 13); add it before
+# `restore` when the lever A write path changes.
 #
-#   tools/emulator/p2-engine.sh [--avd pixel-api37] [--scenarios "setup night-everyday night-classic holdoffs drift privilege persistence restore"]
+#   tools/emulator/p2-engine.sh [--avd pixel-api37] [--scenarios "setup night-everyday night-classic holdoffs drift privilege restore"]
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 avd=pixel-api37
-scenarios="setup night-everyday night-classic holdoffs drift privilege persistence restore"
+scenarios="setup night-everyday night-classic holdoffs drift privilege restore"
 while (($#)); do
   case $1 in
     --avd) avd=$2; shift 2 ;;
