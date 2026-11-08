@@ -15,6 +15,7 @@ import com.google.common.truth.Truth.assertWithMessage
 import io.github.akane599.enforcedoze.parse.AlarmStats
 import io.github.akane599.enforcedoze.parse.Allowlist
 import io.github.akane599.enforcedoze.parse.AospDeviceIdle
+import io.github.akane599.enforcedoze.parse.BatteryHistory
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
 import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.parse.DozeEventLog
@@ -28,6 +29,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Instant
+import java.time.ZoneId
 
 /**
  * P1 gate: every `IDozeWorker` method does what it says on a real system server (SPEC 13.1 "Worker
@@ -154,7 +157,10 @@ class WorkerContractTest {
         assertThat(log.events).isNotEmpty()
     }
 
-    /** `dumpsys battery unplug` freezes the state as unplugged and `reset` gives back what the emulator reported before. */
+    /**
+     * `dumpsys battery unplug` freezes the state as unplugged and `reset` gives the emulator's own state back, which
+     * is always AC power. A battery the caller already held unplugged (the P3 script does for its nights) is held again.
+     */
     @Test
     fun batteryUnplugAndReset() = worker { w ->
         val before = awaitPlugged { true }
@@ -164,7 +170,11 @@ class WorkerContractTest {
         } finally {
             assertOk(w.setBatteryUnplugged(false))
         }
-        assertThat(awaitPlugged { it == before }).isEqualTo(before)
+        try {
+            assertThat(awaitPlugged { it == BatteryManager.BATTERY_PLUGGED_AC }).isEqualTo(BatteryManager.BATTERY_PLUGGED_AC)
+        } finally {
+            if (before == 0) assertOk(w.setBatteryUnplugged(true))
+        }
     }
 
     /** EXTRA_PLUGGED of the sticky ACTION_BATTERY_CHANGED; BatteryService sends it from its handler, so it may lag. */
@@ -231,9 +241,11 @@ class WorkerContractTest {
     @Test
     fun largeReadsStreamThroughThePipe() = worker { w ->
         val history = w.readBatteryHistory(0)
-        assertThat(history).contains("Battery History")
-        // A cursor read ends with the next cursor (ADR 0018).
-        assertThat(history.trimEnd().lines().last()).matches("""\s*NEXT: \d+""")
+        // A cursor read carries the next cursor (ADR 0018); on API 37 other batterystats sections follow it.
+        assertThat(BatteryHistory.nextCursor(history)).isNotNull()
+        val parsed = BatteryHistory.parse(history, ZoneId.systemDefault(), Instant.now())
+        assertThat(parsed.lines).isNotEmpty()
+        assertThat(parsed.unparsed).isEmpty()
         assertThat(w.readEventLog(System.currentTimeMillis() - 60_000)).isNotNull()
         val alarms = AlarmStats.parse(w.readAlarms())
         assertThat(alarms.found).isTrue()
