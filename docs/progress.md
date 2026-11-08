@@ -170,7 +170,8 @@ Done:
 - Night report (SPEC 8.5) at the first unlock after an unplugged session of 4 h (4 min in tests),
   with the last 7 nights and the stock nights as comparison. Without a secure lock the system sends
   `USER_PRESENT` before `SCREEN_ON` (seen on the emulator), so a session stored while the keyguard
-  is already unlocked is reported at once.
+  is already unlocked is reported at once. (Corrected in P4: the recorder's receiver was not
+  exported and never got `USER_PRESENT`; the report came from that already-unlocked fallback.)
 - Quick proof (SPEC 8.6): the levers run for real with the screen on and are undone in a
   `finally`, `dumpsys battery reset` included. A persisted mark makes the next start or worker
   change undo an interrupted proof. Worker contract version 3 adds `setBatteryUnplugged`.
@@ -196,7 +197,7 @@ Gate evidence (API 37 emulator, own AVD `ed-api37`, `CE2A.260420.051.A3`,
 `tools/emulator/p3-evidence.sh`, about 11 minutes):
 - 60 checks pass, 0 fail (`docs/evidence/p3/summary.txt`).
 - Test Everyday (4 min) and Test Classic (5 min) nights: both Held, the app's own wakeups 0, alarm
-  stats read at both ends, the screen-on collection took 119 ms and 76 ms, sensor snapshots at screen
+  stats read at both ends, the screen-on collection took 105 ms and 80 ms, sensor snapshots at screen
   off, each maintenance window and screen on, no gap in the Doze record.
 - Each night report: the verdict line, a timeline with deep idle and maintenance windows, the
   comparison with earlier nights and with stock, the wakers without the app itself; the Classic
@@ -207,6 +208,8 @@ Gate evidence (API 37 emulator, own AVD `ed-api37`, `CE2A.260420.051.A3`,
 - Restore stock: no key differs from `stock.json`, the global string, forced idle, sensors and the
   allowlist as before the run.
 - Worker contract 17/17 as Shizuku; Room DAO 3/3.
+- Rerun after the P4 receiver fix (the recorder now gets `USER_PRESENT`): 60/60 again; the
+  evidence above is from that rerun.
 - The same gate had passed once on `pixel-api37` (same image) before ADR 0021; that run's evidence
   was replaced by this one.
 - Parser fixtures: every parser runs on the API 37 emulator capture and the One UI 9 phone
@@ -224,3 +227,63 @@ Carried over to P4:
 - Phone session items from P2 still stand (One UI `dumpsys settings`, `skip_sensing`,
   `protect_device_config_flags`, hotspot initial state).
 - The forced-idle delay alarm (SPEC 5.3) is still not implemented; the lever reports why.
+
+## P4 Profiles and Recommended — gate passed 2026-11-08
+
+Gate: all policy fixtures pass; day-to-night and night-to-day switches tested; profile import and
+export round-trip.
+
+Done:
+- Custom profiles (SPEC 6.4, ADR 0025): import collects every problem instead of stopping at the
+  first; an import never replaces a profile; one file per profile, written atomically; One UI keys
+  are kept with "effect unknown on this phone"; clone.
+- Plans and switching (SPEC 6.5, ADR 0024): the engine owns the schedule as pure steps. Night begins
+  at the first awake moment inside the window (the window-start alarm with the screen on, else a
+  maintenance window or a screen change); day returns at the first unlock after the window end. The
+  host sets one `RTC` `setWindow` listener alarm, never while the screen is off. `APPLY_PROFILE`
+  overrides the plan until `APPLY_PLAN`. Every switch is a log row with its reason.
+- The recommendation policy (SPEC 7, ADR 0026, second opinion recorded): `:core:recommend`, pure,
+  `recommend(history, answers)`. Signals S, D, M, N and R, each measured with its count or unknown
+  with a reason; sessions carry their provenance (Stock, Tuned, Unknown), so D and R count stock
+  time only. Rules 1–5, the learned night window (DST-safe), confidence, the feedback loop and the
+  card checks. 13 fixture histories read as real owners: thin, commuter, desk worker, night
+  charger, sleeper, the Right-away and It-can-wait variants, already dozing, the owner's own phone
+  that never ran stock, two-day histories and a week across the spring clock change. Low battery
+  (the Strict card) has its own test.
+- Fixes found on the way:
+  - `USER_PRESENT` comes from SystemUI, not the system uid, so an unexported receiver never gets it
+    (`BroadcastSkipPolicy`, `android-17.0.0_r1`). The engine host and the recorder now export those
+    receivers; their filters hold only protected broadcasts. This also corrects the P3 note above.
+  - A command answered before its status was published, so the debug reply could be stale.
+  - Cancelling an alarm that was not set made AlarmManager log a warning.
+- Independent reviews:
+  - Recommender (ADR 0026 "Review"): a step that undid itself once applied, a step stricter than the
+    fresh plan, Pocket hiding its own signal, D and R ageing out, sessions across the history's edges,
+    nights begun before it, floating-point boundaries, stale reasons. All fixed with tests.
+  - Plan engine (ADR 0025): a screen on without the keyguard now ends the night; an unlock with the
+    screen off only books the day; a missing profile is logged once and a missing override ends; the
+    night alarm is cancelled at screen off; a plan that does not convert no longer takes the book
+    with it.
+
+Gate evidence:
+- JVM: `:core:recommend` 50 tests (13 fixture histories, every threshold on both sides), plan
+  switching in `PlanSwitchTest`, profile round trips in `ProfileFilesTest` (every built-in and a
+  custom profile survive export and import unchanged; the SPEC 6.4 example imports as Pocket).
+- Emulator (`ed-api37`, `CE2A.260420.051.A3`, `tools/emulator/p4-plan.sh`, Swipe lock turned on and
+  put back), about 8 minutes: 42 checks pass, 0 fail (`docs/evidence/p4/summary.txt`).
+  - Alarm: one non-wakeup `RTC` alarm at the window start with a 10-minute window; the night came
+    10 s after the start with the screen on, logged as SCHEDULE, and the next night's alarm was set.
+  - Unlock: the lock screen past the end keeps Night; the first unlock after the end brings Everyday.
+    `USER_PRESENT` reaches the engine (`unlock-broadcasts.txt`).
+  - Maintenance: in deep idle past the window start the day stays; the maintenance window starts
+    Night with the screen off and the sensors restricted; no alarm is set while the screen is off.
+  - Restore: a plan without a night cancels the alarm; the global string, forced idle and sensors as
+    before the run; the AVD's lock and timeout settings put back.
+- CI green on `7db800d`, which holds the last code commit: https://github.com/akane599/EnforceDoze/actions/runs/42465227652
+
+Carried over to P5:
+- The recommender's adapters: day-zero sources and `SessionRow` to `ScreenOffSession`, with one
+  shared stock test against `SessionRecorder`, when the Recommended screen is wired.
+- Deleting the profile in use, or re-tapping the active profile, needs a UI rule: the engine ends a
+  missing override only at the next start, and a tap on the active profile becomes an override.
+- P3 carry-overs still stand.
