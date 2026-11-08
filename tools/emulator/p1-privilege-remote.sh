@@ -25,6 +25,9 @@ esac
 
 log() { echo "[$(date +%T)] $*"; }
 
+# A bounded wait: `adb wait-for-device` blocks forever if the emulator went away (run 4 hung like that).
+wait_device() { timeout 120 "$A" wait-for-device </dev/null || { log "the emulator did not come back"; return 1; }; }
+
 started_emulator=0
 if ! adb devices | grep -q '^emulator-'; then
   log "starting $avd"
@@ -36,8 +39,14 @@ timeout 300 "$A" wait-for-device </dev/null
 timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
 log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
 
-# A Shizuku manager that is already on the shared AVD is used as it is and left installed.
+# A Shizuku manager that is already on the shared AVD is used as it is and left installed, unless the
+# marker says an earlier run of this script installed it and was cut short before removing it.
+marker=$cache/shizuku-installed-by-p1
 preexisting_shizuku=$(adb shell pm path "$shizuku_pkg" | tr -d '\r')
+if [[ -n $preexisting_shizuku && -f $marker ]]; then
+  log "Shizuku was left by an earlier cut-short run; it is removed at the end"
+  preexisting_shizuku=
+fi
 if [[ -n $preexisting_shizuku ]]; then
   log "using the Shizuku already installed: $(adb shell dumpsys package "$shizuku_pkg" | grep -m1 versionName | tr -d ' \r')"
 fi
@@ -51,14 +60,16 @@ kill_server() {
 
 cleanup() {
   log "cleanup"
-  adb root >/dev/null 2>&1; sleep 2; adb wait-for-device
+  adb root >/dev/null 2>&1; sleep 2
+  wait_device || exit 1
   kill_server
   # The tests undo their own changes; these two put back the defaults if a test was cut short.
   adb shell cmd deviceidle unforce >/dev/null
   adb shell dumpsys sensorservice enable >/dev/null
   adb uninstall "$pkg" >/dev/null 2>&1
-  [[ -z $preexisting_shizuku ]] && adb uninstall "$shizuku_pkg" >/dev/null 2>&1
-  adb unroot >/dev/null 2>&1; sleep 2; adb wait-for-device
+  if [[ -z $preexisting_shizuku ]]; then adb uninstall "$shizuku_pkg" >/dev/null 2>&1 && rm -f "$marker"; fi
+  adb unroot >/dev/null 2>&1; sleep 2
+  wait_device || exit 1
   if ((started_emulator)); then log "shutting down the emulator"; adb emu kill >/dev/null; fi
 }
 trap cleanup EXIT
@@ -126,16 +137,23 @@ for scenario in $scenarios; do
       ;;
     shell | root)
       kill_server
-      if [[ $scenario == root ]]; then adb root >/dev/null; sleep 3; adb wait-for-device; fi
+      if [[ $scenario == root ]]; then
+        adb root >/dev/null; sleep 3
+        wait_device || { status=1; break; }
+      fi
       log "adb shell runs as: $(adb shell id -u | tr -d '\r')"
       if [[ -z $preexisting_shizuku ]]; then
+        touch "$marker"
         adb install -r "$shizuku_apk" >/dev/null || { log "Shizuku install failed"; status=1; continue; }
       fi
       install_test_apk || { status=1; continue; }
       adb shell pm grant "$pkg" moe.shizuku.manager.permission.API_V23
       instrument "$scenario" with-server || status=1
       kill_server
-      if [[ $scenario == root ]]; then adb unroot >/dev/null; sleep 3; adb wait-for-device; fi
+      if [[ $scenario == root ]]; then
+        adb unroot >/dev/null; sleep 3
+        wait_device || { status=1; break; }
+      fi
       ;;
     *) log "unknown scenario $scenario"; status=1 ;;
   esac
