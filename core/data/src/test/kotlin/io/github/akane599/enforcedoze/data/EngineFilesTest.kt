@@ -124,4 +124,24 @@ class EngineFilesTest {
         dir.resolve("state.json").writeText("""{"written": [{"lever": "FUTURE_LEVER", "on": true}]}""")
         assertThat(EngineFiles(dir).load()).isEqualTo(PersistedState())
     }
+
+    @Test
+    fun `a plan this version cannot read loses the plan only, never what was written`() = runTest {
+        val dir = folder.root.resolve("engine").apply { mkdirs() }
+        dir.resolve("state.json").writeText(
+            """{"profileId": "everyday", "written": [{"lever": "FORCE_IDLE", "on": true}],
+               "plan": {"day": "everyday", "night": "night", "nightStart": "23:00", "nightEnd": "07:30", "slot": "EVENING"}}""",
+        )
+        val state = EngineFiles(dir).load()
+        assertThat(state.plan).isNull()
+        assertThat(state.profileId).isEqualTo("everyday")
+        assertThat(state.written.values).containsExactly(Setting.ForceIdle(true))
+        dir.resolve(
+            "state.json",
+        ).writeText("""{"plan": {"day": "everyday", "night": "night", "nightStart": "25:00", "nightEnd": "07:30"}}""")
+        assertThat(EngineFiles(dir).load().plan).isNull()
+        assertThat(dir.list()!!.filter { it.contains(".unreadable-") }.map { it.substringBefore("-1") }.toSet())
+            .containsExactly("state.json.unreadable-plan")
+        assertThat(dir.resolve("state.json").isFile).isTrue()
+    }
 }

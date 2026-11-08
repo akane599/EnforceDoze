@@ -41,6 +41,9 @@ internal class EngineCore(
     private var previous: PreviousSnapshot? = null
     private var stock: StockSnapshot? = null
 
+    /** The profile id last logged as missing, so each screen event does not log it again. */
+    private var missing: String? = null
+
     private val mode: Mode get() = book.persisted.mode
 
     /** Restart rule (SPEC 12.4): load the book, read everything, log what drifted while stopped, then reconcile. */
@@ -103,8 +106,12 @@ internal class EngineCore(
     suspend fun screen(on: Boolean, lockedNow: Boolean = false) {
         screenOn = on
         locked = on && lockedNow
-        // The phone is awake: a night whose alarm switched nothing (screen off, or no alarm set) begins now.
-        book.persisted.plan?.let { movePlan(PlanSchedule.awake(it, localTime()), SwitchReason.SCHEDULE) }
+        book.persisted.plan?.let {
+            // The phone is awake: a night whose alarm switched nothing (screen off, or no alarm set) begins now.
+            val awake = PlanSchedule.awake(it, localTime())
+            // On without the keyguard is unlocked as well, whether USER_PRESENT came first, comes later or not at all.
+            movePlan(if (on && !lockedNow) PlanSchedule.unlocked(awake, localTime()) else awake, SwitchReason.SCHEDULE)
+        }
         if (!started) return
         if (on) {
             reconcile(Cause.SCREEN_ON)
@@ -122,21 +129,26 @@ internal class EngineCore(
         val switched = book.persisted.plan?.let { movePlan(PlanSchedule.unlocked(it, localTime()), SwitchReason.SCHEDULE) } ?: false
         val wasLocked = locked
         locked = false
-        if (started && (wasLocked || switched)) reconcile(if (wasLocked) Cause.UNLOCK else Cause.PROFILE_SWITCH)
+        // Before the screen on, the switch is only booked: the screen on applies it, with the screen-on levers.
+        val apply = wasLocked || (switched && screenOn)
+        if (started && apply) reconcile(if (wasLocked) Cause.UNLOCK else Cause.PROFILE_SWITCH)
     }
 
     /**
      * Books [next] and selects its profile when that changes (or always with [force]). Returns whether the
-     * profile changed; a profile the catalog no longer has is logged and the current one stays.
+     * profile changed. A slot profile the catalog no longer has is logged once and the current one stays; an
+     * override whose profile is gone ends, and the plan applies again.
      */
     private suspend fun movePlan(next: PlanState, reason: SwitchReason, force: Boolean = false): Boolean {
         book.persisted = book.persisted.copy(plan = next)
         if (!force && profile?.id == next.profileId) return false
         val resolved = catalog.profile(next.profileId)
         if (resolved == null) {
-            journal.event(EngineEvent.ProfileMissing(clock.now(), next.profileId, reason))
-            return false
+            if (missing != next.profileId) journal.event(EngineEvent.ProfileMissing(clock.now(), next.profileId, reason))
+            missing = next.profileId
+            return next.override != null && movePlan(next.copy(override = null), reason, force)
         }
+        missing = null
         select(resolved, reason)
         return true
     }

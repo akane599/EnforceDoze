@@ -34,6 +34,17 @@ ADR 0023: choices that are cheap to reverse are made by the agent, each with a o
 - **The P4 emulator gate turns on a Swipe lock screen** (`locksettings set-disabled false`) and
   puts the AVD's setting back afterwards. With None, SystemUI unlocks at every wake, so "the lock
   screen keeps the night" could not be shown.
+- **After the window end, a screen on without the keyguard ends the night**, as an unlock does.
+  With no lock screen, USER_PRESENT may come before the screen on or not at all.
+- **An unlock with the screen off books the day and does not apply it.** The screen on that follows
+  applies it with the screen-on levers, so forced idle is not written for a moment first.
+- **A missing slot profile is logged once**, not at every screen event. **A missing override ends**
+  and the plan applies again; the owner tapped a profile that no longer exists.
+- **The night alarm is cancelled at screen off** and set again at screen on. Left set, it would be
+  delivered at the next wake-up and switch nothing.
+- **A plan this version cannot convert is dropped alone**, with a copy of `state.json` kept as
+  `.unreadable-plan-<millis>`. The rest of the book records what was written to the phone, which a
+  restore needs.
 
 ## Consequences
 

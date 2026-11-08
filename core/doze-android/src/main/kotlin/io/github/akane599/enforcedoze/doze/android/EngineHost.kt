@@ -122,6 +122,7 @@ public class EngineHost internal constructor(
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
+                    Intent.ACTION_SCREEN_OFF -> nightAlarm.screenOff()
                     Intent.ACTION_SCREEN_ON -> nightAlarm.screenOn()
                     Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED -> nightAlarm.clockChanged()
                 }

@@ -39,7 +39,8 @@ public class EngineFiles(private val dir: File) : EngineStore {
         ignoreUnknownKeys = true
     }
 
-    override suspend fun load(): PersistedState = read(STATE, StateFile.serializer()) { it.toState() } ?: PersistedState()
+    override suspend fun load(): PersistedState = read(STATE, StateFile.serializer()) { withoutUnreadablePlan(it).toState() }
+        ?: PersistedState()
 
     override suspend fun save(state: PersistedState): Unit = write(STATE, StateFile.serializer(), StateFile.of(state))
 
@@ -69,6 +70,26 @@ public class EngineFiles(private val dir: File) : EngineStore {
         } catch (e: DateTimeException) {
             unreadable(file, e)
         }
+    }
+
+    /**
+     * A plan whose values this version cannot convert (a slot name from another version, a bad time) is dropped
+     * alone, with a copy of the file kept for bug reports. The rest of the book holds what the engine wrote to
+     * the phone, which a restore needs, so it must not go with the plan.
+     */
+    private fun withoutUnreadablePlan(state: StateFile): StateFile {
+        val plan = state.plan ?: return state
+        val cause = try {
+            plan.toState()
+            return state
+        } catch (e: IllegalArgumentException) {
+            e
+        } catch (e: DateTimeException) {
+            e
+        }
+        val file = File(dir, STATE)
+        File(dir, "$STATE.unreadable-plan-${System.currentTimeMillis()}").writeText("$cause\n${file.readText()}")
+        return state.copy(plan = null)
     }
 
     private fun <T> unreadable(file: File, cause: Exception): T? {

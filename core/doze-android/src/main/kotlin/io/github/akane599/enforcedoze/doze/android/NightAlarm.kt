@@ -15,7 +15,8 @@ import java.time.ZonedDateTime
  * `android-17.0.0_r1`). It uses `setWindow` with the 10-minute window AOSP 17 stretches any shorter one to,
  * because plain `set()` may be late by most of the time to its trigger. It is a listener alarm, so it lives only
  * as long as the process; the engine's start covers a restart. It is never set while the screen is off
- * (SPEC 1.3): a request then waits for [screenOn], and meanwhile a maintenance window still starts the night.
+ * (SPEC 1.3): [screenOff] cancels it, a request then waits for [screenOn], and meanwhile a maintenance window
+ * still starts the night.
  * Main thread only.
  */
 internal class NightAlarm(
@@ -45,6 +46,15 @@ internal class NightAlarm(
         val start = night.nextStart(ZonedDateTime.now(ZoneId.systemDefault()))
         alarms.setWindow(AlarmManager.RTC, start.toInstant().toEpochMilli(), WINDOW_MILLIS, TAG, listener, handler)
         set = true
+    }
+
+    /**
+     * The screen went off: the alarm is cancelled until the screen comes on. Left set, it would be delivered at
+     * the next wake-up anyway and switch nothing; a maintenance window starts the night meanwhile.
+     */
+    fun screenOff() {
+        unset()
+        waiting = night != null
     }
 
     /** The screen came on: a request that fell while it was off is set now. */

@@ -206,6 +206,80 @@ class PlanSwitchTest {
         assertThat(device.constants).isEqualTo(string(BuiltInProfiles.EVERYDAY))
     }
 
+    @Test fun `past the end, a screen on without the keyguard is the unlock`() = runTest {
+        snapshotsReady()
+        now = at("23:30")
+        val engine = engine()
+        engine.started()
+        engine.setPlan(plan, SwitchReason.OWNER)
+        engine.screenOff()
+
+        // Inside the window, the night holds.
+        now = at("03:00", day = 10)
+        engine.screenOn()
+        engine.screenOff()
+        assertThat(engine.slot()).isEqualTo(PlanSlot.NIGHT)
+
+        now = at("07:45", day = 10)
+        engine.screenOn()
+
+        assertThat(engine.slot()).isEqualTo(PlanSlot.DAY)
+        assertThat(device.constants).isEqualTo(string(BuiltInProfiles.EVERYDAY))
+    }
+
+    @Test fun `an unlock with the screen off books the day and the screen on applies it`() = runTest {
+        snapshotsReady()
+        now = at("23:30")
+        val engine = engine()
+        engine.started()
+        engine.setPlan(plan, SwitchReason.OWNER)
+        engine.screenOff()
+
+        now = at("08:00", day = 10)
+        engine.unlocked()
+        assertThat(engine.slot()).isEqualTo(PlanSlot.DAY)
+        assertThat(device.constants).isEqualTo(string(BuiltInProfiles.NIGHT))
+
+        engine.screenOn()
+        assertThat(device.constants).isEqualTo(string(BuiltInProfiles.EVERYDAY))
+    }
+
+    @Test fun `a missing slot profile is logged once, not at every screen event`() = runTest {
+        snapshotsReady()
+        val engine = engine()
+        engine.started()
+        engine.setPlan(plan, SwitchReason.OWNER)
+        removed += "night"
+
+        now = at("23:00")
+        engine.nightStarted()
+        repeat(3) {
+            engine.screenOff()
+            engine.screenOn()
+        }
+
+        assertThat(journal.events.filterIsInstance<EngineEvent.ProfileMissing>()).hasSize(1)
+        assertThat(engine.status.value.profileId).isEqualTo("everyday")
+    }
+
+    @Test fun `an override whose profile is gone ends, and the plan applies again`() = runTest {
+        snapshotsReady()
+        val engine = engine()
+        engine.started()
+        engine.setPlan(plan, SwitchReason.OWNER)
+        engine.setProfile(BuiltInProfiles.POCKET, SwitchReason.TASKER)
+        removed += "pocket"
+
+        // The next start finds the override's profile gone.
+        val restarted = engine()
+        restarted.started()
+
+        assertThat(restarted.status.value.plan?.override).isNull()
+        assertThat(restarted.status.value.profileId).isEqualTo("everyday")
+        assertThat(device.constants).isEqualTo(string(BuiltInProfiles.EVERYDAY))
+        assertThat(journal.events).contains(EngineEvent.ProfileMissing(now, "pocket", SwitchReason.SCHEDULE))
+    }
+
     @Test fun `a profile applied outside the plan holds until the plan is followed again`() = runTest {
         snapshotsReady()
         val engine = engine()
