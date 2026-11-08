@@ -1,0 +1,4 @@
+verdict=HELD cause=null note=null profile=test-everyday
+start=1794103296641 end=1794103596020 pluggedAtStart=false
+expectedToDeepMs=75000 timeToDeepMs=69320 lateByMs=null
+deepShare=1.000 maintenance=2 motionResets=0

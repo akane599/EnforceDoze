@@ -1,0 +1,79 @@
+ActionRow(id=1, time=1794103295389, lever=CONSTANTS, command=Settings.Global put device_idle_constants, expected=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,idle_to=60000,max_idle_to=120000, readBack=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,idle_to=60000,max_idle_to=120000, outcome=OK, cause=STOCK_CAPTURE, detail=)
+ActionRow(id=2, time=1794103295797, lever=CONSTANTS, command=Settings.Global put device_idle_constants, expected=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,motion_inactive_to=300000,light_after_inactive_to=60000,idle_to=60000,max_idle_to=120000, readBack=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,motion_inactive_to=300000,light_after_inactive_to=60000,idle_to=60000,max_idle_to=120000, outcome=OK, cause=PROFILE_SWITCH, detail=)
+ActionRow(id=3, time=1794103597340, lever=CONSTANTS, command=Settings.Global put device_idle_constants, expected=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,idle_to=60000,max_idle_to=120000, readBack=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,idle_to=60000,max_idle_to=120000, outcome=OK, cause=PROFILE_SWITCH, detail=)
+ActionRow(id=4, time=1794103598341, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=SCREEN_OFF, detail=Captured at: 05:06:37.932
+Sensor Device:
+Total 12 h/w sensors, 12 running 2 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=5, time=1794103598341, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=SCREEN_OFF, detail=Now forced in to deep idle mode)
+ActionRow(id=6, time=1794103898273, lever=FORCE_IDLE, command=cmd deviceidle unforce, expected=released, readBack=released, outcome=OK, cause=SCREEN_ON, detail=Light state: ACTIVE, deep state: ACTIVE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false)
+ActionRow(id=7, time=1794103898273, lever=SENSORS, command=dumpsys sensorservice enable, expected=NORMAL, readBack=NORMAL, outcome=OK, cause=SCREEN_ON, detail=Captured at: 05:11:37.971
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=8, time=1794103900429, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=SCREEN_OFF, detail=Captured at: 05:11:40.020
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=9, time=1794103900429, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=SCREEN_OFF, detail=Now forced in to deep idle mode)
+ActionRow(id=10, time=1794103900995, lever=FORCE_IDLE, command=cmd deviceidle unforce, expected=released, readBack=released, outcome=OK, cause=HOLD_OFF, detail=Light state: ACTIVE, deep state: ACTIVE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false)
+ActionRow(id=11, time=1794103900995, lever=SENSORS, command=dumpsys sensorservice enable, expected=NORMAL, readBack=NORMAL, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:11:40.693
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=12, time=1794103902072, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:11:41.669
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=13, time=1794103902072, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=HOLD_OFF, detail=Now forced in to deep idle mode)
+ActionRow(id=14, time=1794103903167, lever=FORCE_IDLE, command=cmd deviceidle unforce, expected=released, readBack=released, outcome=OK, cause=HOLD_OFF, detail=Light state: OVERRIDE, deep state: IDLE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false)
+ActionRow(id=15, time=1794103903167, lever=SENSORS, command=dumpsys sensorservice enable, expected=NORMAL, readBack=NORMAL, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:11:42.864
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=16, time=1794103904249, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:11:43.849
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=17, time=1794103904249, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=HOLD_OFF, detail=Now forced in to deep idle mode)
+ActionRow(id=18, time=1794103905423, lever=FORCE_IDLE, command=cmd deviceidle unforce, expected=released, readBack=released, outcome=OK, cause=HOLD_OFF, detail=Light state: OVERRIDE, deep state: IDLE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false)
+ActionRow(id=19, time=1794103905423, lever=SENSORS, command=dumpsys sensorservice enable, expected=NORMAL, readBack=NORMAL, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:11:45.120
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=20, time=1794103926550, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:12:06.146
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=21, time=1794103926550, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=HOLD_OFF, detail=Now forced in to deep idle mode)
+ActionRow(id=22, time=1794103931920, lever=FORCE_IDLE, command=cmd deviceidle unforce, expected=released, readBack=released, outcome=OK, cause=HOLD_OFF, detail=Light state: OVERRIDE, deep state: IDLE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false)
+ActionRow(id=23, time=1794103931920, lever=SENSORS, command=dumpsys sensorservice enable, expected=NORMAL, readBack=NORMAL, outcome=OK, cause=HOLD_OFF, detail=Captured at: 05:12:11.605
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=24, time=1794103934435, lever=SENSORS, command=dumpsys sensorservice restrict io.github.akane599.enforcedoze, expected=RESTRICTED : io.github.akane599.enforcedoze, readBack=RESTRICTED : io.github.akane599.enforcedoze, outcome=OK, cause=SCREEN_OFF, detail=Captured at: 05:12:14.030
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: )
+ActionRow(id=25, time=1794103934435, lever=FORCE_IDLE, command=cmd deviceidle force-idle deep, expected=forced, readBack=forced, outcome=OK, cause=SCREEN_OFF, detail=Now forced in to deep idle mode)

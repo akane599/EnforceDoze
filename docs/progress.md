@@ -83,3 +83,67 @@ Carried over to P2:
 - Lever A persistence over 10 minutes and a reboot (probe `constants.persistence`).
 - Phone session (asked for first): what One UI's `skip_sensing` does, and whether
   `protect_device_config_flags` is on there.
+
+## P2 Engine — gate passed 2026-11-08
+
+Gate: compressed night verdict Held with Everyday and with Classic; hold-off and drift tests pass;
+Restore stock reproduces `stock.json` exactly.
+
+Done:
+- Engine model (ADR 0015, with a fresh second opinion): one actor computes a target per lever from
+  profile, screen, hold-offs, tier and mode, writes only the difference with one action row and a
+  read-back per write, treats drift as a read-back that differs from the last write, and guards
+  each lever against write loops. Capture stock, Restore stock and Return to previous are jobs in
+  the same actor.
+- Modules: `:core:profile` (the six built-ins, plans, guardrails), `:core:doze` (actor, targets,
+  planner, executor), `:core:doze-android` (device port over the privilege layer; hold-off sources
+  for charging, calls, car mode, audio, hotspot and keep-awake apps; the host), `:core:data` (the
+  engine's JSON files; Room `action`, `event` and `session` tables), `:core:evidence` (SPEC 8.4
+  verdicts from the records alone).
+- The app reads lever A through `dumpsys settings` and observes the global string itself
+  (ADR 0014). It hosts the engine in a specialUse foreground service started at boot, after an
+  update and from the app. A session recorder judges each screen-off session at screen on from the
+  event log the worker reads.
+- Emulators have no motion sensor, so AOSP schedules no walk before IDLE there. The P2 script steps
+  the walk at the profile's timers (ADR 0016). The same source shows a constants change never
+  reschedules a pending step, which closes ADR 0015's open point.
+- Upstream's "wait for unlock" is ported as lever B's `untilUnlock`, off by default (ADR 0017).
+- Independent engine review (`bab6b98`): releases that time out are retried; engages are saved
+  before they are written; the actor survives adapter cancellations and store failures; Restore
+  stock edge cases fixed.
+- Lever A persistence (SPEC 4.4): the string stayed 10 minutes and survived a reboot, and the
+  engine came back from BOOT_COMPLETED without logging drift. The in-app probe entry now points at
+  the engine's drift check.
+- Hilt (SPEC 12.2) waits for the first feature module in P5; the engine graph is hand-wired while
+  the app has one service.
+
+Gate evidence (API 37 emulator, `CE2A.260420.051.A3`, `tools/emulator/p2-engine.sh`):
+- 70 of 70 checks, `docs/evidence/p2/summary.txt`:
+  - Everyday and Classic nights Held, each with 2 maintenance windows
+    (`night-test-*-session.txt`);
+  - charging, car mode, audio and call hold-offs lift and restore on the device;
+  - drift re-applied twice, the loop guard trips the third time, and clearing the guard re-applies;
+  - forced idle is released once a lost worker is back;
+  - persistence over 10 minutes and a reboot (`persistence-after-reboot.txt`);
+  - Restore stock reports `stockDifferences=[]`, and the string and allowlist match the start
+    (`restore-stock.txt`).
+- Room DAO tests on the emulator: 2 of 2, `docs/evidence/p2/journal-dao-test.txt`.
+- CI green on the last code commit: https://github.com/akane599/EnforceDoze/actions/runs/42436781569
+
+Carried over to P3:
+- Event-log tag ADR (SPEC 8.1). AOSP 16 and 17 define `device_idle*` tags 34000–34010;
+  DeviceIdleController writes `device_idle`, `device_idle_light`, both `_step` tags and the
+  `on`/`off` start and complete tags.
+- Recorder fixes:
+  - use the `inactive_to` latched at the last becomeActive;
+  - keep the open session across process death;
+  - add a "no motion sensor" note to Did not doze (ADR 0016).
+- Collectors still to build: battery and wakers (`batterystats --history`), sensor snapshots, the
+  maintenance-window copy job, quick proof and export.
+- The parsers' independent review comes before the P3 gate.
+- Phone session, asked for first:
+  - One UI's `dumpsys settings` format;
+  - what `skip_sensing` does;
+  - whether `protect_device_config_flags` is on;
+  - the hotspot hold-off's initial state.
+- A forced-idle delay is not implemented; the lever reports why (SPEC 5.3 alarm).

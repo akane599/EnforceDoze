@@ -1,0 +1,4 @@
+verdict=HELD cause=null note=null profile=test-classic
+start=1794103598458 end=1794103898284 pluggedAtStart=false
+expectedToDeepMs=0 timeToDeepMs=89590 lateByMs=null
+deepShare=0.998 maintenance=2 motionResets=0
