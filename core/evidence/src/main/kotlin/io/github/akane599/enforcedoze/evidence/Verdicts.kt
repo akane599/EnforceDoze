@@ -19,6 +19,14 @@ public data class Interval(val start: Instant, val end: Instant) {
     }
 }
 
+/** True when the span overlaps [window], or is an instant inside it. */
+internal fun Interval.touches(window: Interval): Boolean = overlap(window) > Duration.ZERO || start in window
+
+internal fun Interval.clip(window: Interval): Interval? =
+    Interval(maxOf(start, window.start), minOf(end, window.end)).takeIf { it.duration > Duration.ZERO }
+
+internal fun List<Interval>.sumOf(window: Interval): Duration = fold(Duration.ZERO) { sum, span -> sum + span.overlap(window) }
+
 /** One `device_idle` change: the deep state entered and the reason the system logged (`motion`, `s:alarm`, …). */
 public data class DeepChange(val time: Instant, val state: DeepState, val reason: String) {
     public companion object {
@@ -30,6 +38,9 @@ public data class DeepChange(val time: Instant, val state: DeepState, val reason
         }
     }
 }
+
+/** One deep state held over [interval]. */
+public data class DeepStretch(val state: DeepState, val interval: Interval)
 
 /** A hold-off that was active during [interval] (SPEC 5.5), by name. */
 public data class HoldOffSpan(val name: String, val interval: Interval)
@@ -133,7 +144,8 @@ public object Verdicts {
         return result.copy(verdict = verdict)
     }
 
-    private data class Segment(val state: DeepState, val interval: Interval)
+    /** The deep state over the session: what the timeline draws, and where the app's own runs count as wakeups (ADR 0018). */
+    public fun timeline(input: SessionInput): List<DeepStretch> = segments(input, initialState(input))
 
     private fun initialState(input: SessionInput): DeepState =
         input.changes.filter { !it.time.isAfter(input.start) }.maxByOrNull { it.time }?.state ?: DeepState.ACTIVE
@@ -143,10 +155,10 @@ public object Verdicts {
         input.changes.filter { it.time.isAfter(input.start) && it.time.isBefore(input.end) }.sortedBy { it.time }
 
     /** The deep state over the session, from the last change before it began (active when none is known). */
-    private fun segments(input: SessionInput, initial: DeepState): List<Segment> {
+    private fun segments(input: SessionInput, initial: DeepState): List<DeepStretch> {
         val points = listOf(input.start to initial) + inSession(input).map { it.time to it.state }
         return points.mapIndexed { index, (time, state) ->
-            Segment(state, Interval(time, points.getOrNull(index + 1)?.first ?: input.end))
+            DeepStretch(state, Interval(time, points.getOrNull(index + 1)?.first ?: input.end))
         }.filter { it.interval.duration > Duration.ZERO }
     }
 
@@ -198,8 +210,6 @@ public object Verdicts {
         }
         return maxOf(longest, Duration.between(free, window.end))
     }
-
-    private fun List<Interval>.sumOf(window: Interval): Duration = fold(Duration.ZERO) { sum, span -> sum + span.overlap(window) }
 
     private fun unpluggedTime(window: Interval, plugged: List<Interval>): Duration = window.duration - plugged.sumOf(window)
 

@@ -20,8 +20,15 @@ kotlin {
 
 dependencies {
     api(project(":core:parse"))
+    testImplementation(project(":testing:fixtures"))
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+}
+
+tasks.test {
+    val fixtures = rootProject.layout.projectDirectory.dir("fixtures")
+    inputs.dir(fixtures).withPathSensitivity(PathSensitivity.RELATIVE).withPropertyName("fixtures")
+    systemProperty("enforcedoze.fixtures", fixtures.asFile.absolutePath)
 }
 
 // CI runs `testDebugUnitTest` across all modules; this pure-JVM module answers to the same name.
