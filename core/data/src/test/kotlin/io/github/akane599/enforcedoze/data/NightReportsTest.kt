@@ -113,13 +113,23 @@ class NightReportsTest {
     )
 
     private val events = listOf(
-        EventRow(time = -1, kind = JournalRows.HOLD_OFF_STARTED, holdOff = "AUDIO"),
+        EventRow(time = -60_000, kind = JournalRows.HOLD_OFF_STARTED, holdOff = "AUDIO"),
         EventRow(time = 10, kind = JournalRows.HOLD_OFF_ENDED, holdOff = "AUDIO"),
         EventRow(time = 20, kind = JournalRows.DRIFT, lever = "CONSTANTS", writer = "com.other"),
         EventRow(time = 30, kind = JournalRows.MODE, mode = "PAUSED"),
     )
 
     private val actions = listOf(
+        ActionRow(
+            time = -114,
+            lever = "FORCE_IDLE",
+            command = "force-idle",
+            expected = "forced",
+            readBack = "forced",
+            outcome = "OK",
+            cause = "SCREEN_OFF",
+            detail = "",
+        ),
         ActionRow(
             time = 5,
             lever = "CONSTANTS",
@@ -170,6 +180,7 @@ class NightReportsTest {
             },
         ).containsExactly(10L)
         assertThat(report.drift.single().writer).isEqualTo("com.other")
-        assertThat(report.actions.single().time).isEqualTo(5)
+        assertWithMessage("the engine's screen-off write logged just before the recorder's start belongs to the night")
+            .that(report.actions.map { it.time }).containsExactly(-114L, 5L).inOrder()
     }
 }

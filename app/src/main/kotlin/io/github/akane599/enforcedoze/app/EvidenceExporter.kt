@@ -8,6 +8,7 @@ import com.akylas.enforcedoze.BuildConfig
 import io.github.akane599.enforcedoze.data.EvidenceExport
 import io.github.akane599.enforcedoze.data.ExportContent
 import io.github.akane599.enforcedoze.data.ExportManifest
+import io.github.akane599.enforcedoze.data.NightReports
 import io.github.akane599.enforcedoze.data.SessionRow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,10 +20,10 @@ import java.time.Instant
  * the system share sheet. Only the latest export is kept; nothing is uploaded.
  */
 internal class EvidenceExporter(private val graph: EngineGraph) {
-    /** One session's ZIP, or null when there is no such session. */
+    /** One session's ZIP, with the logs from the engine's screen-off writes on; null when there is no such session. */
     suspend fun session(id: Long): File? {
         val row = graph.sessions.session(id) ?: return null
-        return export(listOf(row), row.start, row.end, "session-$id")
+        return export(listOf(row), NightReports.from(row), row.end, "session-$id")
     }
 
     /** Every session that overlaps [fromMillis]..[toMillis], with the logs of that range. */

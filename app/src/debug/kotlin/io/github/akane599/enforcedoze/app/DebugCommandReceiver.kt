@@ -109,7 +109,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
     private suspend fun lastNight(graph: EngineGraph): NightReport? {
         val night = graph.sessions.latestNights(1).firstOrNull() ?: return null
         val record = graph.sessions.recordOf(night.sessionId) ?: return null
-        val since = record.session.start
+        val since = NightReports.from(record.session)
         return NightReports.report(night, record, graph.journal.eventsSince(since), graph.journal.actionsSince(since))
     }
 

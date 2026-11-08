@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -51,7 +52,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  *   history cursor; the open session is kept in a file so it survives the process;
  * - each deep maintenance window: a copy of the event log's Doze lines and a sensor snapshot;
  * - screen on: battery, then one timed worker call for everything else, then the record;
- * - the first unlock after a night: the night report (SPEC 8.5).
+ * - the first unlock after a night: the night report (SPEC 8.5). Without a secure lock the system sends
+ *   ACTION_USER_PRESENT before ACTION_SCREEN_ON (seen on the API 37 emulator), so the unlock can come before
+ *   the session is stored; a session stored while the keyguard is already unlocked is reported right away.
  * Nothing runs on a timer while the screen is off (SPEC 8.2).
  */
 internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineScope, private val host: EngineHost) {
@@ -95,6 +98,7 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
     }
 
     private val power = context.getSystemService(PowerManager::class.java)
+    private val keyguard = context.getSystemService(KeyguardManager::class.java)
     private val signals = Channel<Signal>(Channel.UNLIMITED)
     private val receivers = mutableListOf<BroadcastReceiver>()
 
@@ -266,7 +270,10 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         files.clearOpen()
         if (reads == null) files.deleteRaw(open.start)
         last = record.record.copy(session = record.record.session.copy(id = id))
-        retain(System.currentTimeMillis())
+        val now = System.currentTimeMillis()
+        retain(now)
+        // The unlock that came first found no session to report (see the class comment).
+        if (!keyguard.isKeyguardLocked) unlocked(now)
     }
 
     /** SPEC 8.5: each unplugged session of at least the night threshold, not yet reported, becomes a night now. */

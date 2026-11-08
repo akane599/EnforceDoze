@@ -91,6 +91,15 @@ public object NightReports {
     /** How many earlier nights the comparison takes (SPEC 8.5). */
     public const val RECENT: Int = 7
 
+    /**
+     * The engine and the recorder each take the screen-off broadcast on their own, so the engine's screen-off
+     * writes can be logged just before the session's start (114 ms on the API 37 emulator). They belong to the night.
+     */
+    private val SCREEN_SLACK: Duration = Duration.ofSeconds(5)
+
+    /** Where the report's hold-offs, drift and actions start: read the journal from here for [report]. */
+    public fun from(session: SessionRow): Long = session.start - SCREEN_SLACK.toMillis()
+
     public fun qualifies(session: SessionRow, threshold: Duration): Boolean =
         session.chargedMillis == 0L && !session.pluggedAtStart && session.end - session.start >= threshold.toMillis()
 
@@ -120,7 +129,7 @@ public object NightReports {
 
     public fun report(night: NightRow, record: SessionRecord, events: List<EventRow>, actions: List<ActionRow>): NightReport {
         val session = record.session
-        val inSession = session.start..session.end
+        val inSession = from(session)..session.end
         return NightReport(
             night = night,
             session = session,
