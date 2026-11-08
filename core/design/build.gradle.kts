@@ -32,6 +32,7 @@ dependencies {
     api(libs.compose.foundation)
     api(libs.compose.material3)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material.icons.extended)
 
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.junit)
@@ -41,7 +42,6 @@ dependencies {
     testImplementation(libs.roborazzi.compose)
     testImplementation(libs.roborazzi.junit.rule)
     testImplementation(libs.compose.ui.test.junit4)
-    testImplementation(libs.compose.material.icons.extended)
     testImplementation(libs.androidx.test.core)
     debugImplementation(platform(libs.compose.bom))
     debugImplementation(libs.compose.ui.test.manifest)
