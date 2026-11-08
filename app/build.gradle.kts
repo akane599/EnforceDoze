@@ -71,6 +71,11 @@ dependencies {
     implementation(libs.upstream.process.phoenix)
     implementation(libs.upstream.localbroadcastmanager)
     implementation(project(":core:privilege"))
+    implementation(project(":core:doze-android"))
+    implementation(project(":core:data"))
+    implementation(project(":core:evidence"))
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.core.ktx)
     // Upstream classes still call Shizuku directly until the worker replaces them (SPEC 12.1).
     implementation(libs.shizuku.api)
 

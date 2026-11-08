@@ -25,10 +25,13 @@ dependencies {
 }
 
 val kotlinRoots = listOf("core", "feature", "testing")
+
+// The app's new Kotlin lives in src/<set>/kotlin; upstream's Java and Kotlin under src/main/java are not checked.
+fun appKotlinDirs(): List<File> = file("app/src").listFiles().orEmpty().map { it.resolve("kotlin") }.filter { it.isDirectory }
 val kotlinSourceDirs = provider {
     kotlinRoots.map(::file).filter { it.isDirectory }.flatMap { root ->
         root.walkTopDown().maxDepth(3).filter { it.name == "src" && it.isDirectory }.toList()
-    }
+    } + appKotlinDirs()
 }
 
 tasks.register<JavaExec>("detekt") {
@@ -54,7 +57,14 @@ tasks.register<JavaExec>("detekt") {
     )
 }
 
-val ktlintPatterns = listOf("core/**/src/**/*.kt", "testing/**/src/**/*.kt", "feature/**/src/**/*.kt", "**/*.gradle.kts", "!**/build/**")
+val ktlintPatterns = listOf(
+    "core/**/src/**/*.kt",
+    "testing/**/src/**/*.kt",
+    "feature/**/src/**/*.kt",
+    "app/src/*/kotlin/**/*.kt",
+    "**/*.gradle.kts",
+    "!**/build/**",
+)
 
 tasks.register<JavaExec>("ktlintCheck") {
     group = "verification"

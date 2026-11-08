@@ -12,6 +12,8 @@ libsu = "6.0.0"
 room = "2.8.5"
 ksp = "2.3.13"
 serialization = "1.12.0"
+# androidx.core for the app's own code, resolved from Maven metadata on 2026-11-08.
+androidx-core = "1.19.1"
 junit = "4.13.2"
 truth = "1.4.5"
 androidx-test-runner = "1.7.0"
@@ -36,6 +38,7 @@ upstream-nanotasks = "1.1.0"
 upstream-process-phoenix = "2.1.2"
 
 [libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 detekt-cli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 ktlint-cli = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

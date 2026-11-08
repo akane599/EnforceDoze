@@ -117,6 +117,24 @@
             android:name="com.akylas.enforcedoze.CustomDozePeriodReceiver"
             android:enabled="true"
             android:exported="false" />
+        <!-- The engine (SPEC 12.4, ADR 0015). specialUse: no other type covers applying the owner's Doze
+             profile at screen off and on; it reacts to broadcasts only and runs no work in between. -->
+        <service
+            android:name="io.github.akane599.enforcedoze.app.EngineService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Applies the owner's Doze profile at screen off and on and records whether Doze held" />
+        </service>
+        <receiver
+            android:name="io.github.akane599.enforcedoze.app.EngineStartReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <service
             android:name="com.akylas.enforcedoze.ForceDozeService"
             android:enabled="true"

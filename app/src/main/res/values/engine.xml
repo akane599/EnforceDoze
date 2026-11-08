@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- The fork ships English and Turkish (SPEC 9, 10); upstream's other locales go with its screens in P5. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="engine_channel_name">Doze engine</string>
+    <string name="engine_channel_description">Shown while EnforceDoze watches the screen to apply your profile</string>
+    <string name="engine_notification_title">Applying your Doze profile</string>
+</resources>
