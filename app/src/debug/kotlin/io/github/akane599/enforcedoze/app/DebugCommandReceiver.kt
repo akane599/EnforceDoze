@@ -14,8 +14,11 @@ import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.QuickProof
 import io.github.akane599.enforcedoze.doze.SwitchReason
 import io.github.akane599.enforcedoze.doze.android.EngineHost
+import io.github.akane599.enforcedoze.profile.NightSlot
+import io.github.akane599.enforcedoze.profile.Plan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import java.time.LocalTime
 import java.util.zip.ZipFile
 
 /**
@@ -26,7 +29,8 @@ import java.util.zip.ZipFile
  *         --es cmd profile --es arg test-everyday
  *
  * Start the engine first with `am start -n io.github.akane599.enforcedoze/io.github.akane599.enforcedoze.app.DebugStartActivity`.
- * Commands: `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
+ * Commands: `stop`, `status`, `profile <id>`, `plan <day>[,<night>,<HH:mm>,<HH:mm>]`, `follow-plan`,
+ * `night-start` (as if the window-start alarm arrived), `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
  * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`.
@@ -54,7 +58,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
         appCommands[command]?.let { return it(graph, arg) }
         val engineCommand = engineCommands[command] ?: return "unknown command $command"
         val host = graph.host ?: return "engine not running"
-        return engineCommand(host, arg)
+        return graph.engineCommand(host, arg)
     }
 
     /** Commands that do not need the engine running. */
@@ -79,12 +83,23 @@ class DebugCommandReceiver : BroadcastReceiver() {
         "export" to { graph, arg -> export(graph, arg) },
     )
 
-    private val engineCommands: Map<String, suspend (EngineHost, String?) -> String> = mapOf(
+    private val engineCommands: Map<String, suspend EngineGraph.(EngineHost, String?) -> String> = mapOf(
         "status" to { host, _ -> describe(host.status.value) },
         "profile" to { host, arg ->
-            val profile = arg?.let(Profiles::byId)
+            val profile = arg?.let { profiles.profile(it) }
             if (profile == null) "unknown profile $arg" else after(host) { setProfile(profile, SwitchReason.OWNER) }
         },
+        "plan" to { host, arg ->
+            val plan = arg?.let(::plan)
+            val unknown = listOfNotNull(plan?.dayProfileId, plan?.night?.profileId).filter { profiles.profile(it) == null }
+            when {
+                plan == null -> "usage: plan <day>[,<night>,<HH:mm>,<HH:mm>]"
+                unknown.isNotEmpty() -> "unknown profile ${unknown.joinToString()}"
+                else -> after(host) { setPlan(plan, SwitchReason.OWNER) }
+            }
+        },
+        "follow-plan" to { host, _ -> after(host) { followPlan(SwitchReason.OWNER) } },
+        "night-start" to { host, _ -> after(host) { nightStarted() } },
         "capture-stock" to { host, _ -> describe(host.engine.captureStock()) },
         "quick-proof" to { host, _ -> describe(host.engine.quickProof()) },
         "restore-stock" to { host, _ -> describe(host.engine.restoreStock()) },
@@ -96,6 +111,14 @@ class DebugCommandReceiver : BroadcastReceiver() {
     )
 
     private fun rows(arg: String?): Int = arg?.toIntOrNull() ?: DEFAULT_ROWS
+
+    /** `everyday` or `everyday,night,23:00,07:30`; null when it does not read. */
+    private fun plan(arg: String): Plan? {
+        val day = arg.substringBefore(',').trim()
+        if (',' !in arg) return Plan(day)
+        val (night, start, end) = NIGHT.matchEntire(arg.substringAfter(',').trim())?.destructured ?: return null
+        return runCatching { Plan(day, NightSlot(night, LocalTime.parse(start), LocalTime.parse(end))) }.getOrNull()
+    }
 
     /** Writes the export ZIP and lists what is in it, for the P3 gate (SPEC 8.7). */
     private suspend fun export(graph: EngineGraph, arg: String?): String {
@@ -126,6 +149,10 @@ class DebugCommandReceiver : BroadcastReceiver() {
         appendLine("constantsWriter=${status.constantsWriter} previous=${status.previousCaptured} stock=${status.stockCaptured}")
         appendLine("forcedWithoutWorker=${status.forcedWithoutWorker} storeError=${status.storeError}")
         appendLine("batteryFrozen=${status.batteryFrozen}")
+        status.plan?.let { plan ->
+            val night = plan.plan.night?.let { "${it.profileId} ${it.start}-${it.end}" }
+            appendLine("plan day=${plan.plan.dayProfileId} night=$night slot=${plan.slot} override=${plan.override}")
+        }
         status.levers.toSortedMap().forEach { (lever, it) ->
             appendLine("lever $lever ${it.state} wanted=${it.wanted} written=${it.written} seen=${it.seen} reason=${it.reason}")
         }
@@ -206,6 +233,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
         const val CMD = "cmd"
         const val ARG = "arg"
         const val DEFAULT_ROWS = 20
+        val NIGHT = Regex("""([^,\s]+)\s*,\s*(\d{2}:\d{2})\s*,\s*(\d{2}:\d{2})""")
         const val TOP_WAKERS = 5
 
         /** Under the 60 s a background broadcast may take. */

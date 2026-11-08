@@ -18,9 +18,11 @@ import io.github.akane599.enforcedoze.doze.EngineStart
 import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.EngineStore
 import io.github.akane599.enforcedoze.doze.HoldOff
+import io.github.akane599.enforcedoze.doze.ProfileCatalog
 import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.PrivilegeController
+import io.github.akane599.enforcedoze.profile.BuiltInProfiles
 import io.github.akane599.enforcedoze.profile.Profile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -35,9 +37,10 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.time.Instant
 
 /**
- * Runs the engine inside the app (ADR 0015): turns screen, hold-off and settings broadcasts and privilege
- * changes into engine commands. It owns no timer; every command starts from a system event. Callbacks
- * arrive on the main thread and each queues its command before returning, so commands keep their order.
+ * Runs the engine inside the app (ADR 0015): turns screen, hold-off, maintenance-window and settings
+ * broadcasts and privilege changes into engine commands. Its one timer is the plan's non-wakeup window-start
+ * alarm (ADR 0024); every other command starts from a system event. Callbacks arrive on the main thread and
+ * each queues its command before returning, so commands keep their order.
  */
 public class EngineHost internal constructor(
     private val context: Context,
@@ -50,10 +53,15 @@ public class EngineHost internal constructor(
 ) {
     private val main = Handler(Looper.getMainLooper())
     private val keyguard = context.getSystemService(KeyguardManager::class.java)
+    private val power = context.getSystemService(PowerManager::class.java)
+    private val nightAlarm = NightAlarm(context, main, power::isInteractive) {
+        scope.launch(start = CoroutineStart.UNDISPATCHED) { engine.nightStarted() }
+    }
     private val reported = mutableMapOf<HoldOff, Boolean>()
     private var screenReceiver: BroadcastReceiver? = null
     private var observer: ContentObserver? = null
     private var privilege: Job? = null
+    private var plan: Job? = null
 
     public val status: StateFlow<EngineStatus> get() = engine.status
 
@@ -65,7 +73,7 @@ public class EngineHost internal constructor(
                 source.start { active -> holdOff(source.holdOff, active) }.also { reported[source.holdOff] = it }
             }.map { it.holdOff }.toSet()
         }
-        val interactive = context.getSystemService(PowerManager::class.java).isInteractive
+        val interactive = power.isInteractive
         val writable = DeviceMapping.writable(controller.refresh())
         engine.start(EngineStart(profile, interactive, holdOffs, writable, locked = interactive && keyguard.isKeyguardLocked))
         withContext(Dispatchers.Main.immediate) {
@@ -75,12 +83,19 @@ public class EngineHost internal constructor(
         privilege = scope.launch {
             controller.state.map(DeviceMapping::writable).distinctUntilChanged().collect { engine.setWritable(it) }
         }
+        // The alarm follows the plan's window: set at start, moved when the plan changes.
+        plan = scope.launch(Dispatchers.Main.immediate) {
+            engine.status.map { it.plan?.plan?.night }.distinctUntilChanged().collect(nightAlarm::request)
+        }
     }
 
     /** Unregisters everything; the engine stops with its scope. Main thread. */
     public fun stop() {
         privilege?.cancel()
         privilege = null
+        plan?.cancel()
+        plan = null
+        nightAlarm.cancel()
         screenReceiver?.let(context::unregisterReceiver)
         screenReceiver = null
         observer?.let(context.contentResolver::unregisterContentObserver)
@@ -96,18 +111,25 @@ public class EngineHost internal constructor(
     }
 
     /**
-     * Screen off, screen on and unlock reach a receiver registered at run time only. The broadcast is held
-     * open with `goAsync` while the engine works, at most [BROADCAST_BOUND_MILLIS], so the phone does not
-     * sleep between the writes and their read-backs; past the bound the engine finishes on its own.
-     * `ACTION_USER_PRESENT` is sent once the keyguard is dismissed (ADR 0017).
+     * Screen off, screen on, unlock and the end of deep idle reach a receiver registered at run time only. The
+     * broadcast is held open with `goAsync` while the engine works, at most [BROADCAST_BOUND_MILLIS], so the
+     * phone does not sleep between the writes and their read-backs; past the bound the engine finishes on its
+     * own. `ACTION_USER_PRESENT` is sent once the keyguard is dismissed (ADR 0017). Deep idle ending with the
+     * screen off is a maintenance window (ADR 0020), where a night whose alarm found the screen off begins
+     * (ADR 0024).
      */
     private fun registerScreen() {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                when (intent.action) {
+                    Intent.ACTION_SCREEN_ON -> nightAlarm.screenOn()
+                    Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED -> nightAlarm.clockChanged()
+                }
                 val command: suspend () -> Unit = when (intent.action) {
                     Intent.ACTION_SCREEN_OFF -> ::screenOff
                     Intent.ACTION_SCREEN_ON -> ::screenOn
                     Intent.ACTION_USER_PRESENT -> engine::unlocked
+                    PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED -> maintenanceWindow() ?: return
                     else -> return
                 }
                 val pending = goAsync()
@@ -124,10 +146,17 @@ public class EngineHost internal constructor(
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_USER_PRESENT)
+            addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED)
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
         }
         context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         screenReceiver = receiver
     }
+
+    /** Deep idle left with the screen off: a maintenance window. Entering idle, or leaving it at screen on, is not. */
+    private fun maintenanceWindow(): (suspend () -> Unit)? =
+        engine::maintenanceWindow.takeIf { !power.isDeviceIdleMode && !power.isInteractive }
 
     /** A keep-awake app counts only at screen off, so its hold-off is set before the engine engages. */
     private suspend fun screenOff() {
@@ -173,6 +202,8 @@ public class EngineHost internal constructor(
             store: EngineStore,
             journal: EngineJournal,
             keepAwakeApps: () -> Set<String> = { emptySet() },
+            /** The plan's profiles: the built-ins, plus the app's custom profiles when it passes its store. */
+            catalog: ProfileCatalog = ProfileCatalog { BuiltInProfiles.byId(it) },
         ): EngineHost {
             val app = context.applicationContext
             val device = PrivilegedDozeDevice(
@@ -181,7 +212,7 @@ public class EngineHost internal constructor(
                 shell = ProcessLocalShell(),
                 grants = { controller.state.value.grants },
             )
-            val engine = DozeEngine(device, store, journal, EngineClock { Instant.now() }, app.packageName, scope)
+            val engine = DozeEngine(device, store, journal, EngineClock { Instant.now() }, app.packageName, scope, catalog = catalog)
             val sources = listOf(
                 CallSource(app),
                 AudioSource(app, Handler(Looper.getMainLooper())),

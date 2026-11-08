@@ -64,6 +64,7 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
     private val journal: JournalDao = graph.journal
     private val sessions: SessionDao = graph.sessions
     private val files: RecorderFiles = graph.recorderFiles
+    private val profiles: Profiles = graph.profiles
 
     private sealed interface Signal {
         data class Resume(val interactive: Boolean) : Signal
@@ -248,7 +249,7 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         val battery = battery()
         val minimum = DebugHooks.minimumSession(context)
         val reads = if (SessionAssembly.tooShort(open.start, end, minimum)) null else collect(open)
-        val profile = open.profileId?.let(Profiles::byId)
+        val profile = open.profileId?.let { profiles.profile(it) }
         val record = SessionAssembly.close(
             SessionClose(
                 open = open,

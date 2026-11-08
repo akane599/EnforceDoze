@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import io.github.akane599.enforcedoze.data.EngineFiles
 import io.github.akane599.enforcedoze.data.EvidenceDatabase
 import io.github.akane599.enforcedoze.data.JournalDao
+import io.github.akane599.enforcedoze.data.ProfileStore
 import io.github.akane599.enforcedoze.data.RecorderFiles
 import io.github.akane599.enforcedoze.data.RoomEngineJournal
 import io.github.akane599.enforcedoze.data.SessionDao
@@ -31,6 +32,7 @@ internal class EngineGraph private constructor(context: Context) {
     val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val controller: PrivilegeController = PrivilegeController.create(app, scope)
     val store: EngineFiles = EngineFiles(File(app.filesDir, ENGINE_DIR))
+    val profiles: Profiles = Profiles(ProfileStore(File(app.filesDir, PROFILES_DIR)))
     private val database: EvidenceDatabase by lazy { EvidenceDatabase.open(app) }
     val journal: JournalDao by lazy { database.journal() }
     val sessions: SessionDao by lazy { database.sessions() }
@@ -54,8 +56,8 @@ internal class EngineGraph private constructor(context: Context) {
             controller.start()
             // The engine's actor lives in a child scope, so a stop ends it without ending the graph.
             val engineScope = CoroutineScope(scope.coroutineContext + SupervisorJob(scope.coroutineContext.job))
-            val host = EngineHost.create(app, engineScope, controller, store, RoomEngineJournal(journal))
-            host.start(store.load().profileId?.let(Profiles::byId))
+            val host = EngineHost.create(app, engineScope, controller, store, RoomEngineJournal(journal), catalog = profiles)
+            host.start(store.load().profileId?.let { profiles.profile(it) })
             val recorder = SessionRecorder(this, engineScope, host)
             withContext(Dispatchers.Main.immediate) { recorder.start() }
             running = Running(engineScope, host, recorder)
@@ -78,6 +80,7 @@ internal class EngineGraph private constructor(context: Context) {
     companion object {
         private const val ENGINE_DIR = "engine"
         private const val SESSIONS_DIR = "sessions"
+        private const val PROFILES_DIR = "profiles"
 
         // Holds only the application context, which lives as long as the process.
         @android.annotation.SuppressLint("StaticFieldLeak")

@@ -4,7 +4,10 @@ package io.github.akane599.enforcedoze.profile
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class PlanTest {
     private val plan = Plan("everyday", NightSlot("night", NightSlot.DEFAULT_START, NightSlot.DEFAULT_END))
@@ -29,5 +32,25 @@ class PlanTest {
     @Test
     fun `an empty window is refused`() {
         assertThrows(IllegalArgumentException::class.java) { NightSlot("night", LocalTime.NOON, LocalTime.NOON) }
+    }
+
+    @Test
+    fun `the next window start is today's while ahead, else tomorrow's`() {
+        val night = plan.night!!
+        val zone = ZoneId.of("Europe/Istanbul")
+        fun at(text: String) = ZonedDateTime.of(LocalDateTime.parse(text), zone)
+        assertThat(night.nextStart(at("2026-11-08T22:00"))).isEqualTo(at("2026-11-08T23:00"))
+        assertThat(night.nextStart(at("2026-11-08T23:00"))).isEqualTo(at("2026-11-09T23:00"))
+        assertThat(night.nextStart(at("2026-11-09T02:00"))).isEqualTo(at("2026-11-09T23:00"))
+    }
+
+    @Test
+    fun `a window start in a daylight-saving gap moves forward by the gap`() {
+        val zone = ZoneId.of("Europe/Berlin")
+        val night = NightSlot("night", LocalTime.of(2, 30), LocalTime.of(6, 0))
+        val start = night.nextStart(ZonedDateTime.of(LocalDateTime.parse("2026-03-29T01:00"), zone))
+        assertThat(start.toLocalDateTime()).isEqualTo(LocalDateTime.parse("2026-03-29T03:30"))
+        val after = night.nextStart(ZonedDateTime.of(LocalDateTime.parse("2026-10-24T12:00"), zone))
+        assertThat(after.toLocalDateTime()).isEqualTo(LocalDateTime.parse("2026-10-25T02:30"))
     }
 }

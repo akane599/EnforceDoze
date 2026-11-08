@@ -48,7 +48,7 @@ internal class EvidenceExporter(private val graph: EngineGraph) {
         val starts = rows.map { it.start.toString() }.toSet()
         val raw = graph.recorderFiles.rawFolders().filter { it.name in starts }
         val ids = rows.mapNotNull { it.profileId }.distinct()
-        val profiles = ids.mapNotNull(Profiles::byId)
+        val profiles = ids.mapNotNull { graph.profiles.profile(it) }
         val manifest = ExportManifest(
             createdAt = Instant.now().toString(),
             app = BuildConfig.VERSION_NAME,

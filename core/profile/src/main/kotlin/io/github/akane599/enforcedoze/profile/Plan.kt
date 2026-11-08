@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.profile
 
 import java.time.LocalTime
+import java.time.ZonedDateTime
 
 /** The night slot of a plan: [profileId] between [start] and [end], which may cross midnight. */
 public data class NightSlot(val profileId: String, val start: LocalTime, val end: LocalTime) {
@@ -10,6 +11,15 @@ public data class NightSlot(val profileId: String, val start: LocalTime, val end
     }
 
     public operator fun contains(time: LocalTime): Boolean = if (start < end) time >= start && time < end else time >= start || time < end
+
+    /**
+     * The first window start strictly after [after], in its zone: today's if still ahead, else tomorrow's. A start
+     * that falls in a daylight-saving gap moves forward by the gap, as `ZonedDateTime` resolves it.
+     */
+    public fun nextStart(after: ZonedDateTime): ZonedDateTime {
+        val today = after.with(start)
+        return if (today.isAfter(after)) today else after.plusDays(1).with(start)
+    }
 
     public companion object {
         /** SPEC 6.1: 23:00–07:30. */
