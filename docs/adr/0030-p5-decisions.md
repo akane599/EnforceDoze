@@ -43,6 +43,13 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
 - **A figure that does not fit steps down to 60 % of its size** (`TextAutoSize.StepBased`) and sits
   on the same line bottom as its neighbours. Clipping a unit hides it; wrapping breaks the row. The
   figure row first balances its rows (8 figures on a narrow phone become 4 + 4, not 3 + 3 + 2).
+- **A late arrival is recorded at the moment the owner reports it, against the open report's
+  session** (SPEC 7.5). The sheet asks only which app, with "Not sure" allowed; the time comes from
+  the clock, because the owner reports it while looking at the late notification.
+- **Sensor moments are a typed set** (screen off, maintenance, screen on), not strings. The
+  snapshot schedule in SPEC 8.1 has exactly those three points.
+- **A route owns its loading and missing states** (`ReportRoute`). It takes a small navigation
+  interface of plain callbacks, so the feature still holds no navigation types (ADR 0029).
 - **A shot is taken of the settled screen.** Roborazzi copies the window straight after `setContent`.
   The scrollable tab row was caught mid-scroll at a different offset on each run, and sheet shots
   came out blank now and then. `shoot` sets the animator scale to 0, so every Compose animation lands

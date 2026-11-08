@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="report_title_night">%1$s gecesi</string>
+    <string name="report_title_session">%1$s, %2$s</string>
+    <string name="report_missing">Bu oturum artık kayıtta yok. Eski oturumlar, Ayarlar\'da seçilen saklama süresinden sonra silinir.</string>
+    <string name="report_export">Dışa aktar</string>
+
+    <string name="report_tab_summary">Özet</string>
+    <string name="report_tab_timeline">Zaman çizelgesi</string>
+    <string name="report_tab_wakers">Uyandıranlar</string>
+    <string name="report_tab_sensors">Sensörler</string>
+    <string name="report_tab_actions">Eylemler</string>
+    <string name="report_tab_raw">Ham kayıt</string>
+
+    <string name="report_line">%1$s derin uykuda, %2$s, %3$s.</string>
+    <string name="report_line_no_drain">%1$s derin uykuda, %2$s.</string>
+    <string name="report_line_late">Derin uyku %1$s geç geldi.</string>
+    <string name="report_strip_summary">Ekran %1$s kapandı, %2$s açıldı. %3$s derin uykuda, %4$s, %5$s.</string>
+
+    <string name="report_fig_to_deep">derin uykuya</string>
+    <string name="report_fig_deep">derin uykuda</string>
+    <string name="report_fig_light">hafif uykuda</string>
+    <string name="report_fig_active">uyanık</string>
+    <string name="report_fig_drain">tüketim</string>
+    <string name="report_fig_used">harcanan</string>
+    <string name="report_fig_motion">hareket sıfırlaması</string>
+    <string name="report_fig_own">kendi uyandırması</string>
+
+    <string name="report_compared">Karşılaştırma</string>
+    <string name="report_compared_detail">tüketim, %/sa</string>
+    <string name="report_this_night">Bu gece</string>
+    <string name="report_compared_row">%1$s: %2$s, %3$s</string>
+    <plurals name="report_recent">
+        <item quantity="one">Önceki gece</item>
+        <item quantity="other">Son %d gece</item>
+    </plurals>
+    <string name="report_stock">Stok</string>
+    <string name="report_gain_less">Stok\'a göre %1$s daha az tüketim.</string>
+    <string name="report_gain_more">Stok\'a göre %1$s daha fazla tüketim.</string>
+    <string name="report_no_stock">Henüz Stok ölçütü yok</string>
+    <string name="report_no_stock_body">Ölçüt, EnforceDoze öncesindeki pil geçmişinden ya da Stok profiliyle geçen gecelerden gelir.</string>
+
+    <string name="report_top_wakers">En çok uyandıranlar</string>
+    <string name="report_all">Tümü</string>
+    <plurals name="report_wakeups">
+        <item quantity="one">%d uyandırma</item>
+        <item quantity="other">%d uyandırma</item>
+    </plurals>
+    <string name="report_no_wakers">Hiçbir uygulama telefonu uyandırmadı.</string>
+
+    <string name="report_late">Bir şey geç geldi</string>
+    <string name="report_late_done">Gecikme kaydedildi</string>
+    <string name="report_allowlist">İzin listesine ekle</string>
+
+    <string name="report_legend_active">Uyanık</string>
+    <string name="report_legend_light">Hafif uyku</string>
+    <string name="report_legend_deep">Derin uyku</string>
+    <string name="report_legend_missing">Kayıt yok</string>
+    <string name="report_col_time">Saat</string>
+    <string name="report_col_event">Olay</string>
+    <string name="report_col_due">Beklenen</string>
+    <string name="report_col_late">Gecikme</string>
+    <string name="report_spoken_due">beklenen %1$s</string>
+    <string name="report_spoken_late">gecikme %1$s</string>
+    <string name="report_stop_screen_off">Ekran kapandı</string>
+    <string name="report_stop_screen_on">Ekran açıldı</string>
+    <string name="report_stop_light">Hafif uyku</string>
+    <string name="report_stop_deep">Derin uyku</string>
+    <string name="report_stop_deep_again">Yeniden derin uyku</string>
+    <string name="report_stop_maintenance">Bakım penceresi</string>
+    <string name="report_stop_maintenance_for">Bakım penceresi, %1$s</string>
+    <string name="report_stop_gap">%1$s saatine dek kayıt yok</string>
+    <string name="report_stop_filled">%1$s saatine dek pil geçmişinden</string>
+    <string name="report_break_motion">Bölünme: hareket</string>
+    <string name="report_break_hold_off">Bölünme: %1$s ertelemesi</string>
+    <string name="report_break_waker">Bölünme: %1$s telefonu uyandırdı</string>
+    <string name="report_break_another">Bölünme: %1$s Doze\'u değiştirdi</string>
+    <string name="report_break_unknown">Bölünme</string>
+    <string name="report_break_awake">%1$s, %2$s uyanık</string>
+    <string name="report_someone">başka bir uygulama</string>
+
+    <string name="report_apps">Uygulamalar</string>
+    <string name="report_col_app">Uygulama</string>
+    <string name="report_col_wakeups">Uyandırma</string>
+    <string name="report_col_awake">Uyanık tuttu</string>
+    <string name="report_awake_for">%1$s uyanık tuttu</string>
+    <string name="report_self">%1$s (bu uygulama)</string>
+    <string name="report_self_expected">Beklenen: 0 uyandırma</string>
+    <string name="report_kernel">Çekirdek uyandırma nedenleri</string>
+    <string name="report_no_kernel">Çekirdek bir uyandırma nedeni kaydetmedi.</string>
+
+    <string name="report_sensors">Sensör tutan uygulamalar</string>
+    <string name="report_sensors_detail">hız</string>
+    <string name="report_rate">%1$d Hz</string>
+    <string name="report_seen_at">Görüldüğü an: %1$s</string>
+    <string name="report_no_sensors">Ekran kapanırken ya da gecenin anlık kayıtlarında hiçbir uygulama sensör tutmadı.</string>
+
+    <string name="report_changes">Doze\'u ne değiştirdi</string>
+    <string name="report_change_hold_off">Erteleme: %1$s</string>
+    <string name="report_change_hold_off_until">Erteleme: %1$s, %2$s saatine dek</string>
+    <string name="report_change_drift">%1$s bir Doze ayarını değiştirdi; EnforceDoze geri koydu</string>
+    <string name="report_no_changes">Gece boyunca Doze\'u hiçbir şey değiştirmedi.</string>
+    <string name="report_engine_actions">EnforceDoze\'un yazdıkları</string>
+    <string name="report_applied">Uygulandı</string>
+    <string name="report_not_applied">Uygulanmadı</string>
+    <string name="report_read_back">geri okunan: %1$s</string>
+    <string name="report_no_actions">EnforceDoze gece boyunca bir şey yazmadı.</string>
+
+    <string name="report_raw_timeline">Derin uyku çizelgesi</string>
+    <string name="report_raw_transitions">Hafif uyku geçişleri</string>
+    <string name="report_raw_breaks">Bölünmeler</string>
+    <string name="report_raw_coverage">Kapsam</string>
+    <string name="report_raw_notes">Notlar</string>
+    <string name="report_no_raw">Bu oturum için kayıt tutulmadı.</string>
+
+    <string name="report_late_title">Ne geç geldi?</string>
+    <string name="report_late_body">EnforceDoze uygulamayı ve saati not eder, önerilen planı bir adım yumuşatır ve uygulamayı izin listesine ekleyebilir.</string>
+    <string name="report_late_not_sure">Hangi uygulama, emin değilim</string>
+    <string name="report_late_record">Kaydet</string>
+    <string name="report_late_failed">Kaydedilemedi</string>
+    <string name="report_late_recorded">Kaydedildi</string>
+    <string name="report_late_step">Önümüzdeki 30 gün boyunca öneri %1$s planından daha sıkı olmayacak.</string>
+    <string name="report_late_gentlest">Plan zaten en yumuşağı; öneri değişmiyor.</string>
+    <string name="report_late_allowlist">%1$s izin listesine eklensin</string>
+    <string name="report_cancel">Vazgeç</string>
+    <string name="report_done">Tamam</string>
+    <string name="report_moment_screen_off">ekran kapanırken</string>
+    <string name="report_moment_maintenance">bir bakım penceresinde</string>
+    <string name="report_moment_screen_on">ekran açılırken</string>
+    <string name="report_row_drain">tüketim, %/sa</string>
+    <string name="report_row_deep">derin uykuda, %</string>
+</resources>

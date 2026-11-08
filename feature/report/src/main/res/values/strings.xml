@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="report_title_night">Night of %1$s</string>
+    <string name="report_title_session">%1$s, %2$s</string>
+    <string name="report_missing">This session is no longer in the log. Old sessions are removed after the retention period set in Settings.</string>
+    <string name="report_export">Export</string>
+
+    <string name="report_tab_summary">Summary</string>
+    <string name="report_tab_timeline">Timeline</string>
+    <string name="report_tab_wakers">Wakers</string>
+    <string name="report_tab_sensors">Sensors</string>
+    <string name="report_tab_actions">Actions</string>
+    <string name="report_tab_raw">Raw</string>
+
+    <string name="report_line">%1$s in deep idle, %2$s, %3$s.</string>
+    <string name="report_line_no_drain">%1$s in deep idle, %2$s.</string>
+    <string name="report_line_late">Deep idle came %1$s late.</string>
+    <string name="report_strip_summary">Screen off %1$s, screen on %2$s. %3$s in deep idle, %4$s, %5$s.</string>
+
+    <string name="report_fig_to_deep">to deep idle</string>
+    <string name="report_fig_deep">in deep idle</string>
+    <string name="report_fig_light">in light idle</string>
+    <string name="report_fig_active">awake</string>
+    <string name="report_fig_drain">drain</string>
+    <string name="report_fig_used">used</string>
+    <string name="report_fig_motion">motion resets</string>
+    <string name="report_fig_own">own wakeups</string>
+
+    <string name="report_compared">Compared with</string>
+    <string name="report_compared_detail">drain, %/h</string>
+    <string name="report_this_night">This night</string>
+    <string name="report_compared_row">%1$s: %2$s, %3$s</string>
+    <plurals name="report_recent">
+        <item quantity="one">Last night</item>
+        <item quantity="other">Last %d nights</item>
+    </plurals>
+    <string name="report_stock">Stock</string>
+    <string name="report_gain_less">%1$s less drain than on Stock.</string>
+    <string name="report_gain_more">%1$s more drain than on Stock.</string>
+    <string name="report_no_stock">No Stock baseline yet</string>
+    <string name="report_no_stock_body">The baseline comes from battery history before EnforceDoze, or from nights on the Stock profile.</string>
+
+    <string name="report_top_wakers">Top wakers</string>
+    <string name="report_all">All</string>
+    <plurals name="report_wakeups">
+        <item quantity="one">%d wakeup</item>
+        <item quantity="other">%d wakeups</item>
+    </plurals>
+    <string name="report_no_wakers">No app woke the phone.</string>
+
+    <string name="report_late">Something arrived late</string>
+    <string name="report_late_done">Late arrival recorded</string>
+    <string name="report_allowlist">Add to allowlist</string>
+
+    <string name="report_legend_active">Awake</string>
+    <string name="report_legend_light">Light idle</string>
+    <string name="report_legend_deep">Deep idle</string>
+    <string name="report_legend_missing">No record</string>
+    <string name="report_col_time">Time</string>
+    <string name="report_col_event">Event</string>
+    <string name="report_col_due">Due</string>
+    <string name="report_col_late">Late</string>
+    <string name="report_spoken_due">due %1$s</string>
+    <string name="report_spoken_late">late %1$s</string>
+    <string name="report_stop_screen_off">Screen off</string>
+    <string name="report_stop_screen_on">Screen on</string>
+    <string name="report_stop_light">Light idle</string>
+    <string name="report_stop_deep">Deep idle</string>
+    <string name="report_stop_deep_again">Deep idle again</string>
+    <string name="report_stop_maintenance">Maintenance window</string>
+    <string name="report_stop_maintenance_for">Maintenance window, %1$s</string>
+    <string name="report_stop_gap">No record until %1$s</string>
+    <string name="report_stop_filled">From battery history until %1$s</string>
+    <string name="report_break_motion">Break: motion</string>
+    <string name="report_break_hold_off">Break: hold-off %1$s</string>
+    <string name="report_break_waker">Break: %1$s woke the phone</string>
+    <string name="report_break_another">Break: %1$s changed Doze</string>
+    <string name="report_break_unknown">Break</string>
+    <string name="report_break_awake">%1$s, %2$s awake</string>
+    <string name="report_someone">another app</string>
+
+    <string name="report_apps">Apps</string>
+    <string name="report_col_app">App</string>
+    <string name="report_col_wakeups">Wakeups</string>
+    <string name="report_col_awake">Held awake</string>
+    <string name="report_awake_for">%1$s held awake</string>
+    <string name="report_self">%1$s (this app)</string>
+    <string name="report_self_expected">Expected: 0 wakeups</string>
+    <string name="report_kernel">Kernel wakeup reasons</string>
+    <string name="report_no_kernel">The kernel logged no wakeup reasons.</string>
+
+    <string name="report_sensors">Apps holding sensors</string>
+    <string name="report_sensors_detail">rate</string>
+    <string name="report_rate">%1$d Hz</string>
+    <string name="report_seen_at">Seen at %1$s</string>
+    <string name="report_no_sensors">No app held a sensor at screen off or in the night\'s snapshots.</string>
+
+    <string name="report_changes">What changed Doze</string>
+    <string name="report_change_hold_off">Hold-off: %1$s</string>
+    <string name="report_change_hold_off_until">Hold-off: %1$s, until %2$s</string>
+    <string name="report_change_drift">%1$s changed a Doze setting; EnforceDoze put it back</string>
+    <string name="report_no_changes">Nothing changed Doze in the night.</string>
+    <string name="report_engine_actions">EnforceDoze\'s writes</string>
+    <string name="report_applied">Applied</string>
+    <string name="report_not_applied">Failed</string>
+    <string name="report_read_back">read back: %1$s</string>
+    <string name="report_no_actions">EnforceDoze wrote nothing in the night.</string>
+
+    <string name="report_raw_timeline">Deep timeline</string>
+    <string name="report_raw_transitions">Light idle changes</string>
+    <string name="report_raw_breaks">Breaks</string>
+    <string name="report_raw_coverage">Coverage</string>
+    <string name="report_raw_notes">Notes</string>
+    <string name="report_no_raw">No records were kept for this session.</string>
+
+    <string name="report_late_title">What arrived late?</string>
+    <string name="report_late_body">EnforceDoze notes the app and the time, makes the recommended plan one step gentler, and can add the app to the allowlist.</string>
+    <string name="report_late_not_sure">Not sure which app</string>
+    <string name="report_late_record">Record</string>
+    <string name="report_late_failed">Not recorded</string>
+    <string name="report_late_recorded">Recorded</string>
+    <string name="report_late_step">For the next 30 days the recommendation is no stricter than %1$s.</string>
+    <string name="report_late_gentlest">The plan is already the gentlest, so the recommendation stays.</string>
+    <string name="report_late_allowlist">Add %1$s to allowlist</string>
+    <string name="report_cancel">Cancel</string>
+    <string name="report_done">Done</string>
+    <string name="report_moment_screen_off">screen off</string>
+    <string name="report_moment_maintenance">a maintenance window</string>
+    <string name="report_moment_screen_on">screen on</string>
+    <string name="report_row_drain">drain, %/h</string>
+    <string name="report_row_deep">in deep idle, %</string>
+</resources>
