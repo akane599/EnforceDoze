@@ -155,7 +155,7 @@ The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 3
 
 ## 4. Privilege architecture
 
-Every privileged action runs through one typed Shizuku UserService (or Sui, or root through the same interface); the app process holds only durable grants. If Shizuku stops, profiles already applied stay applied and the logs still work from the grants.
+Every privileged action runs through one typed Shizuku UserService (or Sui, or root through the same interface); the app process holds only durable grants. If Shizuku stops, profiles already applied stay applied and the logs still work from the grants: levers the remaining grants can write keep the plan's values, the others show "partly applied", and forced idle, which only the worker can release, is released the moment a worker is back (ADR 0015).
 
 ### 4.1 Tiers
 
@@ -489,7 +489,7 @@ English is the primary language; Turkish is a full translation (`values-tr`), ch
 
 ### 9.3 States every screen handles
 
-No privilege (read-only mode with what still works); privilege lost mid-session (banner, plan paused, Stock restored where possible); partly applied (which key); no data yet (what will appear and when); another manager detected; error with the raw line that caused it, never a bare "Something went wrong".
+No privilege (read-only mode with what still works); privilege lost mid-session (banner naming the levers that can no longer be written, which show "partly applied"; the rest stay applied; forced idle released as soon as a worker is back; ADR 0015); partly applied (which key); no data yet (what will appear and when); another manager detected; error with the raw line that caused it, never a bare "Something went wrong".
 
 ## 10. Design and /impeccable
 
@@ -596,7 +596,9 @@ Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, k
 | `:core:privilege-worker` | The `IDozeWorker` UserService; the only module that may call hidden APIs, reached at run time only (ADR 0009) |
 | `:core:hidden-api-stubs` | compileOnly framework stubs for the worker (ADR 0009) |
 | `:core:parse` | Pure-JVM parsers and their value types, shared by privilege, doze and evidence (ADR 0009) |
-| `:core:doze` | Levers, apply/verify/revert, hold-offs, drift, plan scheduling (section 5, 6.5) |
+| `:core:profile` | Pure-JVM profile and plan types, the built-ins and the guardrails (6.1–6.3; ADR 0015) |
+| `:core:doze` | Pure-JVM engine: levers, apply/verify/revert, hold-offs, drift, plan scheduling, behind ports (section 5, 6.5; ADR 0015) |
+| `:core:doze-android` | The engine's port adapters: privilege, constants writer, dumps, hold-off sources (ADR 0015) |
 | `:core:evidence` | Collectors, session verdicts, night report model (section 8) |
 | `:core:recommend` | The pure recommendation policy (section 7) |
 | `:core:data` | Room, DataStore, profile JSON import and export |
@@ -608,7 +610,7 @@ Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, k
 
 - **Parsers are pure functions** over captured text, each with fixtures from the API 34, 35, 36 and 37 emulators, plus One UI dumps when the owner provides them. A line that does not parse becomes "unknown" with the raw line kept; it never crashes the app.
 - **No binder transaction numbers** (`service call …`) and **no reflection on Shizuku internals**. Hidden framework APIs are called only inside the worker, each behind a capability probe with a fallback and a logged failure.
-- **One writer.** All engine writes go through a single actor (a coroutine channel), so a profile switch, a hold-off and a drift fix can never interleave. Every write has a 5 s timeout and an action-log row.
+- **One writer.** All engine writes go through a single actor (a coroutine channel), so a profile switch, a hold-off and a drift fix can never interleave. Every write has a 5 s timeout and an action-log row. The actor reconciles a desired state computed from its inputs with what it last wrote and observed (ADR 0015).
 - **Foreground service** of type `specialUse` with the subtype property filled in and explained; started at boot and after updates; on restart it re-reads the real state before doing anything. It does no work between broadcasts.
 - Explicit API mode in core modules; no hard-coded strings, colours or sizes in screens.
 
@@ -655,7 +657,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 | Charging | `dumpsys battery set ac 1`, then `dumpsys battery unplug` |
 | Motion | `cmd deviceidle motion` ("Simulate a motion event to bring the device out of deep doze", API 37 help). The emulators have no motion sensor (`mMotionSensor=null`), so `adb emu sensor set acceleration …` cannot reach Doze (ADR 0004). If `motion` does not behave like a real motion reset, motion tests are marked device-only in an ADR and covered by parser fixtures plus the sensor-mode read-back |
 | Foreign Doze writer | `adb shell settings put global device_idle_constants inactive_to=1800000` during a session (writes as `com.android.shell`, as Tasker through Shizuku does; ADR 0012) |
-| Privilege lost | Stop the Shizuku server mid-session; expect the banner, the plan paused and Stock restored where possible |
+| Privilege lost | Stop the Shizuku server mid-session; expect the banner, the worker levers shown as partly applied, constants still applied, and forced idle released once the server is back (ADR 0015) |
 
 Hotspot cannot be simulated reliably; it is covered by a unit test with a fake source.
 
