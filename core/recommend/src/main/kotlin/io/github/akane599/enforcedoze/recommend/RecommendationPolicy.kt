@@ -83,47 +83,57 @@ public object RecommendationPolicy {
             return Recommendation(Plan(EVERYDAY), Confidence.LOW, listOf(Reason.ThinHistory(signals.screenOff)), notes, signals)
         }
         val reasons = mutableListOf<Reason>(Reason.ScreenOffPerDay(signals.screenOffHoursPerDay))
-        var day = daySlot(signals, answers.urgency, reasons)
-        val night = nightSlot(signals, answers.urgency, reasons)
+        val inUse = history.feedback.current?.plan
+        val day = daySlot(signals, answers.urgency, inUse, reasons, notes)
+        var fresh = Plan(day, nightSlot(signals, answers.urgency, reasons))
         if (dozingWell(signals)) {
-            if (day == POCKET || day == CLASSIC) {
-                day = EVERYDAY
-                // They no longer explain the plan; the dozing-well line does.
-                reasons.removeAll { it is Reason.MotionKeptAwake || it is Reason.MotionResets || it is Reason.ShortSessions }
-            }
+            if (day == POCKET || day == CLASSIC) fresh = trim(fresh, fresh.copy(dayProfileId = EVERYDAY), reasons, notes)
             reasons += Reason.DozingWell(signals.drainPerHour.valueOrNull!!, signals.deepShare.valueOrNull!!)
             notes += Note.LITTLE_TO_GAIN
         }
-        var plan = Plan(day, night)
-        val step = FeedbackLoop.step(history, signals)
-        val current = history.feedback.current?.plan
-        if (step != null && current != null) {
-            val gentler = FeedbackLoop.capForUrgency(FeedbackLoop.gentler(current), answers.urgency)
-            if (gentler != current) {
-                plan = gentler
-                reasons.add(0, step)
-                notes += Note.GENTLER
-            }
+        // SPEC 7.5: complaints only lower the fresh plan, never raise it, and each one names itself on the card.
+        val binding = FeedbackLoop.steps(history, signals).filter { FeedbackLoop.atMost(fresh, it.ceiling) != fresh }
+        val plan = binding.fold(fresh) { p, step -> FeedbackLoop.atMost(p, step.ceiling) }
+        if (plan != fresh) {
+            reasons.addAll(0, binding.map { it.reason })
+            notes += Note.GENTLER
+            trim(fresh, plan, reasons, notes)
         }
         return Recommendation(plan, confidence(history, signals), reasons, notes, signals)
     }
 
-    /** Rule 2. */
-    private fun daySlot(signals: Signals, urgency: Urgency, reasons: MutableList<Reason>): String {
-        val never = signals.neverDeep.valueOrNull?.takeIf { it.value >= POCKET_NEVER_DEEP_SHARE }
-        val resets = signals.motionResetsPerHour.valueOrNull?.takeIf { it >= POCKET_RESETS_PER_HOUR }
+    /** Rule 2. [inUse] is the plan the owner runs now, for Pocket's hysteresis. */
+    private fun daySlot(signals: Signals, urgency: Urgency, inUse: Plan?, reasons: MutableList<Reason>, notes: MutableSet<Note>): String {
+        val never = signals.neverDeep.valueOrNull?.takeIf { reaches(it.value, POCKET_NEVER_DEEP_SHARE) }
+        val resets = signals.motionResetsPerHour.valueOrNull?.takeIf { reaches(it, POCKET_RESETS_PER_HOUR) }
         if (never != null || resets != null) {
             never?.let { reasons += Reason.MotionKeptAwake(it.count, it.of) }
             resets?.let { reasons += Reason.MotionResets(it) }
             return POCKET
         }
-        val short = signals.shortDaytimeShare.valueOrNull?.takeIf { it >= CLASSIC_SHORT_SHARE }
+        // Pocket restricts the sensors, so while it runs M cannot show; dropping it for that would flip back and forth.
+        val hidden = Measured.Unknown(Unmeasured.SENSORS_RESTRICTED)
+        if (inUse?.dayProfileId == POCKET && signals.neverDeep == hidden && signals.motionResetsPerHour == hidden) {
+            notes += Note.MOTION_NOT_MEASURED
+            return POCKET
+        }
+        val short = signals.shortDaytimeShare.valueOrNull?.takeIf { reaches(it, CLASSIC_SHORT_SHARE) }
         // Only It can wait allows Classic, so Right away is capped at Everyday or Pocket here as well.
         if (short != null && urgency == Urgency.IT_CAN_WAIT) {
             reasons += Reason.ShortSessions(short)
             return CLASSIC
         }
         return EVERYDAY
+    }
+
+    /** [to], a gentler [from], without the lines and notes that explained what [from] had and [to] lost. */
+    private fun trim(from: Plan, to: Plan, reasons: MutableList<Reason>, notes: MutableSet<Note>): Plan {
+        if (from.night != null && to.night == null) reasons.removeAll { it is Reason.UnpluggedNights }
+        if (from.dayProfileId != to.dayProfileId) {
+            reasons.removeAll { it is Reason.MotionKeptAwake || it is Reason.MotionResets || it is Reason.ShortSessions }
+            notes -= Note.MOTION_NOT_MEASURED
+        }
+        return to
     }
 
     /** Rule 3: N on enough of the available nights, and messages may wait. */
@@ -143,7 +153,7 @@ public object RecommendationPolicy {
     private fun dozingWell(signals: Signals): Boolean {
         val drain = signals.drainPerHour.valueOrNull ?: return false
         val deep = signals.deepShare.valueOrNull ?: return false
-        return drain <= DOZING_WELL_DRAIN_PER_HOUR && deep >= DOZING_WELL_DEEP_SHARE
+        return within(drain, DOZING_WELL_DRAIN_PER_HOUR) && reaches(deep, DOZING_WELL_DEEP_SHARE)
     }
 
     /** SPEC 7.4 with ADR 0026: Low is rule 1; High needs a week and D and R measured, so an unmeasured stock stays Medium. */
@@ -159,3 +169,18 @@ public object RecommendationPolicy {
     internal val STRICT = BuiltInProfiles.STRICT.id
     internal val NIGHT = BuiltInProfiles.NIGHT.id
 }
+
+/**
+ * Slack for threshold compares. The signals are ratios of millisecond sums, so a value meant to sit exactly on a
+ * threshold (40%, 0.3 %/h) can land a rounding error away from it; the boundary must not depend on that.
+ */
+internal const val TOLERANCE: Double = 1e-9
+
+/** [value] is at or above [threshold]. */
+internal fun reaches(value: Double, threshold: Double): Boolean = value >= threshold - TOLERANCE
+
+/** [value] is at or below [limit]. */
+internal fun within(value: Double, limit: Double): Boolean = value <= limit + TOLERANCE
+
+/** [value] is above [limit] by more than rounding. */
+internal fun exceeds(value: Double, limit: Double): Boolean = value > limit + TOLERANCE

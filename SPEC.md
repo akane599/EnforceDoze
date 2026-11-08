@@ -357,7 +357,7 @@ The first recommendation appears during onboarding, from history the phone alrea
 
 Every threshold is a named constant in `RecommendationPolicy.kt` with its unit and a comment saying why; each has a unit test, and changing one needs an ADR. The numbers above are starting points, not facts about all phones.
 
-Definitions (ADR 0026): a daytime session is any session that is not an N night; the short share counts unplugged time only; an available night is one in which an N session could start and still fit inside the history; rule 1 counts screen-off time from any source. D and R count only sessions run under stock settings, and M counts only sessions with the sensors free that outlast the expected walk to deep idle by 2 minutes. When no stock time exists, D and R are shown as not measured and rule 4 is skipped.
+Definitions (ADR 0026): a daytime session is any session that is not an N night; the short share counts unplugged time only; an available night is one in which an N session could start and still fit inside the history; rule 1 counts screen-off time from any source. D and R count only sessions run under stock settings, and M counts only sessions with the sensors free that outlast the expected walk to deep idle by 2 minutes. When no stock time exists, D and R are shown as not measured and rule 4 is skipped. S counts screen-off time inside the history, sessions clipped to it; M and N count sessions that began inside it; D and R use stock sessions of any age. While Pocket runs, its own sensor restriction hides M, so Pocket stays until M can be measured again.
 
 &#91;embedded content: Recommended decision path · 5 questions, 6 plan pieces\]
 
@@ -394,7 +394,7 @@ flowchart TD
 - Re-evaluated after each night report and weekly. A changed recommendation shows a card; it is applied only on a tap, unless the owner turned on "Follow Recommended automatically" (off by default).
 - After 3 unplugged nights on the plan, the night report compares drain against the Stock baseline. If the gain is under 10%, the next recommendation steps one notch gentler and says why.
 - "Something arrived late" in the night report records the time and app, steps the plan one notch gentler (Strict → Classic → Night off → Everyday) and offers to add that app to the allowlist.
-- A step applies to the plan in use; Pocket and custom day profiles step to Everyday, and the Right-away cap still holds after it. Only feedback since that plan was applied counts, for 30 days at most (ADR 0026).
+- A step caps the recommendation at one notch below the plan that was in use when the feedback came; Pocket and custom day profiles step to Everyday. It only ever lowers the fresh recommendation, never raises it, and holds for 30 days, also after the gentler plan is applied (ADR 0026).
 
 ### 7.6 Testing it
 

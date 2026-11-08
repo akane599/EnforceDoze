@@ -83,6 +83,39 @@ class RecommendationPolicyTest {
     }
 
     @Test
+    fun `DOZING_WELL caps Classic too, and its short-session line goes`() {
+        fun dozer(day: Int) = session(day, "16:00", 60).copy(timeInDeep = 50.min, motionResets = 0, batteryDrop = 0.2)
+        val week = history(7, (0 until 7).flatMap { shorts(it, 20) + charging(it) + dozer(it) })
+        val result = recommend(week, Urgency.IT_CAN_WAIT)
+        assertThat(result.plan).isEqualTo(Plan("everyday"))
+        assertThat(result.reasons.filterIsInstance<Reason.ShortSessions>()).isEmpty()
+        assertThat(result.notes).contains(Note.LITTLE_TO_GAIN)
+    }
+
+    @Test
+    fun `a threshold holds when the signal lands a rounding error from it`() {
+        // 1.1 percent over 220 minutes is 0.3 percent an hour, which the division gives as 0.30000000000000004.
+        val stock = session(1, "13:00", 220).copy(timeInDeep = 200.min, motionResets = 0, batteryDrop = 1.1)
+        val result = recommend(history(4, (0 until 4).map { charging(it) } + stock))
+        assertThat(result.signals.drainPerHour.valueOrNull).isGreaterThan(0.3)
+        assertThat(result.notes).contains(Note.LITTLE_TO_GAIN)
+    }
+
+    @Test
+    fun `Pocket stays while its own sensor restriction hides the movement that chose it`() {
+        fun pocketed(day: Int) = afternoon(day).copy(provenance = Provenance.TUNED, sensorsRestricted = true, timeInDeep = null)
+        val sessions = quiet(7).filter { it.plugged == true } + (0 until 7).map { pocketed(it) }
+        val onPocket = Feedback(listOf(AppliedPlan(Plan("pocket"), at(0, "12:00"))))
+        val kept = recommend(history(7, sessions, onPocket))
+        assertThat(kept.plan).isEqualTo(Plan("pocket"))
+        assertThat(kept.notes).contains(Note.MOTION_NOT_MEASURED)
+        // Without Pocket in use, or with the sensors simply not recorded, nothing points to Pocket.
+        assertThat(recommend(history(7, sessions)).plan).isEqualTo(Plan("everyday"))
+        val unrecorded = quiet(7).filter { it.plugged == true } + (0 until 7).map { pocketed(it).copy(sensorsRestricted = null) }
+        assertThat(recommend(history(7, unrecorded, onPocket)).plan).isEqualTo(Plan("everyday"))
+    }
+
+    @Test
     fun `HIGH_CONFIDENCE_FROM - a week of history with stock measured is High`() {
         assertThat(recommend(history(7, quiet(7))).confidence).isEqualTo(Confidence.HIGH)
         val almost = History(at(0, "12:00"), at(7, "11:59"), ZONE, quiet(7))

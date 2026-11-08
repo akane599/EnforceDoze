@@ -53,8 +53,11 @@ public enum class Note {
     /** D or R could not be measured: no stock time in the history (ADR 0026); one Stock night would measure them. */
     STOCK_NOT_MEASURED,
 
-    /** The plan is one notch gentler than the one in use (SPEC 7.5). */
+    /** Feedback holds the plan gentler than the signals alone suggest (SPEC 7.5, ADR 0026). */
     GENTLER,
+
+    /** Pocket stays: its own sensor restriction hides movement, so M cannot be measured while it runs (ADR 0026). */
+    MOTION_NOT_MEASURED,
 }
 
 public data class Recommendation(

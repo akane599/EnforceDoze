@@ -72,8 +72,10 @@ class SignalsTest {
         val short = session(1, "19:00", 29).copy(timeInDeep = Duration.ZERO, expectedToDeep = 10.min)
         val night = session(1, "23:00", 300).copy(timeInDeep = Duration.ZERO)
         val s = signals(2, listOf(restricted, unknown, plugged, short, night))
-        assertThat(s.neverDeep).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
-        assertThat(s.motionResetsPerHour).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
+        assertThat(s.neverDeep).isEqualTo(Measured.Unknown(Unmeasured.SENSORS_RESTRICTED))
+        assertThat(s.motionResetsPerHour).isEqualTo(Measured.Unknown(Unmeasured.SENSORS_RESTRICTED))
+        assertThat(signals(2, listOf(unknown)).neverDeep).isEqualTo(Measured.Unknown(Unmeasured.NOT_RECORDED))
+        assertThat(signals(2, listOf(plugged, short, night)).neverDeep).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
     }
 
     @Test
@@ -105,5 +107,49 @@ class SignalsTest {
     fun `sessions outside the history do not count`() {
         val s = signals(2, listOf(session(-1, "13:00", 60), session(0, "11:00", 60), session(2, "12:00", 60)))
         assertThat(s.screenOff).isEqualTo(Duration.ZERO)
+    }
+
+    @Test
+    fun `a session across the history's edge counts its inside part, and is long or short by its whole length`() {
+        val s = Signals.from(History(at(0, "12:00"), at(1, "12:00"), ZONE, listOf(session(0, "11:00", 120), session(1, "11:50", 14))))
+        assertThat(s.screenOff).isEqualTo(Duration.ofMinutes(70))
+        assertThat(s.longShare).isWithin(1e-9).of(60.0 / 70)
+        assertThat(s.shortDaytimeShare).isEqualTo(Measured.Known(10.0 / 70, 2))
+    }
+
+    @Test
+    fun `M and N take only sessions that began inside the history`() {
+        val awake = session(0, "11:30", 60).copy(timeInDeep = Duration.ZERO, motionResets = 6)
+        val night = sleep(0, "23:00", 480)
+        val s = Signals.from(History(at(0, "12:00"), at(2, "12:00"), ZONE, listOf(awake)))
+        assertThat(s.neverDeep).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
+        assertThat(s.motionResetsPerHour).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
+        // The night of day 0 began before this history, so it was never one of its available nights.
+        val later = Signals.from(History(at(1, "00:00"), at(3, "12:00"), ZONE, listOf(night)))
+        assertThat(later.nights).isEmpty()
+        assertThat(later.screenOff).isEqualTo(Duration.ofMinutes(420))
+    }
+
+    @Test
+    fun `D and R use stock sessions of any age, older than the history too`() {
+        val old = session(1, "13:00", 60).copy(timeInDeep = 30.min, batteryDrop = 1.0)
+        val s = Signals.from(History(at(10, "12:00"), at(12, "12:00"), ZONE, listOf(old, session(11, "13:00", 60))))
+        assertThat(s.deepShare).isEqualTo(Measured.Known(0.5, 1))
+        assertThat(s.drainPerHour).isEqualTo(Measured.Known(1.0, 1))
+        assertThat(s.screenOff).isEqualTo(Duration.ofMinutes(60))
+    }
+
+    @Test
+    fun `available nights across a daylight-saving change`() {
+        val berlin = java.time.ZoneId.of("Europe/Berlin")
+        // Clocks go forward in the night of Saturday 28 March 2026 (day 26); that week holds 7 nights all the same.
+        val week = History(at(24, "12:00", berlin), at(31, "12:00", berlin), berlin, emptyList())
+        assertThat(Signals.from(week).availableNights).isEqualTo(7)
+        val short = History(at(26, "12:00", berlin), at(27, "12:00", berlin), berlin, emptyList())
+        assertThat(Duration.between(short.from, short.to)).isEqualTo(Duration.ofHours(23))
+        assertThat(Signals.from(short).availableNights).isEqualTo(1)
+        // Clocks go back in the night of Saturday 24 October 2026 (day 236), a 25-hour day.
+        val autumn = History(at(236, "12:00", berlin), at(237, "12:00", berlin), berlin, emptyList())
+        assertThat(Signals.from(autumn).availableNights).isEqualTo(1)
     }
 }

@@ -90,15 +90,16 @@ graph).
   - Low is rule 1.
   - High needs at least 7 days of history and both D and R measured.
   - Everything else is Medium.
-- **Feedback loop (fills 7.5):**
-  - A step makes the plan in use one notch gentler: Strict → Classic; else the night off; else a day
+- **Feedback loop (fills 7.5), as revised after the review below:**
+  - Each complaint (a late message, or a low gain over 3 unplugged nights) sets a ceiling one notch
+    gentler than the plan in use when it happened: Strict → Classic; else the night off; else a day
     profile other than Everyday or Stock → Everyday.
-  - The Right-away cap is applied after the step.
-  - Only feedback since the plan was applied counts, and for 30 days at most. Applying the gentler
-    plan therefore ends the step instead of stepping again.
+  - A ceiling holds for 30 days, also after the gentler plan is applied, and only lowers the fresh
+    recommendation; it never raises it. So the Right-away cap holds without a separate step.
+  - `History.feedback` keeps every applied plan, so each complaint is judged against its own plan.
   - The gain is compared as drain against `R × (1 − 10%)`, so exactly 10% saved is not a step.
-- **Rule 4 drops the day-slot reasons** (motion, short sessions) when it caps Pocket or Classic.
-  They no longer explain the plan.
+- **Rule 4 and the feedback loop drop the reasons they overrule**: the day-slot lines (motion, short
+  sessions) when the day is lowered, the nights line when the night is dropped.
 - **The night window** is learned as follows:
   - Minutes are counted from noon, and an end is its start plus the clock time to the end. A
     daylight-saving night still ends at 07:00, not 06:00 or 08:00.
@@ -107,6 +108,32 @@ graph).
 - **Later:** the adapters (day-zero sources to sessions, `SessionRow` to sessions) and one shared
   stock test with `SessionRecorder` arrive when the Recommended screen is wired (P5). The P4 gate
   covers the policy.
+
+## Review
+
+A fresh read-only subagent reviewed the code and tests before the P4 gate (AGENTS.md). Its findings, and
+what I did:
+
+1. **A step undid itself.** The step lowered the plan in use; once that gentler plan was applied, the next
+   run judged it on its own, found no complaint since, and returned to the plan complained about. Fixed:
+   complaints are ceilings that last their 30 days and are judged against the plan of their time.
+2. **A step could be stricter than the fresh plan.** A complaint on Strict gave Classic even when the
+   signals now said Everyday. Fixed: a ceiling only lowers the fresh plan.
+3. **Pocket hid its own signal, and D and R aged out.** Pocket restricts the sensors, so M became unknown
+   and the next run dropped Pocket, which freed the sensors and chose Pocket again. Stock sessions older than
+   the history no longer measured D and R, so rule 4 and the gain check stopped once a plan ran. Fixed:
+   Pocket stays while M is unknown for that reason (`Note.MOTION_NOT_MEASURED`); D and R use stock sessions
+   of any age.
+4. **Sessions across the history's edges** counted whole. Fixed: S clips them; long or short is still
+   decided by the whole session.
+5. **Nights that began before the history** counted as N though they were never available nights. Fixed:
+   M and N take sessions that began inside the history.
+6. **Boundaries rested on floating point.** 1.1 % over 220 min divides to 0.30000000000000004. Fixed: every
+   compare has a 1e-9 tolerance, with tests on both sides.
+7. **Stale reasons** stayed on the card after a cap. Fixed as above.
+
+It also asked for tests of the evaluation after a step is applied, steps on Everyday and Stock, partial
+overlap, available nights across daylight saving, and rule 4 capping Classic. They are in.
 
 ## Consequences
 

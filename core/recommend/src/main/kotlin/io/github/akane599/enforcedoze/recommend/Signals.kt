@@ -23,6 +23,9 @@ public enum class Unmeasured {
 
     /** Sessions of the right kind exist, but their sources did not record this fact. */
     NOT_RECORDED,
+
+    /** Every such session had the sensors restricted (lever C or another tool), so motion could not show. */
+    SENSORS_RESTRICTED,
 }
 
 /** A signal's value with the number of sessions behind it, or why it has none. */
@@ -44,7 +47,7 @@ public data class Night(val start: ZonedDateTime, val end: ZonedDateTime)
 
 /** The signals of SPEC 7.2 (Q is the answer, not a signal), each from the sessions it may use. */
 public data class Signals(
-    /** Total screen-off time in the history. */
+    /** Total screen-off time inside the history, sessions clipped to it. */
     val screenOff: Duration,
     val span: Duration,
     /** S: screen-off hours per day of history. */
@@ -69,23 +72,32 @@ public data class Signals(
     public companion object {
         /** The signals of [history]; pure, so each one is tested on its own (SPEC 7.6). */
         public fun from(history: History): Signals {
-            val sessions = history.sessions.filter { it.end > history.from && it.start < history.to }
-            val nightSessions = sessions.filter { isNight(it, history.zone) }
-            val daytime = sessions - nightSessions.toSet()
-            val screenOff = total(sessions)
+            val zone = history.zone
+            // S counts screen-off time inside the history; a session is long or short by its whole length.
+            val overlapping = history.sessions.filter { it.end > history.from && it.start < history.to }
+            val clip: (ScreenOffSession) -> Duration = { Duration.between(maxOf(it.start, history.from), minOf(it.end, history.to)) }
+            // M and N take the sessions that began inside it, so a night is never counted that was not available.
+            val started = overlapping.filter { it.start >= history.from }
+            val daytime = overlapping.filterNot { isNight(it, zone) }
+            val screenOff = total(overlapping, clip)
             val days = history.span.toMillis().toDouble() / Duration.ofDays(1).toMillis()
+            val stock = history.sessions.filter { it.provenance == Provenance.STOCK }
             return Signals(
                 screenOff = screenOff,
                 span = history.span,
                 screenOffHoursPerDay = if (days == 0.0) 0.0 else hours(screenOff) / days,
-                longShare = ratio(total(sessions.filter { it.duration >= LONG_SESSION }), screenOff),
-                shortDaytimeShare = shortShare(daytime),
-                neverDeep = neverDeep(daytime),
-                motionResetsPerHour = motionResets(daytime),
-                nights = nights(nightSessions, history.zone),
+                longShare = ratio(total(overlapping.filter { it.duration >= LONG_SESSION }, clip), screenOff),
+                shortDaytimeShare = shortShare(daytime, clip),
+                neverDeep = neverDeep(started.filterNot { isNight(it, zone) }),
+                motionResetsPerHour = motionResets(started.filterNot { isNight(it, zone) }),
+                nights = nights(started.filter { isNight(it, zone) }, zone),
                 availableNights = availableNights(history),
-                deepShare = stock(sessions, { it.timeInDeep != null }) { ratio(total(it) { s -> s.timeInDeep!! }, total(it)) },
-                drainPerHour = stock(sessions, { it.batteryDrop != null }) { list -> list.sumOf { it.batteryDrop!! } / hours(total(list)) },
+                deepShare = stock(history.sessions, stock, {
+                    it.timeInDeep != null
+                }) { ratio(total(it) { s -> s.timeInDeep!! }, total(it)) },
+                drainPerHour = stock(history.sessions, stock, { it.batteryDrop != null }) { list ->
+                    list.sumOf { it.batteryDrop!! } / hours(total(list))
+                },
             )
         }
 
@@ -95,40 +107,61 @@ public data class Signals(
             return session.unplugged && session.duration >= NIGHT_LENGTH && (start >= NIGHT_STARTS_FROM || start < NIGHT_STARTS_UNTIL)
         }
 
-        private fun shortShare(daytime: List<ScreenOffSession>): Measured<Double> {
+        private fun shortShare(daytime: List<ScreenOffSession>, clip: (ScreenOffSession) -> Duration): Measured<Double> {
             val unplugged = daytime.filter { it.unplugged }
             if (unplugged.isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
-            return Measured.Known(ratio(total(unplugged.filter { it.duration < SHORT_SESSION }), total(unplugged)), unplugged.size)
+            return Measured.Known(
+                ratio(
+                    total(
+                        unplugged.filter {
+                            it.duration < SHORT_SESSION
+                        },
+                        clip,
+                    ),
+                    total(unplugged, clip),
+                ),
+                unplugged.size,
+            )
         }
 
         /** Long unplugged daytime sessions with the sensors free, long enough that deep idle was due. */
         private fun neverDeep(daytime: List<ScreenOffSession>): Measured<Share> {
-            val free = longUnplugged(daytime).filter { it.sensorsRestricted == false }
-            if (free.isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
+            val free = free(daytime).let { it.valueOrNull ?: return it as Measured.Unknown }
             val due = free.filter { s -> s.expectedToDeep != null && s.timeInDeep != null && s.duration >= s.expectedToDeep + DEEP_MARGIN }
             if (due.isEmpty()) return Measured.Unknown(Unmeasured.NOT_RECORDED)
             return Measured.Known(Share(due.count { it.timeInDeep!!.isZero }, due.size), due.size)
         }
 
         private fun motionResets(daytime: List<ScreenOffSession>): Measured<Double> {
-            val free = longUnplugged(daytime).filter { it.sensorsRestricted == false }
-            if (free.isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
+            val free = free(daytime).let { it.valueOrNull ?: return it as Measured.Unknown }
             val counted = free.filter { it.motionResets != null }
             if (counted.isEmpty()) return Measured.Unknown(Unmeasured.NOT_RECORDED)
             return Measured.Known(counted.sumOf { it.motionResets!! } / hours(total(counted)), counted.size)
         }
 
-        /** D and R: long unplugged sessions under stock settings that recorded the fact [has]. */
+        /** M's sessions: long, unplugged, sensors free; or why there are none. */
+        private fun free(daytime: List<ScreenOffSession>): Measured<List<ScreenOffSession>> {
+            val long = longUnplugged(daytime)
+            if (long.isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
+            val free = long.filter { it.sensorsRestricted == false }
+            return when {
+                free.isNotEmpty() -> Measured.Known(free, free.size)
+                long.any { it.sensorsRestricted == true } -> Measured.Unknown(Unmeasured.SENSORS_RESTRICTED)
+                else -> Measured.Unknown(Unmeasured.NOT_RECORDED)
+            }
+        }
+
+        /** D and R: long unplugged sessions under stock settings, of any age, that recorded the fact [has]. */
         private fun stock(
-            sessions: List<ScreenOffSession>,
+            all: List<ScreenOffSession>,
+            stock: List<ScreenOffSession>,
             has: (ScreenOffSession) -> Boolean,
             value: (List<ScreenOffSession>) -> Double,
         ): Measured<Double> {
-            val long = longUnplugged(sessions)
-            if (long.isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
-            val stock = long.filter { it.provenance == Provenance.STOCK }
-            if (stock.isEmpty()) return Measured.Unknown(Unmeasured.NO_STOCK_SESSIONS)
-            val known = stock.filter(has)
+            if (longUnplugged(all).isEmpty()) return Measured.Unknown(Unmeasured.NO_SESSIONS)
+            val long = longUnplugged(stock)
+            if (long.isEmpty()) return Measured.Unknown(Unmeasured.NO_STOCK_SESSIONS)
+            val known = long.filter(has)
             if (known.isEmpty()) return Measured.Unknown(Unmeasured.NOT_RECORDED)
             return Measured.Known(value(known), known.size)
         }
@@ -157,8 +190,6 @@ public data class Signals(
                 earliest < closes && !earliest.plus(NIGHT_LENGTH).isAfter(history.to)
             }
         }
-
-        internal fun hours(duration: Duration): Double = duration.toMillis().toDouble() / Duration.ofHours(1).toMillis()
     }
 }
 
@@ -168,3 +199,5 @@ private fun total(sessions: List<ScreenOffSession>, of: (ScreenOffSession) -> Du
     sessions.fold(Duration.ZERO) { sum, s -> sum + of(s) }
 
 private fun ratio(part: Duration, whole: Duration): Double = if (whole.isZero) 0.0 else part.toMillis().toDouble() / whole.toMillis()
+
+internal fun hours(duration: Duration): Double = duration.toMillis().toDouble() / Duration.ofHours(1).toMillis()

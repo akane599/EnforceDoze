@@ -51,17 +51,33 @@ public data class ScreenOffSession(
 /** The plan the owner is on, and since when (SPEC 7.5). */
 public data class AppliedPlan(val plan: Plan, val since: Instant)
 
-/** What the owner did with earlier plans, for the feedback loop (SPEC 7.5). */
+/**
+ * What the owner did with earlier plans, for the feedback loop (SPEC 7.5). Every applied plan is kept, so a
+ * complaint is judged against the plan it was about and still holds after a gentler plan is applied (ADR 0026).
+ */
 public data class Feedback(
-    /** Null before any plan was applied. */
-    val current: AppliedPlan? = null,
+    /** Each plan the owner applied, oldest first; the last one is in use. Empty before any. */
+    val applied: List<AppliedPlan> = emptyList(),
     /** Each "Something arrived late" from a night report. */
     val lateArrivals: List<Instant> = emptyList(),
-)
+) {
+    init {
+        require(applied.zipWithNext().none { (a, b) -> b.since.isBefore(a.since) }) { "applied plans must be oldest first" }
+    }
+
+    val current: AppliedPlan? get() = applied.lastOrNull()
+
+    /** The plan in use at [time], or null before the first one. */
+    public fun planAt(time: Instant): AppliedPlan? = applied.lastOrNull { !it.since.isAfter(time) }
+}
 
 /**
- * Everything the policy knows: the span its sources cover, the sessions in it, the zone their local times are
- * read in, and the feedback. Keeping feedback here keeps the signature `recommend(history, answers)` (SPEC 7.6).
+ * Everything the policy knows: the span its sources cover, the sessions, the zone their local times are read in,
+ * and the feedback. Keeping feedback here keeps the signature `recommend(history, answers)` (SPEC 7.6).
+ *
+ * S, M and N use the sessions inside [from]–[to], screen-off time clipped to it. D and R use every stock session
+ * given, whatever its age: stock time is rare once a plan runs, and a baseline that aged out would undo rule 4
+ * and the gain check (ADR 0026).
  */
 public data class History(
     val from: Instant,
