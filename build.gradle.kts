@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.licensee) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.roborazzi) apply false
 }
 
 // Quality gates (SPEC 12.5): detekt and ktlint run from their CLI jars over the Kotlin modules, so

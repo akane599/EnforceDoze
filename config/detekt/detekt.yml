@@ -15,7 +15,15 @@ style:
   ForbiddenComment:
     active: false
 
+naming:
+  FunctionNaming:
+    # Composables are nouns in PascalCase (Compose API guidelines).
+    ignoreAnnotated: ['Composable']
+
 complexity:
+  LongMethod:
+    # A screen's layout reads top to bottom in one composable; split by meaning, not by line count.
+    ignoreAnnotated: ['Composable']
   TooManyFunctions:
     excludes: ['**/test/**', '**/androidTest/**']
     thresholdInClasses: 25
@@ -23,6 +31,8 @@ complexity:
     thresholdInFiles: 25
   LongParameterList:
     constructorThreshold: 8
+    # A composable's optional parameters (modifier, colours) have defaults by convention.
+    ignoreDefaultParameters: true
 
 exceptions:
   TooGenericExceptionCaught:
