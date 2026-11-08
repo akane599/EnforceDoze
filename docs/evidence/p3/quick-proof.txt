@@ -1,0 +1,19 @@
+ok=true refused=null
+step CONSTANTS ok device_idle_constants=inactive_to=30000,idle_after_inactive_to=30000,sensing_to=10000,locating_to=5000,motion_inactive_to=300000,light_after_inactive_to=60000,idle_to=60000,max_idle_to=120000
+step UNPLUG ok dumpsys battery unplug
+step FORCE_IDLE ok cmd deviceidle force-idle deep: read back forced: Now forced in to deep idle mode
+step DEEP_IDLE ok cmd deviceidle get deep: IDLE
+step SENSORS ok dumpsys sensorservice restrict io.github.akane599.enforcedoze: read back RESTRICTED : io.github.akane599.enforcedoze: Captured at: 09:39:18.901
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: 
+step UNDO_FORCE_IDLE ok cmd deviceidle unforce: read back released: Light state: ACTIVE, deep state: ACTIVE
+mForceModeManagerQuickDozeRequest: false
+mForceModeManagerOffBodyState: false
+step UNDO_SENSORS ok dumpsys sensorservice enable: read back NORMAL: Captured at: 09:39:19.310
+Sensor Device:
+Total 12 h/w sensors, 12 running 0 disabled clients:
+Sensor List:
+0000000000) Goldfish 3-axis Accelerometer | The Android Open Source Project | ver: 1 | type: 
+step UNDO_BATTERY ok dumpsys battery reset

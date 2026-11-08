@@ -1,0 +1,32 @@
+night id=1 session=1 unlockedAt=1794119655838 start=1794119356375 end=1794119655469
+verdict=HELD timeInDeepMs=230046 maintenance=2 drainPerHour=0.0 ownWakeups=0
+timeline INACTIVE 1794119356375 1794119385380
+timeline IDLE_PENDING 1794119385380 1794119415401
+timeline SENSING 1794119415401 1794119425422
+timeline LOCATING 1794119425422 1794119425423
+timeline IDLE 1794119425423 1794119485425
+timeline IDLE_MAINTENANCE 1794119485425 1794119515828
+timeline IDLE 1794119515828 1794119635828
+timeline IDLE_MAINTENANCE 1794119635828 1794119655469
+light 1794119425423 INACTIVE->OVERRIDE deep
+recent nights=0 drainPerHour=null deepShare=null
+stock nights=0 drainPerHour=null deepShare=null
+app uid=10217 self=false wakeups=7 jobs=0 wakelockMs=89 com.google.android.gms
+app uid=1000 self=false wakeups=6 jobs=0 wakelockMs=64237 android
+app uid=10110 self=false wakeups=1 jobs=1 wakelockMs=0 com.android.providers.calendar
+app uid=10162 self=false wakeups=0 jobs=1 wakelockMs=5 
+app uid=10182 self=false wakeups=0 jobs=3 wakelockMs=4 
+app uid=10147 self=false wakeups=0 jobs=2 wakelockMs=0 
+app uid=10150 self=false wakeups=0 jobs=8 wakelockMs=0 
+app uid=10155 self=false wakeups=0 jobs=11 wakelockMs=0 
+app uid=10158 self=false wakeups=0 jobs=1 wakelockMs=0 
+app uid=10159 self=false wakeups=0 jobs=7 wakelockMs=0 
+app uid=10160 self=false wakeups=0 jobs=1 wakelockMs=0 
+app uid=10161 self=false wakeups=0 jobs=3 wakelockMs=0 
+app uid=10179 self=false wakeups=0 jobs=2 wakelockMs=0 
+app uid=10201 self=false wakeups=0 jobs=0 wakelockMs=0 com.google.android.apps.wallpaper
+sensor uid=1000 com.android.server.wm.WindowOrientationListener$AccelSensorJudge Goldfish 3-axis Accelerometer periodUs=66667 at=[SCREEN_ON]
+sensor uid=1000 com.android.server.power.FaceDownDetector Goldfish 3-axis Accelerometer periodUs=200000 at=[SCREEN_ON]
+holdOff 1794119354572 HOLD_OFF_ENDED CHARGING
+action 1794119354448 CONSTANTS OK STOCK_CAPTURE
+action 1794119355201 CONSTANTS OK PROFILE_SWITCH

@@ -1,0 +1,13 @@
+verdict=HELD cause=null profile=test-everyday id=1
+start=1794119356375 end=1794119655469 pluggedAtStart=false
+expectedToDeepMs=60000 timeToDeepMs=69048 lateByMs=null
+deepShare=1.000 timeInDeepMs=230046 maintenance=2 motionResets=0
+battery=100->100 chargeUah=10000->10000 drainPerHour=0.0 drainMah=0.0
+ownWakeups=0 alarmsRead=true collectionMs=119
+eventLogFrom=1794119356375 historyFrom=1794119356931 mobileRadioMs=61667
+transitions=8 wakers=14 snapshots=[SCREEN_OFF, COPY, COPY, SCREEN_ON]
+waker uid=10217 self=false alarms=5 network=2 kernel=0 jobs=0 wakelockMs=89 com.google.android.gms
+waker uid=1000 self=false alarms=6 network=0 kernel=0 jobs=0 wakelockMs=64237 android
+waker uid=10110 self=false alarms=1 network=0 kernel=0 jobs=1 wakelockMs=0 com.android.providers.calendar
+waker uid=10162 self=false alarms=0 network=0 kernel=0 jobs=1 wakelockMs=5 
+waker uid=10182 self=false alarms=0 network=0 kernel=0 jobs=3 wakelockMs=4

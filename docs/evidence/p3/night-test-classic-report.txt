@@ -1,0 +1,20 @@
+night id=2 session=2 unlockedAt=1794119956927 start=1794119658009 end=1794119956795
+verdict=HELD timeInDeepMs=298372 maintenance=2 drainPerHour=0.0 ownWakeups=0
+timeline IDLE 1794119658009 1794119717593
+timeline IDLE_MAINTENANCE 1794119717593 1794119747625
+timeline IDLE 1794119747625 1794119867632
+timeline IDLE_MAINTENANCE 1794119867632 1794119897929
+timeline IDLE 1794119897929 1794119956381
+timeline ACTIVE 1794119956381 1794119956795
+light 1794119956381 OVERRIDE->ACTIVE exit-force
+recent nights=1 drainPerHour=0.0 deepShare=0.7691428112900961
+stock nights=0 drainPerHour=null deepShare=null
+app uid=10217 self=false wakeups=4 jobs=0 wakelockMs=0 com.google.android.gms
+app uid=1000 self=false wakeups=2 jobs=0 wakelockMs=60341 android
+app uid=-1 self=false wakeups=0 jobs=0 wakelockMs=753 
+app uid=10159 self=false wakeups=0 jobs=2 wakelockMs=0 
+action 1794119656882 CONSTANTS OK PROFILE_SWITCH
+action 1794119657895 SENSORS OK SCREEN_OFF
+action 1794119657895 FORCE_IDLE OK SCREEN_OFF
+action 1794119956791 FORCE_IDLE OK SCREEN_ON
+action 1794119956791 SENSORS OK SCREEN_ON

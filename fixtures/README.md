@@ -18,7 +18,7 @@ tools/fixtures/capture.sh -s <serial> fixtures                                  
 | `device_config-device_idle.txt`, `settings-device_idle_constants.txt` | Constants overrides (empty / `null` on stock emulators) |
 | `deviceidle-whitelist.txt` | `cmd deviceidle whitelist` |
 | `sensorservice.txt` | `dumpsys sensorservice` at rest |
-| `alarm.txt` | `dumpsys alarm` at rest (ADR 0019); the emulator captures predate it |
+| `alarm.txt` | `dumpsys alarm` at rest (ADR 0019); added to the API 37 emulator capture later with `tools/emulator/p3-evidence.sh --scenarios alarm-fixture` |
 | `walk-*.txt` | Command outputs during the walk: screen off, light and deep steps, force-idle, sensor restriction |
 | `deviceidle-stepped-*.txt`, `deviceidle-forced.txt` | `dumpsys deviceidle` in light idle, deep IDLE, IDLE_MAINTENANCE and forced idle |
 | `sensorservice-restricted*.txt`, `sensorservice-enabled.txt` | Sensor service after a bare `restrict` (rejected), `restrict com.android.shell`, and `enable` |
@@ -27,8 +27,8 @@ tools/fixtures/capture.sh -s <serial> fixtures                                  
 
 | Directory | Build | Notes |
 | --- | --- | --- |
-| `sdk_gphone64_x86_64/api35_AE3A.240806.043` | Android 15 emulator | Walks LOCATING |
-| `sdk_gphone64_x86_64/api36_BE2A.250530.026.F3` | Android 16 emulator | `remove_idle_location=true` |
+| `sdk_gphone64_x86_64/api35_AE3A.240806.043` | Android 15 emulator | Walks LOCATING; the only legacy battery-history layout. Kept as an extra case, not required (ADR 0021) |
+| `sdk_gphone64_x86_64/api36_BE2A.250530.026.F3` | Android 16 emulator | `remove_idle_location=true`. Kept as an extra case, not required (ADR 0021) |
 | `sdk_gphone64_x86_64/api37_CE2A.260420.051.A3` | Android 17 emulator | Same flag; its battery history also covers an upstream 1.10.2 run |
 | `sm-s938b/api37_CP2A.260605.016` | One UI 9, Android 17 (owner's phone) | Read-only capture, redacted; its own README lists files and commands |
 
