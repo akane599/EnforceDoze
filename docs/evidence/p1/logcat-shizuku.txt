@@ -1,0 +1,7 @@
+--------- beginning of main
+11-08 03:04:52.217  3560  3560 D Shizuku : start_server
+11-08 03:04:52.217  3561  3561 D Shizuku : child
+11-08 03:04:52.217  3561  3561 D Shizuku : exec app_process
+11-08 03:05:07.433  4254  4254 D Shizuku : start_server
+11-08 03:05:07.433  4255  4255 D Shizuku : child
+11-08 03:05:07.433  4255  4255 D Shizuku : exec app_process

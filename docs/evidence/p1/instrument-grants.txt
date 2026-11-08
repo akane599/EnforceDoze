@@ -1,0 +1,263 @@
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.CapabilityExportTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+io.github.akane599.enforcedoze.privilege.CapabilityExportTest:
+INSTRUMENTATION_STATUS: test=probeAndExport
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.CapabilityExportTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=probeAndExport
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.TierDetectionTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+io.github.akane599.enforcedoze.privilege.TierDetectionTest:
+INSTRUMENTATION_STATUS: test=theWorkerBindsOnlyWhenTheTierHasOne
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.TierDetectionTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=theWorkerBindsOnlyWhenTheTierHasOne
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.TierDetectionTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tierMatchesTheScenario
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.TierDetectionTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tierMatchesTheScenario
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+io.github.akane599.enforcedoze.privilege.WorkerContractTest:
+INSTRUMENTATION_STATUS: test=invalidInputIsRejected
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+io.github.akane599.enforcedoze.privilege.WorkerContractTest:
+INSTRUMENTATION_STATUS: test=invalidInputIsRejected
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=allowlistAddAndRemove
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=allowlistAddAndRemove
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=deviceConfigIsReadable
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=deviceConfigIsReadable
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=readDeviceIdleHasEveryAospKey
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=readDeviceIdleHasEveryAospKey
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=sensorRestrictionAllowsOnePackageAndIsUndone
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=sensorRestrictionAllowsOnePackageAndIsUndone
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=grantsAndAppOpsForThisApp
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=grantsAndAppOpsForThisApp
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=identity
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=identity
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=largeReadsStreamThroughThePipe
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=largeReadsStreamThroughThePipe
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=allSensorsOffThroughTheHiddenApi
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=allSensorsOffThroughTheHiddenApi
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=globalConstantsAreWrittenByTheAppAndReadByTheWorker
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=globalConstantsAreWrittenByTheAppAndReadByTheWorker
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=forceIdleDeepAndUnforce
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.privilege.WorkerContractTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=14
+INSTRUMENTATION_STATUS: stack=org.junit.AssumptionViolatedException: needs a worker; scenario is GRANTS
+	at org.junit.Assume.assumeTrue(Assume.java:68)
+	at io.github.akane599.enforcedoze.privilege.OnDeviceScenario$Companion.requireWorker(OnDeviceScenario.kt:41)
+	at io.github.akane599.enforcedoze.privilege.WorkerContractTest.setUp(WorkerContractTest.kt:39)
+
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=forceIdleDeepAndUnforce
+INSTRUMENTATION_STATUS_CODE: -4
+INSTRUMENTATION_RESULT: stream=
+
+Time: 0.69
+
+OK (14 tests)
+
+
+INSTRUMENTATION_CODE: -1
