@@ -18,21 +18,38 @@ public object SettingsDump {
     private val ROW = Regex("""^_id:(\S+) name:(\S+)(?: pkg:(\S+))? value:(.*)$""")
     private val TAIL = Regex("""( default:.*| tag:.*| notPreservedInRestore)$""")
 
+    /** What a lookup found: the row, a table without that row (the setting is not set), or no such table at all. */
+    public sealed interface Lookup {
+        public data class Found(val row: SettingsRow) : Lookup
+
+        /** The table was dumped and has no row named so: the setting is absent. */
+        public data object NoRow : Lookup
+
+        /** The table is not in the text, for example a `Permission Denial` instead of a dump. */
+        public data object NoTable : Lookup
+    }
+
     /**
      * The row named [name] in [table] for [user], or null when the table or the row is absent (for example a
      * `Permission Denial` instead of a dump). A value is cut at the first ` default:`, ` tag:` or a trailing
      * ` notPreservedInRestore`, so a foreign value containing those words is cut too; the [SettingsRow.raw] line
      * keeps everything.
      */
-    public fun findRow(text: String, table: Table, name: String, user: Int = 0): SettingsRow? {
+    public fun findRow(text: String, table: Table, name: String, user: Int = 0): SettingsRow? =
+        (lookup(text, table, name, user) as? Lookup.Found)?.row
+
+    /** Like [findRow], but tells a setting that is not set from a dump that does not show the table. */
+    public fun lookup(text: String, table: Table, name: String, user: Int = 0): Lookup {
         var inTable = false
+        var seenTable = false
         for (line in text.lineSequence()) {
             val header = HEADER.matchEntire(line)
             if (header != null) inTable = header.groupValues[1] == table.name && header.groupValues[2].toInt() == user
+            seenTable = seenTable || (inTable && header != null)
             val row = if (inTable && header == null) row(line) else null
-            if (row?.name == name) return row
+            if (row?.name == name) return Lookup.Found(row)
         }
-        return null
+        return if (seenTable) Lookup.NoRow else Lookup.NoTable
     }
 
     private fun row(line: String): SettingsRow? {

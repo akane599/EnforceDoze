@@ -62,4 +62,14 @@ class SettingsDumpTest {
         val denied = "Permission Denial: can't dump settings from from pid=1, uid=10200"
         assertThat(SettingsDump.findRow(denied, SettingsDump.Table.GLOBAL, "device_idle_constants")).isNull()
     }
+
+    @Test
+    fun `tells a setting that is not set from a dump without the table`() {
+        assertThat(SettingsDump.lookup(dump, SettingsDump.Table.GLOBAL, "not_set")).isEqualTo(SettingsDump.Lookup.NoRow)
+        assertThat(SettingsDump.lookup(dump, SettingsDump.Table.SYSTEM, "device_idle_constants")).isEqualTo(SettingsDump.Lookup.NoTable)
+        val denied = "Permission Denial: can't dump settings from from pid=1, uid=10200"
+        assertThat(SettingsDump.lookup(denied, SettingsDump.Table.GLOBAL, "device_idle_constants")).isEqualTo(SettingsDump.Lookup.NoTable)
+        assertThat(SettingsDump.lookup(dump, SettingsDump.Table.GLOBAL, "device_idle_constants"))
+            .isInstanceOf(SettingsDump.Lookup.Found::class.java)
+    }
 }
