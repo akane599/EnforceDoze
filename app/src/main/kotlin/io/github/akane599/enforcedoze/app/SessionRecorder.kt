@@ -121,7 +121,8 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
             }
         }
         // SPEC 8.5: the night report is generated at the first unlock after the night.
-        register(IntentFilter(Intent.ACTION_USER_PRESENT)) { signals.trySend(Signal.Unlocked(System.currentTimeMillis())) }
+        // Exported: SystemUI sends it, and an unexported receiver drops it (see EngineHost.registerScreen).
+        register(IntentFilter(Intent.ACTION_USER_PRESENT), exported = true) { signals.trySend(Signal.Unlocked(System.currentTimeMillis())) }
         // ADR 0020: each deep maintenance window announces itself; the copy rides on it instead of a job.
         register(IntentFilter(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED)) {
             if (!power.isDeviceIdleMode && !power.isInteractive) copyInside(goAsync())
@@ -135,11 +136,12 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         signals.close()
     }
 
-    private fun register(filter: IntentFilter, onReceive: BroadcastReceiver.(Intent) -> Unit) {
+    /** [exported] only for a protected broadcast that a platform app other than the system sends. */
+    private fun register(filter: IntentFilter, exported: Boolean = false, onReceive: BroadcastReceiver.(Intent) -> Unit) {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) = onReceive(intent)
         }
-        context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        context.registerReceiver(receiver, filter, if (exported) Context.RECEIVER_EXPORTED else Context.RECEIVER_NOT_EXPORTED)
         receivers += receiver
     }
 

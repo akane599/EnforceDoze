@@ -26,6 +26,9 @@ ADR 0023: choices that are cheap to reverse are made by the agent, each with a o
   holder object would only hide the ports.
 - **The plan's window is stored as local `HH:mm` times.** The owner thinks in wall-clock hours,
   so a time-zone change keeps "23:00" at 23:00.
+- **The receivers that take `ACTION_USER_PRESENT` are exported.** SystemUI sends it, not the
+  system uid, and an unexported receiver drops it (`BroadcastSkipPolicy`, `android-17.0.0_r1`). Only
+  protected broadcasts are in those filters, so no other app can reach them.
 - **The engine finishes each command before it answers.** It saves and publishes the status first,
   so a caller that reads the status right after a command sees that command's result.
 

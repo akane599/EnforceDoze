@@ -150,7 +150,10 @@ public class EngineHost internal constructor(
             addAction(Intent.ACTION_TIME_CHANGED)
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
         }
-        context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        // Exported because SystemUI, not the system uid, sends USER_PRESENT (KeyguardViewMediator), and an unexported
+        // receiver of protected broadcasts drops any other sender ("Exported Denial", BroadcastController and
+        // BroadcastSkipPolicy, android-17.0.0_r1). Every action here is protected, so only the platform can send it.
+        context.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
         screenReceiver = receiver
     }
 
