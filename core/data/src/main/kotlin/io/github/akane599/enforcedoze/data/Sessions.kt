@@ -9,6 +9,7 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.serialization.Serializable
 
 /** A Doze change inside a session (SPEC 8.1 "Doze transition"). */
 @Entity(
@@ -23,6 +24,7 @@ import androidx.room.Transaction
     ],
     indices = [Index("sessionId"), Index("time")],
 )
+@Serializable
 public data class TransitionRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long = 0,
@@ -51,6 +53,7 @@ public data class TransitionRow(
     ],
     indices = [Index("sessionId")],
 )
+@Serializable
 public data class WakerRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long = 0,
@@ -86,6 +89,7 @@ public data class WakerRow(
     ],
     indices = [Index("sessionId")],
 )
+@Serializable
 public data class SensorSnapshotRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long = 0,
@@ -163,6 +167,13 @@ public abstract class SessionDao {
 
     @Query("SELECT * FROM night ORDER BY unlockedAt DESC, id DESC LIMIT :limit")
     public abstract suspend fun latestNights(limit: Int): List<NightRow>
+
+    /** Sessions that overlap [fromMillis]..[toMillis], oldest first: an export's range (SPEC 8.7). */
+    @Query("SELECT * FROM session WHERE `end` >= :fromMillis AND start <= :toMillis ORDER BY start, id")
+    public abstract suspend fun sessionsBetween(fromMillis: Long, toMillis: Long): List<SessionRow>
+
+    @Query("SELECT * FROM night WHERE sessionId IN (:sessionIds) ORDER BY unlockedAt, id")
+    public abstract suspend fun nightsOf(sessionIds: List<Long>): List<NightRow>
 
     @Query("SELECT * FROM session WHERE id = :id")
     public abstract suspend fun session(id: Long): SessionRow?

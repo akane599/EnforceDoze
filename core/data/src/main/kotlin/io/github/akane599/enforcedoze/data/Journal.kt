@@ -15,6 +15,7 @@ import io.github.akane599.enforcedoze.doze.ActionRecord
 import io.github.akane599.enforcedoze.doze.EngineEvent
 import io.github.akane599.enforcedoze.doze.EngineJournal
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.Serializable
 
 /** One engine write and what its read-back showed (SPEC 8.1 "Action"). */
 @Entity(tableName = "action", indices = [Index("time")])
@@ -36,7 +37,7 @@ public data class ActionRow(
 public data class EventRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val time: Long,
-    /** `HOLD_OFF_STARTED`, `HOLD_OFF_ENDED`, `DRIFT`, `LOOP_GUARD`, `MODE`, `PROFILE`. */
+    /** `HOLD_OFF_STARTED`, `HOLD_OFF_ENDED`, `DRIFT`, `LOOP_GUARD`, `MODE`, `PROFILE`, `BATTERY`. */
     val kind: String,
     val lever: String? = null,
     val holdOff: String? = null,
@@ -56,6 +57,7 @@ public data class EventRow(
  * it still changes in place.
  */
 @Entity(tableName = "session", indices = [Index("start")])
+@Serializable
 public data class SessionRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     /** Screen off, epoch milliseconds. */

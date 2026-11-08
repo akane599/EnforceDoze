@@ -212,6 +212,16 @@
             android:exported="false"
             android:theme="@style/Transparent.NoTitleBar" />
         <!-- The Shizuku provider is declared by :core:privilege. -->
+        <!-- Evidence exports (SPEC 8.7) go to the share sheet through this provider; nothing is uploaded. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/export_paths" />
+        </provider>
     </application>
 
 </manifest>

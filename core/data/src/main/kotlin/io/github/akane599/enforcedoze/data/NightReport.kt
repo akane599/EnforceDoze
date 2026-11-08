@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 import java.time.Duration
 
 /**
@@ -24,6 +25,7 @@ import java.time.Duration
     ],
     indices = [Index("sessionId", unique = true), Index("unlockedAt")],
 )
+@Serializable
 public data class NightRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long,

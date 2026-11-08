@@ -16,6 +16,7 @@ import io.github.akane599.enforcedoze.doze.SwitchReason
 import io.github.akane599.enforcedoze.doze.android.EngineHost
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import java.util.zip.ZipFile
 
 /**
  * Debug builds only: drives the engine from adb for the emulator gates (SPEC 13.2, 13.3). Only callers
@@ -28,7 +29,7 @@ import kotlinx.coroutines.withTimeout
  * Commands: `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
- * `quick-proof`, `events <count>`, `actions <count>`.
+ * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -75,6 +76,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
             "night threshold ${DebugHooks.nightThreshold(graph.app).seconds} s"
         },
         "last-night" to { graph, _ -> lastNight(graph)?.let(::describe) ?: "no night yet" },
+        "export" to { graph, arg -> export(graph, arg) },
     )
 
     private val engineCommands: Map<String, suspend (EngineHost, String?) -> String> = mapOf(
@@ -94,6 +96,15 @@ class DebugCommandReceiver : BroadcastReceiver() {
     )
 
     private fun rows(arg: String?): Int = arg?.toIntOrNull() ?: DEFAULT_ROWS
+
+    /** Writes the export ZIP and lists what is in it, for the P3 gate (SPEC 8.7). */
+    private suspend fun export(graph: EngineGraph, arg: String?): String {
+        val exporter = EvidenceExporter(graph)
+        val file = if (arg == "all") exporter.range(0, System.currentTimeMillis()) else arg?.toLongOrNull()?.let { exporter.session(it) }
+        file ?: return "no session $arg"
+        val names = ZipFile(file).use { zip -> zip.entries().toList().map { "${it.name} ${it.size}" } }
+        return (listOf("path=${file.absolutePath} bytes=${file.length()}") + names.map { "entry $it" }).joinToString("\n")
+    }
 
     private suspend fun lastNight(graph: EngineGraph): NightReport? {
         val night = graph.sessions.latestNights(1).firstOrNull() ?: return null
