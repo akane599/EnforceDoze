@@ -40,6 +40,12 @@ public object Guardrails {
         "idle_after_inactive_to" to (1 * SECOND to null),
     )
 
+    /**
+     * One UI's own keys (ADR 0012, 0013): no built-in writes them; an imported or custom profile keeps them,
+     * marked "effect unknown on this phone" (SPEC 6.3).
+     */
+    public val VENDOR_KEYS: Set<String> = setOf("skip_sensing", "skip_locating", "dna_request_version")
+
     /** Keep SMS, MMS, notification and temporary allowlist exemptions working (ADR 0012). */
     public val ALLOWLIST_DURATION_KEYS: Set<String> = setOf(
         "max_temp_app_allowlist_duration_ms",

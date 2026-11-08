@@ -18,10 +18,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import java.time.DateTimeException
 import java.time.Instant
 
@@ -61,30 +57,22 @@ public class EngineFiles(private val dir: File) : EngineStore {
         try {
             convert(json.decodeFromString(serializer, file.readText()))
         } catch (e: SerializationException) {
-            setAside(file, e)
+            unreadable(file, e)
         } catch (e: IllegalArgumentException) {
             // An enum name this version does not know, or a value missing for its lever.
-            setAside(file, e)
+            unreadable(file, e)
         } catch (e: DateTimeException) {
-            setAside(file, e)
+            unreadable(file, e)
         }
     }
 
-    private fun <T> setAside(file: File, cause: Exception): T? {
-        val aside = File(dir, "${file.name}.unreadable-${System.currentTimeMillis()}")
-        if (!file.renameTo(aside)) throw IOException("${file.name} cannot be read and cannot be moved aside", cause)
+    private fun <T> unreadable(file: File, cause: Exception): T? {
+        setAside(file, cause)
         return null
     }
 
     private suspend fun <T> write(name: String, serializer: KSerializer<T>, value: T): Unit = withContext(Dispatchers.IO) {
-        if (!dir.isDirectory && !dir.mkdirs()) throw IOException("cannot create $dir")
-        val target = File(dir, name)
-        val temporary = File(dir, "$name.tmp")
-        FileOutputStream(temporary).use { out ->
-            out.write(json.encodeToString(serializer, value).toByteArray())
-            out.fd.sync()
-        }
-        Files.move(temporary.toPath(), target.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+        writeAtomically(dir, name, json.encodeToString(serializer, value))
     }
 
     private companion object {
