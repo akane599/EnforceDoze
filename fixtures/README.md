@@ -18,6 +18,7 @@ tools/fixtures/capture.sh -s <serial> fixtures                                  
 | `device_config-device_idle.txt`, `settings-device_idle_constants.txt` | Constants overrides (empty / `null` on stock emulators) |
 | `deviceidle-whitelist.txt` | `cmd deviceidle whitelist` |
 | `sensorservice.txt` | `dumpsys sensorservice` at rest |
+| `alarm.txt` | `dumpsys alarm` at rest (ADR 0019); the emulator captures predate it |
 | `walk-*.txt` | Command outputs during the walk: screen off, light and deep steps, force-idle, sensor restriction |
 | `deviceidle-stepped-*.txt`, `deviceidle-forced.txt` | `dumpsys deviceidle` in light idle, deep IDLE, IDLE_MAINTENANCE and forced idle |
 | `sensorservice-restricted*.txt`, `sensorservice-enabled.txt` | Sensor service after a bare `restrict` (rejected), `restrict com.android.shell`, and `enable` |

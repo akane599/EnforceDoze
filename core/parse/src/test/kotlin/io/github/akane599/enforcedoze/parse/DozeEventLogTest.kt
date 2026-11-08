@@ -18,6 +18,7 @@ class DozeEventLogTest {
     @Test fun emulatorWalkReachesDeepIdle() {
         val log = DozeEventLog.parse(Fixtures.capture("sdk_gphone64_x86_64", "api37_CE2A.260420.051.A3").text("events.txt"))
         assertThat(log.events.first().time).isInstanceOf(EventTime.Epoch::class.java)
+        assertWithMessage("coverage starts at the first line of any tag").that(log.firstTime).isEqualTo(EventTime.Epoch(1_794_081_724_038))
         assertThat(log.events.mapNotNull { it.deepState }).contains(DeepState.IDLE)
         assertThat(log.events.filter { it.tag == DozeTag.DEEP }.map { it.reason }).contains("s:shell")
     }
@@ -47,5 +48,7 @@ class DozeEventLogTest {
         assertThat(log.events.first().time).isEqualTo(EventTime.Epoch(1_794_082_053_012))
         assertThat(log.unparsed).hasSize(1)
         assertThat(log.otherLines).isEqualTo(1)
+        assertThat(log.firstTime).isEqualTo(EventTime.Epoch(1_794_082_053_012))
+        assertThat(DozeEventLog.parse("--------- beginning of events\n").firstTime).isNull()
     }
 }

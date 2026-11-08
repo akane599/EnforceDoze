@@ -120,18 +120,6 @@ class BatteryHistoryTest {
         assertThat(BatteryHistory.item("wake_lock=1000:\"x\"")).isEqualTo(HistoryItem.Event("wake_lock", EventPhase.POINT, 1000, "x"))
     }
 
-    @Test fun uidsAsUserHandlePrintsThem() {
-        assertThat(BatteryHistory.parseUid("1000")).isEqualTo(1000)
-        assertThat(BatteryHistory.parseUid("-1")).isEqualTo(-1)
-        assertThat(BatteryHistory.parseUid("u0a357")).isEqualTo(10_357)
-        assertThat(BatteryHistory.parseUid("u10a5")).isEqualTo(1_010_005)
-        assertThat(BatteryHistory.parseUid("u0i12")).isEqualTo(99_012)
-        assertThat(BatteryHistory.parseUid("u0ai3")).isEqualTo(90_003)
-        assertThat(BatteryHistory.parseUid("u0p1")).isEqualTo(30_001)
-        assertThat(BatteryHistory.parseUid("u10s1000")).isEqualTo(1_001_000)
-        assertThat(BatteryHistory.parseUid("u0x1")).isNull()
-    }
-
     @Test fun recordsThatDoNotParseAreKeptAndOthersIgnored() {
         val text = """
             |Battery History [Format: 2] (1% used, 40KB used of 4096KB, 10 strings using 1KB):

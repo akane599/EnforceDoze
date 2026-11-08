@@ -78,6 +78,7 @@ save device_config-device_idle.txt device_config list device_idle
 save settings-device_idle_constants.txt settings get global device_idle_constants
 save deviceidle-whitelist.txt cmd deviceidle whitelist
 save sensorservice.txt dumpsys sensorservice
+save alarm.txt dumpsys alarm
 
 if $walk; then
   restore() {

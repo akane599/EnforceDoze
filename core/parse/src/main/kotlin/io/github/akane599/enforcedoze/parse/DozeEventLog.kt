@@ -71,7 +71,13 @@ public data class DozeEvent(
  * `logcat -b events` output in `epoch` (what the worker requests) or `threadtime` format. Lines with
  * other tags are counted, not kept; `device_idle*` lines that do not parse are kept in [unparsed].
  */
-public data class DozeEventLog(val events: List<DozeEvent>, val unparsed: List<String>, val otherLines: Int) {
+public data class DozeEventLog(
+    val events: List<DozeEvent>,
+    val unparsed: List<String>,
+    val otherLines: Int,
+    /** The time of the first log line of any tag: where the read's coverage starts (ADR 0018). */
+    val firstTime: EventTime? = null,
+) {
     val tagsSeen: Set<DozeTag> get() = events.mapTo(sortedSetOf()) { it.tag }
 
     public companion object {
@@ -87,32 +93,39 @@ public data class DozeEventLog(val events: List<DozeEvent>, val unparsed: List<S
             val events = mutableListOf<DozeEvent>()
             val unparsed = mutableListOf<String>()
             var other = 0
+            var first: EventTime? = null
             for (line in text.lineSequence()) {
                 if (line.isBlank()) continue
-                val parsed = parseLine(line)
+                val stamped = stamped(line)
+                if (first == null) first = stamped?.time
+                val parsed = stamped?.let(::event)
                 when {
                     parsed != null -> events += parsed
                     DOZE_TAG.containsMatchIn(line) -> unparsed += line
                     else -> other++
                 }
             }
-            return DozeEventLog(events, unparsed, other)
+            return DozeEventLog(events, unparsed, other, first)
         }
 
+        /** The time, tag and payload of a log line in either format. */
         // Destructuring names the regex groups, which reads better than indices.
         @Suppress("DestructuringDeclarationWithTooManyEntries")
-        private fun parseLine(line: String): DozeEvent? {
-            val (time, tagName, payload) = EPOCH.matchEntire(line)?.destructured?.let { (seconds, millis, tag, body) ->
-                Triple(EventTime.Epoch(seconds.toLong() * MILLIS_PER_SECOND + millis.toLong()), tag, body)
-            } ?: THREADTIME.matchEntire(line)?.destructured?.let { (month, day, hour, minute, second, millis, tag, body) ->
-                val local = EventTime.Local(month.toInt(), day.toInt(), hour.toInt(), minute.toInt(), second.toInt(), millis.toInt())
-                Triple(local, tag, body)
-            } ?: return null
-            val tag = DozeTag.fromTag(tagName) ?: return null
-            val body = payload.trim()
-            if (tag !in WITH_STATE) return DozeEvent(time, tag, null, body, line)
+        private fun stamped(line: String): Stamped? = EPOCH.matchEntire(line)?.destructured?.let { (seconds, millis, tag, body) ->
+            Stamped(EventTime.Epoch(seconds.toLong() * MILLIS_PER_SECOND + millis.toLong()), tag, body, line)
+        } ?: THREADTIME.matchEntire(line)?.destructured?.let { (month, day, hour, minute, second, millis, tag, body) ->
+            val local = EventTime.Local(month.toInt(), day.toInt(), hour.toInt(), minute.toInt(), second.toInt(), millis.toInt())
+            Stamped(local, tag, body, line)
+        }
+
+        private data class Stamped(val time: EventTime, val tag: String, val payload: String, val line: String)
+
+        private fun event(stamped: Stamped): DozeEvent? {
+            val tag = DozeTag.fromTag(stamped.tag) ?: return null
+            val body = stamped.payload.trim()
+            if (tag !in WITH_STATE) return DozeEvent(stamped.time, tag, null, body, stamped.line)
             val match = STATE_REASON.matchEntire(body) ?: return null
-            return DozeEvent(time, tag, match.groupValues[1].toInt(), match.groupValues[2], line)
+            return DozeEvent(stamped.time, tag, match.groupValues[1].toInt(), match.groupValues[2], stamped.line)
         }
     }
 }

@@ -69,42 +69,20 @@ public data class BatteryHistory(
                 """^(?<reset>RESET:)?TIME: (?<y>\d{4})-(?<mo>\d{2})-(?<d>\d{2})-(?<h>\d{2})-(?<mi>\d{2})-(?<s>\d{2})(?:-(?<ms>\d{3}))?$""",
             )
         private val LEVEL = Regex("""^(\d{3})(?: (.*))?$""")
-        private val TAGGED = Regex("""^(?<sign>[+-]?)(?<name>[A-Za-z_]\w*)=(?<uid>-?\d+|u\d+(?:ai|[aisp])\d+):"(?<tag>.*)"$""")
+        private val TAGGED = Regex("""^(?<sign>[+-]?)(?<name>[A-Za-z_]\w*)=(?<uid>${FormattedUid.PATTERN}):"(?<tag>.*)"$""")
         private val FLAG = Regex("""^([+-])([A-Za-z_]\w*)$""")
         private val VALUE = Regex("""^([A-Za-z_]\w*)=(.*)$""")
-        private val FORMATTED_UID = Regex("""^u(\d+)(ai|[aisp])(\d+)$""")
         private val COMMANDS = mapOf(
             "START" to HistoryCommand.START,
             "SHUTDOWN" to HistoryCommand.SHUTDOWN,
             "*OVERFLOW*" to HistoryCommand.OVERFLOW,
         )
 
-        // android.os.Process and UserHandle at android-17.0.0_r1.
-        private const val PER_USER_RANGE = 100_000
-        private const val FIRST_APPLICATION_UID = 10_000
-        private const val FIRST_PCC_UID = 30_000
-        private const val FIRST_APP_ZYGOTE_ISOLATED_UID = 90_000
-        private const val FIRST_ISOLATED_UID = 99_000
-
         /** Parses [text]; [fallbackYear] dates Format 2 lines printed before any `TIME:` line. */
         public fun parse(text: String, zone: ZoneId, fallbackYear: Int): BatteryHistory {
             val reader = Reader(zone, fallbackYear)
             for (raw in text.lineSequence()) reader.read(raw)
             return reader.result()
-        }
-
-        /** `1000`, `-1`, `u0a357` (10357), `u10a5`, `u0i12`, `u0ai3`, `u0p1`, `u0s1000`; null for anything else. */
-        public fun parseUid(text: String): Int? = text.toIntOrNull() ?: FORMATTED_UID.matchEntire(text)?.let { match ->
-            val (user, kind, number) = match.destructured
-            val base = when (kind) {
-                "a" -> FIRST_APPLICATION_UID
-                "i" -> FIRST_ISOLATED_UID
-                "ai" -> FIRST_APP_ZYGOTE_ISOLATED_UID
-                "p" -> FIRST_PCC_UID
-                else -> 0
-            }
-            val n = number.toIntOrNull()
-            user.toIntOrNull()?.let { u -> n?.let { u * PER_USER_RANGE + base + it } }
         }
 
         /** Splits on spaces outside quotes; a doubled quote inside a quoted tag is part of the tag. */
@@ -155,7 +133,7 @@ public data class BatteryHistory(
         private fun tagged(match: MatchResult): HistoryItem? {
             val sign = match.text("sign")
             val name = match.text("name")
-            val uid = parseUid(match.text("uid")) ?: return null
+            val uid = FormattedUid.parse(match.text("uid")) ?: return null
             val tag = match.text("tag").replace("\"\"", "\"")
             return when {
                 name == "wake_lock" && sign.isNotEmpty() -> HistoryItem.Flag(name, sign == "+", uid, tag)
