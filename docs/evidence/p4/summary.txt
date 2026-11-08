@@ -1,0 +1,57 @@
+[11:50:12] starting ed-api37
+[11:50:27] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[11:50:27] device zone Europe/Istanbul, offset 10800s
+[11:50:27] before: device_idle_constants=null screen_off_timeout=2147483647 lock_disabled=true
+[11:50:27] == setup
+[11:50:33] PASS the engine starts in its foreground service
+[11:50:34] PASS the Shizuku server starts
+[11:50:34] PASS stock.json is captured
+[11:50:35] PASS Night applies
+[11:50:35] PASS Everyday applies
+[11:50:35] PASS Everyday and Night write different strings
+[11:50:35] == alarm
+[11:50:35] PASS alarm: the plan starts in the day slot with Everyday
+[11:50:35] PASS alarm: Everyday is on the device
+[11:50:35] PASS alarm: one non-wakeup RTC alarm at the window start, 10-minute window
+[11:50:35] PASS alarm: the screen is on
+[11:52:16] PASS alarm: the night slot comes with the alarm, screen still on
+[11:52:16] alarm: switched 10 s after the window start
+[11:52:16] PASS alarm: Night is on the device
+[11:52:16] PASS alarm: the switch is logged as SCHEDULE
+[11:52:16] PASS alarm: the next night's alarm is set, a day later
+[11:52:16] == unlock
+[11:52:16] PASS unlock: a plan set inside its window applies the night at once
+[11:52:16] PASS unlock: Night is on the device
+[11:52:26] PASS unlock: the engine sees the lock screen
+[11:52:27] PASS unlock: the engine sees the unlock
+[11:52:27] PASS unlock: an unlock inside the window keeps the night
+[11:54:52] PASS unlock: past the end, the engine sees the lock screen
+[11:54:52] PASS unlock: past the end, the lock screen alone keeps the night
+[11:54:52] PASS unlock: Night is still on the device
+[11:54:54] PASS unlock: past the end, the engine sees the unlock
+[11:54:54] PASS unlock: the first unlock after the end brings the day
+[11:54:54] PASS unlock: Everyday is on the device
+[11:54:54] PASS unlock: the switch is logged as SCHEDULE
+[11:54:54] == maintenance
+[11:54:54] PASS maintenance: the plan starts in the day slot
+[11:54:54] PASS maintenance: the alarm is set for the window start
+[11:55:09] PASS maintenance: deep idle is reached
+[11:57:44] PASS maintenance: past the window start in deep idle, the day slot stays
+[11:57:44] PASS maintenance: Everyday is still on the device
+[11:57:44] maintenance: Stepped to deep: IDLE_MAINTENANCE
+[11:57:45] PASS maintenance: the maintenance window starts the night, screen off
+[11:57:45] PASS maintenance: Night is on the device
+[11:57:45] PASS maintenance: the sensors are restricted for the night
+[11:57:45] PASS maintenance: the switch is logged as SCHEDULE
+[11:57:45] PASS maintenance: no later alarm was set while the screen was off
+[11:57:45] PASS maintenance: at screen on the next night's alarm is set
+[11:57:45] == restore
+[11:57:46] PASS restore: a plan without a night cancels the alarm
+[11:57:47] PASS restore: the job is ok
+[11:57:47] PASS restore: the global string is as before the run
+[11:57:47] PASS restore: forced idle released
+[11:57:47] PASS restore: sensors normal
+[11:57:47] failures: 0
+[11:57:47] cleanup
+[11:57:49] after: device_idle_constants=null screen_off_timeout=2147483647 lock_disabled=true
+[11:57:49] shutting down the emulator

@@ -1,0 +1,6 @@
+info: starter begin
+info: killing old process...
+info: apk path is /data/app/~~RU-tQLVPEGqHy6PumYrPvw==/moe.shizuku.privileged.api-QyjYPbTxhKm9f3HkOYus2w==/base.apk
+info: starting server...
+info: shizuku_server pid is 3106
+info: shizuku_starter exit with 0

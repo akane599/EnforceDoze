@@ -1,0 +1,11 @@
+started=true mode=MANAGED profile=everyday screenOn=true locked=false
+holdOffs=[CHARGING] guarded=[]
+missingKeys=[]
+constantsWriter=io.github.akane599.enforcedoze previous=true stock=true
+forcedWithoutWorker=false storeError=null
+batteryFrozen=false
+lever CONSTANTS APPLIED wanted=inactive_to=300000,idle_after_inactive_to=300000,sensing_to=60000,locating_to=15000,motion_inactive_to=300000,light_after_inactive_to=60000 written=inactive_to=300000,idle_after_inactive_to=300000,sensing_to=60000,locating_to=15000,motion_inactive_to=300000,light_after_inactive_to=60000 seen=inactive_to=300000,idle_after_inactive_to=300000,sensing_to=60000,locating_to=15000,motion_inactive_to=300000,light_after_inactive_to=60000 reason=null
+lever FORCE_IDLE UNUSED wanted=null written=null seen=released reason=null
+lever SENSORS UNUSED wanted=null written=null seen=NORMAL reason=null
+lever SENSOR_PRIVACY UNUSED wanted=null written=null seen=sensors on reason=null
+lever ALLOWLIST UNUSED wanted=null written=null seen=null reason=null

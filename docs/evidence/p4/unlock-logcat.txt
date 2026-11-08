@@ -1,0 +1,36 @@
+--------- beginning of main
+11-08 11:50:31.519 I/libprocessgroup( 2698): Created cgroup /sys/fs/cgroup/apps/uid_10234
+11-08 11:50:31.519 I/libprocessgroup( 2698): Created cgroup /sys/fs/cgroup/apps/uid_10234/pid_2698
+11-08 11:50:31.521 I/Zygote  ( 2698): Process 2698 created for io.github.akane599.enforcedoze
+11-08 11:50:31.521 I/599.enforcedoze( 2698): Late-enabling -Xcheck:jni
+11-08 11:50:31.539 I/599.enforcedoze( 2698): Using generational CollectorTypeCMC GC.
+11-08 11:50:31.539 W/599.enforcedoze( 2698): Unexpected CPU variant for x86: x86_64.
+11-08 11:50:31.539 W/599.enforcedoze( 2698): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, pantherlake, default
+11-08 11:50:31.541 D/nativeloader( 2698): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-08 11:50:31.629 D/CompatChangeReporter( 2698): Compat change id reported: 333566037; UID 10234; state: ENABLED
+11-08 11:50:31.641 D/ApplicationLoaders( 2698): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-08 11:50:31.641 D/ApplicationLoaders( 2698): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+11-08 11:50:31.724 D/nativeloader( 2698): Configuring clns-9 for other apk /data/app/~~qgETH_V5ZJy93L2_Jibudg==/io.github.akane599.enforcedoze-OkPpWiSr8-ol5ZEUHF5X9Q==/base.apk. target_sdk_version=37, uses_libraries=, library_path=/data/app/~~qgETH_V5ZJy93L2_Jibudg==/io.github.akane599.enforcedoze-OkPpWiSr8-ol5ZEUHF5X9Q==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/io.github.akane599.enforcedoze
+11-08 11:50:31.730 V/GraphicsEnvironment( 2698): Currently set values for:
+11-08 11:50:31.730 V/GraphicsEnvironment( 2698):   angle_gl_driver_selection_pkgs=[]
+11-08 11:50:31.730 V/GraphicsEnvironment( 2698):   angle_gl_driver_selection_values=[]
+11-08 11:50:31.730 V/GraphicsEnvironment( 2698): io.github.akane599.enforcedoze is not listed in per-application setting
+11-08 11:50:31.731 V/GraphicsEnvironment( 2698): No special selections for ANGLE, returning default driver choice
+11-08 11:50:31.731 V/GraphicsEnvironment( 2698): Neither updatable production driver nor prerelease driver is supported.
+11-08 11:50:31.736 D/CompatChangeReporter( 2698): Compat change id reported: 407952621; UID 10234; state: ENABLED
+11-08 11:50:31.736 D/CompatChangeReporter( 2698): Compat change id reported: 419020719; UID 10234; state: ENABLED
+11-08 11:50:31.750 I/599.enforcedoze( 2698): hiddenapi: Accessing hidden method Landroid/os/ServiceManager;->getService(Ljava/lang/String;)Landroid/os/IBinder; (runtime_flags=0, domain=platform, api=unsupported) from Lrikka/shizuku/SystemServiceHelper; (domain=app, TargetSdkVersion=37) using reflection: allowed
+11-08 11:50:31.751 D/ShizukuProvider( 2698): Initialize Sui: false
+11-08 11:50:31.761 D/CompatChangeReporter( 2698): Compat change id reported: 458413887; UID 10234; state: ENABLED
+--------- beginning of system
+11-08 11:50:31.979 I/DisplayManager( 2698): Choreographer implicitly registered for the refresh rate.
+11-08 11:50:31.998 D/DesktopExperienceFlags( 2698): Toggle override initialized to: false
+11-08 11:50:32.030 I/GFXSTREAM( 2698): [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+11-08 11:50:32.030 I/GFXSTREAM( 2698): [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+11-08 11:50:32.030 W/libc    ( 2698): Access denied finding property "vendor.mesa.virtgpu.kumquat"
+11-08 11:50:32.036 W/HWUI    ( 2698): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-08 11:50:32.073 D/CompatChangeReporter( 2698): Compat change id reported: 418924588; UID 10234; state: ENABLED
+11-08 11:50:33.503 D/ShizukuProvider( 2698): binder received
+11-08 11:50:33.506 I/ShizukuApplication( 2698): attachApplication
+11-08 11:50:35.105 W/599.enforcedoze( 2698): Cleared Reference was only reachable from finalizer (only reported once)
+11-08 11:50:37.739 D/ProfileInstaller( 2698): Installing profile for io.github.akane599.enforcedoze

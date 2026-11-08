@@ -1,0 +1,12 @@
+started=true mode=PAUSED profile=everyday screenOn=true locked=false
+holdOffs=[CHARGING] guarded=[]
+missingKeys=[]
+constantsWriter=null previous=true stock=true
+forcedWithoutWorker=false storeError=null
+batteryFrozen=false
+plan day=everyday night=null slot=DAY override=null
+lever CONSTANTS UNUSED wanted=null written=absent seen=absent reason=null
+lever FORCE_IDLE UNUSED wanted=null written=released seen=released reason=null
+lever SENSORS UNUSED wanted=null written=NORMAL seen=NORMAL reason=null
+lever SENSOR_PRIVACY UNUSED wanted=null written=sensors on seen=sensors on reason=null
+lever ALLOWLIST UNUSED wanted=null written=null seen=[] reason=null

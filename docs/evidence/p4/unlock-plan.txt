@@ -1,0 +1,12 @@
+started=true mode=MANAGED profile=night screenOn=true locked=false
+holdOffs=[CHARGING] guarded=[]
+missingKeys=[]
+constantsWriter=io.github.akane599.enforcedoze previous=true stock=true
+forcedWithoutWorker=false storeError=null
+batteryFrozen=false
+plan day=everyday night=night 11:51:15-11:54:45 slot=NIGHT override=null
+lever CONSTANTS APPLIED wanted=inactive_to=120000,idle_after_inactive_to=120000,sensing_to=30000,locating_to=10000,light_after_inactive_to=60000,idle_to=7200000,max_idle_to=28800000,idle_factor=2 written=inactive_to=120000,idle_after_inactive_to=120000,sensing_to=30000,locating_to=10000,light_after_inactive_to=60000,idle_to=7200000,max_idle_to=28800000,idle_factor=2 seen=inactive_to=120000,idle_after_inactive_to=120000,sensing_to=30000,locating_to=10000,light_after_inactive_to=60000,idle_to=7200000,max_idle_to=28800000,idle_factor=2 reason=null
+lever FORCE_IDLE UNUSED wanted=null written=null seen=released reason=null
+lever SENSORS ARMED wanted=null written=null seen=NORMAL reason=null
+lever SENSOR_PRIVACY UNUSED wanted=null written=null seen=sensors on reason=null
+lever ALLOWLIST UNUSED wanted=null written=null seen=null reason=null
