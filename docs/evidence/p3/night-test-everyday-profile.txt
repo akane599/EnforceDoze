@@ -1,4 +1,4 @@
-started=true mode=MANAGED profile=test-everyday screenOn=true
+started=true mode=MANAGED profile=test-everyday screenOn=true locked=false
 holdOffs=[] guarded=[]
 missingKeys=[]
 constantsWriter=io.github.akane599.enforcedoze previous=true stock=true

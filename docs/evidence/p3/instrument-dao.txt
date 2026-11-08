@@ -43,7 +43,7 @@ INSTRUMENTATION_STATUS: test=nightsAreFoundOnceAndComparedWithEarlierOnes
 INSTRUMENTATION_STATUS_CODE: 0
 INSTRUMENTATION_RESULT: stream=
 
-Time: 0.085
+Time: 0.081
 
 OK (3 tests)
 

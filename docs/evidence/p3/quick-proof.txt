@@ -3,7 +3,7 @@ step CONSTANTS ok device_idle_constants=inactive_to=30000,idle_after_inactive_to
 step UNPLUG ok dumpsys battery unplug
 step FORCE_IDLE ok cmd deviceidle force-idle deep: read back forced: Now forced in to deep idle mode
 step DEEP_IDLE ok cmd deviceidle get deep: IDLE
-step SENSORS ok dumpsys sensorservice restrict io.github.akane599.enforcedoze: read back RESTRICTED : io.github.akane599.enforcedoze: Captured at: 09:39:18.901
+step SENSORS ok dumpsys sensorservice restrict io.github.akane599.enforcedoze: read back RESTRICTED : io.github.akane599.enforcedoze: Captured at: 12:09:46.465
 Sensor Device:
 Total 12 h/w sensors, 12 running 0 disabled clients:
 Sensor List:
@@ -11,7 +11,7 @@ Sensor List:
 step UNDO_FORCE_IDLE ok cmd deviceidle unforce: read back released: Light state: ACTIVE, deep state: ACTIVE
 mForceModeManagerQuickDozeRequest: false
 mForceModeManagerOffBodyState: false
-step UNDO_SENSORS ok dumpsys sensorservice enable: read back NORMAL: Captured at: 09:39:19.310
+step UNDO_SENSORS ok dumpsys sensorservice enable: read back NORMAL: Captured at: 12:09:46.874
 Sensor Device:
 Total 12 h/w sensors, 12 running 0 disabled clients:
 Sensor List:

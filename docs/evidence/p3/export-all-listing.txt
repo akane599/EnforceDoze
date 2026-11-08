@@ -1,27 +1,27 @@
 Archive:  /home/akane/.cache/enforcedoze-p3/out/export-all.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-      300  2026-11-08 09:39   manifest.json
-    21715  2026-11-08 09:39   sessions.json
-     3846  2026-11-08 09:39   actions.csv
-      738  2026-11-08 09:39   events.csv
-      598  2026-11-08 09:39   profiles/test-everyday.json
-      522  2026-11-08 09:39   profiles/test-classic.json
-     8155  2026-11-08 09:39   raw/1794119356375/alarm-off.gz
-     9135  2026-11-08 09:39   raw/1794119356375/alarm-on.gz
-     1610  2026-11-08 09:39   raw/1794119356375/deviceidle-off.gz
-     1133  2026-11-08 09:39   raw/1794119356375/deviceidle-on.gz
-    52607  2026-11-08 09:39   raw/1794119356375/eventlog.gz
-     5247  2026-11-08 09:39   raw/1794119356375/history.gz
-     1955  2026-11-08 09:39   raw/1794119356375/sensorservice-off.gz
-     2958  2026-11-08 09:39   raw/1794119356375/sensorservice-on.gz
-     9476  2026-11-08 09:39   raw/1794119658009/alarm-off.gz
-     9111  2026-11-08 09:39   raw/1794119658009/alarm-on.gz
-     1176  2026-11-08 09:39   raw/1794119658009/deviceidle-off.gz
-     1081  2026-11-08 09:39   raw/1794119658009/deviceidle-on.gz
-     8241  2026-11-08 09:39   raw/1794119658009/eventlog.gz
-     2187  2026-11-08 09:39   raw/1794119658009/history.gz
-     2859  2026-11-08 09:39   raw/1794119658009/sensorservice-off.gz
-     2831  2026-11-08 09:39   raw/1794119658009/sensorservice-on.gz
+      300  2026-11-08 12:09   manifest.json
+    20316  2026-11-08 12:09   sessions.json
+     3846  2026-11-08 12:09   actions.csv
+      738  2026-11-08 12:09   events.csv
+      598  2026-11-08 12:09   profiles/test-everyday.json
+      522  2026-11-08 12:09   profiles/test-classic.json
+     8447  2026-11-08 12:09   raw/1794128382657/alarm-off.gz
+     8273  2026-11-08 12:09   raw/1794128382657/alarm-on.gz
+     1578  2026-11-08 12:09   raw/1794128382657/deviceidle-off.gz
+     1040  2026-11-08 12:09   raw/1794128382657/deviceidle-on.gz
+    26732  2026-11-08 12:09   raw/1794128382657/eventlog.gz
+     4139  2026-11-08 12:09   raw/1794128382657/history.gz
+     2497  2026-11-08 12:09   raw/1794128382657/sensorservice-off.gz
+     3193  2026-11-08 12:09   raw/1794128382657/sensorservice-on.gz
+     8577  2026-11-08 12:09   raw/1794128684571/alarm-off.gz
+     8273  2026-11-08 12:09   raw/1794128684571/alarm-on.gz
+     1081  2026-11-08 12:09   raw/1794128684571/deviceidle-off.gz
+     1078  2026-11-08 12:09   raw/1794128684571/deviceidle-on.gz
+     8275  2026-11-08 12:09   raw/1794128684571/eventlog.gz
+     2108  2026-11-08 12:09   raw/1794128684571/history.gz
+     3101  2026-11-08 12:09   raw/1794128684571/sensorservice-off.gz
+     2924  2026-11-08 12:09   raw/1794128684571/sensorservice-on.gz
 ---------                     -------
-   147481                     22 files
+   117636                     22 files

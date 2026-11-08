@@ -1,12 +1,12 @@
 verdict=HELD cause=null profile=test-classic id=2
-start=1794119658009 end=1794119956795 pluggedAtStart=false
+start=1794128684571 end=1794128984357 pluggedAtStart=false
 expectedToDeepMs=0 timeToDeepMs=0 lateByMs=null
-deepShare=0.999 timeInDeepMs=298372 maintenance=2 motionResets=0
+deepShare=0.999 timeInDeepMs=299375 maintenance=2 motionResets=0
 battery=100->100 chargeUah=10000->10000 drainPerHour=0.0 drainMah=0.0
-ownWakeups=0 alarmsRead=true collectionMs=76
-eventLogFrom=1794119658009 historyFrom=1794119666140 mobileRadioMs=10117
+ownWakeups=0 alarmsRead=true collectionMs=80
+eventLogFrom=1794128684571 historyFrom=1794128685191 mobileRadioMs=10216
 transitions=6 wakers=4 snapshots=[SCREEN_OFF, COPY, COPY, SCREEN_ON]
-waker uid=10217 self=false alarms=1 network=3 kernel=0 jobs=0 wakelockMs=0 com.google.android.gms
-waker uid=1000 self=false alarms=2 network=0 kernel=0 jobs=0 wakelockMs=60341 android
+waker uid=10217 self=false alarms=1 network=2 kernel=0 jobs=0 wakelockMs=1510 com.google.android.gms
+waker uid=1000 self=false alarms=2 network=0 kernel=0 jobs=0 wakelockMs=60389 android
 waker uid=-1 self=false alarms=0 network=0 kernel=0 jobs=0 wakelockMs=753 
-waker uid=10159 self=false alarms=0 network=0 kernel=0 jobs=2 wakelockMs=0
+waker uid=10182 self=false alarms=0 network=0 kernel=0 jobs=1 wakelockMs=0
