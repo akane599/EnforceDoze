@@ -16,7 +16,7 @@ android
 
 ## Users
 
-The owner first: a Galaxy S25 Ultra user on One UI 9 (Android 16 and 17) who already tunes Doze by
+The owner first: a Galaxy S25 Ultra user on One UI 9 (Android 17) who already tunes Doze by
 hand, with a Tasker setup ("dozectl") that runs a shell script through Shizuku at screen off and on.
 They want the phone to reach deep Doze sooner and stay there longer while the screen is off, and to
 see each morning what actually happened, without taking anything on trust. They read numbers
@@ -68,7 +68,7 @@ of EnforceDoze and ForceDoze with its own app id.
   numbers, a confidence level and its cost, and never switches plans without a tap.
 - Hold-offs always protect calls, user alarms, emergency alerts, navigation, Android Auto, music
   and hotspot.
-- Non-negotiable: Android 17 (API 37) and 16 (API 36) on the S25 Ultra with One UI 9; no polling or
+- Non-negotiable: Android 17 (API 37) on the S25 Ultra with One UI 9 (ADR 0022); no polling or
   alarms while the screen is off (one optional, labelled delay alarm); restores stock on disable and
   on request; no network permission; calls, user alarms and emergency alerts are never blocked.
 - Out of scope: per-app battery attribution (Coulomb's job), kernel or governor tuning.

@@ -4,7 +4,7 @@ Nov 7, 2026 · @Tuğberk Özgen
 
 ## 0. How to use this spec
 
-This spec turns the EnforceDoze fork ([Akylas/EnforceDoze](https://github.com/Akylas/EnforceDoze), GPL-3.0) into a Doze controller that works on Android 16 and 17 with One UI 9, proves it works with its own logs, ships tuned profiles and recommends one from the owner's own usage. The building agent reads the whole spec, then starts Phase 0 without asking.
+This spec turns the EnforceDoze fork ([Akylas/EnforceDoze](https://github.com/Akylas/EnforceDoze), GPL-3.0) into a Doze controller that works on Android 17 with One UI 9 (ADR 0022), proves it works with its own logs, ships tuned profiles and recommends one from the owner's own usage. The building agent reads the whole spec, then starts Phase 0 without asking.
 
 ### 0.1 Files created in Phase 0
 
@@ -30,7 +30,7 @@ This spec turns the EnforceDoze fork ([Akylas/EnforceDoze](https://github.com/Ak
 ### 0.3 Agent rules
 
 1. Read `SPEC.md` completely, then begin P0. Asking a question this spec already answers is a violation.
-2. Never invent a `dumpsys` / `cmd` flag, `device_config` key, EventLog tag, hidden API or binder transaction. Verify each against AOSP source for API 36 and 37 or probe it on the device, and cite it in a code comment.
+2. Never invent a `dumpsys` / `cmd` flag, `device_config` key, EventLog tag, hidden API or binder transaction. Verify each against AOSP source for API 37 or probe it on the device, and cite it in a code comment (ADR 0022).
 3. Resolve library versions at build time; never from memory.
 4. Work in the phases of section 14; a phase ends when its gate passes.
 5. Small Conventional Commits; every commit builds and passes unit tests.
@@ -48,7 +48,7 @@ Reach `akane-linux` over SSH via Tailscale with ADB forwarded (`ssh -N -L 5037:l
 
 ### 0.5 Autonomy
 
-The agent never waits for a "continue". It stops only for: connecting to the phone; anything irreversible or public (releases, force-push, deleting data); secrets it lacks; changing a non-negotiable (1.3); and the P3 design review. Costly-to-reverse decisions (module boundaries, the engine's command model, the recommender model) get a second opinion from a fresh read-only subagent, options presented neutrally, both views recorded in an ADR. Stuck after 3 distinct attempts or about 45 minutes: a debugging subagent with evidence only, then mark blocked and move on. The engine (section 5) and the parsers (section 8) each get one independent subagent review before their phase gate. One short summary per phase gate, nothing else.
+The agent never waits for a "continue". It stops only for: connecting to the phone; anything irreversible or public (releases, force-push, deleting data); secrets it lacks; changing a non-negotiable (1.3); and the P3 design review. Hard- or costly-to-reverse decisions (architecture such as module boundaries, the engine's command model and the recommender model; a data format; a database schema; a public API; deleting or reverting something) get a second opinion from a fresh read-only subagent, options presented neutrally, both views recorded in an ADR; every other choice gets a one-line reason in an ADR. Work the spec marks optional waits in `BACKLOG.md` until the section 15 checklist is done, then the owner picks (ADR 0023). Stuck after 3 distinct attempts or about 45 minutes: a debugging subagent with evidence only, then mark blocked and move on. The engine (section 5) and the parsers (section 8) each get one independent subagent review before their phase gate. One short summary per phase gate, nothing else.
 
 ## 1. Goal, principles and success criteria
 
@@ -71,7 +71,7 @@ The app gets the phone into deep Doze sooner and keeps it there longer while the
 
 ### 1.3 Non-negotiables
 
-- Works on Android 17 (API 37) and Android 16 (API 36) on the Galaxy S25 Ultra with One UI 9.
+- Works on Android 17 (API 37) on the Galaxy S25 Ultra with One UI 9 (ADR 0022).
 - Never polls or schedules alarms while the screen is off, except the single optional delay alarm described in 5.3.
 - Restores stock Doze constants, sensor mode and allowlist on uninstall-request, on disable and from a one-tap "Restore stock".
 - No network permission.
@@ -125,7 +125,7 @@ Upstream already does the right things, but through mechanisms that are fragile 
 
 ## 3. Platform requirements
 
-The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 34 is the floor because it gives the public light-idle APIs; the Doze constants are written through the global `device_idle_constants` string on every supported level (ADR 0012).
+The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 34–36 are best-effort: no tests, no AVD, no AOSP check; what fails there shows as a failed capability probe with its reason (ADR 0022). API 34 is the floor because it gives the public light-idle APIs; the Doze constants are written through the global `device_idle_constants` string on every supported level (ADR 0012).
 
 ### 3.1 SDK
 

@@ -1,6 +1,6 @@
 ---
 name: EnforceDoze
-description: Doze controller with proof for Android 16 and 17. A lab notebook for the night: calm, exact, evidence first.
+description: Doze controller with proof for Android 17. A lab notebook for the night: calm, exact, evidence first.
 ---
 
 # Design

@@ -1,6 +1,6 @@
 # EnforceDoze A17 fork — agent guide
 
-Doze controller for Android 16 and 17 (One UI 9 on the Galaxy S25 Ultra) that proves it works with
+Doze controller for Android 17 (One UI 9 on the Galaxy S25 Ultra; API 34–36 best-effort, ADR 0022) that proves it works with
 its own logs, ships tuned profiles and recommends one from the owner's usage. A GPL-3.0 fork of
 Akylas/EnforceDoze, rewritten in place as Kotlin modules. `SPEC.md` is the single source of truth;
 this file is the short version. Change `SPEC.md` only through an ADR in `docs/adr/`.
@@ -12,8 +12,9 @@ this file is the short version. Change `SPEC.md` only through an ADR in `docs/ad
    change undoable) > honesty (never claim Doze worked without logs) > no self-inflicted drain >
    functional spec > `/impeccable` rules > Material 3 / Android guidance > your own preference.
 3. Never invent a `dumpsys` / `cmd` flag, `device_config` key, EventLog tag, hidden API or binder
-   transaction. Verify against AOSP source for API 36 and 37 (tags `android-16.0.0_r1`,
-   `android-17.0.0_r1`) or probe the device, and cite it in a code comment.
+   transaction. Verify against AOSP source for API 37 (tag `android-17.0.0_r1`) or probe the
+   device, and cite it in a code comment. API 34–36 are best-effort: no tests, no AVD, no AOSP
+   check; failures there surface as capability probes with a reason (ADR 0022).
 4. Never trust memory for versions: resolve from Maven metadata / GitHub releases at build time.
    GitHub Actions are pinned to commit SHAs in `.github/workflows/ci.yml`.
 5. Work in the phases of SPEC 14; a phase ends when its gate passes. Small Conventional Commits;
@@ -31,13 +32,14 @@ changing a non-negotiable (SPEC 1.3); the P3 design review.
 
 | Decision | Action |
 | --- | --- |
-| Cheap to reverse | Decide; ADR only if it departs from the spec |
-| Costly (module boundaries, engine command model, recommender model) | Fresh read-only subagent for a second opinion, options neutral; decide; both views in an ADR |
+| Anything else | Decide; one-line reason in the phase's decisions ADR; own ADR only if it departs from the spec |
+| Hard or costly to reverse: architecture (module boundaries, engine command model, recommender model), a data format, a database schema, a public API, deleting or reverting | Fresh read-only subagent for a second opinion, options neutral; decide; both views in an ADR (ADR 0023) |
 | Stuck (3 distinct attempts or ~45 min) | Debugging subagent with evidence only; still stuck: mark blocked in `docs/progress.md`, move on |
 
 The engine (SPEC 5) and the parsers (SPEC 8) each get one independent subagent review before their
 phase gate. One short summary per phase gate. Non-blocking questions go to `docs/questions.md` with
-the default in use.
+the default in use. Spec items marked optional are not built: one line each in `BACKLOG.md`, shown
+to the owner once the SPEC 15 checklist is done (ADR 0023).
 
 ## Environment (SPEC 0.4)
 
@@ -93,6 +95,7 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `docs/adr/` | Decisions (`0000-template.md`) |
 | `docs/upstream-audit.md` | SPEC 2 audit and the feature parity table (kept current) |
 | `docs/progress.md`, `docs/questions.md` | Phase log, open questions with defaults |
+| `BACKLOG.md` | Optional spec items, deferred until the SPEC 15 checklist is done (ADR 0023) |
 | `docs/evidence/` | Screenshots and logs cited by phase gates |
 | `PRODUCT.md`, `DESIGN.md` | `/impeccable` context (ADR 0005); `DESIGN.md` is the token source from P5 |
 

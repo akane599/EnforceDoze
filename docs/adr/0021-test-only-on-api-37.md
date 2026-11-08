@@ -1,6 +1,6 @@
 # 0021. Test only on API 37, on an AVD of our own
 
-- Status: Accepted
+- Status: Accepted; the AOSP 16 check and the Android 16 line superseded by 0022
 - Date: 2026-11-08
 - Phase: P3
 - Spec: 0.4 (environment), 3.1 (test targets), 12.4 (parser fixtures), 13.1 (worker contract),
