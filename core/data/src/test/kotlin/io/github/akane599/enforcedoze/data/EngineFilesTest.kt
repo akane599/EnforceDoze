@@ -6,15 +6,20 @@ import io.github.akane599.enforcedoze.doze.ConstantsValue
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
+import io.github.akane599.enforcedoze.doze.PlanSlot
+import io.github.akane599.enforcedoze.doze.PlanState
 import io.github.akane599.enforcedoze.doze.PreviousSnapshot
 import io.github.akane599.enforcedoze.doze.SensorValue
 import io.github.akane599.enforcedoze.doze.Setting
 import io.github.akane599.enforcedoze.doze.StockSnapshot
+import io.github.akane599.enforcedoze.profile.NightSlot
+import io.github.akane599.enforcedoze.profile.Plan
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.time.Instant
+import java.time.LocalTime
 
 class EngineFilesTest {
     @get:Rule
@@ -50,6 +55,11 @@ class EngineFilesTest {
             reapplyOnDrift = false,
             allowlistKeep = emptySet(),
             proofStartedAt = time,
+            plan = PlanState(
+                Plan("everyday", NightSlot("night", LocalTime.of(23, 0), LocalTime.of(7, 30))),
+                PlanSlot.NIGHT,
+                override = "pocket",
+            ),
         )
         val files = files()
         files.save(state)
@@ -57,6 +67,14 @@ class EngineFilesTest {
         files.save(PersistedState(written = mapOf(Lever.CONSTANTS to Setting.ABSENT, Lever.SENSORS to Setting.SENSORS_NORMAL)))
         assertThat(files.load().written).containsExactly(Lever.CONSTANTS, Setting.ABSENT, Lever.SENSORS, Setting.SENSORS_NORMAL)
         assertThat(folder.root.resolve("engine").list()).asList().containsExactly("state.json")
+    }
+
+    @Test
+    fun `a plan without a night slot round-trips`() = runTest {
+        val files = files()
+        val state = PersistedState(profileId = "pocket", plan = PlanState(Plan("pocket")))
+        files.save(state)
+        assertThat(files.load()).isEqualTo(state)
     }
 
     @Test

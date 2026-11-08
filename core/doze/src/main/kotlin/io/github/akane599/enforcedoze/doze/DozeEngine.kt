@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.doze
 
+import io.github.akane599.enforcedoze.profile.BuiltInProfiles
+import io.github.akane599.enforcedoze.profile.Plan
 import io.github.akane599.enforcedoze.profile.Profile
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -25,6 +27,7 @@ import kotlinx.coroutines.launch
  *
  * [callDispatcher] runs the device calls, which may block on binder.
  */
+@Suppress("LongParameterList") // One argument per port (ADR 0015); a holder object would only hide them.
 public class DozeEngine(
     device: DozeDevice,
     store: EngineStore,
@@ -34,9 +37,11 @@ public class DozeEngine(
     allowPackage: String,
     scope: CoroutineScope,
     callDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    /** Where the plan's profile ids are looked up; the built-ins unless the app adds its custom profiles. */
+    catalog: ProfileCatalog = ProfileCatalog { BuiltInProfiles.byId(it) },
 ) {
     private val calls = DeviceCalls(CoroutineScope(SupervisorJob(scope.coroutineContext[Job]) + callDispatcher), CALL_TIMEOUT_MILLIS)
-    private val core = EngineCore(device, store, journal, clock, allowPackage, calls)
+    private val core = EngineCore(device, store, journal, clock, allowPackage, calls, catalog)
     private val inbox = Channel<suspend () -> Unit>(Channel.UNLIMITED)
     private val mutableStatus = MutableStateFlow(EngineStatus())
 
@@ -54,7 +59,20 @@ public class DozeEngine(
 
     public suspend fun start(start: EngineStart): Unit = submit { start(start) }
 
+    /** Applies [profile] now; with a plan set, it overrides the plan until [followPlan] (SPEC 11.1). */
     public suspend fun setProfile(profile: Profile, reason: SwitchReason): Unit = submit { setProfile(profile, reason) }
+
+    /** Sets the plan (SPEC 6): the slot the clock is in applies at once. */
+    public suspend fun setPlan(plan: Plan, reason: SwitchReason): Unit = submit { setPlan(plan, reason) }
+
+    /** Ends an override: the plan's current slot applies again. */
+    public suspend fun followPlan(reason: SwitchReason): Unit = submit { followPlan(reason) }
+
+    /** The non-wakeup alarm at the night window's start was delivered (SPEC 6.5). */
+    public suspend fun nightStarted(): Unit = submit { nightStarted() }
+
+    /** A deep maintenance window opened while the screen was off (`ACTION_DEVICE_IDLE_MODE_CHANGED`). */
+    public suspend fun maintenanceWindow(): Unit = submit { maintenanceWindow() }
 
     public suspend fun screenOff(): Unit = submit { screen(on = false) }
 

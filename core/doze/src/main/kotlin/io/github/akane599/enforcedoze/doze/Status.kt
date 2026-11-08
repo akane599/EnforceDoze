@@ -72,6 +72,8 @@ public data class EngineStatus(
     val storeError: String? = null,
     /** A quick proof froze the battery as unplugged and giving it back is not confirmed yet (SPEC 8.6). */
     val batteryFrozen: Boolean = false,
+    /** The plan, its slot and any profile applied outside it (SPEC 6.5, 11.1 `GET_STATUS`). */
+    val plan: PlanState? = null,
 ) {
     /** "Partly applied" on the home screen (SPEC 5.6 step 2). */
     val partlyApplied: Boolean get() = missingKeys.isNotEmpty() || levers.values.any { it.state in PARTLY_STATES }

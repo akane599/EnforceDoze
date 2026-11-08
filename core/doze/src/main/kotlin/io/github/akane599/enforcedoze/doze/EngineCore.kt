@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.doze
 
 import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
+import io.github.akane599.enforcedoze.profile.Plan
 import io.github.akane599.enforcedoze.profile.Profile
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
@@ -9,6 +10,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import java.time.LocalTime
 
 /**
  * The engine's state and command handlers (ADR 0015). Every method runs inside the actor, one at a time:
@@ -22,6 +24,7 @@ internal class EngineCore(
     private val clock: EngineClock,
     private val allowPackage: String,
     calls: DeviceCalls,
+    private val catalog: ProfileCatalog,
 ) {
     private val book = Book(PersistedState())
     private val observer = Observer(device, calls, book)
@@ -53,6 +56,8 @@ internal class EngineCore(
         writable = start.writable
         started = true
         start.profile?.let { book.persisted = book.persisted.copy(profileId = it.id) }
+        // A plan in the book decides the profile; the window may have opened or closed while the app was stopped.
+        book.persisted.plan?.let { movePlan(PlanSchedule.started(it, localTime(), screenOn, locked), SwitchReason.SCHEDULE) }
         observer.read(Lever.entries.toSet())
         // Paused or hands off, other writers are expected; drift only means something while managed.
         val drifted = if (mode == Mode.MANAGED) drifts(Lever.entries, whileStopped = true) else emptyList()
@@ -62,17 +67,44 @@ internal class EngineCore(
         if (writable.forceIdle) resetProofBattery()
     }
 
+    /** A profile applied directly. With a plan it is an override (SPEC 11.1 `APPLY_PROFILE`) until [followPlan]. */
     suspend fun setProfile(next: Profile, reason: SwitchReason) {
-        profile = next
-        book.persisted = book.persisted.copy(profileId = next.id)
-        journal.event(EngineEvent.ProfileSwitched(clock.now(), next.id, reason))
+        book.persisted.plan?.let { book.persisted = book.persisted.copy(plan = it.copy(override = next.id)) }
+        select(next, reason)
         reconcile(Cause.PROFILE_SWITCH)
+    }
+
+    /** The owner set a plan (SPEC 6.5): the slot the clock is in applies at once, and any override ends. */
+    suspend fun setPlan(plan: Plan, reason: SwitchReason) {
+        if (movePlan(PlanSchedule.follow(plan, localTime()), reason, force = true)) reconcile(Cause.PROFILE_SWITCH)
+    }
+
+    /** Back to the plan after an override (SPEC 11.1 `APPLY_PLAN`). */
+    suspend fun followPlan(reason: SwitchReason) {
+        val plan = book.persisted.plan ?: return
+        if (movePlan(PlanSchedule.follow(plan.plan, localTime()), reason)) reconcile(Cause.PROFILE_SWITCH)
+    }
+
+    /** The window-start alarm was delivered (SPEC 6.5). */
+    suspend fun nightStarted() {
+        val plan = book.persisted.plan ?: return
+        if (movePlan(PlanSchedule.nightStarted(plan, localTime(), screenOn), SwitchReason.SCHEDULE) && started) {
+            reconcile(Cause.PROFILE_SWITCH)
+        }
+    }
+
+    /** A deep maintenance window opened with the screen off: inside the night window, the night begins (SPEC 6.5). */
+    suspend fun maintenanceWindow() {
+        val plan = book.persisted.plan ?: return
+        if (movePlan(PlanSchedule.awake(plan, localTime()), SwitchReason.SCHEDULE) && started) reconcile(Cause.PROFILE_SWITCH)
     }
 
     /** Screen off: sensors, forced idle, their read-backs, then one constants read for drift (SPEC 5.6, ADR 0015). */
     suspend fun screen(on: Boolean, lockedNow: Boolean = false) {
         screenOn = on
         locked = on && lockedNow
+        // The phone is awake: a night whose alarm switched nothing (screen off, or no alarm set) begins now.
+        book.persisted.plan?.let { movePlan(PlanSchedule.awake(it, localTime()), SwitchReason.SCHEDULE) }
         if (!started) return
         if (on) {
             reconcile(Cause.SCREEN_ON)
@@ -82,12 +114,40 @@ internal class EngineCore(
         checkConstantsDrift()
     }
 
-    /** The keyguard went away (ADR 0017): what "until unlock" kept on is released. */
+    /**
+     * The keyguard went away (ADR 0017): what "until unlock" kept on is released, and after the night window
+     * the plan returns to its day profile (SPEC 6.5). Without a secure lock this can come before the screen on.
+     */
     suspend fun unlocked() {
-        if (!locked) return
+        val switched = book.persisted.plan?.let { movePlan(PlanSchedule.unlocked(it, localTime()), SwitchReason.SCHEDULE) } ?: false
+        val wasLocked = locked
         locked = false
-        if (started) reconcile(Cause.UNLOCK)
+        if (started && (wasLocked || switched)) reconcile(if (wasLocked) Cause.UNLOCK else Cause.PROFILE_SWITCH)
     }
+
+    /**
+     * Books [next] and selects its profile when that changes (or always with [force]). Returns whether the
+     * profile changed; a profile the catalog no longer has is logged and the current one stays.
+     */
+    private suspend fun movePlan(next: PlanState, reason: SwitchReason, force: Boolean = false): Boolean {
+        book.persisted = book.persisted.copy(plan = next)
+        if (!force && profile?.id == next.profileId) return false
+        val resolved = catalog.profile(next.profileId)
+        if (resolved == null) {
+            journal.event(EngineEvent.ProfileMissing(clock.now(), next.profileId, reason))
+            return false
+        }
+        select(resolved, reason)
+        return true
+    }
+
+    private suspend fun select(next: Profile, reason: SwitchReason) {
+        profile = next
+        book.persisted = book.persisted.copy(profileId = next.id)
+        journal.event(EngineEvent.ProfileSwitched(clock.now(), next.id, reason))
+    }
+
+    private fun localTime(): LocalTime = clock.now().atZone(clock.zone()).toLocalTime()
 
     suspend fun holdOff(holdOff: HoldOff, active: Boolean) {
         val next = if (active) holdOffs + holdOff else holdOffs - holdOff
@@ -327,6 +387,7 @@ internal class EngineCore(
             stockCaptured = stock != null,
             storeError = storeError,
             batteryFrozen = book.persisted.proofStartedAt != null,
+            plan = book.persisted.plan,
         )
     }
 

@@ -183,6 +183,7 @@ public object JournalRows {
     public const val LOOP_GUARD: String = "LOOP_GUARD"
     public const val MODE: String = "MODE"
     public const val PROFILE: String = "PROFILE"
+    public const val PROFILE_MISSING: String = "PROFILE_MISSING"
     public const val BATTERY: String = "BATTERY"
 
     public fun of(record: ActionRecord): ActionRow = ActionRow(
@@ -220,6 +221,13 @@ public object JournalRows {
             is EngineEvent.ProfileSwitched -> EventRow(
                 time = time,
                 kind = PROFILE,
+                profileId = event.profileId,
+                reason = event.reason.name,
+            )
+
+            is EngineEvent.ProfileMissing -> EventRow(
+                time = time,
+                kind = PROFILE_MISSING,
                 profileId = event.profileId,
                 reason = event.reason.name,
             )

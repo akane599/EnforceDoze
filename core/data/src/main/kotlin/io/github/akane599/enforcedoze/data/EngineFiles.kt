@@ -6,10 +6,14 @@ import io.github.akane599.enforcedoze.doze.EngineStore
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
+import io.github.akane599.enforcedoze.doze.PlanSlot
+import io.github.akane599.enforcedoze.doze.PlanState
 import io.github.akane599.enforcedoze.doze.PreviousSnapshot
 import io.github.akane599.enforcedoze.doze.SensorValue
 import io.github.akane599.enforcedoze.doze.Setting
 import io.github.akane599.enforcedoze.doze.StockSnapshot
+import io.github.akane599.enforcedoze.profile.NightSlot
+import io.github.akane599.enforcedoze.profile.Plan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
@@ -20,6 +24,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.DateTimeException
 import java.time.Instant
+import java.time.LocalTime
 
 /**
  * The engine's book and its two snapshots as JSON files in [dir] (SPEC 5.2, ADR 0015): `state.json`,
@@ -152,6 +157,8 @@ internal data class StateFile(
     val allowlistKeep: List<String>? = null,
     /** While the quick proof has the battery frozen (SPEC 8.6). */
     val proofStartedAt: String? = null,
+    /** The plan and its slot (SPEC 6.5). */
+    val plan: PlanFile? = null,
 ) {
     fun toState(): PersistedState = PersistedState(
         mode = Mode.valueOf(mode),
@@ -163,6 +170,7 @@ internal data class StateFile(
         reapplyOnDrift = reapplyOnDrift,
         allowlistKeep = allowlistKeep?.toSet(),
         proofStartedAt = proofStartedAt?.let(Instant::parse),
+        plan = plan?.toState(),
     )
 
     companion object {
@@ -176,6 +184,38 @@ internal data class StateFile(
             reapplyOnDrift = state.reapplyOnDrift,
             allowlistKeep = state.allowlistKeep?.sorted(),
             proofStartedAt = state.proofStartedAt?.toString(),
+            plan = state.plan?.let(PlanFile::of),
+        )
+    }
+}
+
+/** The plan in `state.json`: profile ids, the window as local `HH:mm` times, and where the schedule stands. */
+@Serializable
+internal data class PlanFile(
+    val day: String,
+    val night: String? = null,
+    val nightStart: String? = null,
+    val nightEnd: String? = null,
+    val slot: String = PlanSlot.DAY.name,
+    val override: String? = null,
+) {
+    fun toState(): PlanState {
+        val window = night?.let { id ->
+            val start = LocalTime.parse(requireNotNull(nightStart) { "night without a start" })
+            val end = LocalTime.parse(requireNotNull(nightEnd) { "night without an end" })
+            NightSlot(id, start, end)
+        }
+        return PlanState(Plan(day, window), PlanSlot.valueOf(slot), override)
+    }
+
+    companion object {
+        fun of(state: PlanState): PlanFile = PlanFile(
+            day = state.plan.dayProfileId,
+            night = state.plan.night?.profileId,
+            nightStart = state.plan.night?.start?.toString(),
+            nightEnd = state.plan.night?.end?.toString(),
+            slot = state.slot.name,
+            override = state.override,
         )
     }
 }

@@ -2,7 +2,9 @@
 package io.github.akane599.enforcedoze.doze
 
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
+import io.github.akane599.enforcedoze.profile.Profile
 import java.time.Instant
+import java.time.ZoneId
 
 /** One write the engine can ask of the device. Adapters map each to a worker call or an app-process call. */
 public sealed interface DeviceWrite {
@@ -84,6 +86,14 @@ public interface DozeDevice {
 
 public fun interface EngineClock {
     public fun now(): Instant
+
+    /** The zone the plan's window is read in (SPEC 6.5); the phone's own unless a test says otherwise. */
+    public fun zone(): ZoneId = ZoneId.systemDefault()
+}
+
+/** Looks up a profile by id for the plan's slots: the built-ins and the owner's custom profiles (SPEC 6.3). */
+public fun interface ProfileCatalog {
+    public suspend fun profile(id: String): Profile?
 }
 
 /** One row per write (SPEC 8.1 "Action", 12.4). */
@@ -139,6 +149,9 @@ public sealed interface EngineEvent {
 
     public data class ProfileSwitched(override val time: Instant, val profileId: String, val reason: SwitchReason) : EngineEvent
 
+    /** The plan asks for [profileId], which no longer exists (a deleted custom profile): the current one stays. */
+    public data class ProfileMissing(override val time: Instant, val profileId: String, val reason: SwitchReason) : EngineEvent
+
     /** The quick proof froze the battery as unplugged or gave it back (SPEC 8.6); [line] is what the device answered. */
     public data class Battery(override val time: Instant, val unplugged: Boolean, val ok: Boolean, val line: String) : EngineEvent
 }
@@ -164,6 +177,8 @@ public data class PersistedState(
     val allowlistKeep: Set<String>? = null,
     /** Set while the quick proof has the battery frozen (SPEC 8.6): a run cut short is undone at the next start. */
     val proofStartedAt: Instant? = null,
+    /** The plan and the slot it is in (SPEC 6.5); null until the owner sets one, when the start profile applies. */
+    val plan: PlanState? = null,
 )
 
 /** The `previous.json` snapshot (SPEC 5.2, ADR 0012): the string as found, or absent, and who wrote it. */
