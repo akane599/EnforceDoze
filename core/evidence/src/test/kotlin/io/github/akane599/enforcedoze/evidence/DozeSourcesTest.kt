@@ -112,6 +112,27 @@ class DozeSourcesTest {
         assertWithMessage("a history that starts before the gap fills it").that(withHistory.gaps).isEmpty()
     }
 
+    @Test fun aHistoryReadJustAfterScreenOffFillsTheStart() {
+        val session = Interval(t0, at(min(30)))
+        val late = read(min(30), line(min(20), "am_proc_start", "[0]"))
+        val wall = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss").withZone(ZoneOffset.UTC)
+        fun startingAt(seconds: Long): BatteryHistory = BatteryHistory.parse(
+            """
+            |Battery History [Format: 2] (1% used, 40KB used of 4096KB, 10 strings using 1KB):
+            |  ${stamp.format(at(seconds))} TIME: ${wall.format(at(seconds))}
+            |  ${stamp.format(at(min(5)))} 090 device_idle=full
+            """.trimMargin(),
+            ZoneOffset.UTC,
+            2026,
+        )
+        assertWithMessage("the cursor read starts a second after screen off (ADR 0020)")
+            .that(DozeSources.merge(session, listOf(late), startingAt(2)).historyFilled)
+            .containsExactly(Interval(t0, at(min(20))))
+        assertWithMessage("a history that starts later than the slack leaves the gap")
+            .that(DozeSources.merge(session, listOf(late), startingAt(min(2))).gaps)
+            .containsExactly(Interval(t0, at(min(20))))
+    }
+
     @Test fun intervalsJoinAndSubtract() {
         val a = Interval(at(0), at(10))
         val b = Interval(at(10), at(20))

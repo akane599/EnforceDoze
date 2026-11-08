@@ -37,7 +37,7 @@ public data class DozeRecord(
     val transitions: List<Transition>,
     /** Parts of the session the event log covered. */
     val eventCoverage: List<Interval>,
-    /** Gaps in the event log that the battery history filled. */
+    /** Gaps in the event log that the battery history filled: it started no later than [Wakers.COVERAGE_SLACK] into them. */
     val historyFilled: List<Interval>,
     /** Parts of the session no source covered: the timeline labels them and draws nothing (SPEC 8.2). */
     val gaps: List<Interval>,
@@ -59,7 +59,8 @@ public object DozeSources {
         )
         val missing = minus(session, coverage).filter { it.duration > Wakers.COVERAGE_SLACK }
         val historyStart = history?.start?.let(Instant::ofEpochMilli)
-        val filled = missing.filter { historyStart != null && !historyStart.isAfter(it.start) }
+        // The history is read from the cursor taken just after screen off (ADR 0020), so it may start a little late.
+        val filled = missing.filter { historyStart != null && Duration.between(it.start, historyStart) <= Wakers.COVERAGE_SLACK }
         val values = history?.let(::idleValues).orEmpty()
         val historyChanges = filled.flatMap { gap -> inGap(gap, values) }
         val deep = events.mapNotNull { (time, event) -> event.deepState?.let { DeepChange(time, it, event.reason) } }

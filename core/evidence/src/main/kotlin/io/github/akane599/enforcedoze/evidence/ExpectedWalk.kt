@@ -18,7 +18,10 @@ public object ExpectedWalk {
      * that has it (the profile's own values, then the captured stock values), or null when one is unknown.
      * Values are milliseconds or `dumpsys` durations.
      */
-    public fun of(forcedIdle: Boolean, vararg sources: Map<String, String>): Duration? {
+    public fun of(forcedIdle: Boolean, vararg sources: Map<String, String>): Duration? = of(forcedIdle, sources.asList())
+
+    /** As above, with the sources in a list. */
+    public fun of(forcedIdle: Boolean, sources: List<Map<String, String>>): Duration? {
         if (forcedIdle) return Duration.ZERO
         val millis = KEYS.map { key -> sources.firstNotNullOfOrNull { it[key]?.let(::SettingValue)?.longValue } ?: return null }
         return Duration.ofMillis(millis.sum())
