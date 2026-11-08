@@ -8,6 +8,10 @@ kotlin = "2.4.21"
 coroutines = "1.11.0"
 shizuku = "13.1.5"
 libsu = "6.0.0"
+# Room, KSP and kotlinx.serialization (SPEC 12.2), resolved from Maven metadata on 2026-11-08.
+room = "2.8.5"
+ksp = "2.3.13"
+serialization = "1.12.0"
 junit = "4.13.2"
 truth = "1.4.5"
 androidx-test-runner = "1.7.0"
@@ -41,6 +45,10 @@ shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
 shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "libsu" }
 libsu-service = { module = "com.github.topjohnwu.libsu:service", version.ref = "libsu" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 junit = { module = "junit:junit", version.ref = "junit" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
@@ -64,4 +72,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 # Built-in Kotlin (AGP 9) compiles Kotlin in Android modules; declaring the JVM plugin in the root
 # build pins the Kotlin Gradle plugin version AGP uses and serves pure-JVM modules.
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
 licensee = { id = "app.cash.licensee", version.ref = "licensee" }

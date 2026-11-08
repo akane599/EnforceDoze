@@ -46,6 +46,9 @@ require :core:doze runtimeClasspath :core:profile
 forbid :core:doze-android debugCompileClasspath :core:privilege-worker :core:hidden-api-stubs ':feature:[a-z-]+' :app
 require :core:doze-android debugRuntimeClasspath :core:doze
 forbid :core:privilege debugRuntimeClasspath ':core:doze[a-z-]*' ':core:data'
+# Storage knows the engine's types and nothing of privilege or the adapters.
+forbid :core:data debugRuntimeClasspath ':core:privilege[a-z-]*' ':core:doze-android' ':feature:[a-z-]+' :app
+require :core:data debugRuntimeClasspath :core:doze
 
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status
