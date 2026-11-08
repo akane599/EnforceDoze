@@ -56,6 +56,8 @@ public data class EngineStatus(
     val mode: Mode = Mode.MANAGED,
     val profileId: String? = null,
     val screenOn: Boolean = true,
+    /** The keyguard is showing, as the engine last heard (ADR 0017). */
+    val locked: Boolean = false,
     val holdOffs: Set<HoldOff> = emptySet(),
     val levers: Map<Lever, LeverStatus> = emptyMap(),
     /** Levers where the loop guard tripped; the app asks the owner about each (SPEC 5.7). */

@@ -377,6 +377,7 @@ internal class EngineCore(
             mode = mode,
             profileId = profile?.id,
             screenOn = screenOn,
+            locked = locked,
             holdOffs = holdOffs,
             levers = Lever.entries.associateWith { leverStatus(it, targets) },
             guarded = book.persisted.guarded,

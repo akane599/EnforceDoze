@@ -116,21 +116,23 @@ public class DozeEngine(
     private suspend fun <T> submit(block: suspend EngineCore.() -> T): T {
         val done = CompletableDeferred<T>()
         inbox.send {
-            try {
-                done.complete(core.block())
+            val outcome = try {
+                Result.success(core.block())
             } catch (e: CancellationException) {
                 if (!currentCoroutineContext().isActive) {
                     done.cancel(e)
                     throw e
                 }
                 // Not the actor's own cancellation (an adapter's timeout): only this command fails.
-                done.completeExceptionally(IllegalStateException("a call was cancelled", e))
+                Result.failure(IllegalStateException("a call was cancelled", e))
             } catch (e: Exception) {
                 // One failing command must not stop the actor; the caller gets the exception.
-                done.completeExceptionally(e)
+                Result.failure(e)
             }
             core.persist()
             publishStatus()
+            // Only now, so a caller that reads the status next sees this command's result.
+            outcome.fold(done::complete, done::completeExceptionally)
         }
         return done.await()
     }
