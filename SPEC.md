@@ -406,9 +406,9 @@ The point of this section: the owner should never have to trust that Doze worked
 | Record | Content | Source |
 | --- | --- | --- |
 | Session | Start, end, plugged state, active plan and profile, battery level and charge counter (µAh) at both ends, drain %/h | Screen and power broadcasts in the foreground service; `BatteryManager` |
-| Doze transition | Time, deep or light, from-state, to-state, reason (motion, screen, charging, forced, step) | Event log tags `device_idle*` (list the exact tags on API 37 with `logcat -b events -d` and record them in an ADR); `batterystats` Doze states as fallback |
+| Doze transition | Time, deep or light, from-state, to-state, reason (motion, screen, charging, forced, step) | Event log tags `device_idle` and `device_idle_light` (ADR 0018); `batterystats` Doze states as fallback |
 | Action | Time, lever, command or API call, expected value, read-back value, ok or failed, reason (profile switch, drift, hold-off) | The engine (5.6) |
-| Waker | Per app: wakelock time, alarm wakeups, jobs and syncs run, mobile radio time during the session; kernel wakeup reasons | `dumpsys batterystats --history`, cut to the session's time range |
+| Waker | Per app: wakelock time, alarm wakeups, jobs and syncs run during the session; mobile radio time as a device total, since the history keeps no per-app radio time; kernel wakeup reasons (ADR 0018) | `dumpsys batterystats --history-start <cursor>`, cut to the session's time range (ADR 0018) |
 | Sensor snapshot | Sensor service mode; active sensor connections (app, sensor, rate); sensor privacy state | `dumpsys sensorservice`, `SensorPrivacyManager`; taken at screen off, at screen on and at maintenance windows |
 | Hold-off, drift | Start, end, reason, the key that drifted and the likely writer | Engine (5.5, 5.6) |
 
