@@ -45,4 +45,36 @@ class JournalDaoTest {
         assertThat(dao.deleteActionsBefore(time.plusSeconds(30).toEpochMilli())).isEqualTo(1)
         assertThat(dao.actionsSince(0)).hasSize(1)
     }
+
+    @Test
+    fun sessionsComeBackNewestFirstAndRetentionGoesByTheirEnd() = runTest {
+        val dao = db.journal()
+        val start = time.toEpochMilli()
+        fun session(offsetMinutes: Long, verdict: String?) = SessionRow(
+            start = start + offsetMinutes * 60_000,
+            end = start + (offsetMinutes + 30) * 60_000,
+            profileId = "everyday",
+            pluggedAtStart = false,
+            verdict = verdict,
+            cause = null,
+            expectedToDeepMillis = 900_000,
+            timeToDeepMillis = 960_000,
+            lateByMillis = null,
+            deepShare = 0.9,
+            maintenanceWindows = 2,
+            motionResets = 0,
+            breaks = "",
+            note = null,
+        )
+        val first = dao.insert(session(0, "HELD"))
+        val second = dao.insert(session(60, null))
+        assertThat(second).isGreaterThan(first)
+        assertThat(dao.latestSessions(10).map { it.id }).containsExactly(second, first).inOrder()
+        assertThat(dao.latestSessions(1).single().verdict).isNull()
+        assertThat(dao.latestSessions(10).last()).isEqualTo(session(0, "HELD").copy(id = first))
+
+        // The first session ends 30 minutes in: a cut-off at 31 minutes removes it, not the second.
+        assertThat(dao.deleteSessionsBefore(start + 31 * 60_000)).isEqualTo(1)
+        assertThat(dao.latestSessions(10).single().id).isEqualTo(second)
+    }
 }
