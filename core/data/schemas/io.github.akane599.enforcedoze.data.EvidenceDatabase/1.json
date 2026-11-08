@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bc3fec7029bb3c0228f00c79fb3ab427",
+    "identityHash": "7c82b48039eb1b89f40272c02b09b0b5",
     "entities": [
       {
         "tableName": "action",
@@ -168,7 +168,7 @@
       },
       {
         "tableName": "session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `profileId` TEXT, `pluggedAtStart` INTEGER NOT NULL, `verdict` TEXT, `cause` TEXT, `expectedToDeepMillis` INTEGER, `timeToDeepMillis` INTEGER, `lateByMillis` INTEGER, `deepShare` REAL NOT NULL, `maintenanceWindows` INTEGER NOT NULL, `motionResets` INTEGER NOT NULL, `breaks` TEXT NOT NULL, `note` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `profileId` TEXT, `pluggedAtStart` INTEGER NOT NULL, `verdict` TEXT, `cause` TEXT, `expectedToDeepMillis` INTEGER, `timeToDeepMillis` INTEGER, `lateByMillis` INTEGER, `deepShare` REAL NOT NULL, `maintenanceWindows` INTEGER NOT NULL, `motionResets` INTEGER NOT NULL, `breaks` TEXT NOT NULL, `note` TEXT, `timeInDeepMillis` INTEGER NOT NULL, `batteryStart` INTEGER, `batteryEnd` INTEGER, `chargeStartUah` INTEGER, `chargeEndUah` INTEGER, `drainPerHour` REAL, `drainMah` REAL, `ownWakeups` INTEGER, `ownRuns` TEXT NOT NULL, `alarmsRead` INTEGER NOT NULL, `mobileRadioMillis` INTEGER NOT NULL, `unattributedWakelockMillis` INTEGER NOT NULL, `collectionMillis` INTEGER, `eventLogFrom` INTEGER, `historyFrom` INTEGER, `historyFilled` TEXT NOT NULL, `gaps` TEXT NOT NULL, `chargedMillis` INTEGER NOT NULL, `timeline` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -252,6 +252,110 @@
             "fieldPath": "note",
             "columnName": "note",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timeInDeepMillis",
+            "columnName": "timeInDeepMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "batteryStart",
+            "columnName": "batteryStart",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "batteryEnd",
+            "columnName": "batteryEnd",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "chargeStartUah",
+            "columnName": "chargeStartUah",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "chargeEndUah",
+            "columnName": "chargeEndUah",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "drainPerHour",
+            "columnName": "drainPerHour",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "drainMah",
+            "columnName": "drainMah",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "ownWakeups",
+            "columnName": "ownWakeups",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ownRuns",
+            "columnName": "ownRuns",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alarmsRead",
+            "columnName": "alarmsRead",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mobileRadioMillis",
+            "columnName": "mobileRadioMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unattributedWakelockMillis",
+            "columnName": "unattributedWakelockMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collectionMillis",
+            "columnName": "collectionMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "eventLogFrom",
+            "columnName": "eventLogFrom",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "historyFrom",
+            "columnName": "historyFrom",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "historyFilled",
+            "columnName": "historyFilled",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gaps",
+            "columnName": "gaps",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chargedMillis",
+            "columnName": "chargedMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeline",
+            "columnName": "timeline",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -271,11 +375,405 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_session_start` ON `${TABLE_NAME}` (`start`)"
           }
         ]
+      },
+      {
+        "tableName": "transition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `time` INTEGER NOT NULL, `deep` INTEGER NOT NULL, `fromState` TEXT, `toState` TEXT NOT NULL, `reason` TEXT NOT NULL, `source` TEXT NOT NULL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deep",
+            "columnName": "deep",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromState",
+            "columnName": "fromState",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "toState",
+            "columnName": "toState",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reason",
+            "columnName": "reason",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_transition_sessionId",
+            "unique": false,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transition_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          },
+          {
+            "name": "index_transition_time",
+            "unique": false,
+            "columnNames": [
+              "time"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transition_time` ON `${TABLE_NAME}` (`time`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "waker",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `uid` INTEGER, `name` TEXT NOT NULL, `self` INTEGER NOT NULL, `alarmWakeups` INTEGER NOT NULL, `networkWakeups` INTEGER NOT NULL, `kernelWakeups` INTEGER NOT NULL, `jobs` INTEGER NOT NULL, `jobMillis` INTEGER NOT NULL, `syncs` INTEGER NOT NULL, `syncMillis` INTEGER NOT NULL, `wakelockMillis` INTEGER NOT NULL, `longWakelocks` INTEGER NOT NULL, `longWakelockMillis` INTEGER NOT NULL, `alarms` TEXT NOT NULL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "self",
+            "columnName": "self",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alarmWakeups",
+            "columnName": "alarmWakeups",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "networkWakeups",
+            "columnName": "networkWakeups",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kernelWakeups",
+            "columnName": "kernelWakeups",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "jobs",
+            "columnName": "jobs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "jobMillis",
+            "columnName": "jobMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncs",
+            "columnName": "syncs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncMillis",
+            "columnName": "syncMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wakelockMillis",
+            "columnName": "wakelockMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longWakelocks",
+            "columnName": "longWakelocks",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longWakelockMillis",
+            "columnName": "longWakelockMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alarms",
+            "columnName": "alarms",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_waker_sessionId",
+            "unique": false,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_waker_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sensor_snapshot",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `time` INTEGER NOT NULL, `moment` TEXT NOT NULL, `mode` TEXT, `privacy` INTEGER, `connections` TEXT NOT NULL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moment",
+            "columnName": "moment",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "privacy",
+            "columnName": "privacy",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "connections",
+            "columnName": "connections",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sensor_snapshot_sessionId",
+            "unique": false,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sensor_snapshot_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "night",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `unlockedAt` INTEGER NOT NULL, `recentNights` INTEGER NOT NULL, `recentDrainPerHour` REAL, `recentDeepShare` REAL, `stockNights` INTEGER NOT NULL, `stockDrainPerHour` REAL, `stockDeepShare` REAL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unlockedAt",
+            "columnName": "unlockedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recentNights",
+            "columnName": "recentNights",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recentDrainPerHour",
+            "columnName": "recentDrainPerHour",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "recentDeepShare",
+            "columnName": "recentDeepShare",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "stockNights",
+            "columnName": "stockNights",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stockDrainPerHour",
+            "columnName": "stockDrainPerHour",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "stockDeepShare",
+            "columnName": "stockDeepShare",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_night_sessionId",
+            "unique": true,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_night_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          },
+          {
+            "name": "index_night_unlockedAt",
+            "unique": false,
+            "columnNames": [
+              "unlockedAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_night_unlockedAt` ON `${TABLE_NAME}` (`unlockedAt`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc3fec7029bb3c0228f00c79fb3ab427')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c82b48039eb1b89f40272c02b09b0b5')"
     ]
   }
 }

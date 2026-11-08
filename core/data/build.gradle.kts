@@ -34,6 +34,8 @@ room {
 
 dependencies {
     api(project(":core:doze"))
+    // EvidenceRows maps the session analysis to rows.
+    api(project(":core:evidence"))
     // EvidenceDatabase is a RoomDatabase in the public API.
     api(libs.room.runtime)
     ksp(libs.room.compiler)

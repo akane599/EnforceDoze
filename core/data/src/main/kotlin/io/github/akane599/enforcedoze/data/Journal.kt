@@ -51,8 +51,9 @@ public data class EventRow(
 )
 
 /**
- * One screen-off session and its SPEC 8.4 verdict (SPEC 8.1 "Session"). Battery, drain and wakers join
- * it in P3; the schema is not shipped before 1.0.0, so it still changes in place.
+ * One screen-off session and its SPEC 8.4 verdict (SPEC 8.1 "Session"). Its transitions, wakers and
+ * sensor snapshots are in their own tables ([SessionDao]); the schema is not shipped before 1.0.0, so
+ * it still changes in place.
  */
 @Entity(tableName = "session", indices = [Index("start")])
 public data class SessionRow(
@@ -76,7 +77,38 @@ public data class SessionRow(
     val motionResets: Int,
     /** One line per break: epoch milliseconds, the state entered, the logged reason and the cause. */
     val breaks: String,
+    /** Why something is missing or unjudged, one reason per line. */
     val note: String?,
+    val timeInDeepMillis: Long = 0,
+    /** Battery level in percent at screen off and screen on (`BatteryManager`, ADR 0018). */
+    val batteryStart: Int? = null,
+    val batteryEnd: Int? = null,
+    /** The charge counter in µAh, when the device reports one. */
+    val chargeStartUah: Long? = null,
+    val chargeEndUah: Long? = null,
+    /** Null when the phone was charging during the session or a reading is missing. */
+    val drainPerHour: Double? = null,
+    val drainMah: Double? = null,
+    /** The app's own wakeups; null when a source was missing (ADR 0019), never a guessed 0. */
+    val ownWakeups: Int? = null,
+    /** The app's own runs, one per line: kind, start, end, `idle` or `outside`, tag. */
+    val ownRuns: String = "",
+    /** Both alarm reads were taken, so alarm wakeups are known. */
+    val alarmsRead: Boolean = false,
+    val mobileRadioMillis: Long = 0,
+    val unattributedWakelockMillis: Long = 0,
+    /** How long the screen-on worker batch took (SPEC 8.2: under 2 s). */
+    val collectionMillis: Long? = null,
+    /** Where the event log's and the history's coverage of the session begins, epoch milliseconds. */
+    val eventLogFrom: Long? = null,
+    val historyFrom: Long? = null,
+    /** Stretches the history filled and stretches nothing covered, one `start end` pair per line. */
+    val historyFilled: String = "",
+    val gaps: String = "",
+    /** Time on the charger within the session; a night needs none (SPEC 8.5). */
+    val chargedMillis: Long = 0,
+    /** The deep timeline the verdict saw, one `STATE start end` per line (SPEC 8.5 "Timeline strip"). */
+    val timeline: String = "",
 )
 
 @Dao
@@ -86,12 +118,6 @@ public interface JournalDao {
 
     @Insert
     public suspend fun insert(row: EventRow)
-
-    @Insert
-    public suspend fun insert(row: SessionRow): Long
-
-    @Query("SELECT * FROM session ORDER BY start DESC, id DESC LIMIT :limit")
-    public suspend fun latestSessions(limit: Int): List<SessionRow>
 
     @Query("SELECT * FROM action WHERE time >= :sinceMillis ORDER BY time, id")
     public suspend fun actionsSince(sinceMillis: Long): List<ActionRow>
@@ -111,15 +137,26 @@ public interface JournalDao {
 
     @Query("DELETE FROM event WHERE time < :beforeMillis")
     public suspend fun deleteEventsBefore(beforeMillis: Long): Int
-
-    @Query("DELETE FROM session WHERE `end` < :beforeMillis")
-    public suspend fun deleteSessionsBefore(beforeMillis: Long): Int
 }
 
-/** The evidence database (SPEC 8.3). Transitions, wakers and sensor snapshots join it in P3. */
-@Database(entities = [ActionRow::class, EventRow::class, SessionRow::class], version = 1, exportSchema = true)
+/** The evidence database (SPEC 8.3). */
+@Database(
+    entities = [
+        ActionRow::class,
+        EventRow::class,
+        SessionRow::class,
+        TransitionRow::class,
+        WakerRow::class,
+        SensorSnapshotRow::class,
+        NightRow::class,
+    ],
+    version = 1,
+    exportSchema = true,
+)
 public abstract class EvidenceDatabase : RoomDatabase() {
     public abstract fun journal(): JournalDao
+
+    public abstract fun sessions(): SessionDao
 
     public companion object {
         public const val NAME: String = "evidence.db"

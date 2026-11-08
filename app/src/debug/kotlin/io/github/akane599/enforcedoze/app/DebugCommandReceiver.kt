@@ -4,7 +4,9 @@ package io.github.akane599.enforcedoze.app
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import io.github.akane599.enforcedoze.data.SessionRow
+import io.github.akane599.enforcedoze.data.NightReport
+import io.github.akane599.enforcedoze.data.NightReports
+import io.github.akane599.enforcedoze.data.SessionRecord
 import io.github.akane599.enforcedoze.doze.DozeEngine
 import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.JobResult
@@ -24,7 +26,8 @@ import kotlinx.coroutines.withTimeout
  * Start the engine first with `am start -n io.github.akane599.enforcedoze/io.github.akane599.enforcedoze.app.DebugStartActivity`.
  * Commands: `stop`, `status`, `profile <id>`, `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
- * `min-session <seconds|default>`, `last-session`, `events <count>`, `actions <count>`.
+ * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
+ * `events <count>`, `actions <count>`.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -66,6 +69,11 @@ class DebugCommandReceiver : BroadcastReceiver() {
         "events" to { graph, arg -> graph.journal.eventsSince(0).takeLast(rows(arg)).joinToString("\n") },
         "actions" to { graph, arg -> graph.journal.actionsSince(0).takeLast(rows(arg)).joinToString("\n") },
         "last-session" to { graph, _ -> graph.recorder?.last?.let(::describe) ?: "no session yet" },
+        "night-threshold" to { graph, arg ->
+            DebugHooks.setNightThreshold(graph.app, arg?.toLongOrNull())
+            "night threshold ${DebugHooks.nightThreshold(graph.app).seconds} s"
+        },
+        "last-night" to { graph, _ -> lastNight(graph)?.let(::describe) ?: "no night yet" },
     )
 
     private val engineCommands: Map<String, suspend (EngineHost, String?) -> String> = mapOf(
@@ -84,6 +92,13 @@ class DebugCommandReceiver : BroadcastReceiver() {
     )
 
     private fun rows(arg: String?): Int = arg?.toIntOrNull() ?: DEFAULT_ROWS
+
+    private suspend fun lastNight(graph: EngineGraph): NightReport? {
+        val night = graph.sessions.latestNights(1).firstOrNull() ?: return null
+        val record = graph.sessions.recordOf(night.sessionId) ?: return null
+        val since = record.session.start
+        return NightReports.report(night, record, graph.journal.eventsSince(since), graph.journal.actionsSince(since))
+    }
 
     /** Runs an engine command, then reports the status it left. */
     private suspend fun after(host: EngineHost, command: suspend DozeEngine.() -> Unit): String {
@@ -110,18 +125,68 @@ class DebugCommandReceiver : BroadcastReceiver() {
         }
     }.trimEnd()
 
-    private fun describe(row: SessionRow): String = buildString {
-        appendLine("verdict=${row.verdict} cause=${row.cause} note=${row.note} profile=${row.profileId}")
+    private fun describe(record: SessionRecord): String = buildString {
+        val row = record.session
+        appendLine("verdict=${row.verdict} cause=${row.cause} profile=${row.profileId} id=${row.id}")
         appendLine("start=${row.start} end=${row.end} pluggedAtStart=${row.pluggedAtStart}")
         appendLine("expectedToDeepMs=${row.expectedToDeepMillis} timeToDeepMs=${row.timeToDeepMillis} lateByMs=${row.lateByMillis}")
-        appendLine("deepShare=${"%.3f".format(row.deepShare)} maintenance=${row.maintenanceWindows} motionResets=${row.motionResets}")
-        if (row.breaks.isNotEmpty()) row.breaks.lines().forEach { appendLine("break $it") }
+        appendLine(
+            "deepShare=${"%.3f".format(row.deepShare)} timeInDeepMs=${row.timeInDeepMillis} maintenance=${row.maintenanceWindows} " +
+                "motionResets=${row.motionResets}",
+        )
+        appendLine(
+            "battery=${row.batteryStart}->${row.batteryEnd} chargeUah=${row.chargeStartUah}->${row.chargeEndUah} " +
+                "drainPerHour=${row.drainPerHour} drainMah=${row.drainMah}",
+        )
+        appendLine("ownWakeups=${row.ownWakeups} alarmsRead=${row.alarmsRead} collectionMs=${row.collectionMillis}")
+        appendLine("eventLogFrom=${row.eventLogFrom} historyFrom=${row.historyFrom} mobileRadioMs=${row.mobileRadioMillis}")
+        appendLine("transitions=${record.transitions.size} wakers=${record.wakers.size} snapshots=${record.snapshots.map { it.moment }}")
+        row.breaks.lines().filter { it.isNotBlank() }.forEach { appendLine("break $it") }
+        row.ownRuns.lines().filter { it.isNotBlank() }.forEach { appendLine("own $it") }
+        row.historyFilled.lines().filter { it.isNotBlank() }.forEach { appendLine("historyFilled $it") }
+        row.gaps.lines().filter { it.isNotBlank() }.forEach { appendLine("gap $it") }
+        record.wakers.take(TOP_WAKERS).forEach {
+            appendLine(
+                "waker uid=${it.uid} self=${it.self} alarms=${it.alarmWakeups} network=${it.networkWakeups} " +
+                    "kernel=${it.kernelWakeups} jobs=${it.jobs} wakelockMs=${it.wakelockMillis} ${it.name}",
+            )
+        }
+        row.note?.lines()?.forEach { appendLine("note $it") }
+    }.trimEnd()
+
+    /** Every part of the night report (SPEC 8.5), one line per item, for the P3 gate. */
+    private fun describe(report: NightReport): String = buildString {
+        val row = report.session
+        appendLine("night id=${report.night.id} session=${row.id} unlockedAt=${report.night.unlockedAt} start=${row.start} end=${row.end}")
+        appendLine(
+            "verdict=${row.verdict} timeInDeepMs=${row.timeInDeepMillis} maintenance=${row.maintenanceWindows} " +
+                "drainPerHour=${row.drainPerHour} ownWakeups=${row.ownWakeups}",
+        )
+        report.timeline.forEach { appendLine("timeline ${it.state} ${it.start} ${it.end}") }
+        report.light.forEach { appendLine("light ${it.time} ${it.fromState}->${it.toState} ${it.reason}") }
+        report.breaks.forEach { appendLine("break $it") }
+        report.gaps.forEach { appendLine("gap ${it.start} ${it.end}") }
+        report.historyFilled.forEach { appendLine("historyFilled ${it.start} ${it.end}") }
+        appendLine("recent nights=${report.recent.nights} drainPerHour=${report.recent.drainPerHour} deepShare=${report.recent.deepShare}")
+        appendLine("stock nights=${report.stock.nights} drainPerHour=${report.stock.drainPerHour} deepShare=${report.stock.deepShare}")
+        report.apps.forEach {
+            val wakeups = it.alarmWakeups + it.networkWakeups
+            appendLine("app uid=${it.uid} self=${it.self} wakeups=$wakeups jobs=${it.jobs} wakelockMs=${it.wakelockMillis} ${it.name}")
+        }
+        report.kernel.forEach { appendLine("kernel ${it.kernelWakeups} ${it.name}") }
+        report.sensors.forEach {
+            appendLine("sensor uid=${it.uid} ${it.listener} ${it.sensor} periodUs=${it.samplingPeriodUs} at=${it.moments}")
+        }
+        report.holdOffs.forEach { appendLine("holdOff ${it.time} ${it.kind} ${it.holdOff}") }
+        report.drift.forEach { appendLine("drift ${it.time} ${it.lever} writer=${it.writer}") }
+        report.actions.forEach { appendLine("action ${it.time} ${it.lever} ${it.outcome} ${it.cause}") }
     }.trimEnd()
 
     private companion object {
         const val CMD = "cmd"
         const val ARG = "arg"
         const val DEFAULT_ROWS = 20
+        const val TOP_WAKERS = 5
 
         /** Under the 60 s a background broadcast may take. */
         const val TIMEOUT_MILLIS = 50_000L

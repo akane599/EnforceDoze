@@ -3,12 +3,13 @@ package io.github.akane599.enforcedoze.app
 
 import android.content.Context
 import androidx.core.content.edit
+import io.github.akane599.enforcedoze.data.NightReports
 import io.github.akane599.enforcedoze.evidence.Verdicts
 import io.github.akane599.enforcedoze.profile.BuiltInProfiles
 import io.github.akane599.enforcedoze.profile.Profile
 import java.time.Duration
 
-/** Debug builds only: the compressed-night test profiles and an injectable session threshold (SPEC 13.2). */
+/** Debug builds only: the compressed-night test profiles and injectable session and night thresholds (SPEC 13.2). */
 internal object DebugHooks {
     /** SPEC 13.2 step 2, in milliseconds as lever A writes them. */
     private val COMPRESSED = linkedMapOf(
@@ -39,6 +40,7 @@ internal object DebugHooks {
 
     private const val PREFS = "debug"
     private const val MINIMUM_SECONDS = "minimum_session_seconds"
+    private const val NIGHT_SECONDS = "night_threshold_seconds"
 
     fun profiles(): List<Profile> = listOf(TEST_EVERYDAY, TEST_CLASSIC)
 
@@ -47,9 +49,19 @@ internal object DebugHooks {
         return if (seconds < 0) Verdicts.MINIMUM else Duration.ofSeconds(seconds)
     }
 
-    fun setMinimumSession(context: Context, seconds: Long?) {
+    fun setMinimumSession(context: Context, seconds: Long?) = set(context, MINIMUM_SECONDS, seconds)
+
+    /** SPEC 8.5's 4 hours, shortened by the compressed-night test. */
+    fun nightThreshold(context: Context): Duration {
+        val seconds = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getLong(NIGHT_SECONDS, -1)
+        return if (seconds < 0) NightReports.THRESHOLD else Duration.ofSeconds(seconds)
+    }
+
+    fun setNightThreshold(context: Context, seconds: Long?) = set(context, NIGHT_SECONDS, seconds)
+
+    private fun set(context: Context, key: String, seconds: Long?) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit {
-            if (seconds == null) remove(MINIMUM_SECONDS) else putLong(MINIMUM_SECONDS, seconds)
+            if (seconds == null) remove(key) else putLong(key, seconds)
         }
     }
 }
