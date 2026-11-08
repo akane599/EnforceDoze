@@ -416,7 +416,7 @@ The point of this section: the owner should never have to trust that Doze worked
 
 - No polling while the screen is off. The app's own wakeups during a session must be zero (the optional delay alarm is the only exception, and it is counted).
 - The session's evidence is gathered in one worker call at screen on: event-log lines since the session start, the `batterystats` history slice, `sensorservice`, `deviceidle` and `alarm` dumps (ADR 0019). Target: under 2 s on the S25 Ultra class; measure it and log it.
-- The event-log buffer can roll over on long nights. A JobScheduler job with no constraints copies new `device_idle*` lines during maintenance windows (jobs only run there, so it adds no wakeup). If data is still missing, the timeline shows a labelled gap and falls back to `batterystats` states; it never draws what it did not see.
+- The event-log buffer can roll over on long nights. At each deep maintenance window, on the `ACTION_DEVICE_IDLE_MODE_CHANGED` broadcast, the app copies new `device_idle*` lines; a job would not do, since the jobs of allowlisted apps run inside Doze (ADR 0020). If data is still missing, the timeline shows a labelled gap and falls back to `batterystats` states; it never draws what it did not see.
 - **Self-audit:** if EnforceDoze appears among the session's wakers, the report says so in red and it is a release blocker (section 15).
 
 ### 8.3 Storage
@@ -427,7 +427,7 @@ The point of this section: the owner should never have to trust that Doze worked
 
 ### 8.4 Proof per session
 
-Every session over 10 minutes gets a verdict, computed from the records, never from the profile settings:
+Every session over 10 minutes whose Doze record has no gap gets a verdict (ADR 0020), computed from the records, never from the profile settings:
 
 | Verdict | Rule |
 | --- | --- |

@@ -1,6 +1,6 @@
 # 0018. Evidence sources and how they are collected
 
-- Status: Accepted; amended by 0019 (alarm wakeups and wakelock holders)
+- Status: Accepted; amended by 0019 (alarm wakeups and wakelock holders) and 0020 (copy job, screen-off reads)
 - Date: 2026-11-08
 - Phase: P3
 - Spec: 8.1, 8.2, 8.3, 15 (the app's own wakeups)
@@ -80,16 +80,16 @@ counter.
 
 ### Collecting
 
-- **Screen off:**
+- **Screen off** (ADR 0019 adds the alarm dump; ADR 0020 the `deviceidle` dump and the history cursor):
   - battery;
   - a sensor snapshot (`dumpsys sensorservice` through the worker);
   - the open session, written to a small file so it survives the process being killed.
 - **Screen on:** one batch through the worker: the event log, the battery history from the cursor,
   `sensorservice` and `deviceidle`. Its duration is logged (target under 2 s, SPEC 8.2). The raw
   dumps are kept gzip-compressed for 7 days.
-- **Copy job:** a one-shot JobScheduler job with only a minimum latency of 15 minutes and no
-  deadline. It is scheduled at screen off, copies new `device_idle*` lines, schedules the next one
-  and is cancelled at screen on.
+- **Copy job** (replaced by ADR 0020: jobs of allowlisted apps run inside Doze): a one-shot
+  JobScheduler job with only a minimum latency of 15 minutes and no deadline. It is scheduled at
+  screen off, copies new `device_idle*` lines, schedules the next one and is cancelled at screen on.
   - The latency uses a non-wakeup alarm (`TimeController`, `ELAPSED_REALTIME`, line 378 on 17).
   - A deadline would add a wakeup alarm (line 393). So the job never has one, and it never wakes the
     phone.
