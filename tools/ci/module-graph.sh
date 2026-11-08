@@ -50,5 +50,9 @@ forbid :core:privilege debugRuntimeClasspath ':core:doze[a-z-]*' ':core:data'
 forbid :core:data debugRuntimeClasspath ':core:privilege[a-z-]*' ':core:doze-android' ':feature:[a-z-]+' :app
 require :core:data debugRuntimeClasspath :core:doze
 
+# Verdicts come from the records alone (SPEC 8.4): no engine, storage or privilege.
+forbid :core:evidence runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':feature:[a-z-]+' :app
+require :core:evidence runtimeClasspath :core:parse
+
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status
