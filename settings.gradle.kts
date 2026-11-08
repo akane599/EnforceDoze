@@ -33,6 +33,7 @@ rootProject.name = "EnforceDoze"
 
 include(":app")
 include(":core:parse")
+include(":core:profile")
 include(":core:hidden-api-stubs")
 include(":core:privilege-api")
 include(":core:privilege-worker")

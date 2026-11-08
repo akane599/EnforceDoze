@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Module boundaries of ADR 0009: nothing in the app process compiles against the worker or the
 # hidden-API stubs (they reach the APK as a run-time dependency of :core:privilege only), and
-# :core:parse stays a pure-JVM module with no project dependencies.
+# :core:parse stays a pure-JVM module with no project dependencies; ADR 0015 adds the engine modules.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
@@ -36,6 +36,9 @@ forbid :app debugCompileClasspath :core:privilege-worker :core:hidden-api-stubs
 forbid :core:privilege debugCompileClasspath :core:privilege-worker :core:hidden-api-stubs
 forbid :core:privilege-worker debugRuntimeClasspath :core:hidden-api-stubs
 forbid :core:parse runtimeClasspath ':core:[a-z-]+' ':feature:[a-z-]+' :app
+# ADR 0015: profiles are pure JVM and depend on nothing but the parsers.
+forbid :core:profile runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':feature:[a-z-]+' :app
+require :core:profile runtimeClasspath :core:parse
 
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status
