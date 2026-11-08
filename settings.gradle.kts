@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -46,3 +47,4 @@ include(":core:privilege-worker")
 include(":core:privilege")
 include(":testing:fixtures")
 include(":testing:silent-audio")
+include(":testing:screenshots")
