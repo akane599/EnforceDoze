@@ -27,7 +27,11 @@ internal class NightAlarm(
     private val alarms = context.getSystemService(AlarmManager::class.java)
     private var night: NightSlot? = null
     private var waiting = false
+
+    /** Cancelling a listener that is not set only makes AlarmManager log "Unrecognized alarm listener". */
+    private var set = false
     private val listener = AlarmManager.OnAlarmListener {
+        set = false
         onAlarm()
         request(night)
     }
@@ -35,11 +39,12 @@ internal class NightAlarm(
     /** Sets the alarm for [night]'s next start, or cancels it when there is no night slot. */
     fun request(night: NightSlot?) {
         this.night = night
-        alarms.cancel(listener)
+        unset()
         waiting = night != null && !interactive()
         if (night == null || waiting) return
         val start = night.nextStart(ZonedDateTime.now(ZoneId.systemDefault()))
         alarms.setWindow(AlarmManager.RTC, start.toInstant().toEpochMilli(), WINDOW_MILLIS, TAG, listener, handler)
+        set = true
     }
 
     /** The screen came on: a request that fell while it was off is set now. */
@@ -55,7 +60,12 @@ internal class NightAlarm(
     fun cancel() {
         night = null
         waiting = false
-        alarms.cancel(listener)
+        unset()
+    }
+
+    private fun unset() {
+        if (set) alarms.cancel(listener)
+        set = false
     }
 
     private companion object {
