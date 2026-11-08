@@ -147,8 +147,13 @@ public object Verdicts {
     /** The deep state over the session: what the timeline draws, and where the app's own runs count as wakeups (ADR 0018). */
     public fun timeline(input: SessionInput): List<DeepStretch> = segments(input, initialState(input))
 
+    /**
+     * The last change at or before screen off, in log order: `force-idle deep` steps the walk until IDLE in one
+     * call and logs each step in the same millisecond (DeviceIdleController.onShellCommand, android-17.0.0_r1
+     * lines 4849–4871), so the latest time alone does not pick the state.
+     */
     private fun initialState(input: SessionInput): DeepState =
-        input.changes.filter { !it.time.isAfter(input.start) }.maxByOrNull { it.time }?.state ?: DeepState.ACTIVE
+        input.changes.filter { !it.time.isAfter(input.start) }.sortedBy { it.time }.lastOrNull()?.state ?: DeepState.ACTIVE
 
     /** Changes after screen off and before screen on, in log order. */
     private fun inSession(input: SessionInput): List<DeepChange> =

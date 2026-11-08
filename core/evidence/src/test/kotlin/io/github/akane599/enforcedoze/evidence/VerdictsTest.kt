@@ -59,6 +59,19 @@ class VerdictsTest {
     }
 
     @Test
+    fun `idle forced just before screen off counts from the start`() {
+        // The API 37 emulator's Classic night: force-idle logs the whole walk in one millisecond, 415 ms before screen off.
+        val forced = Instant.ofEpochMilli(t0.toEpochMilli() - 415)
+        val walk = listOf(INACTIVE, IDLE_PENDING, SENSING, LOCATING, IDLE).map { DeepChange(forced, it, "s:shell") }
+        val changes = walk + listOf(change(60, IDLE_MAINTENANCE), change(90, IDLE), change(210, IDLE_MAINTENANCE), change(240, IDLE))
+        val input = compressed(changes).copy(expectedToDeep = Duration.ZERO)
+        val result = Verdicts.judge(input)
+        assertThat(result.timeToDeep).isEqualTo(Duration.ZERO)
+        assertThat(result.verdict).isEqualTo(Verdict.Held)
+        assertThat(Verdicts.timeline(input).first()).isEqualTo(DeepStretch(IDLE, Interval(t0, at(60))))
+    }
+
+    @Test
     fun `deep reached late is partly, with the delay past the allowance`() {
         val changes = listOf(change(0, INACTIVE, "no activity"), change(75 + 180, IDLE))
         val verdict = Verdicts.judge(compressed(changes, end = 1200)).verdict
