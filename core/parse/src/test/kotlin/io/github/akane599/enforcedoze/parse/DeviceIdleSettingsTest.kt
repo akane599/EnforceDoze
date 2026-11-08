@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package io.github.akane599.enforcedoze.privilege.api
+package io.github.akane599.enforcedoze.parse
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows

@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.privilege.probe
 
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
+import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.parse.DozeEventLog
 import io.github.akane599.enforcedoze.parse.SensorMode
 import io.github.akane599.enforcedoze.parse.SensorServiceDump
@@ -9,7 +10,6 @@ import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.DozeWorkerApi
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.ProcessCommandRunner
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 import kotlinx.coroutines.CancellationException

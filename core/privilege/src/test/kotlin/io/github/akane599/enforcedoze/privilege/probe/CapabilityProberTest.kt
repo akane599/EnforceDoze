@@ -2,13 +2,13 @@
 package io.github.akane599.enforcedoze.privilege.probe
 
 import com.google.common.truth.Truth.assertThat
+import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.FakeDozeWorker
 import io.github.akane599.enforcedoze.privilege.Tier
 import io.github.akane599.enforcedoze.privilege.WorkerSource
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.StreamResult
 import io.github.akane599.enforcedoze.testing.fixtures.Fixtures
 import kotlinx.coroutines.test.runTest

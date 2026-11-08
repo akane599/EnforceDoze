@@ -5,7 +5,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.provider.Settings
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
+import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 
 /**
  * Writes lever A, the global `device_idle_constants` string, from the app's own process (ADR 0012).

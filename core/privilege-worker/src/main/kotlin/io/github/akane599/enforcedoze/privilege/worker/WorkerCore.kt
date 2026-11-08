@@ -3,7 +3,6 @@ package io.github.akane599.enforcedoze.privilege.worker
 
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 
 /** Whether a package is installed; package names are checked before any command uses them (SPEC 4.3). */
@@ -82,7 +81,7 @@ internal class WorkerCore(
     fun getAllSensorsOff(): CommandOutcome = hidden(SENSOR_PRIVACY_GET) { sensorPrivacy.isEnabled().toString() }
 
     /** Small reads that return through binder. The app cannot read this hidden, non-@Readable setting itself (ADR 0012). */
-    fun getDeviceIdleSettings(): CommandOutcome = query(listOf("settings", "get", "global", DeviceIdleSettings.SETTING))
+    fun getDeviceIdleSettings(): CommandOutcome = query(listOf("settings", "get", "global", WorkerContract.CONSTANTS_SETTING))
 
     /** Needs READ_DEVICE_CONFIG, which shell holds and the app cannot get. */
     fun listDeviceIdleConfig(): CommandOutcome = query(listOf("device_config", "list", WorkerContract.DEVICE_IDLE_NAMESPACE))

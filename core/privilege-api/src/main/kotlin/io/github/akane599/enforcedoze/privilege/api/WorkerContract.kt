@@ -50,4 +50,7 @@ public object WorkerContract {
 
     /** The only `device_config` namespace the worker reads. */
     public const val DEVICE_IDLE_NAMESPACE: String = "device_idle"
+
+    /** The global setting lever A writes from the app (`DeviceIdleSettings.SETTING` in `:core:parse`, ADR 0012); the worker reads it. */
+    public const val CONSTANTS_SETTING: String = "device_idle_constants"
 }

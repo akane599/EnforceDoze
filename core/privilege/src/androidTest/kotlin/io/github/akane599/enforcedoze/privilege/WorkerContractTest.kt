@@ -12,11 +12,11 @@ import com.google.common.truth.Truth.assertWithMessage
 import io.github.akane599.enforcedoze.parse.Allowlist
 import io.github.akane599.enforcedoze.parse.AospDeviceIdle
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
+import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.parse.DozeEventLog
 import io.github.akane599.enforcedoze.parse.SensorMode
 import io.github.akane599.enforcedoze.parse.SensorServiceDump
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

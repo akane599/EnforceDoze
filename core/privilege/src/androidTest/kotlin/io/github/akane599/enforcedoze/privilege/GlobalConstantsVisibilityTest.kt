@@ -13,7 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
+import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.ProcessCommandRunner
 import org.junit.Assume.assumeTrue
 import org.junit.Test

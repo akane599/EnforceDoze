@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package io.github.akane599.enforcedoze.privilege.api
+package io.github.akane599.enforcedoze.parse
 
 /**
  * The `Settings.Global.device_idle_constants` string, lever A's write path (ADR 0012).
