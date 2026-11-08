@@ -203,6 +203,8 @@ class WorkerContractTest {
     fun largeReadsStreamThroughThePipe() = worker { w ->
         val history = w.readBatteryHistory(0)
         assertThat(history).contains("Battery History")
+        // A cursor read ends with the next cursor (ADR 0018).
+        assertThat(history.trimEnd().lines().last()).matches("""\s*NEXT: \d+""")
         assertThat(w.readEventLog(System.currentTimeMillis() - 60_000)).isNotNull()
     }
 

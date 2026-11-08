@@ -119,7 +119,8 @@ class WorkerCoreTest {
             "1794082053.012",
         ).inOrder()
         assertThat(core.readEventLogArgv(5)).contains("0.005")
-        assertThat(core.readBatteryHistoryArgv(0)).containsExactly("dumpsys", "batterystats", "--history").inOrder()
+        assertThat(core.readBatteryHistoryArgv(0)).containsExactly("dumpsys", "batterystats", "--history-start", "0").inOrder()
+        assertThat(core.readBatteryHistoryArgv(-5)).containsExactly("dumpsys", "batterystats", "--history-start", "0").inOrder()
         assertThat(core.readBatteryHistoryArgv(42)).containsExactly("dumpsys", "batterystats", "--history-start", "42").inOrder()
     }
 

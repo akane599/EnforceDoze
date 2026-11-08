@@ -67,7 +67,7 @@ interface IDozeWorker {
     /** logcat -b events -d -v epoch, from sinceMillis (wall clock) when it is above 0. */
     void readEventLog(long sinceMillis, in ParcelFileDescriptor pipe) = 32;
 
-    /** dumpsys batterystats --history, or --history-start historyStart when it is above 0. */
+    /** dumpsys batterystats --history-start historyStart (0 for the first read); ends with NEXT: (ADR 0018). */
     void readBatteryHistory(long historyStart, in ParcelFileDescriptor pipe) = 33;
 
     /** cmd deviceidle whitelist */

@@ -99,12 +99,14 @@ internal class WorkerCore(
         return base + listOf("-T", "%d.%03d".format(sinceMillis / MILLIS_PER_SECOND, sinceMillis % MILLIS_PER_SECOND))
     }
 
-    /** `--history-start <num>`: "show only history data starting at given time offset" (API 37 help). */
-    fun readBatteryHistoryArgv(historyStart: Long): List<String> = if (historyStart <= 0) {
-        listOf("dumpsys", "batterystats", "--history")
-    } else {
-        listOf("dumpsys", "batterystats", "--history-start", historyStart.toString())
-    }
+    /**
+     * `--history-start <cursor>` always, 0 for the first read: the output then ends with `NEXT:`, the
+     * cursor for the next read in the history's own clock (BatteryStats.dumpHistory, android-17.0.0_r1
+     * lines 7512 and 7584–7587; ADR 0018). BatteryStatsService also writes its stats to disk after such
+     * a read (`writeData`), once per screen-on collection.
+     */
+    fun readBatteryHistoryArgv(historyStart: Long): List<String> =
+        listOf("dumpsys", "batterystats", "--history-start", historyStart.coerceAtLeast(0).toString())
 
     private fun write(argv: List<String>): CommandOutcome = runner.run(argv, WorkerContract.WRITE_TIMEOUT_MILLIS)
 
