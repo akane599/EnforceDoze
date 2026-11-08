@@ -34,7 +34,20 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
 - **`:core:design` knows no domain.** It holds the theme, the strip, its axis, stacked strips and
   the shared parts. Strings that features share, such as duration and percentage formats, are its
   own resources. The graph check forbids it any other project.
-- **Units are set in 0.7 em quiet ink after the number**, with a thin space before a letter or
-  `%`. The figure stays the thing the eye lands on, which is the specimen raise of ADR 0028.
+- **Units are set in 0.7 em quiet ink after the number**, with a narrow no-break space (U+202F)
+  before a letter or `%`. The figure stays the thing the eye lands on, which is the specimen raise
+  of ADR 0028.
+- **A number never breaks from its unit.** Durations put a no-break space between number and unit
+  ("6 h 16 min"), and a word joiner follows each "/" in a rate ("%/h"). At font 2.0 a wrapped
+  "%0,40/" over "sa" read as two values.
+- **A figure that does not fit steps down to 60 % of its size** (`TextAutoSize.StepBased`) and sits
+  on the same line bottom as its neighbours. Clipping a unit hides it; wrapping breaks the row. The
+  figure row first balances its rows (8 figures on a narrow phone become 4 + 4, not 3 + 3 + 2).
+- **A shot is taken of the settled screen.** Roborazzi copies the window straight after `setContent`.
+  The scrollable tab row was caught mid-scroll at a different offset on each run, and sheet shots
+  came out blank now and then. `shoot` sets the animator scale to 0, so every Compose animation lands
+  on its end in the first frame, and moves Robolectric's simulated clock one second before the copy.
+  After that, five verify runs in a row matched. `shoot` also fails on a single-colour image, so a
+  blank golden cannot be recorded silently.
 - **Turkish puts `%` before the number** ("%62") and English after it ("62%"). These are the two
   languages' rules, kept as string resources rather than in code.

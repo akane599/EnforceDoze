@@ -23,17 +23,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.akane599.enforcedoze.design.AxisLabel
 import io.github.akane599.enforcedoze.design.ColumnHead
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.design.EdTopBar
@@ -50,8 +46,15 @@ import io.github.akane599.enforcedoze.design.StripAxis
 import io.github.akane599.enforcedoze.design.TimelineStrip
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.Verdict
+import io.github.akane599.enforcedoze.design.hourLabels
+import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.evidence.Cause
-import java.util.concurrent.TimeUnit
+import io.github.akane599.enforcedoze.ui.StateNoticeCard
+import io.github.akane599.enforcedoze.ui.VerdictWord
+import io.github.akane599.enforcedoze.ui.sentence
+import io.github.akane599.enforcedoze.ui.tone
+import io.github.akane599.enforcedoze.ui.word
+import io.github.akane599.enforcedoze.ui.R as UiR
 
 /** Home (SPEC 9.1): the plan board, last night, the two actions, then the warnings. */
 @Composable
@@ -84,18 +87,12 @@ public fun HomeScreen(state: HomeState, actions: HomeActions, modifier: Modifier
             }
             if (state.notices.isNotEmpty()) Spacer(Modifier.height(Space.xl))
             state.notices.forEach { notice ->
-                HomeNoticeCard(notice, formats, actions)
+                StateNoticeCard(notice, formats, onAction = { actions.notice(notice) }, onSeen = { actions.seen(notice) })
                 Spacer(Modifier.height(Space.m))
             }
             Spacer(Modifier.height(Space.xl))
         }
     }
-}
-
-@Composable
-private fun rememberFormats(): Formats {
-    val context = LocalContext.current
-    return remember(context) { Formats(context) }
 }
 
 /** The plan as a departure board: From, Profile, Until; the running slot marked "now" in the accent. */
@@ -200,23 +197,22 @@ private fun PauseRow(paused: Boolean, actions: HomeActions) {
 private fun LastNight(night: NightSummary, formats: Formats) {
     SectionHeader(
         stringResource(if (night.night) R.string.home_last_night else R.string.home_last_session),
-        detail = stringResource(R.string.home_span, formats.clock(night.start), formats.clock(night.end)),
+        detail = stringResource(UiR.string.ui_span, formats.clock(night.start), formats.clock(night.end)),
     )
-    val (word, tone) = verdictWord(night.verdict)
-    Verdict(word, reason(night, formats), tone, settle = night.fresh)
+    Verdict(night.verdict.word(), reason(night, formats), night.verdict.tone, settle = night.fresh)
     Spacer(Modifier.height(Space.l))
     val summary = stringResource(
         R.string.home_strip_summary,
         formats.clock(night.start),
         formats.clock(night.end),
         formats.duration(night.timeInDeep),
-        pluralStringResource(R.plurals.home_maintenance_count, night.maintenanceWindows, night.maintenanceWindows),
-        pluralStringResource(R.plurals.home_break_count, night.strip.breaks.size, night.strip.breaks.size),
+        pluralStringResource(UiR.plurals.ui_maintenance_count, night.maintenanceWindows, night.maintenanceWindows),
+        pluralStringResource(UiR.plurals.ui_break_count, night.strip.breaks.size, night.strip.breaks.size),
     )
     TimelineStrip(night.strip, summary, Modifier.fillMaxWidth().height(Sizes.stripSmall + 8.dp))
-    StripAxis(axisLabels(night.start, night.end, formats), night.start, night.end)
+    StripAxis(hourLabels(night.start, night.end, formats), night.start, night.end)
     Spacer(Modifier.height(Space.l))
-    val unknown = stringResource(R.string.home_fig_unknown)
+    val unknown = stringResource(UiR.string.ui_unknown)
     FigureRow(
         listOf(
             night.timeToDeep?.let { Figure(formats.duration(it), stringResource(R.string.home_fig_to_deep)) }
@@ -228,24 +224,6 @@ private fun LastNight(night: NightSummary, formats: Formats) {
             Figure(night.ownWakeups?.toString() ?: unknown, stringResource(R.string.home_fig_own)),
         ),
     )
-}
-
-private const val LABEL_STEP_HOURS = 2
-
-/** The strip's own start and end times, with whole hours between them where they fit. */
-internal fun axisLabels(start: Long, end: Long, formats: Formats): List<AxisLabel> {
-    val hour = TimeUnit.HOURS.toMillis(1)
-    val hours = generateSequence((start / hour + 1) * hour) { it + LABEL_STEP_HOURS * hour }.takeWhile { it < end }
-    return listOf(AxisLabel(start, formats.clock(start))) + hours.map { AxisLabel(it, formats.hour(it)) } +
-        AxisLabel(end, formats.clock(end))
-}
-
-@Composable
-private fun verdictWord(verdict: VerdictWord): Pair<String, Tone> = when (verdict) {
-    VerdictWord.HELD -> stringResource(R.string.home_verdict_held) to Tone.GOOD
-    VerdictWord.PARTLY -> stringResource(R.string.home_verdict_partly) to Tone.WARNING
-    VerdictWord.DID_NOT_DOZE -> stringResource(R.string.home_verdict_did_not_doze) to Tone.CRITICAL
-    VerdictWord.NOT_JUDGED -> stringResource(R.string.home_verdict_not_judged) to Tone.NEUTRAL
 }
 
 @Composable
@@ -260,81 +238,14 @@ private fun reason(night: NightSummary, formats: Formats): String {
             pluralStringResource(R.plurals.home_reason_partly, night.breaks, night.breaks, deep)
         }
 
-        VerdictWord.DID_NOT_DOZE -> stringResource(causeText(night.cause ?: Cause.UNKNOWN))
+        VerdictWord.DID_NOT_DOZE -> stringResource((night.cause ?: Cause.UNKNOWN).sentence())
 
-        VerdictWord.NOT_JUDGED -> stringResource(R.string.home_not_judged)
+        VerdictWord.NOT_JUDGED -> stringResource(UiR.string.ui_not_judged)
     }
-}
-
-private fun causeText(cause: Cause): Int = when (cause) {
-    Cause.CHARGING -> R.string.home_cause_charging
-    Cause.HOLD_OFF -> R.string.home_cause_hold_off
-    Cause.MOTION -> R.string.home_cause_motion
-    Cause.CONSTANTS_NOT_APPLIED -> R.string.home_cause_constants
-    Cause.ANOTHER_MANAGER -> R.string.home_cause_another
-    Cause.UNKNOWN -> R.string.home_cause_unknown
 }
 
 @Composable
 private fun EmptyNight() {
     SectionHeader(stringResource(R.string.home_last_night))
     Notice(stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body), tone = Tone.NEUTRAL)
-}
-
-@Composable
-private fun HomeNoticeCard(notice: HomeNotice, formats: Formats, actions: HomeActions) {
-    val subject = notice.subject.orEmpty()
-    val (title, body, tone) = when (notice.kind) {
-        NoticeKind.READ_ONLY -> Triple(
-            stringResource(R.string.home_notice_read_only),
-            stringResource(R.string.home_notice_read_only_body),
-            Tone.WARNING,
-        )
-
-        NoticeKind.PRIVILEGE_LOST -> Triple(
-            stringResource(R.string.home_notice_lost),
-            stringResource(R.string.home_notice_lost_body, subject),
-            Tone.CRITICAL,
-        )
-
-        NoticeKind.PARTLY_APPLIED -> Triple(
-            stringResource(R.string.home_notice_partly),
-            stringResource(R.string.home_notice_partly_body, subject),
-            Tone.WARNING,
-        )
-
-        NoticeKind.ANOTHER_MANAGER -> Triple(
-            stringResource(
-                R.string.home_notice_another,
-                notice.subject ?: stringResource(R.string.home_notice_another_unknown),
-                notice.time?.let(formats::clock).orEmpty(),
-            ),
-            stringResource(R.string.home_notice_another_body),
-            Tone.WARNING,
-        )
-
-        NoticeKind.HOLD_OFF_ALL_NIGHT -> Triple(
-            stringResource(R.string.home_notice_hold_off, subject),
-            stringResource(R.string.home_notice_hold_off_body),
-            Tone.WARNING,
-        )
-
-        NoticeKind.ERROR -> Triple(stringResource(R.string.home_notice_error, subject), notice.raw.orEmpty(), Tone.CRITICAL)
-    }
-    val action = when (notice.kind) {
-        NoticeKind.READ_ONLY -> stringResource(R.string.home_notice_read_only_action)
-        NoticeKind.PRIVILEGE_LOST -> stringResource(R.string.home_notice_lost_action)
-        else -> stringResource(R.string.home_notice_details)
-    }
-    // A warning shown on Home counts as seen once the owner leaves the screen.
-    DisposableEffect(notice.id) { onDispose { actions.seen(notice) } }
-    Notice(
-        title,
-        body,
-        tone = tone,
-        seen = notice.seen,
-        action = action,
-        onAction = { actions.notice(notice) },
-        raw = notice.kind == NoticeKind.ERROR,
-    )
 }

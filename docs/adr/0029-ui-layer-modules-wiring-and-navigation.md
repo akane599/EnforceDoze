@@ -26,8 +26,12 @@ options were put neutrally: features own their sources; a shared repository modu
 - Features carry no DI annotations and no navigation types. Navigation leaves a screen as callbacks.
 - `:app` implements each source over three shared app services (engine access, sessions, privilege)
   and creates the ViewModels.
-- A feature compiles against `:core:design` and the pure-JVM core modules (`profile`, `doze`,
-  `evidence`, `recommend`, `parse`). Nothing else.
+- A feature compiles against `:core:design`, `:core:ui` and the pure-JVM core modules (`profile`,
+  `doze`, `evidence`, `recommend`, `parse`). Nothing else.
+- `:core:ui` holds the wording that more than one screen shows: verdict words and their tones, cause
+  sentences, lever names and the state notices of SPEC 9.3. It is the main risk's mitigation in
+  code: two screens cannot word a verdict or a lost privilege differently. It sees `:core:design`
+  and the pure-JVM modules, under the same graph rule as a feature.
 
 **Display models instead of Android-module types.**
 - `SessionRow`, `NightReport`, `CapabilityReport` and the tier types live in Android modules. A
@@ -57,8 +61,9 @@ ViewModels are created with `viewModel { … }` factories.
 Compose and Roborazzi setup, and the screenshot test runner. Nine feature build files stay at a few
 lines each.
 
-**The module graph check gains the feature rules.** A feature may not reach `:core:data`,
-`:core:privilege*`, `:core:doze-android`, another feature or `:app`, and it must use `:core:design`.
+**The module graph check gains the feature rules.** A feature and `:core:ui` may not reach
+`:core:data`, `:core:privilege*`, `:core:doze-android`, a feature or `:app`, and must use
+`:core:design`. `:core:design` may reach no other project.
 
 ### Both views
 

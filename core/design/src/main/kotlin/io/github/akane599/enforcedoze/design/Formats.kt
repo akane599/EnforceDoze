@@ -3,6 +3,9 @@ package io.github.akane599.enforcedoze.design
 
 import android.content.Context
 import android.text.format.DateFormat
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -68,4 +71,11 @@ public class Formats(private val context: Context, private val zone: ZoneId = Zo
         const val MINUTES_PER_HOUR = 60
         const val PERCENT = 100
     }
+}
+
+/** The screen's [Formats], rebuilt when the context (and so the language or clock format) changes. */
+@Composable
+public fun rememberFormats(): Formats {
+    val context = LocalContext.current
+    return remember(context) { Formats(context) }
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="ui_span">%1$s – %2$s</string>
+    <string name="ui_verdict_held">Held</string>
+    <string name="ui_verdict_partly">Partly</string>
+    <string name="ui_verdict_did_not_doze">Did not doze</string>
+    <string name="ui_verdict_not_judged">Not judged</string>
+    <string name="ui_cause_charging">The phone was charging</string>
+    <string name="ui_cause_hold_off">A hold-off kept Doze off</string>
+    <string name="ui_cause_motion">Motion kept waking the phone</string>
+    <string name="ui_cause_constants">The profile\'s settings were not applied</string>
+    <string name="ui_cause_another">Another Doze manager interfered</string>
+    <string name="ui_cause_unknown">No cause found in the logs</string>
+    <string name="ui_not_judged">Too short or a gap in the record</string>
+    <string name="ui_unknown">–</string>
+    <plurals name="ui_maintenance_count">
+        <item quantity="one">%d maintenance window</item>
+        <item quantity="other">%d maintenance windows</item>
+    </plurals>
+    <plurals name="ui_break_count">
+        <item quantity="one">%d break</item>
+        <item quantity="other">%d breaks</item>
+    </plurals>
+    <string name="ui_notice_read_only">Read-only</string>
+    <string name="ui_notice_read_only_body">No Shizuku, Sui or root access, so EnforceDoze shows evidence but cannot change Doze.</string>
+    <string name="ui_notice_read_only_action">Grant access</string>
+    <string name="ui_notice_lost">Access lost</string>
+    <string name="ui_notice_lost_body">These can no longer be written: %1$s. Everything else stays applied.</string>
+    <string name="ui_notice_lost_action">Reconnect</string>
+    <string name="ui_notice_partly">Partly applied</string>
+    <string name="ui_notice_partly_body">%1$s did not take. The other settings are in place.</string>
+    <string name="ui_notice_another">%1$s wrote Doze settings at %2$s</string>
+    <string name="ui_notice_another_unknown">Another app</string>
+    <string name="ui_notice_another_body">EnforceDoze put its own back. Two Doze managers fight each other; turn one off.</string>
+    <string name="ui_notice_hold_off">%1$s kept Doze off all night</string>
+    <string name="ui_notice_hold_off_body">A hold-off ran from screen off to screen on. Change it in Settings, Hold-offs.</string>
+    <string name="ui_notice_error">%1$s</string>
+    <string name="ui_notice_details">Details</string>
+    <string name="ui_lever_constants">Doze timing</string>
+    <string name="ui_lever_force_idle">Forced deep idle</string>
+    <string name="ui_lever_sensors">Sensor restriction</string>
+    <string name="ui_lever_sensor_privacy">All sensors off</string>
+    <string name="ui_lever_allowlist">Allowlist</string>
+</resources>

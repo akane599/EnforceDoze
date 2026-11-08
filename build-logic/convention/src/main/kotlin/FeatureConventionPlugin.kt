@@ -12,8 +12,8 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 
 /**
- * A `:feature:x` module (ADR 0029): an Android library with Compose, its screens rendered by Roborazzi on
- * Robolectric's native graphics, depending on `:core:design` and on pure-JVM core modules only.
+ * A `:feature:x` module (ADR 0029), and `:core:ui`: an Android library with Compose, its screens rendered by
+ * Roborazzi on Robolectric's native graphics, depending on `:core:design` and on pure-JVM core modules only.
  */
 class FeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
@@ -22,7 +22,8 @@ class FeatureConventionPlugin : Plugin<Project> {
         pluginManager.apply("io.github.takahirom.roborazzi")
         val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
         extensions.configure<LibraryExtension> {
-            namespace = "io.github.akane599.enforcedoze.feature." + path.removePrefix(":feature:").replace('-', '.')
+            // :feature:home becomes ...feature.home; a module outside :feature: may set its own.
+            namespace = "io.github.akane599.enforcedoze." + path.removePrefix(":").replace(':', '.').replace('-', '.')
             compileSdk = 37
             defaultConfig { minSdk = 34 }
             compileOptions {

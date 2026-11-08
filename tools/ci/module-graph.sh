@@ -57,10 +57,11 @@ require :core:evidence runtimeClasspath :core:parse
 forbid :core:recommend runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':core:evidence' ':feature:[a-z-]+' :app
 require :core:recommend runtimeClasspath :core:profile
 
-# ADR 0029: the design system knows no domain; a feature sees the design system and pure-JVM core modules
-# only, never storage, privilege, the engine's Android side, another feature or the app.
+# ADR 0029: the design system knows no domain; a feature and the shared wording in :core:ui see the
+# design system and pure-JVM core modules only, never storage, privilege, the engine's Android side,
+# a feature or the app.
 forbid :core:design debugRuntimeClasspath ':core:[a-z-]+' ':feature:[a-z-]+' :app
-for feature in $(grep -oE '":feature:[a-z-]+"' settings.gradle.kts | tr -d '"'); do
+for feature in :core:ui $(grep -oE '":feature:[a-z-]+"' settings.gradle.kts | tr -d '"'); do
   forbid "$feature" debugRuntimeClasspath ':core:data' ':core:privilege[a-z-]*' ':core:doze-android' ':core:hidden-api-stubs' ':feature:[a-z-]+' :app
   require "$feature" debugRuntimeClasspath :core:design
 done

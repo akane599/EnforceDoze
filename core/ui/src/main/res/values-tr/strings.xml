@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="ui_span">%1$s – %2$s</string>
+    <string name="ui_verdict_held">Tuttu</string>
+    <string name="ui_verdict_partly">Kısmen</string>
+    <string name="ui_verdict_did_not_doze">Uyumadı</string>
+    <string name="ui_verdict_not_judged">Değerlendirilmedi</string>
+    <string name="ui_cause_charging">Telefon şarjdaydı</string>
+    <string name="ui_cause_hold_off">Bir erteleme Doze\'u kapalı tuttu</string>
+    <string name="ui_cause_motion">Hareket telefonu uyandırıp durdu</string>
+    <string name="ui_cause_constants">Profilin ayarları uygulanmadı</string>
+    <string name="ui_cause_another">Başka bir Doze yöneticisi karıştı</string>
+    <string name="ui_cause_unknown">Kayıtlarda bir neden bulunamadı</string>
+    <string name="ui_not_judged">Çok kısa ya da kayıtta boşluk var</string>
+    <string name="ui_unknown">–</string>
+    <plurals name="ui_maintenance_count">
+        <item quantity="one">%d bakım penceresi</item>
+        <item quantity="other">%d bakım penceresi</item>
+    </plurals>
+    <plurals name="ui_break_count">
+        <item quantity="one">%d bölünme</item>
+        <item quantity="other">%d bölünme</item>
+    </plurals>
+    <string name="ui_notice_read_only">Salt okunur</string>
+    <string name="ui_notice_read_only_body">Shizuku, Sui ya da root erişimi yok; EnforceDoze kanıtları gösterir ama Doze\'u değiştiremez.</string>
+    <string name="ui_notice_read_only_action">Erişim ver</string>
+    <string name="ui_notice_lost">Erişim kesildi</string>
+    <string name="ui_notice_lost_body">Bunlar artık yazılamıyor: %1$s. Geri kalan her şey uygulanmış durumda.</string>
+    <string name="ui_notice_lost_action">Yeniden bağlan</string>
+    <string name="ui_notice_partly">Kısmen uygulandı</string>
+    <string name="ui_notice_partly_body">%1$s tutmadı. Diğer ayarlar yerinde.</string>
+    <string name="ui_notice_another">%1$s, %2$s saatinde Doze ayarlarını yazdı</string>
+    <string name="ui_notice_another_unknown">Başka bir uygulama</string>
+    <string name="ui_notice_another_body">EnforceDoze kendi ayarlarını geri koydu. İki Doze yöneticisi birbiriyle çekişir; birini kapatın.</string>
+    <string name="ui_notice_hold_off">%1$s, Doze\'u bütün gece kapalı tuttu</string>
+    <string name="ui_notice_hold_off_body">Bir erteleme ekran kapanınca başladı, ekran açılana dek sürdü. Ayarlar, Ertelemeler bölümünden değiştirin.</string>
+    <string name="ui_notice_error">%1$s</string>
+    <string name="ui_notice_details">Ayrıntılar</string>
+    <string name="ui_lever_constants">Doze zamanlaması</string>
+    <string name="ui_lever_force_idle">Zorunlu derin uyku</string>
+    <string name="ui_lever_sensors">Sensör kısıtlaması</string>
+    <string name="ui_lever_sensor_privacy">Tüm sensörler kapalı</string>
+    <string name="ui_lever_allowlist">İzin listesi</string>
+</resources>

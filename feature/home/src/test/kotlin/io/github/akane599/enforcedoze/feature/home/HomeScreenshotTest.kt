@@ -9,6 +9,9 @@ import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.testing.screenshots.Primary
 import io.github.akane599.enforcedoze.testing.screenshots.ownerClock
 import io.github.akane599.enforcedoze.testing.screenshots.shoot
+import io.github.akane599.enforcedoze.ui.NoticeKind
+import io.github.akane599.enforcedoze.ui.StateNotice
+import io.github.akane599.enforcedoze.ui.VerdictWord
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,8 +57,8 @@ private object NoActions : HomeActions {
     override fun resume() = Unit
     override fun openReport(sessionId: Long) = Unit
     override fun quickProof() = Unit
-    override fun notice(notice: HomeNotice) = Unit
-    override fun seen(notice: HomeNotice) = Unit
+    override fun notice(notice: StateNotice) = Unit
+    override fun seen(notice: StateNotice) = Unit
 }
 
 /** The night of 7 to 8 November 2026 in Istanbul, the same night the direction study drew (ADR 0028). */
@@ -107,7 +110,7 @@ internal object HomeFixtures {
     val held = HomeState(
         plan = board,
         night = night,
-        notices = listOf(HomeNotice("tasker", NoticeKind.ANOTHER_MANAGER, subject = "Tasker", time = at(7, 22, 14))),
+        notices = listOf(StateNotice("tasker", NoticeKind.ANOTHER_MANAGER, subject = "Tasker", time = at(7, 22, 14))),
     )
 
     val firstRun = HomeState(plan = board)
@@ -123,7 +126,7 @@ internal object HomeFixtures {
             ownWakeups = null,
             strip = strip.copy(segments = listOf(StripSegment(DozeFill.ACTIVE, off, on)), maintenance = emptyList(), breaks = emptyList()),
         ),
-        notices = listOf(HomeNotice("ro", NoticeKind.READ_ONLY)),
+        notices = listOf(StateNotice("ro", NoticeKind.READ_ONLY)),
     )
 
     val trouble = HomeState(
@@ -141,10 +144,10 @@ internal object HomeFixtures {
             ),
         ),
         notices = listOf(
-            HomeNotice("lost", NoticeKind.PRIVILEGE_LOST, subject = "sensor restriction, forced idle"),
-            HomeNotice("partly", NoticeKind.PARTLY_APPLIED, subject = "light_idle_to"),
-            HomeNotice("tasker", NoticeKind.ANOTHER_MANAGER, subject = "Tasker", time = at(7, 22, 14), seen = true),
-            HomeNotice(
+            StateNotice("lost", NoticeKind.PRIVILEGE_LOST, subject = "sensor restriction, forced idle"),
+            StateNotice("partly", NoticeKind.PARTLY_APPLIED, subject = "light_idle_to"),
+            StateNotice("tasker", NoticeKind.ANOTHER_MANAGER, subject = "Tasker", time = at(7, 22, 14), seen = true),
+            StateNotice(
                 "err",
                 NoticeKind.ERROR,
                 subject = "Could not read the alarm dump",

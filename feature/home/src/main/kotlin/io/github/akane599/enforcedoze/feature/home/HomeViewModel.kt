@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.akane599.enforcedoze.ui.StateNotice
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +38,7 @@ public class HomeViewModel(private val source: HomeSource) : ViewModel() {
         viewModelScope.launch { source.quickProof() }
     }
 
-    public fun seen(notice: HomeNotice) {
+    public fun seen(notice: StateNotice) {
         source.seen(notice.id)
     }
 

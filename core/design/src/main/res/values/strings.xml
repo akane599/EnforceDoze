@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
-    <string name="ed_duration_hm">%1$d h %2$d min</string>
-    <string name="ed_duration_h">%1$d h</string>
-    <string name="ed_duration_m">%1$d min</string>
-    <string name="ed_duration_s">%1$d s</string>
+    <string name="ed_duration_hm">%1$d\u00A0h %2$d\u00A0min</string>
+    <string name="ed_duration_h">%1$d\u00A0h</string>
+    <string name="ed_duration_m">%1$d\u00A0min</string>
+    <string name="ed_duration_s">%1$d\u00A0s</string>
     <string name="ed_unit_min">min</string>
     <string name="ed_unit_mah">mAh</string>
     <!-- Units around a number: Turkish writes the percent sign first. -->
@@ -12,4 +12,5 @@
     <string name="ed_percent_after">%</string>
     <string name="ed_drain_before"></string>
     <string name="ed_drain_after">%/h</string>
+    <string name="ed_back">Back</string>
 </resources>

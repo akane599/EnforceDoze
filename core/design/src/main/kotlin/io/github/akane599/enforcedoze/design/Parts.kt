@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -46,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -144,11 +147,20 @@ public data class Figure(val value: String, val label: String, val before: Strin
         before?.let { append(it) }
         append(value)
         after?.let {
-            if (it.first().isLetter() || it.startsWith("%")) append('\u2009')
-            append(it)
+            if (it.first().isLetter() || it.startsWith("%")) append(NARROW_NBSP)
+            append(it.unbroken())
         }
     }
 }
+
+/** The smallest a figure steps down to before it would clip. */
+private const val MIN_FIGURE_SCALE = 0.6f
+
+/** A narrow no-break space: "0.40 %/h" keeps its unit on the number's line. */
+private const val NARROW_NBSP = '\u202F'
+
+/** A unit never breaks after its slash ("%/h", "/sa"): a word joiner follows each one. */
+private fun String.unbroken(): String = replace("/", "/\u2060")
 
 /** The figure's text with its units set at 70 % in quiet ink (SPEC 10.1). */
 @Composable
@@ -160,8 +172,8 @@ public fun Figure.text(): AnnotatedString {
         append(value)
         after?.let { unit ->
             withStyle(unitStyle) {
-                if (unit.first().isLetter() || unit.startsWith("%")) append('\u2009')
-                append(unit)
+                if (unit.first().isLetter() || unit.startsWith("%")) append(NARROW_NBSP)
+                append(unit.unbroken())
             }
         }
     }
@@ -169,14 +181,17 @@ public fun Figure.text(): AnnotatedString {
 
 /**
  * Key numbers as one ruled timetable row (not tiles): rules above and below, hairline column rules
- * between. When a column would fall under 80 dp (narrow screens, large fonts) the row breaks into two.
+ * between. Columns stay at least 80 dp wide (narrow screens, large fonts) by breaking into balanced rows.
  */
 @Composable
 public fun FigureRow(figures: List<Figure>, modifier: Modifier = Modifier) {
     val palette = Ed.palette
     BoxWithConstraints(modifier.fillMaxWidth()) {
         val scale = LocalDensity.current.fontScale
-        val perRow = if (maxWidth / figures.size < 80.dp * scale) (figures.size + 1) / 2 else figures.size
+        // As many columns of at least 80 dp as fit, then balanced over the rows that takes.
+        val fit = (maxWidth / (80.dp * scale)).toInt().coerceIn(1, figures.size.coerceAtLeast(1))
+        val rows = (figures.size + fit - 1) / fit
+        val perRow = ((figures.size + rows - 1) / rows.coerceAtLeast(1)).coerceAtLeast(1)
         Column(Modifier.fillMaxWidth()) {
             Rule()
             figures.chunked(perRow).forEachIndexed { r, chunk ->
@@ -188,7 +203,22 @@ public fun FigureRow(figures: List<Figure>, modifier: Modifier = Modifier) {
                             Modifier.weight(1f).semantics(mergeDescendants = true) {
                             }.padding(horizontal = Space.m, vertical = Space.m),
                         ) {
-                            Text(figure.text(), style = MaterialTheme.typography.titleLarge, color = palette.ink, maxLines = 1)
+                            // A long figure ("%0,40/sa" at font 2.0) steps down in size rather than clip its unit,
+                            // and sits on the same line bottom as its neighbours.
+                            val style = MaterialTheme.typography.titleLarge
+                            val line = with(LocalDensity.current) { style.lineHeight.toDp() }
+                            Box(Modifier.height(line), contentAlignment = Alignment.BottomStart) {
+                                BasicText(
+                                    figure.text(),
+                                    style = style,
+                                    color = { palette.ink },
+                                    maxLines = 1,
+                                    autoSize = TextAutoSize.StepBased(
+                                        minFontSize = style.fontSize * MIN_FIGURE_SCALE,
+                                        maxFontSize = style.fontSize,
+                                    ),
+                                )
+                            }
                             Text(figure.label, style = MaterialTheme.typography.labelMedium, color = palette.quiet, maxLines = 2)
                         }
                     }
@@ -264,7 +294,7 @@ public fun EdTopBar(
     title: String,
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
-    backLabel: String = "",
+    backLabel: String = stringResource(R.string.ed_back),
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     Box(modifier.fillMaxWidth().background(Ed.palette.ground).statusBarsPadding(), contentAlignment = Alignment.TopCenter) {

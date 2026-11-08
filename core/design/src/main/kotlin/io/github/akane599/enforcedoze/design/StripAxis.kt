@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import java.util.concurrent.TimeUnit
 
 @Immutable
 public data class AxisLabel(val at: Long, val text: String)
@@ -61,6 +62,14 @@ public fun StripAxis(labels: List<AxisLabel>, axisStart: Long, axisEnd: Long, mo
         val height = placeables.maxOfOrNull { it.height } ?: 0
         layout(width, height) { shown.forEach { placeables[it].place(lefts[it], 0) } }
     }
+}
+
+/** The strip's own start and end times, with every [stepHours]th whole hour between them. */
+public fun hourLabels(start: Long, end: Long, formats: Formats, stepHours: Int = 2): List<AxisLabel> {
+    val hour = TimeUnit.HOURS.toMillis(1)
+    val hours = generateSequence((start / hour + 1) * hour) { it + stepHours * hour }.takeWhile { it < end }
+    return listOf(AxisLabel(start, formats.clock(start))) + hours.map { AxisLabel(it, formats.hour(it)) } +
+        AxisLabel(end, formats.clock(end))
 }
 
 @Immutable

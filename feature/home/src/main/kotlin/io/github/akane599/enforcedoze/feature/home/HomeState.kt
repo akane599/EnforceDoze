@@ -4,6 +4,8 @@ package io.github.akane599.enforcedoze.feature.home
 import androidx.compose.runtime.Immutable
 import io.github.akane599.enforcedoze.design.StripModel
 import io.github.akane599.enforcedoze.evidence.Cause
+import io.github.akane599.enforcedoze.ui.StateNotice
+import io.github.akane599.enforcedoze.ui.VerdictWord
 
 /** Everything Home shows, mapped by the app from the engine, the evidence log and the privilege layer. */
 @Immutable
@@ -11,7 +13,7 @@ public data class HomeState(
     val plan: PlanBoard,
     /** Null until the first session is recorded (SPEC 9.3 "no data yet"). */
     val night: NightSummary? = null,
-    val notices: List<HomeNotice> = emptyList(),
+    val notices: List<StateNotice> = emptyList(),
     val proofRunning: Boolean = false,
 )
 
@@ -36,8 +38,6 @@ public sealed interface Until {
     public data object Always : Until
 }
 
-public enum class VerdictWord { HELD, PARTLY, DID_NOT_DOZE, NOT_JUDGED }
-
 /** The last session with its verdict and its four key numbers (SPEC 9.1, 8.4). Unknown numbers are null, never 0. */
 @Immutable
 public data class NightSummary(
@@ -61,22 +61,6 @@ public data class NightSummary(
     val fresh: Boolean = false,
 )
 
-public enum class NoticeKind { READ_ONLY, PRIVILEGE_LOST, PARTLY_APPLIED, ANOTHER_MANAGER, HOLD_OFF_ALL_NIGHT, ERROR }
-
-/**
- * One warning (SPEC 9.3). [subject] is the levers or keys concerned, the other app's name, the hold-off's
- * name, or the error's summary; [raw] is the line that caused an error, shown as it was read.
- */
-@Immutable
-public data class HomeNotice(
-    val id: String,
-    val kind: NoticeKind,
-    val subject: String? = null,
-    val time: Long? = null,
-    val raw: String? = null,
-    val seen: Boolean = false,
-)
-
 /** What the owner can do from Home. */
 public interface HomeActions {
     public fun changePlan()
@@ -89,7 +73,7 @@ public interface HomeActions {
 
     public fun quickProof()
 
-    public fun notice(notice: HomeNotice)
+    public fun notice(notice: StateNotice)
 
-    public fun seen(notice: HomeNotice)
+    public fun seen(notice: StateNotice)
 }
