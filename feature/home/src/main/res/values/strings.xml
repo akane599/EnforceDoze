@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="home_title">EnforceDoze</string>
+
+    <string name="home_plan">Plan</string>
+    <string name="home_plan_change">Change</string>
+    <string name="home_plan_pause">Pause plan</string>
+    <string name="home_plan_resume">Resume plan</string>
+    <string name="home_col_from">From</string>
+    <string name="home_col_profile">Profile</string>
+    <string name="home_col_until">Until</string>
+    <string name="home_now">now</string>
+    <string name="home_until_unlock">unlock after %1$s</string>
+    <string name="home_until_resumed">you resume</string>
+    <string name="home_until_always">no switch</string>
+    <string name="home_paused_note">Paused: Doze runs on stock settings.</string>
+
+    <string name="home_last_night">Last night</string>
+    <string name="home_last_session">Last session</string>
+    <string name="home_span">%1$s – %2$s</string>
+    <string name="home_verdict_held">Held</string>
+    <string name="home_verdict_partly">Partly</string>
+    <string name="home_verdict_did_not_doze">Did not doze</string>
+    <string name="home_verdict_not_judged">Not judged</string>
+    <string name="home_reason_held">%1$s in deep idle</string>
+    <plurals name="home_reason_partly">
+        <item quantity="one">Broken once, %2$s in deep idle</item>
+        <item quantity="other">Broken %1$d times, %2$s in deep idle</item>
+    </plurals>
+    <string name="home_reason_late">Deep idle came %1$s late, %2$s in deep idle</string>
+    <string name="home_cause_charging">The phone was charging</string>
+    <string name="home_cause_hold_off">A hold-off kept Doze off</string>
+    <string name="home_cause_motion">Motion kept waking the phone</string>
+    <string name="home_cause_constants">The profile\'s settings were not applied</string>
+    <string name="home_cause_another">Another Doze manager interfered</string>
+    <string name="home_cause_unknown">No cause found in the logs</string>
+    <string name="home_not_judged">Too short or a gap in the record</string>
+
+    <string name="home_fig_to_deep">to deep idle</string>
+    <string name="home_fig_deep_share">in deep idle</string>
+    <string name="home_fig_drain">drain</string>
+    <string name="home_fig_own">own wakeups</string>
+    <string name="home_fig_unknown">–</string>
+    <string name="home_strip_summary">Screen off %1$s, screen on %2$s. %3$s in deep idle, %4$s, %5$s.</string>
+    <plurals name="home_maintenance_count">
+        <item quantity="one">%d maintenance window</item>
+        <item quantity="other">%d maintenance windows</item>
+    </plurals>
+    <plurals name="home_break_count">
+        <item quantity="one">%d break</item>
+        <item quantity="other">%d breaks</item>
+    </plurals>
+
+    <string name="home_open_report">Open report</string>
+    <string name="home_quick_proof">Quick proof</string>
+    <string name="home_proof_running">Proving…</string>
+
+    <string name="home_empty_title">No night recorded yet</string>
+    <string name="home_empty_body">The first report appears the morning after an unplugged night of 4 hours or more. Quick proof shows Doze working now, in two minutes.</string>
+
+    <string name="home_notice_read_only">Read-only</string>
+    <string name="home_notice_read_only_body">No Shizuku, Sui or root access, so EnforceDoze shows evidence but cannot change Doze.</string>
+    <string name="home_notice_read_only_action">Grant access</string>
+    <string name="home_notice_lost">Access lost</string>
+    <string name="home_notice_lost_body">These can no longer be written: %1$s. Everything else stays applied.</string>
+    <string name="home_notice_lost_action">Reconnect</string>
+    <string name="home_notice_partly">Partly applied</string>
+    <string name="home_notice_partly_body">%1$s did not take. The other settings are in place.</string>
+    <string name="home_notice_another">%1$s wrote Doze settings at %2$s</string>
+    <string name="home_notice_another_unknown">Another app</string>
+    <string name="home_notice_another_body">EnforceDoze put its own back. Two Doze managers fight each other; turn one off.</string>
+    <string name="home_notice_hold_off">%1$s kept Doze off all night</string>
+    <string name="home_notice_hold_off_body">A hold-off ran from screen off to screen on. Change it in Settings, Hold-offs.</string>
+    <string name="home_notice_error">%1$s</string>
+    <string name="home_notice_details">Details</string>
+</resources>

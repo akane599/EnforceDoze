@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="home_title">EnforceDoze</string>
+
+    <string name="home_plan">Plan</string>
+    <string name="home_plan_change">Değiştir</string>
+    <string name="home_plan_pause">Planı duraklat</string>
+    <string name="home_plan_resume">Planı sürdür</string>
+    <string name="home_col_from">Başlangıç</string>
+    <string name="home_col_profile">Profil</string>
+    <string name="home_col_until">Bitiş</string>
+    <string name="home_now">şimdi</string>
+    <string name="home_until_unlock">%1$s sonrası ilk kilit açma</string>
+    <string name="home_until_resumed">sürdürene dek</string>
+    <string name="home_until_always">geçiş yok</string>
+    <string name="home_paused_note">Duraklatıldı: Doze stok ayarlarla çalışıyor.</string>
+
+    <string name="home_last_night">Dün gece</string>
+    <string name="home_last_session">Son oturum</string>
+    <string name="home_span">%1$s – %2$s</string>
+    <string name="home_verdict_held">Tuttu</string>
+    <string name="home_verdict_partly">Kısmen</string>
+    <string name="home_verdict_did_not_doze">Uyumadı</string>
+    <string name="home_verdict_not_judged">Değerlendirilmedi</string>
+    <string name="home_reason_held">%1$s derin uykuda</string>
+    <plurals name="home_reason_partly">
+        <item quantity="one">Bir kez bölündü, %2$s derin uykuda</item>
+        <item quantity="other">%1$d kez bölündü, %2$s derin uykuda</item>
+    </plurals>
+    <string name="home_reason_late">Derin uyku %1$s geç geldi, %2$s derin uykuda</string>
+    <string name="home_cause_charging">Telefon şarjdaydı</string>
+    <string name="home_cause_hold_off">Bir erteleme Doze\'u kapalı tuttu</string>
+    <string name="home_cause_motion">Hareket telefonu uyandırıp durdu</string>
+    <string name="home_cause_constants">Profilin ayarları uygulanmadı</string>
+    <string name="home_cause_another">Başka bir Doze yöneticisi karıştı</string>
+    <string name="home_cause_unknown">Kayıtlarda bir neden bulunamadı</string>
+    <string name="home_not_judged">Çok kısa ya da kayıtta boşluk var</string>
+
+    <string name="home_fig_to_deep">derin uykuya</string>
+    <string name="home_fig_deep_share">derin uykuda</string>
+    <string name="home_fig_drain">tüketim</string>
+    <string name="home_fig_own">kendi uyandırması</string>
+    <string name="home_fig_unknown">–</string>
+    <string name="home_strip_summary">Ekran %1$s kapandı, %2$s açıldı. %3$s derin uykuda, %4$s, %5$s.</string>
+    <plurals name="home_maintenance_count">
+        <item quantity="one">%d bakım penceresi</item>
+        <item quantity="other">%d bakım penceresi</item>
+    </plurals>
+    <plurals name="home_break_count">
+        <item quantity="one">%d bölünme</item>
+        <item quantity="other">%d bölünme</item>
+    </plurals>
+
+    <string name="home_open_report">Raporu aç</string>
+    <string name="home_quick_proof">Hızlı kanıt</string>
+    <string name="home_proof_running">Kanıtlanıyor…</string>
+
+    <string name="home_empty_title">Henüz kayıtlı gece yok</string>
+    <string name="home_empty_body">İlk rapor, şarjsız 4 saat ya da daha uzun bir gecenin sabahında çıkar. Hızlı kanıt, Doze\'un şu an çalıştığını iki dakikada gösterir.</string>
+
+    <string name="home_notice_read_only">Salt okunur</string>
+    <string name="home_notice_read_only_body">Shizuku, Sui ya da root erişimi yok; EnforceDoze kanıtları gösterir ama Doze\'u değiştiremez.</string>
+    <string name="home_notice_read_only_action">Erişim ver</string>
+    <string name="home_notice_lost">Erişim kesildi</string>
+    <string name="home_notice_lost_body">Bunlar artık yazılamıyor: %1$s. Geri kalan her şey uygulanmış durumda.</string>
+    <string name="home_notice_lost_action">Yeniden bağlan</string>
+    <string name="home_notice_partly">Kısmen uygulandı</string>
+    <string name="home_notice_partly_body">%1$s tutmadı. Diğer ayarlar yerinde.</string>
+    <string name="home_notice_another">%1$s, %2$s saatinde Doze ayarlarını yazdı</string>
+    <string name="home_notice_another_unknown">Başka bir uygulama</string>
+    <string name="home_notice_another_body">EnforceDoze kendi ayarlarını geri koydu. İki Doze yöneticisi birbiriyle çekişir; birini kapatın.</string>
+    <string name="home_notice_hold_off">%1$s, Doze\'u bütün gece kapalı tuttu</string>
+    <string name="home_notice_hold_off_body">Bir erteleme ekran kapanınca başladı, ekran açılana dek sürdü. Ayarlar, Ertelemeler bölümünden değiştirin.</string>
+    <string name="home_notice_error">%1$s</string>
+    <string name="home_notice_details">Ayrıntılar</string>
+</resources>
