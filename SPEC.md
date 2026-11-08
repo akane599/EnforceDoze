@@ -162,7 +162,7 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 | Tier | Source | Unlocks |
 | --- | --- | --- |
 | T0 | Normal permissions | Screen and power broadcasts, light/deep idle state, usage events (with usage access), UI |
-| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS` (lever A: the app writes the global `device_idle_constants` string itself, ADR 0012), `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
+| T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS` (lever A: the app writes the global `device_idle_constants` string itself, ADR 0012; `DUMP` also reads that string and its last writer from `dumpsys settings`, ADR 0014), `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
 | T2 Worker | Shizuku or Sui UserService as shell (uid 2000) or root | `cmd deviceidle` / `dumpsys deviceidle` writes, reads of `settings get global device_idle_constants` and `device_config list device_idle` (shell may not write `device_config device_idle` on API 36–37, ADR 0012), \`dumpsys sensorservice restrict |
 | T3 Root | Shizuku as root, Sui, or libsu | Upstream root features: mobile data, Wi-Fi radio, biometrics in Doze, app suspension |
 
@@ -245,7 +245,7 @@ While any of these is true, forced idle and sensor restriction are lifted (const
 1. **Apply:** worker writes, then reads back `dumpsys deviceidle` (constants, state, force flag) and `dumpsys sensorservice` (mode).
 2. **Verify:** any mismatch marks the profile "partly applied" with the failing key, shown on the home screen.
 3. **Revert:** every write records the previous value; "Restore stock" deletes the global string (ADR 0012), `unforce`, `sensorservice enable`, sensor privacy off, allowlist as captured.
-4. **Drift:** at each screen off, read constants back (one fast dump). A changed value is logged as drift with who likely changed it (server flag sync, another app, a Tasker task) and re-applied only if "Re-apply on drift" is on (default on). Disabling server flag sync for all namespaces is never done automatically; it is an advanced, explained switch.
+4. **Drift:** at each screen off, read constants back (one fast dump). A changed value is logged as drift with the package that last wrote the string, read from `dumpsys settings` where `DUMP` is held (`com.android.shell` for ADB or Tasker through Shizuku; ADR 0014) and re-applied only if "Re-apply on drift" is on (default on). Disabling server flag sync for all namespaces is never done automatically; it is an advanced, explained switch.
 
 ### 5.7 Other Doze managers
 
@@ -564,7 +564,7 @@ Screenshot tests (Roborazzi or Paparazzi, chosen in an ADR) for every screen: li
 
 The owner currently runs a Tasker setup ("dozectl"): display off and on profiles run a shell script through Shizuku that applies tuned Doze constants (about 10 minutes to deep idle) and restricts sensors while the screen is off. EnforceDoze replaces it without a gap:
 
-1. **Detect.** On first run, read the current `device_idle` values (the global `settings get global device_idle_constants` string, which the owner's setup writes, plus `device_config list device_idle`; ADR 0012) and the sensor mode. Values that differ from stock are shown as "set by something else".
+1. **Detect.** On first run, read the current `device_idle` values (the global `settings get global device_idle_constants` string, which the owner's setup writes, plus `device_config list device_idle`; ADR 0012; at T1 the string and its writer come from `dumpsys settings`, ADR 0014) and the sensor mode. Values that differ from stock are shown as "set by something else".
 2. **Import.** Save them as a custom profile "Imported setup" (constants, plus sensors restricted if seen). Compare it to Everyday and Pocket in one table, so the owner sees the difference.
 3. **Guide.** The app cannot edit Tasker. It asks the owner to turn off the two display profiles, then verifies over the next screen off and on that no foreign writes appear (drift = 0) and shows "Switch-over complete".
 4. **Way back.** "Return to my Tasker setup" pauses the plan and replays `previous.json` (5.2), so the owner can switch back in one tap.
