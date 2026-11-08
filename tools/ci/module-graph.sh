@@ -39,6 +39,9 @@ forbid :core:parse runtimeClasspath ':core:[a-z-]+' ':feature:[a-z-]+' :app
 # ADR 0015: profiles are pure JVM and depend on nothing but the parsers.
 forbid :core:profile runtimeClasspath ':core:privilege[a-z-]*' ':core:doze[a-z-]*' ':core:data' ':feature:[a-z-]+' :app
 require :core:profile runtimeClasspath :core:parse
+# ADR 0015: the engine is pure JVM behind ports; only its Android adapters touch privilege or Android.
+forbid :core:doze runtimeClasspath ':core:privilege[a-z-]*' ':core:doze-android' ':core:data' ':core:hidden-api-stubs' ':feature:[a-z-]+' :app
+require :core:doze runtimeClasspath :core:profile
 
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status

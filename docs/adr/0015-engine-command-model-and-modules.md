@@ -154,5 +154,7 @@ Kept from my own view:
     the loop guard (2 corrections in 59 minutes, a third is not made, one after 61 minutes is),
     zero constants writes on screen off, the 5 s timeout leaving `Unknown`, a restart reading
     before writing, and no pending work after a screen-off batch.
+- In code, a tripped guard is a set of levers kept beside the mode (`Managed`, `Paused`,
+  `HandsOff`), not a fourth mode, so two guarded levers can coexist; the behaviour is as above.
 - Revisit if the loop guard misfires on the phone, or if the target function grows past what a
   table test can show at a glance.
