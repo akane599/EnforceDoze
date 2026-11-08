@@ -7,8 +7,12 @@ public enum class SensorLever { OFF, RESTRICTED, ALL_SENSORS_OFF }
 /** Lever D (SPEC 6.4 `allowlist`): the owner's allowlist as it is, or only the apps marked "keep". */
 public enum class AllowlistLever { INHERIT, TRIMMED }
 
-/** Lever B (SPEC 5.3): forced deep idle at screen off, after [delaySec] (0 = at once; non-zero needs an alarm). */
-public data class ForceIdleLever(val enabled: Boolean, val delaySec: Int = 0) {
+/**
+ * Lever B (SPEC 5.3): forced deep idle at screen off, after [delaySec] (0 = at once; non-zero needs an
+ * alarm). With [untilUnlock], forced idle and the sensor lever stay on when the screen comes on at the
+ * lock screen and are released at unlock (upstream's "wait for unlock", ADR 0017).
+ */
+public data class ForceIdleLever(val enabled: Boolean, val delaySec: Int = 0, val untilUnlock: Boolean = false) {
     init {
         require(delaySec >= 0) { "delaySec must not be negative" }
     }

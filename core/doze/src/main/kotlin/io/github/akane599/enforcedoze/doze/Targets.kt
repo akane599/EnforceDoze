@@ -11,6 +11,8 @@ public data class TargetInputs(
     val profile: Profile?,
     val mode: Mode,
     val screenOn: Boolean,
+    /** The keyguard is showing; only read with the screen on (ADR 0017). */
+    val locked: Boolean,
     val holdOffs: Set<HoldOff>,
     val guarded: Set<Lever>,
     /** The `device_idle` keys this phone has, from the last `dumpsys deviceidle`; null until read (SPEC 5.2). */
@@ -44,24 +46,34 @@ public data class TargetSet(
  * The target function (ADR 0015). Constants (A) and the allowlist (D) follow the profile only, so a
  * screen or hold-off change can never write them. Forced idle (B), sensor restriction (C) and sensor
  * privacy are on only in managed mode with the screen off and no hold-off; otherwise an "on" state the
- * engine set is released and anything else is left alone.
+ * engine set is released and anything else is left alone. With lever B's "until unlock", an "on" state
+ * the engine set is kept while the screen is on at the lock screen, never newly set (ADR 0017).
  */
 public object Targets {
     public fun compute(inputs: TargetInputs): TargetSet {
         val profile = inputs.profile?.takeIf { inputs.mode == Mode.MANAGED }
         val result = Builder(inputs)
         result.constants(profile)
-        val engaged = !inputs.screenOn && inputs.holdOffs.isEmpty()
         val levers = profile?.levers
         val forceIdle = levers?.forceIdle
+        val engaged = !inputs.screenOn && inputs.holdOffs.isEmpty()
+        val untilUnlock = forceIdle?.untilUnlock == true && inputs.screenOn && inputs.locked && inputs.holdOffs.isEmpty()
         if (forceIdle?.enabled == true && forceIdle.delaySec > 0) {
             result.waiting[Lever.FORCE_IDLE] = "a forced-idle delay needs an alarm, which this version does not set"
         }
-        result.timed(Lever.FORCE_IDLE, forceIdle?.enabled == true && forceIdle.delaySec == 0, engaged, Setting.FORCED, Setting.RELEASED)
+        result.timed(
+            Lever.FORCE_IDLE,
+            forceIdle?.enabled == true && forceIdle.delaySec == 0,
+            engaged,
+            untilUnlock,
+            Setting.FORCED,
+            Setting.RELEASED,
+        )
         result.timed(
             Lever.SENSORS,
             levers?.sensors == SensorLever.RESTRICTED,
             engaged,
+            untilUnlock,
             Setting.Sensors(SensorValue.Restricted(inputs.allowPackage)),
             Setting.SENSORS_NORMAL,
         )
@@ -69,6 +81,7 @@ public object Targets {
             Lever.SENSOR_PRIVACY,
             levers?.sensors == SensorLever.ALL_SENSORS_OFF,
             engaged,
+            untilUnlock,
             Setting.SensorPrivacy(true),
             Setting.PRIVACY_OFF,
         )
@@ -141,17 +154,19 @@ public object Targets {
             }
         }
 
-        fun timed(lever: Lever, usedByProfile: Boolean, engaged: Boolean, on: Setting, off: Setting) {
+        @Suppress("LongParameterList") // One call per timed lever; each argument is a separate rule input.
+        fun timed(lever: Lever, usedByProfile: Boolean, engaged: Boolean, keepOn: Boolean, on: Setting, off: Setting) {
             if (usedByProfile) used += lever
             val uses = usedByProfile && lever !in inputs.guarded
             val written = inputs.written[lever]
             val ours = written != null && written != off && written.lever == lever
+            val active = uses && (engaged || (keepOn && written == on))
             when {
-                uses && engaged -> wanted[lever] = on
+                active -> wanted[lever] = on
                 ours -> wanted[lever] = off
             }
             when {
-                !uses || engaged -> Unit
+                !uses || active -> Unit
                 inputs.screenOn -> armed += lever
                 else -> heldOff += lever
             }

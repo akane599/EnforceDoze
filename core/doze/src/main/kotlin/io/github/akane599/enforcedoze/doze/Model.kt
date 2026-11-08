@@ -131,6 +131,9 @@ public enum class Cause {
     PROFILE_SWITCH,
     SCREEN_OFF,
     SCREEN_ON,
+
+    /** The keyguard was dismissed after a screen on that "until unlock" kept forced idle through (ADR 0017). */
+    UNLOCK,
     HOLD_OFF,
     PRIVILEGE,
     DRIFT,

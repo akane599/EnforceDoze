@@ -9,6 +9,8 @@ public data class EngineStart(
     val screenOn: Boolean,
     val holdOffs: Set<HoldOff> = emptySet(),
     val writable: Writable = Writable.NOTHING,
+    /** The keyguard is showing (ADR 0017). */
+    val locked: Boolean = false,
 )
 
 /** Where one lever stands, judged from what was read back, never from what was asked for (SPEC 5.6). */

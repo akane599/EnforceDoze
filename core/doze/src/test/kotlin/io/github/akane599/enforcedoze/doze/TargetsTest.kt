@@ -19,6 +19,7 @@ class TargetsTest {
         profile: Profile? = BuiltInProfiles.EVERYDAY,
         mode: Mode = Mode.MANAGED,
         screenOn: Boolean = true,
+        locked: Boolean = false,
         holdOffs: Set<HoldOff> = emptySet(),
         guarded: Set<Lever> = emptySet(),
         knownKeys: Set<String>? = AospDeviceIdle.KEYS,
@@ -26,7 +27,7 @@ class TargetsTest {
         keep: Set<String>? = null,
         owner: Set<String>? = null,
         written: Map<Lever, Setting> = emptyMap(),
-    ) = TargetInputs(profile, mode, screenOn, holdOffs, guarded, knownKeys, snapshotsReady, self, keep, owner, written)
+    ) = TargetInputs(profile, mode, screenOn, locked, holdOffs, guarded, knownKeys, snapshotsReady, self, keep, owner, written)
 
     private fun everydayString() = Setting.Constants(ConstantsValue.Exact(DeviceIdleSettings.encode(BuiltInProfiles.EVERYDAY.deviceIdle)))
 
@@ -82,6 +83,32 @@ class TargetsTest {
         }
         assertThat(Targets.compute(inputs(BuiltInProfiles.EVERYDAY, screenOn = false, written = ours)).wanted - Lever.CONSTANTS)
             .isEqualTo(released)
+    }
+
+    @Test
+    fun `until unlock keeps what the engine set on at the lock screen and releases it at unlock`() {
+        val waiting = BuiltInProfiles.CLASSIC.let { it.copy(levers = it.levers.copy(forceIdle = ForceIdleLever(true, untilUnlock = true))) }
+        val ours = mapOf(Lever.FORCE_IDLE to Setting.FORCED, Lever.SENSORS to restricted)
+        val released = mapOf(Lever.FORCE_IDLE to Setting.RELEASED, Lever.SENSORS to Setting.SENSORS_NORMAL)
+
+        val atLockScreen = Targets.compute(inputs(waiting, locked = true, written = ours))
+        assertThat(atLockScreen.wanted).isEqualTo(ours)
+        assertThat(atLockScreen.armed).isEmpty()
+        assertThat(Targets.compute(inputs(waiting, locked = false, written = ours)).wanted).isEqualTo(released)
+        assertThat(Targets.compute(inputs(waiting, locked = true, holdOffs = setOf(HoldOff.CALL), written = ours)).wanted)
+            .isEqualTo(released)
+        assertThat(Targets.compute(inputs(waiting, mode = Mode.PAUSED, locked = true, written = ours)).wanted).isEqualTo(released)
+        assertThat(Targets.compute(inputs(BuiltInProfiles.CLASSIC, locked = true, written = ours)).wanted).isEqualTo(released)
+    }
+
+    @Test
+    fun `until unlock never sets an on state at the lock screen`() {
+        val waiting = BuiltInProfiles.CLASSIC.let { it.copy(levers = it.levers.copy(forceIdle = ForceIdleLever(true, untilUnlock = true))) }
+        val notYet = Targets.compute(inputs(waiting, locked = true))
+        assertThat(notYet.wanted).isEmpty()
+        assertThat(notYet.armed).containsExactly(Lever.FORCE_IDLE, Lever.SENSORS)
+        val released = mapOf(Lever.FORCE_IDLE to Setting.RELEASED, Lever.SENSORS to Setting.SENSORS_NORMAL)
+        assertThat(Targets.compute(inputs(waiting, locked = true, written = released)).wanted).isEmpty()
     }
 
     @Test

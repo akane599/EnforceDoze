@@ -58,7 +58,11 @@ public class DozeEngine(
 
     public suspend fun screenOff(): Unit = submit { screen(on = false) }
 
-    public suspend fun screenOn(): Unit = submit { screen(on = true) }
+    /** Screen on; [locked] when the keyguard is showing, which lever B's "until unlock" waits for (ADR 0017). */
+    public suspend fun screenOn(locked: Boolean = false): Unit = submit { screen(on = true, lockedNow = locked) }
+
+    /** The keyguard was dismissed (ACTION_USER_PRESENT). */
+    public suspend fun unlocked(): Unit = submit { unlocked() }
 
     public suspend fun holdOff(holdOff: HoldOff, active: Boolean): Unit = submit { holdOff(holdOff, active) }
 

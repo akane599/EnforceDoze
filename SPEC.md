@@ -227,6 +227,7 @@ stateDiagram-v2
 ### 5.3 Lever B: forced idle
 
 - `force-idle deep` at screen off for delay 0 (EnforceDoze's classic mode); `unforce` at screen on, at charging and at any hold-off start.
+- Option `untilUnlock` (upstream's "wait for unlock"), off by default: a screen on with the keyguard showing keeps the forced idle and sensor states the engine set, and unlock releases them. It never sets a lever at the lock screen, and a hold-off still releases at once (ADR 0017).
 - A non-zero delay with forcing needs one exact alarm per screen-off; it is off by default and labelled "wakes the phone once". The default way to get a delay is lever A.
 - While forced, maintenance windows still run, so high-priority messages and syncs continue in windows.
 
@@ -301,7 +302,7 @@ The agent checks every key name and its meaning against the AOSP `DeviceIdleCont
   "schema": 1,
   "levers": {
     "constants": true,
-    "forceIdle": { "enabled": false, "delaySec": 0 },
+    "forceIdle": { "enabled": false, "delaySec": 0, "untilUnlock": false },
     "sensors": "restricted",
     "allowlist": "inherit"
   },

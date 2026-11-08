@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.doze.ActionRecord.Outcome
 import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.profile.BuiltInProfiles
+import io.github.akane599.enforcedoze.profile.ForceIdleLever
 import io.github.akane599.enforcedoze.profile.Profile
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -184,6 +185,44 @@ class DozeEngineTest {
         assertThat(device.forced).isFalse()
         assertThat(device.sensors).isEqualTo(SensorValue.Normal)
         assertThat(device.writes.filterIsInstance<DeviceWrite.SetConstants>()).isEmpty()
+    }
+
+    @Test
+    fun `until unlock keeps forced idle and sensors through a locked screen on and undoes both at unlock`() = runTest {
+        val classic = BuiltInProfiles.CLASSIC
+        val waiting = classic.copy(levers = classic.levers.copy(forceIdle = ForceIdleLever(true, untilUnlock = true)))
+        val engine = engine()
+        engine.startWith(waiting)
+        engine.screenOff()
+        assertThat(device.writes).containsExactly(restricted, DeviceWrite.ForceIdle).inOrder()
+
+        engine.screenOn(locked = true)
+        assertThat(writesSince(2)).isEmpty()
+        assertThat(device.forced).isTrue()
+        assertThat(engine.state(Lever.FORCE_IDLE)).isEqualTo(LeverState.APPLIED)
+
+        engine.unlocked()
+        assertThat(writesSince(2)).containsExactly(DeviceWrite.Unforce, DeviceWrite.EnableSensors).inOrder()
+        assertThat(journal.actions.drop(2).map { it.cause }).containsExactly(Cause.UNLOCK, Cause.UNLOCK)
+        assertThat(engine.state(Lever.FORCE_IDLE)).isEqualTo(LeverState.ARMED)
+
+        engine.unlocked()
+        assertThat(writesSince(4)).isEmpty()
+    }
+
+    @Test
+    fun `until unlock still lets a hold-off at the lock screen release forced idle`() = runTest {
+        val classic = BuiltInProfiles.CLASSIC
+        val waiting = classic.copy(levers = classic.levers.copy(forceIdle = ForceIdleLever(true, untilUnlock = true)))
+        val engine = engine()
+        engine.startWith(waiting)
+        engine.screenOff()
+        engine.screenOn(locked = true)
+        engine.holdOff(HoldOff.CALL, active = true)
+        assertThat(writesSince(2)).containsExactly(DeviceWrite.Unforce, DeviceWrite.EnableSensors).inOrder()
+        engine.holdOff(HoldOff.CALL, active = false)
+        assertThat(writesSince(4)).isEmpty()
+        assertThat(device.forced).isFalse()
     }
 
     @Test

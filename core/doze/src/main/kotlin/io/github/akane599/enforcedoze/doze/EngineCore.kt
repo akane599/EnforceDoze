@@ -31,6 +31,7 @@ internal class EngineCore(
     private var started = false
     private var profile: Profile? = null
     private var screenOn = true
+    private var locked = false
     private var holdOffs: Set<HoldOff> = emptySet()
     private var writable = Writable.NOTHING
     private var previous: PreviousSnapshot? = null
@@ -46,6 +47,7 @@ internal class EngineCore(
         stock = store.stock()
         profile = start.profile
         screenOn = start.screenOn
+        locked = start.locked
         holdOffs = start.holdOffs
         writable = start.writable
         started = true
@@ -65,8 +67,9 @@ internal class EngineCore(
     }
 
     /** Screen off: sensors, forced idle, their read-backs, then one constants read for drift (SPEC 5.6, ADR 0015). */
-    suspend fun screen(on: Boolean) {
+    suspend fun screen(on: Boolean, lockedNow: Boolean = false) {
         screenOn = on
+        locked = on && lockedNow
         if (!started) return
         if (on) {
             reconcile(Cause.SCREEN_ON)
@@ -74,6 +77,13 @@ internal class EngineCore(
         }
         reconcile(Cause.SCREEN_OFF)
         checkConstantsDrift()
+    }
+
+    /** The keyguard went away (ADR 0017): what "until unlock" kept on is released. */
+    suspend fun unlocked() {
+        if (!locked) return
+        locked = false
+        if (started) reconcile(Cause.UNLOCK)
     }
 
     suspend fun holdOff(holdOff: HoldOff, active: Boolean) {
@@ -257,6 +267,7 @@ internal class EngineCore(
             profile = profile,
             mode = mode,
             screenOn = screenOn,
+            locked = locked,
             holdOffs = holdOffs,
             guarded = book.persisted.guarded,
             knownKeys = book.knownKeys,

@@ -177,7 +177,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 1 | Force deep Doze at screen off | `ForceDozeService.enterDoze/applyDoze` | port | Lever B, Classic profile (5.3, 6.1) | upstream |
 | 2 | Delay before Doze (`dozeEnterDelay`) | service + wakelock timer | port | Lever A constants; optional delay alarm (5.2, 5.3) | upstream |
 | 3 | Ignore lock-screen timeout | service | drop: the delay is expressed by constants (5.2), so there is no app timer to tie to the lock screen | — | upstream |
-| 4 | Wait for unlock before leaving Doze | service | port, off by default; departs from 5.3 (unforce at screen on), so P2 decides it in an ADR | Profile option (5.3) | upstream |
+| 4 | Wait for unlock before leaving Doze | service | port, off by default (ADR 0017): a locked screen on keeps what lever B and C set, unlock releases it | Lever B option `untilUnlock` (5.3, 6.4) | upstream |
 | 5 | Disable when charging | service | port | Charging hold-off (5.5), always on | upstream |
 | 6 | Execution mode (root / Shizuku) | settings | port | Tiers T0–T3 (4) | upstream |
 | 7 | Doze allowlist screen | `WhitelistAppsActivity` | port | Lever D, Allowlist screen (5, 9.1) | upstream |

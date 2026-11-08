@@ -11,7 +11,7 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   drop airplane mode in Doze (blocks calls), Bluetooth off (cuts the watch and Android Auto), GPS off
   (emergency location), battery saver on (One UI runs its own), the notification blocklist (binder
   transaction numbers), the auto-rotate fix (obsolete), app shortcuts (v1) and upstream's other
-  translations; "wait for unlock" is kept as an option, off by default, pending an ADR in P2.
+  translations; "wait for unlock" is kept as lever B's option `untilUnlock`, off by default (ADR 0017).
   *Default:* as decided; say if any of them matters to you.
 - **Q5. The `akane599/AkaDoZe` repository.** Q1 asked to drop every other fork effort; AkaDoZe is a
   separate public repository (last pushed 2026-10-07), not a branch of this fork, and deleting a

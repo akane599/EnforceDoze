@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.doze.android
 
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -48,6 +49,7 @@ public class EngineHost internal constructor(
     private val keepAwake: KeepAwakeCheck,
 ) {
     private val main = Handler(Looper.getMainLooper())
+    private val keyguard = context.getSystemService(KeyguardManager::class.java)
     private val reported = mutableMapOf<HoldOff, Boolean>()
     private var screenReceiver: BroadcastReceiver? = null
     private var observer: ContentObserver? = null
@@ -64,7 +66,8 @@ public class EngineHost internal constructor(
             }.map { it.holdOff }.toSet()
         }
         val interactive = context.getSystemService(PowerManager::class.java).isInteractive
-        engine.start(EngineStart(profile, interactive, holdOffs, DeviceMapping.writable(controller.refresh())))
+        val writable = DeviceMapping.writable(controller.refresh())
+        engine.start(EngineStart(profile, interactive, holdOffs, writable, locked = interactive && keyguard.isKeyguardLocked))
         withContext(Dispatchers.Main.immediate) {
             registerScreen()
             registerConstantsObserver()
@@ -93,22 +96,24 @@ public class EngineHost internal constructor(
     }
 
     /**
-     * Screen off and on reach a receiver registered at run time only. The broadcast is held open with
-     * `goAsync` while the engine works, at most [BROADCAST_BOUND_MILLIS], so the phone does not sleep
-     * between the writes and their read-backs; past the bound the engine finishes on its own.
+     * Screen off, screen on and unlock reach a receiver registered at run time only. The broadcast is held
+     * open with `goAsync` while the engine works, at most [BROADCAST_BOUND_MILLIS], so the phone does not
+     * sleep between the writes and their read-backs; past the bound the engine finishes on its own.
+     * `ACTION_USER_PRESENT` is sent once the keyguard is dismissed (ADR 0017).
      */
     private fun registerScreen() {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val off = when (intent.action) {
-                    Intent.ACTION_SCREEN_OFF -> true
-                    Intent.ACTION_SCREEN_ON -> false
+                val command: suspend () -> Unit = when (intent.action) {
+                    Intent.ACTION_SCREEN_OFF -> ::screenOff
+                    Intent.ACTION_SCREEN_ON -> ::screenOn
+                    Intent.ACTION_USER_PRESENT -> engine::unlocked
                     else -> return
                 }
                 val pending = goAsync()
                 scope.launch(start = CoroutineStart.UNDISPATCHED) {
                     try {
-                        withTimeoutOrNull(BROADCAST_BOUND_MILLIS) { if (off) screenOff() else screenOn() }
+                        withTimeoutOrNull(BROADCAST_BOUND_MILLIS) { command() }
                     } finally {
                         pending.finish()
                     }
@@ -118,6 +123,7 @@ public class EngineHost internal constructor(
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_USER_PRESENT)
         }
         context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         screenReceiver = receiver
@@ -130,10 +136,16 @@ public class EngineHost internal constructor(
         engine.screenOff()
     }
 
-    /** The screen first, so ending the keep-awake hold-off never engages anything with the screen on. */
+    /**
+     * The screen first, so ending the keep-awake hold-off never engages anything with the screen on. The
+     * keyguard is read again after the screen-on command: an unlock whose broadcast was queued before that
+     * command found nothing to release, so it is replayed and "until unlock" cannot outlast the lock screen.
+     */
     private suspend fun screenOn() {
         controller.refresh()
-        engine.screenOn()
+        val locked = keyguard.isKeyguardLocked
+        engine.screenOn(locked)
+        if (locked && !keyguard.isKeyguardLocked) engine.unlocked()
         engine.holdOff(HoldOff.KEEP_AWAKE_APP, false)
     }
 
