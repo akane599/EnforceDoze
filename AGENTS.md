@@ -26,9 +26,11 @@ this file is the short version. Change `SPEC.md` only through an ADR in `docs/ad
 
 ## Autonomy (SPEC 0.5)
 
-Never wait for "continue". Stop and ask only for: connecting to the phone; anything irreversible or
-public (releases, force-push, deleting data, deleting branches); secrets you lack (signing key);
-changing a non-negotiable (SPEC 1.3); the P3 design review.
+Never wait for "continue", at or between gates, and never end a turn with a question. Stop only for:
+connecting to the phone; anything irreversible or public (releases, force-push, deleting data,
+deleting branches); secrets you lack (signing key). Any other question: pick the most reasonable
+option, ADR line, entry in `docs/questions.md`, continue. A non-negotiable (SPEC 1.3) change is
+parked with a question, never made (ADR 0027).
 
 | Decision | Action |
 | --- | --- |
