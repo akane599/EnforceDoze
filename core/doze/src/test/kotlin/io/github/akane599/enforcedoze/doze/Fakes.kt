@@ -37,6 +37,15 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
     /** Writes the device refuses. */
     val refuse = mutableSetOf<String>()
 
+    /** Refuses a write when this says so, for refusals finer than a write's kind. */
+    var refuseIf: (DeviceWrite) -> Boolean = { false }
+
+    /** Thrown from the next writes instead of answering, as an adapter bug or its own timeout would. */
+    var throwOnWrite: Throwable? = null
+
+    /** Called as each write starts, before it lands. */
+    var beforeWrite: (DeviceWrite) -> Unit = {}
+
     /** Every call in order: "read:constants", "write:Settings.Global put …", … */
     val log = mutableListOf<String>()
 
@@ -60,8 +69,10 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
             val name = "write:${write::class.simpleName}"
             log += "write:${write.label}"
             mutableWrites += write
+            beforeWrite(write)
+            throwOnWrite?.let { throw it }
             if (name in hang) delay(HANG_MILLIS)
-            if (name in refuse) return DeviceResult.Failed("refused")
+            if (name in refuse || refuseIf(write)) return DeviceResult.Failed("refused")
             when (write) {
                 is DeviceWrite.SetConstants -> {
                     constants = ConstantsValue.of(write.text)
@@ -135,9 +146,13 @@ internal class FakeStore(var state: PersistedState = PersistedState()) : EngineS
     var stock: StockSnapshot? = null
     var saves = 0
 
+    /** Every save fails, as on a full disk. */
+    var failSaves = false
+
     override suspend fun load(): PersistedState = state
 
     override suspend fun save(state: PersistedState) {
+        if (failSaves) throw java.io.IOException("no space left on device")
         this.state = state
         saves++
     }

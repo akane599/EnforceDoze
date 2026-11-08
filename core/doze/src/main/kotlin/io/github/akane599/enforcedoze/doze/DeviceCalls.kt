@@ -5,6 +5,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -37,7 +39,10 @@ internal class DeviceCalls(private val scope: CoroutineScope, private val timeou
     private suspend fun <T> guarded(block: suspend () -> DeviceResult<T>): DeviceResult<T> = try {
         block()
     } catch (e: CancellationException) {
-        throw e
+        // Only this call being cancelled is a cancellation; an adapter's own timeout is a failed call,
+        // and letting it through would end the actor (ADR 0015).
+        currentCoroutineContext().ensureActive()
+        DeviceResult.Failed(e.toString())
     } catch (e: Exception) {
         // An adapter bug must not kill the actor; it is logged like any refused call.
         DeviceResult.Failed(e.toString())

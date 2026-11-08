@@ -10,9 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
@@ -92,16 +94,30 @@ public class DozeEngine(
             try {
                 done.complete(core.block())
             } catch (e: CancellationException) {
-                done.cancel(e)
-                throw e
+                if (!currentCoroutineContext().isActive) {
+                    done.cancel(e)
+                    throw e
+                }
+                // Not the actor's own cancellation (an adapter's timeout): only this command fails.
+                done.completeExceptionally(IllegalStateException("a call was cancelled", e))
             } catch (e: Exception) {
                 // One failing command must not stop the actor; the caller gets the exception.
                 done.completeExceptionally(e)
             }
             core.persist()
-            mutableStatus.value = core.status()
+            publishStatus()
         }
         return done.await()
+    }
+
+    /** A status that cannot be computed keeps the last one; the actor must outlive a bug here too. */
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
+    private fun publishStatus() {
+        try {
+            mutableStatus.value = core.status()
+        } catch (_: RuntimeException) {
+            // Pure in-memory work: only a bug lands here, and the tests read the status.
+        }
     }
 
     public companion object {

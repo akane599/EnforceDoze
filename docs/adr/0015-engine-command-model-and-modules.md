@@ -156,5 +156,15 @@ Kept from my own view:
     before writing, and no pending work after a screen-off batch.
 - In code, a tripped guard is a set of levers kept beside the mode (`Managed`, `Paused`,
   `HandsOff`), not a fourth mode, so two guarded levers can coexist; the behaviour is as above.
+- The independent engine review before the P2 gate refined how the read-back decides. When the
+  outcome is in doubt, the booking always leads to a release:
+  - an engage is saved before it is written and stays booked unless every write was refused;
+  - a release is booked only once it answered and the read-back does not contradict it, so a
+    timed-out release is tried again at the next event;
+  - a read that already shows the current target is not drift.
+
+  If saving fails, nothing is turned on. A cancellation that is not the actor's own fails one
+  call, not the actor. Restore stock never deletes a string it could not save in
+  `previous.json`. Return to previous hands the string back as the owner's.
 - Revisit if the loop guard misfires on the phone, or if the target function grows past what a
   table test can show at a glance.

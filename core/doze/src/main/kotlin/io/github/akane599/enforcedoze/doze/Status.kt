@@ -66,6 +66,8 @@ public data class EngineStatus(
     val constantsWriter: String? = null,
     val previousCaptured: Boolean = false,
     val stockCaptured: Boolean = false,
+    /** The engine's state could not be saved; it is tried again after every command. */
+    val storeError: String? = null,
 ) {
     /** "Partly applied" on the home screen (SPEC 5.6 step 2). */
     val partlyApplied: Boolean get() = missingKeys.isNotEmpty() || levers.values.any { it.state in PARTLY_STATES }
@@ -82,13 +84,17 @@ public data class JobResult(
     val refused: String? = null,
     /** Levers the job needed but the tier cannot write. */
     val notWritable: Set<Lever> = emptySet(),
-    /** After Restore stock: keys that do not read back as in `stock.json`; null when that cannot be judged. */
+    /** Levers the job left alone on purpose, with why. */
+    val skipped: Map<Lever, String> = emptyMap(),
+    /** After Restore stock: keys that do not read back as in `stock.json`; null when that was not judged. */
     val stockDifferences: List<String>? = null,
+    /** Why the job's result could not be checked, or null when it was. */
+    val unverified: String? = null,
     /** After the capture: the new `stock.json`. */
     val stock: StockSnapshot? = null,
 ) {
-    /** Ran, every write read back as asked, and nothing was left out. */
+    /** Ran, every write read back as asked, the result was checked, and nothing was left out. */
     val ok: Boolean
-        get() = refused == null && notWritable.isEmpty() && stockDifferences.isNullOrEmpty() &&
-            actions.all { it.outcome == ActionRecord.Outcome.OK }
+        get() = refused == null && notWritable.isEmpty() && skipped.isEmpty() && unverified == null &&
+            stockDifferences.isNullOrEmpty() && actions.all { it.outcome == ActionRecord.Outcome.OK }
 }

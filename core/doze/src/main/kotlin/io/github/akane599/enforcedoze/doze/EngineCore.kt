@@ -3,8 +3,11 @@ package io.github.akane599.enforcedoze.doze
 
 import io.github.akane599.enforcedoze.parse.DeviceIdleSettings
 import io.github.akane599.enforcedoze.profile.Profile
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
 /**
@@ -22,8 +25,9 @@ internal class EngineCore(
 ) {
     private val book = Book(PersistedState())
     private val observer = Observer(device, calls, book)
-    private val executor = Executor(device, calls, observer, book, journal, clock)
+    private val executor = Executor(device, calls, observer, book, journal, clock) { persist() }
     private var saved: PersistedState? = null
+    private var storeError: String? = null
     private var started = false
     private var profile: Profile? = null
     private var screenOn = true
@@ -123,12 +127,26 @@ internal class EngineCore(
         if (!started) return JobResult(refused = NOT_STARTED)
         observer.read(Lever.entries.toSet())
         capturePrevious()
-        val job = oneShot(Targets.restoreStock(book.persisted.ownerAllowlist), Cause.RESTORE_STOCK)
-        val differences = stock?.let { observer.settle(ConstantsValue.Absent, it, DozeEngine.SETTLE_MILLIS, DozeEngine.SETTLE_POLL_MILLIS) }
+        // A string the engine did not write and could not save in previous.json is never deleted: that could not be undone.
+        val keepString = previous == null && book.written[Lever.CONSTANTS] == null
+        val targets = Targets.restoreStock(book.persisted.ownerAllowlist).let { if (keepString) it - Lever.CONSTANTS else it }
+        val job = oneShot(targets, Cause.RESTORE_STOCK)
+        val snapshot = stock
+        val differences = snapshot?.let {
+            observer.settle(ConstantsValue.Absent, it, DozeEngine.SETTLE_MILLIS, DozeEngine.SETTLE_POLL_MILLIS)
+        }
         clearGuards()
         changeMode(Mode.PAUSED)
         reconcile(Cause.RESTORE_STOCK)
-        return job.copy(stockDifferences = differences)
+        return job.copy(
+            skipped = if (keepString) mapOf(Lever.CONSTANTS to UNSAVED_STRING) else emptyMap(),
+            stockDifferences = differences,
+            unverified = when {
+                snapshot == null -> "stock.json was never captured, so the values could not be compared with it"
+                differences == null -> "dumpsys deviceidle could not be read, so the values could not be compared with stock.json"
+                else -> null
+            },
+        )
     }
 
     /** SPEC 5.2, 11.4: the previous string back exactly, then hands off so the owner's setup is never fought. */
@@ -137,7 +155,11 @@ internal class EngineCore(
         val snapshot = previous ?: return JobResult(refused = "previous.json was never captured")
         val targets = Targets.returnToPrevious(snapshot, book.written, book.persisted.ownerAllowlist)
         observer.read(targets.keys)
+        val ours = book.written[Lever.CONSTANTS]
         val job = oneShot(targets, Cause.RETURN_TO_PREVIOUS)
+        // The owner's string is theirs again: booked as the engine's, a later profile without constants would delete it.
+        val stillOurs = ours != null && ours != targets[Lever.CONSTANTS] && book.seen[Lever.CONSTANTS] == ours
+        if (!stillOurs) book.forgetWritten(Lever.CONSTANTS)
         clearGuards()
         changeMode(Mode.HANDS_OFF)
         reconcile(Cause.RETURN_TO_PREVIOUS)
@@ -160,9 +182,7 @@ internal class EngineCore(
             readStock(current, actions)
         } finally {
             withContext(NonCancellable) {
-                if (current is ConstantsValue.Exact) {
-                    actions += executor.execute(listOf(Setting.Constants(current)), null) { Cause.STOCK_CAPTURE }
-                }
+                if (current is ConstantsValue.Exact) putBack(Setting.Constants(current), actions)
                 book.persisted = book.persisted.copy(written = written)
             }
         }
@@ -173,10 +193,18 @@ internal class EngineCore(
         return JobResult(actions, stock = captured)
     }
 
+    /** Writes the string found before the capture back, and once more if the read-back does not show it. */
+    private suspend fun putBack(string: Setting.Constants, actions: MutableList<ActionRecord>) {
+        repeat(PUT_BACK_TRIES) {
+            actions += executor.execute(listOf(string), null, writeAhead = false) { Cause.STOCK_CAPTURE }
+            if (book.seen[Lever.CONSTANTS] == string) return
+        }
+    }
+
     /** Deletes the string if there is one and reads what the phone falls back to. The caller puts the string back. */
     private suspend fun readStock(current: ConstantsValue, actions: MutableList<ActionRecord>): Result<StockSnapshot> {
         if (current is ConstantsValue.Exact) {
-            actions += executor.execute(listOf(Setting.ABSENT), null) { Cause.STOCK_CAPTURE }
+            actions += executor.execute(listOf(Setting.ABSENT), null, writeAhead = false) { Cause.STOCK_CAPTURE }
             val deleted = book.seen[Lever.CONSTANTS] == Setting.ABSENT
             if (!deleted) return Result.failure(IllegalStateException("the string could not be deleted"))
             awaitReload(current.text)
@@ -186,10 +214,22 @@ internal class EngineCore(
             ?: Result.failure(IllegalStateException("dumpsys deviceidle could not be read"))
     }
 
-    suspend fun persist() {
-        if (book.persisted != saved) {
+    /** Saves the book if it changed or the last save failed; false when the store fails, which the status shows. */
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun persist(): Boolean {
+        if (book.persisted == saved && storeError == null) return true
+        return try {
             store.save(book.persisted)
             saved = book.persisted
+            storeError = null
+            true
+        } catch (e: CancellationException) {
+            currentCoroutineContext().ensureActive()
+            storeError = e.toString()
+            false
+        } catch (e: Exception) {
+            storeError = e.toString()
+            false
         }
     }
 
@@ -208,6 +248,7 @@ internal class EngineCore(
             constantsWriter = book.writer,
             previousCaptured = previous != null,
             stockCaptured = stock != null,
+            storeError = storeError,
         )
     }
 
@@ -262,21 +303,30 @@ internal class EngineCore(
     }
 
     private suspend fun checkConstantsDrift() {
-        if (mode != Mode.MANAGED || targets().wanted[Lever.CONSTANTS] == null || book.written[Lever.CONSTANTS] == null) return
+        // While the engine holds a string, every foreign change is logged, guarded or not (SPEC 5.6, 5.7).
+        if (mode != Mode.MANAGED || (book.written[Lever.CONSTANTS] as? Setting.Constants)?.value !is ConstantsValue.Exact) return
         observer.read(setOf(Lever.CONSTANTS))
         val fixes = corrections(drifts(listOf(Lever.CONSTANTS), whileStopped = false))
         if (fixes.isNotEmpty()) reconcile(Cause.DRIFT, fixes)
     }
 
-    /** Levers whose read differs from the engine's last write, each logged as drift with the writer when known. */
-    private suspend fun drifts(levers: Collection<Lever>, whileStopped: Boolean): List<Lever> = levers.filter { lever ->
-        val expected = book.written[lever]
-        val found = expected?.let { drift(it) }
-        if (expected != null && found != null) {
-            val writer = book.writer.takeIf { lever == Lever.CONSTANTS }
-            journal.event(EngineEvent.Drift(clock.now(), lever, expected.toString(), found, writer, whileStopped))
-        }
-        found != null
+    /**
+     * Levers whose read differs from the engine's last write, each logged as drift with the writer when
+     * known. A read that already shows what the engine wants now is not drift (a release retried after a
+     * timeout, a forced idle a reboot ended).
+     */
+    private suspend fun drifts(levers: Collection<Lever>, whileStopped: Boolean): List<Lever> {
+        val wanted = targets().wanted
+        return levers.filter { lever -> isDrift(lever, wanted[lever], whileStopped) }
+    }
+
+    private suspend fun isDrift(lever: Lever, wanted: Setting?, whileStopped: Boolean): Boolean {
+        val expected = book.written[lever] ?: return false
+        if (wanted != null && book.seen[lever] == wanted) return false
+        val found = drift(expected) ?: return false
+        val writer = book.writer.takeIf { lever == Lever.CONSTANTS }
+        journal.event(EngineEvent.Drift(clock.now(), lever, expected.toString(), found, writer, whileStopped))
+        return true
     }
 
     /** What the device shows instead of [expected], or null when it matches or cannot be judged. */
@@ -414,5 +464,8 @@ internal class EngineCore(
 
     private companion object {
         const val NOT_STARTED = "the engine has not started"
+        const val UNSAVED_STRING =
+            "the global string could not be read and is not in previous.json, so it was left as is: deleting it could not be undone"
+        const val PUT_BACK_TRIES = 2
     }
 }
