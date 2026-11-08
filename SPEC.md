@@ -41,7 +41,7 @@ This spec turns the EnforceDoze fork ([Akylas/EnforceDoze](https://github.com/Ak
 | Node | Role | Access |
 | --- | --- | --- |
 | `build-server` (VPS) | Agent, builds, JVM tests | Always |
-| `akane-linux` (owner's PC, KVM, AVDs 35/36/37) | Emulator tests (API 37 default) | Directly whenever `tailscale status` shows it online; one headless emulator at a time, shut down after |
+| `akane-linux` (owner's PC, KVM, the project's own AVD `ed-api37`, ADR 0021) | Emulator tests (API 37 only) | Directly whenever `tailscale status` shows it online; one headless emulator at a time, shut down after |
 | `sm-s938b` (owner's Galaxy S25 Ultra) | One UI 9 behaviour, real Doze nights | Ask first; batch work into planned sessions |
 
 Reach `akane-linux` over SSH via Tailscale with ADB forwarded (`ssh -N -L 5037:localhost:5037 akane-linux`). The phone runs the owner's own Doze setup (Tasker profiles calling a shell script through Shizuku); never change Doze or sensor state on it without saying so first, and restore it afterwards.
@@ -134,7 +134,7 @@ The fork targets API 37 with `minSdk 34`; older Android stays on upstream. API 3
 | `compileSdk` / `targetSdk` | Newest stable ≥ 37 / 37 |
 | `minSdk` | 34 |
 | Application id | `io.github.akane599.enforcedoze` (installs beside upstream; never reuse `com.akylas.enforcedoze`) |
-| Test targets | API 37 AVD (default), API 36 AVD for Android 16 bugs, the phone with permission |
+| Test targets | The API 37 AVD `ed-api37` and the phone with permission; nothing below API 37 has to be tested (ADR 0021) |
 
 ### 3.2 Android rules that shape the design
 
@@ -609,7 +609,7 @@ Kotlin, Jetpack Compose with Material 3, coroutines and Flow, Room, DataStore, k
 
 ### 12.4 Rules that keep it working on Android 17 and later
 
-- **Parsers are pure functions** over captured text, each with fixtures from the API 34, 35, 36 and 37 emulators, plus One UI dumps when the owner provides them. A line that does not parse becomes "unknown" with the raw line kept; it never crashes the app.
+- **Parsers are pure functions** over captured text, each with fixtures from the API 37 emulator and the owner's One UI dumps (ADR 0021). A line that does not parse becomes "unknown" with the raw line kept; it never crashes the app.
 - **No binder transaction numbers** (`service call …`) and **no reflection on Shizuku internals**. Hidden framework APIs are called only inside the worker, each behind a capability probe with a fallback and a logged failure.
 - **One writer.** All engine writes go through a single actor (a coroutine channel), so a profile switch, a hold-off and a drift fix can never interleave. Every write has a 5 s timeout and an action-log row. The actor reconciles a desired state computed from its inputs with what it last wrote and observed (ADR 0015).
 - **Foreground service** of type `specialUse` with the subtype property filled in and explained; started at boot and after updates; on restart it re-reads the real state before doing anything. It does no work between broadcasts.
@@ -632,7 +632,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 | Layer | What it proves | Where, how long |
 | --- | --- | --- |
 | Unit | Parsers against fixtures; recommendation policy against 12+ histories (7.6); verdicts from synthetic transition streams; profile JSON round-trip; engine actor with a fake worker (apply, read back, revert; hold-off precedence; drift loop guard stops after 2 corrections in an hour) | Build server, seconds |
-| Worker contract | Every `IDozeWorker` method does what it says on a real system server | API 37 emulator on akane-linux (35 and 36 optional), about 2 min |
+| Worker contract | Every `IDozeWorker` method does what it says on a real system server | API 37 emulator on akane-linux (ADR 0021), about 2 min |
 | Compressed night | The whole chain: plan applied, screen off, light then deep idle, maintenance windows, screen on, evidence collected, verdict "Held", night report generated | API 37 emulator, about 5 min |
 | Hold-offs and drift | Each hold-off lifts B and C and restores them; a foreign write is caught, logged, re-applied, and the loop guard trips | API 37 emulator, about 4 min |
 | UI | Screenshot tests (10.6), Compose flows (onboarding, apply plan, open report, restore stock), macrobenchmark cold start | Build server and emulator, about 5 min |
@@ -675,7 +675,7 @@ Gates are the agent's own checks, not waiting points. At each gate the agent sen
 | **P0 Fork and baseline** | Fork, `upstream-baseline` tag, upstream built unchanged and run on the API 37 emulator, CI skeleton | Upstream builds; the section 2 audit is confirmed or corrected with real results; CI green |
 | **P1 Privilege** | Tiers, Shizuku, Sui and root clients, `IDozeWorker`, capability probes, the Android 17 Shizuku ADR | Worker contract tests pass on API 37; tier detection is correct with no privilege, Shizuku, and root (rooted AVD or fake) |
 | **P2 Engine** | Levers A–D, apply/verify/revert, `stock.json` and `previous.json`, hold-offs, drift and the loop guard, action log | Compressed night verdict Held with Everyday and with Classic; hold-off and drift tests pass; Restore stock reproduces `stock.json` exactly |
-| **P3 Evidence** | Collectors, parsers, verdicts, night report model, quick proof, export | Compressed night produces a complete report; the app's own wakeups are 0; parser fixtures for API 35–37 pass |
+| **P3 Evidence** | Collectors, parsers, verdicts, night report model, quick proof, export | Compressed night produces a complete report; the app's own wakeups are 0; parser fixtures for the API 37 emulator and the owner's phone pass (ADR 0021) |
 | **P4 Profiles and Recommended** | Six profiles, custom profiles, plans and switching, the recommendation policy | All policy fixtures pass; day-to-night and night-to-day switches tested; profile import and export round-trip |
 | **P5 UI and design** | Every screen in section 9, tiles, notifications, English and Turkish, the /impeccable process (10.5) | `npx impeccable detect` reports zero; every critique and audit P0 and P1 fixed; screenshot set complete; review ZIP sent to the owner (not blocking) |
 | **P6 Integrations** | Automation API, Coulomb evidence provider and the paste note, Tasker switch-over, other-manager detection | Automation and provider permission tests pass; switch-over flow passes on the emulator with a simulated foreign writer |
@@ -685,7 +685,7 @@ Overlaps are allowed where they save time: parsers can start in P1 from captured
 
 ## 15. Acceptance checklist
 
-Release 1.0.0 ships only when every box is ticked, each with its evidence (test name, report, or screenshot) linked in `/docs/acceptance.md`.
+Release 1.0.0 ships only when every box is ticked, each with its evidence (test name, report, or screenshot) linked in `/docs/acceptance.md`. Every item is checked on API 37: the `ed-api37` emulator, or the phone where the item says so; none needs a run below API 37 (ADR 0021).
 
 **Android 17 and One UI**
 

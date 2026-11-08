@@ -16,6 +16,10 @@ Non-blocking questions for the owner. Each states the default in use, so work co
 - **Q5. The `akane599/AkaDoZe` repository.** Q1 asked to drop every other fork effort; AkaDoZe is a
   separate public repository (last pushed 2026-10-07), not a branch of this fork, and deleting a
   repository cannot be undone. *Default:* left untouched; say "delete AkaDoZe" and it goes.
+- **Q6. Android 16 in the non-negotiables (SPEC 1.3).** ADR 0021 drops every test below API 37, but
+  1.3 still says the app works on Android 16 (API 36), and only you can change a non-negotiable.
+  *Default:* the line stays, backed by the AOSP 16 source checks and the probes rather than tests.
+  Say "drop Android 16" if 1.3 should name Android 17 only.
 
 ## Answered
 

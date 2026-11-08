@@ -9,11 +9,11 @@
 # so it is left out of the default to keep the emulator suite under 20 minutes (SPEC 13); add it before
 # `restore` when the lever A write path changes.
 #
-#   tools/emulator/p2-engine.sh [--avd pixel-api37] [--scenarios "setup night-everyday night-classic holdoffs drift privilege restore"]
+#   tools/emulator/p2-engine.sh [--avd ed-api37] [--scenarios "setup night-everyday night-classic holdoffs drift privilege restore"]
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-avd=pixel-api37
+avd=ed-api37
 scenarios="setup night-everyday night-classic holdoffs drift privilege restore"
 while (($#)); do
   case $1 in

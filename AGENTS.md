@@ -44,7 +44,7 @@ the default in use.
 | Node | Role | Rule |
 | --- | --- | --- |
 | `build-server` | Agent, builds, JVM tests, CI pushes | Always |
-| `akane-linux` | Emulators (AVDs `pixel-api35`, `pixel-api36`, `pixel-api37`; API 37 default) | When `tailscale status` shows it online |
+| `akane-linux` | Emulator: the project's own AVD `ed-api37` (API 37 only, ADR 0021) | When `tailscale status` shows it online |
 | `sm-s938b` (Galaxy S25 Ultra) | One UI behaviour, real nights | Ask first; batch into planned sessions |
 
 - **build-server:** `~/.gradle` is a symlink to a shared 50 GB volume (`/mnt/HC_Volume_*`); check
@@ -52,10 +52,10 @@ the default in use.
   A local adb server already listens on 5037, so do not forward 5037: run adb on akane-linux through
   `ssh akane-linux` (or forward to another port and set `ADB_SERVER_SOCKET=tcp:localhost:<port>`).
 - **akane-linux** (the owner's daily PC, KVM): SDK at `~/Android/Sdk`, adb at
-  `~/Android/Sdk/platform-tools/adb`. One headless emulator at a time, shut down after
-  (`adb emu kill`); never wipe an AVD (other projects share them). Start one with
-  `nohup ~/Android/Sdk/emulator/emulator -avd pixel-api37 -no-window -no-audio -no-boot-anim
-  -no-snapshot-save -gpu swiftshader_indirect &`. Its login shell is zsh: send scripts with
+  `~/Android/Sdk/platform-tools/adb`. Use only `ed-api37`; the `pixel-api*` AVDs belong to other
+  projects: never start, change or wipe them. One headless emulator at a time, shut down after
+  (`adb emu kill`). Start it with `nohup ~/Android/Sdk/emulator/emulator -avd ed-api37 -no-window
+  -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect &`. Its login shell is zsh: send scripts with
   `ssh akane-linux 'bash -s' <<'EOF'` and give every `adb shell` call `</dev/null`.
 - **Phone:** it runs the owner's own Doze setup (Tasker + Shizuku). Never change Doze or sensor
   state on it without saying so first, and restore it afterwards. Fixture captures there are

@@ -6,7 +6,7 @@
 # runs tools/emulator/p1-privilege-remote.sh there. Results land in docs/evidence/p1/ and the
 # capability reports in docs/capabilities/.
 #
-#   tools/emulator/p1-privilege.sh [--shizuku thedjchi|official] [--avd pixel-api37] [--scenarios "none grants shell root"]
+#   tools/emulator/p1-privilege.sh [--shizuku thedjchi|official] [--avd ed-api37] [--scenarios "none grants shell root"]
 #
 # The Shizuku APKs are downloaded once from the projects' GitHub releases into
 # ~/.cache/enforcedoze-shizuku on akane-linux (ADR 0011).
@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 shizuku=thedjchi
-avd=pixel-api37
+avd=ed-api37
 scenarios="none grants shell root"
 while (($#)); do
   case $1 in
