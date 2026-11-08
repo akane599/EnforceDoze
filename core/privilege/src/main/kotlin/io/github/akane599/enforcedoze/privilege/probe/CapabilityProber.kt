@@ -5,14 +5,19 @@ import io.github.akane599.enforcedoze.parse.DeviceIdleDump
 import io.github.akane599.enforcedoze.parse.DozeEventLog
 import io.github.akane599.enforcedoze.parse.SensorMode
 import io.github.akane599.enforcedoze.parse.SensorServiceDump
+import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.DozeWorkerApi
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
+import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.ProcessCommandRunner
 import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.util.Locale
+import kotlin.math.abs
 
 /**
  * Reads the app can make from its own process with durable grants (tier T1): fixed argument lists,
@@ -36,17 +41,18 @@ public class LocalReader(private val runner: CommandRunner = ProcessCommandRunne
 }
 
 /**
- * The capability probes of SPEC 4.4. Read-only probes always run; the two that change state (forced
- * idle, sensor restriction) run only when [run] is called with `includeChanges`, record what they found
- * first and put it back afterwards. A probe never throws: failures become [ProbeStatus.FAILED].
+ * The capability probes of SPEC 4.4. Read-only probes always run; those that change state (a lever A
+ * test write, forced idle, sensor restriction, the all-sensors setter) run only when [run] is called with
+ * `includeChanges`, record what they found first and put it back afterwards. A probe never throws: failures become [ProbeStatus.FAILED].
  */
-public class CapabilityProber(private val local: LocalReader, private val selfPackage: String) {
+public class CapabilityProber(private val local: LocalReader, private val selfPackage: String, private val constants: ConstantsWriter) {
     public suspend fun run(worker: DozeWorkerApi?, includeChanges: Boolean): List<ProbeResult> {
         val dump = readDeviceIdle(worker)
         return listOf(
             dump.result,
             probe(KEYS, "device_idle keys") { keys(dump.parsed) },
             probe(VENDOR, "Vendor fields") { vendor(dump.parsed) },
+            probe(WRITE, WRITE_TITLE) { constantsWrite(worker, includeChanges, dump.parsed) },
             probe(FORCE, "Forced deep idle") { forceIdle(worker, includeChanges) },
             probe(RESTRICT, "Sensor restriction") { restrict(worker, includeChanges) },
             probe(PRIVACY, "All-sensors privacy (hidden API)") { sensorPrivacy(worker, includeChanges) },
@@ -55,9 +61,9 @@ public class CapabilityProber(private val local: LocalReader, private val selfPa
             probe(ONE_UI, "One UI version") { oneUi() },
             ProbeResult(
                 PERSISTENCE,
-                "device_config persistence",
+                "Lever A persistence",
                 ProbeStatus.SKIPPED,
-                "Needs a write that is checked 10 minutes later and after a reboot; it runs with the engine (P2).",
+                "Needs the global string to be checked 10 minutes after a write and after a reboot; it runs with the engine (P2).",
             ),
         )
     }
@@ -96,6 +102,58 @@ public class CapabilityProber(private val local: LocalReader, private val selfPa
             dump.motionSensor?.let { "motion sensor: ${it.substringAfter("name=\"").substringBefore('"')}" },
         )
         return ok(VENDOR, "Vendor fields", parts.joinToString("; ").ifEmpty { "None beyond AOSP; no motion sensor." })
+    }
+
+    /**
+     * Lever A (ADR 0012): the app writes the global string, the worker reads it back. The test changes only
+     * `location_accuracy`, which matters only while LOCATING (skipped where `remove_idle_location=true`), and puts
+     * the previous string back exactly, even when the wait is cancelled. Without the worker the current string
+     * cannot be read, so nothing is written.
+     */
+    private suspend fun constantsWrite(worker: DozeWorkerApi?, includeChanges: Boolean, dump: DeviceIdleDump?): ProbeResult {
+        if (!constants.canWrite()) {
+            return missing(WRITE, WRITE_TITLE, "Needs WRITE_SECURE_SETTINGS (granted through the worker at setup, or over ADB).")
+        }
+        if (worker == null) return skipped(WRITE, WRITE_TITLE, "$HELD; no worker to read the string back first, so no test write.")
+        if (!includeChanges) return skipped(WRITE, WRITE_TITLE, "$HELD; the test write changes state and runs only on demand.")
+        val current = dump?.settings?.get(TEST_KEY)?.number
+            ?: return skipped(WRITE, WRITE_TITLE, "$HELD; no $TEST_KEY in dumpsys deviceidle to test with.")
+        val read = worker.deviceIdleSettings()
+        if (!read.isSuccess) return failed(WRITE, WRITE_TITLE, "settings get: ${read.error ?: read.stderr.take(DETAIL_CAP)}")
+        return testWrite(worker, read.stdout.trim(), current)
+    }
+
+    private suspend fun testWrite(worker: DozeWorkerApi, before: String, current: Double): ProbeResult {
+        val parsed = DeviceIdleSettings.parse(before)
+        val target = current + 1
+        val test = LinkedHashMap(parsed.values).apply { put(TEST_KEY, "%.1f".format(Locale.ROOT, target)) }
+        if (!parsed.valid || DeviceIdleSettings.problems(test).isNotEmpty()) {
+            return skipped(WRITE, WRITE_TITLE, "$HELD; the current string is not one the encoder writes, so it was left alone.")
+        }
+        val outcome = try {
+            when {
+                !constants.write(DeviceIdleSettings.encode(test)) -> "refused"
+                awaitSetting(worker) { abs(it - target) < TOLERANCE } -> null
+                else -> "dumpsys did not show it within 2 s"
+            }
+        } finally {
+            constants.write(before.takeUnless { it == "null" })
+        }
+        val after = worker.deviceIdleSettings().stdout.trim()
+        val restored = after == before
+        val detail = "wrote $TEST_KEY=${test[TEST_KEY]} from the app: ${outcome ?: "dumpsys showed it"}; previous string " +
+            if (restored) "restored exactly" else "NOT restored (now `$after`, was `$before`)"
+        return ProbeResult(WRITE, WRITE_TITLE, if (outcome == null && restored) ProbeStatus.OK else ProbeStatus.FAILED, detail)
+    }
+
+    /** `DeviceIdleController` reloads the string on a content-observer callback, shortly after the write. */
+    private suspend fun awaitSetting(worker: DozeWorkerApi, matches: (Double) -> Boolean): Boolean {
+        repeat(SETTLE_ATTEMPTS) {
+            val value = DeviceIdleDump.parse(worker.readDeviceIdle()).settings[TEST_KEY]?.number
+            if (value != null && matches(value)) return true
+            delay(SETTLE_INTERVAL_MILLIS)
+        }
+        return false
     }
 
     private suspend fun forceIdle(worker: DozeWorkerApi?, includeChanges: Boolean): ProbeResult {
@@ -215,6 +273,10 @@ public class CapabilityProber(private val local: LocalReader, private val selfPa
 
     private fun skipped(id: String, title: String, detail: String) = ProbeResult(id, title, ProbeStatus.SKIPPED, detail)
 
+    private fun missing(id: String, title: String, detail: String) = ProbeResult(id, title, ProbeStatus.MISSING, detail)
+
+    private fun failed(id: String, title: String, detail: String) = ProbeResult(id, title, ProbeStatus.FAILED, detail)
+
     public companion object {
         public const val READ: String = "deviceidle.read"
         public const val KEYS: String = "deviceidle.keys"
@@ -225,7 +287,15 @@ public class CapabilityProber(private val local: LocalReader, private val selfPa
         public const val EVENTS: String = "eventlog.read"
         public const val HISTORY: String = "batterystats.history"
         public const val ONE_UI: String = "oneui.version"
-        public const val PERSISTENCE: String = "deviceconfig.persistence"
+        public const val WRITE: String = "constants.write"
+        public const val PERSISTENCE: String = "constants.persistence"
+
+        private const val WRITE_TITLE = "Lever A write (global string)"
+        private const val HELD = "WRITE_SECURE_SETTINGS held"
+        private const val TEST_KEY = "location_accuracy"
+        private const val SETTLE_ATTEMPTS = 20
+        private const val SETTLE_INTERVAL_MILLIS = 100L
+        private const val TOLERANCE = 0.01
 
         private const val HISTORY_HEADER = "Battery History"
         private const val DETAIL_CAP = 200

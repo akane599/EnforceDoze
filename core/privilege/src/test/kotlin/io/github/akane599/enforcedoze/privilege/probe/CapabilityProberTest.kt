@@ -2,11 +2,13 @@
 package io.github.akane599.enforcedoze.privilege.probe
 
 import com.google.common.truth.Truth.assertThat
+import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.FakeDozeWorker
 import io.github.akane599.enforcedoze.privilege.Tier
 import io.github.akane599.enforcedoze.privilege.WorkerSource
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
+import io.github.akane599.enforcedoze.privilege.api.DeviceIdleSettings
 import io.github.akane599.enforcedoze.privilege.api.StreamResult
 import io.github.akane599.enforcedoze.testing.fixtures.Fixtures
 import kotlinx.coroutines.test.runTest
@@ -34,8 +36,36 @@ class CapabilityProberTest {
         override fun stream(argv: List<String>, timeoutMillis: Long, sink: OutputStream): StreamResult = error("not used")
     }
 
-    private fun prober(answers: Map<List<String>, String> = emptyMap()) =
-        CapabilityProber(LocalReader(FakeRunner(answers)), "com.android.shell")
+    /**
+     * Stands in for `Settings.Global` and `DeviceIdleController`: a written string shows up in the worker's
+     * read and, when [applies], in the next `dumpsys deviceidle` as the new `location_accuracy`.
+     */
+    private class FakeConstants(
+        private val worker: FakeDozeWorker?,
+        private val granted: Boolean = true,
+        private val applies: Boolean = true,
+    ) : ConstantsWriter {
+        val written = mutableListOf<String?>()
+        private val stockDump = worker?.deviceIdle.orEmpty()
+
+        override fun canWrite(): Boolean = granted
+
+        override fun write(value: String?): Boolean {
+            written += value
+            val target = worker ?: return true
+            target.globalConstants = value
+            val accuracy = value?.let { DeviceIdleSettings.parse(it).values["location_accuracy"] }
+            target.deviceIdle = if (applies && accuracy != null) {
+                stockDump.replace(Regex("location_accuracy=\\S+"), "location_accuracy=$accuracy")
+            } else {
+                stockDump
+            }
+            return true
+        }
+    }
+
+    private fun prober(answers: Map<List<String>, String> = emptyMap(), constants: ConstantsWriter = FakeConstants(null, granted = false)) =
+        CapabilityProber(LocalReader(FakeRunner(answers)), "com.android.shell", constants)
 
     private fun List<ProbeResult>.status(id: String) = single { it.id == id }.status
 
@@ -45,13 +75,15 @@ class CapabilityProberTest {
     fun `no grants and no worker reports what is missing and never throws`() = runTest {
         val results = prober().run(worker = null, includeChanges = true)
         assertThat(results.map { it.id }).containsExactly(
-            CapabilityProber.READ, CapabilityProber.KEYS, CapabilityProber.VENDOR, CapabilityProber.FORCE,
+            CapabilityProber.READ, CapabilityProber.KEYS, CapabilityProber.VENDOR, CapabilityProber.WRITE, CapabilityProber.FORCE,
             CapabilityProber.RESTRICT, CapabilityProber.PRIVACY, CapabilityProber.EVENTS, CapabilityProber.HISTORY,
             CapabilityProber.ONE_UI, CapabilityProber.PERSISTENCE,
         ).inOrder()
         assertThat(results.status(CapabilityProber.READ)).isEqualTo(ProbeStatus.MISSING)
         assertThat(results.detail(CapabilityProber.READ)).contains("Permission Denial")
         assertThat(results.status(CapabilityProber.KEYS)).isEqualTo(ProbeStatus.SKIPPED)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.MISSING)
+        assertThat(results.detail(CapabilityProber.WRITE)).contains("WRITE_SECURE_SETTINGS")
         assertThat(results.status(CapabilityProber.FORCE)).isEqualTo(ProbeStatus.SKIPPED)
         assertThat(results.status(CapabilityProber.EVENTS)).isEqualTo(ProbeStatus.MISSING)
         assertThat(results.status(CapabilityProber.HISTORY)).isEqualTo(ProbeStatus.MISSING)
@@ -97,6 +129,74 @@ class CapabilityProberTest {
         assertThat(results.status(CapabilityProber.PRIVACY)).isEqualTo(ProbeStatus.OK)
         assertThat(worker.calls.filter { it.startsWith("force") || it.startsWith("restrict") || it.startsWith("sensorsOff") })
             .isEmpty()
+    }
+
+    @Test
+    fun `the lever A write needs the worker to read the string back first`() = runTest {
+        val constants = FakeConstants(null)
+        val results = prober(constants = constants).run(worker = null, includeChanges = true)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.SKIPPED)
+        assertThat(results.detail(CapabilityProber.WRITE)).contains("WRITE_SECURE_SETTINGS held")
+        assertThat(constants.written).isEmpty()
+    }
+
+    @Test
+    fun `the lever A write is skipped unless asked for`() = runTest {
+        val worker = FakeDozeWorker().apply { deviceIdle = emulator.text("deviceidle.txt") }
+        val constants = FakeConstants(worker)
+        val results = prober(constants = constants).run(worker, includeChanges = false)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.SKIPPED)
+        assertThat(constants.written).isEmpty()
+    }
+
+    @Test
+    fun `the lever A write shows in dumpsys and the absent setting is deleted again`() = runTest {
+        val worker = FakeDozeWorker().apply { deviceIdle = emulator.text("deviceidle.txt") }
+        val constants = FakeConstants(worker)
+        val results = prober(constants = constants).run(worker, includeChanges = true)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.OK)
+        assertThat(results.detail(CapabilityProber.WRITE)).contains("restored exactly")
+        assertThat(constants.written).hasSize(2)
+        assertThat(constants.written[0]).matches("location_accuracy=\\d+\\.\\d")
+        assertThat(constants.written[1]).isNull()
+        assertThat(worker.globalConstants).isNull()
+    }
+
+    @Test
+    fun `the owner's string is put back unchanged after the lever A write`() = runTest {
+        val owner = "light_after_inactive_to=30000,inactive_to=180000,skip_sensing=true"
+        val worker = FakeDozeWorker().apply {
+            deviceIdle = emulator.text("deviceidle.txt")
+            globalConstants = owner
+        }
+        val constants = FakeConstants(worker)
+        val results = prober(constants = constants).run(worker, includeChanges = true)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.OK)
+        assertThat(constants.written[0]).startsWith("$owner,location_accuracy=")
+        assertThat(constants.written[1]).isEqualTo(owner)
+        assertThat(worker.globalConstants).isEqualTo(owner)
+    }
+
+    @Test
+    fun `a malformed string is left alone`() = runTest {
+        val worker = FakeDozeWorker().apply {
+            deviceIdle = emulator.text("deviceidle.txt")
+            globalConstants = "inactive_to=180000,oops"
+        }
+        val constants = FakeConstants(worker)
+        val results = prober(constants = constants).run(worker, includeChanges = true)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.SKIPPED)
+        assertThat(constants.written).isEmpty()
+    }
+
+    @Test
+    fun `a write that never shows in dumpsys fails but is still undone`() = runTest {
+        val worker = FakeDozeWorker().apply { deviceIdle = emulator.text("deviceidle.txt") }
+        val constants = FakeConstants(worker, applies = false)
+        val results = prober(constants = constants).run(worker, includeChanges = true)
+        assertThat(results.status(CapabilityProber.WRITE)).isEqualTo(ProbeStatus.FAILED)
+        assertThat(results.detail(CapabilityProber.WRITE)).contains("did not show")
+        assertThat(worker.globalConstants).isNull()
     }
 
     @Test

@@ -129,7 +129,7 @@ public class PrivilegeController internal constructor(
                     WorkerSource.ROOT to RootWorkerBinder(app),
                 ),
                 session = WorkerSession(scope),
-                prober = CapabilityProber(LocalReader(), app.packageName),
+                prober = CapabilityProber(LocalReader(), app.packageName, SettingsConstantsWriter(app)),
             )
         }
     }

@@ -55,7 +55,8 @@ public data class CapabilityReport(
         val worker = workerSource?.let { " through $it, worker uid $workerUid" }.orEmpty()
         appendLine("- Tier ${tier.name}$worker")
         appendLine(
-            "- Probes that change state (force idle, sensor restriction) ${if (includedChanges) "ran and were undone" else "were skipped"}",
+            "- Probes that change state (lever A test write, forced idle, sensor restriction, sensor privacy setter) " +
+                if (includedChanges) "ran and were undone" else "were skipped",
         )
         appendLine()
         appendLine("| Probe | Result | Detail |")

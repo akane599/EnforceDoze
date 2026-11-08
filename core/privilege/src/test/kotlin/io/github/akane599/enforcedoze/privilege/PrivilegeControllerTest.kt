@@ -70,7 +70,7 @@ class PrivilegeControllerTest {
             root = this.root,
             binders = binders,
             session = WorkerSession(scope.backgroundScope),
-            prober = CapabilityProber(LocalReader(DeniedRunner), "io.github.akane599.enforcedoze"),
+            prober = CapabilityProber(LocalReader(DeniedRunner), "io.github.akane599.enforcedoze", NoConstants),
         )
     }
 
@@ -180,4 +180,10 @@ class PrivilegeControllerTest {
         runCurrent()
         assertThat(env.controller.state.value.worker).isEqualTo(WorkerStatus.Bound(WorkerSource.SHIZUKU, 2000))
     }
+}
+
+private object NoConstants : ConstantsWriter {
+    override fun canWrite(): Boolean = false
+
+    override fun write(value: String?): Boolean = false
 }
