@@ -1,6 +1,6 @@
 # 0018. Evidence sources and how they are collected
 
-- Status: Accepted
+- Status: Accepted; amended by 0019 (alarm wakeups and wakelock holders)
 - Date: 2026-11-08
 - Phase: P3
 - Spec: 8.1, 8.2, 8.3, 15 (the app's own wakeups)
@@ -47,7 +47,8 @@ it without waking the phone.
 - `device_idle=full|light|off` (`noteDeviceIdleMode`) is the fallback for Doze states. A maintenance
   window shows as `off` between `full` stretches.
 - Wakers per app, cut to the session:
-  - wakeup alarms (`wakeupap=<uid>`);
+  - wakeup alarms (`wakeupap=<uid>`). Wrong: `wakeupap` is a network wakeup, and alarm wakeups
+    come from `dumpsys alarm` (ADR 0019);
   - jobs and syncs (`±job`, `±sync`: count and time);
   - long wakelocks (`±longwake`);
   - wakelock time of the first holder (`+wake_lock=<uid>:"tag"` to `-wake_lock`). Without
@@ -103,4 +104,4 @@ counter.
 - Room gains `transition`, `waker` and `sensor_snapshot` tables. The session row gains battery,
   drain, the app's own wakeups, the collection time and the coverage of each source. The schema
   still changes in place before 1.0.0.
-- Revisit if a later API stops printing `NEXT:`, or if One UI's history lacks `wakeupap`.
+- Revisit if a later API stops printing `NEXT:`.
