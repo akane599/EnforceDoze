@@ -81,6 +81,7 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `app/` | Upstream 1.10.2 Java app (package `com.akylas.enforcedoze`, app id `io.github.akane599.enforcedoze`), replaced module by module (SPEC 12.1, 12.3) |
 | `core/parse` | Pure-JVM parsers for `dumpsys` and the event log, one per source (SPEC 8, 12.4) |
 | `core/profile`, `core/doze` | Pure-JVM profiles, plan and guardrails; the engine actor behind ports (SPEC 5, 6, ADR 0015) |
+| `core/doze-android` | The engine's Android side: device port over the privilege layer, hold-off sources, host |
 | `core/privilege-api`, `core/privilege-worker`, `core/privilege` | `IDozeWorker` contract; the worker (only place for hidden APIs, runtime-only); tiers, clients, session, probes (SPEC 4, ADR 0009) |
 | `core/hidden-api-stubs`, `testing/fixtures` | compileOnly framework stubs for the worker; fixture access for JVM tests |
 | `config/detekt`, `.editorconfig`, `tools/ci/` | detekt overrides, ktlint style, CI scripts and the forbidden-call baseline |

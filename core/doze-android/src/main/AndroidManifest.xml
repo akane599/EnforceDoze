@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- The hotspot hold-off (SPEC 5.5): Wi-Fi sends android.net.wifi.WIFI_AP_STATE_CHANGED only to
+         holders of this normal permission (SoftApManager.updateApState, AOSP android-17.0.0_r1). It
+         reads Wi-Fi state and opens no network connection. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- The keep-awake hold-off reads usage events (SPEC 5.5). Usage access is a T1 app op granted by
+         the owner or the worker, never at install; without it the query returns nothing. Also
+         declared by :core:privilege. -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+</manifest>

@@ -18,6 +18,11 @@ public interface ConstantsWriter {
 
     /** Stores [value] as the whole string, or deletes the setting when it is null. False when refused. */
     public fun write(value: String?): Boolean
+
+    public companion object {
+        /** The writer the engine uses: `Settings.Global` from the app's process. */
+        public fun create(context: Context): ConstantsWriter = SettingsConstantsWriter(context.applicationContext)
+    }
 }
 
 internal class SettingsConstantsWriter(private val context: Context) : ConstantsWriter {

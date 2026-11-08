@@ -42,6 +42,10 @@ require :core:profile runtimeClasspath :core:parse
 # ADR 0015: the engine is pure JVM behind ports; only its Android adapters touch privilege or Android.
 forbid :core:doze runtimeClasspath ':core:privilege[a-z-]*' ':core:doze-android' ':core:data' ':core:hidden-api-stubs' ':feature:[a-z-]+' :app
 require :core:doze runtimeClasspath :core:profile
+# The engine's Android side sits below the app and above the privilege layer, and sees no hidden API.
+forbid :core:doze-android debugCompileClasspath :core:privilege-worker :core:hidden-api-stubs ':feature:[a-z-]+' :app
+require :core:doze-android debugRuntimeClasspath :core:doze
+forbid :core:privilege debugRuntimeClasspath ':core:doze[a-z-]*' ':core:data'
 
 if (( status == 0 )); then echo "Module boundaries hold."; fi
 exit $status
