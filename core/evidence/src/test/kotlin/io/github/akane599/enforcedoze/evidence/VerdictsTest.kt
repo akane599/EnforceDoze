@@ -199,3 +199,22 @@ class VerdictsTest {
         ).inOrder()
     }
 }
+
+class ExpectedWalkTest {
+    @Test
+    fun `forced idle expects deep at once`() {
+        assertThat(ExpectedWalk.of(forcedIdle = true)).isEqualTo(Duration.ZERO)
+    }
+
+    @Test
+    fun `the profile's timers come first and stock fills the rest`() {
+        val profile = mapOf("inactive_to" to "30000", "idle_after_inactive_to" to "30000", "idle_to" to "60000")
+        val stock = mapOf("inactive_to" to "+30m0s0ms", "sensing_to" to "+4m0s0ms", "locating_to" to "+30s0ms")
+        assertThat(ExpectedWalk.of(false, profile, stock)).isEqualTo(Duration.ofSeconds(30 + 30 + 240 + 30))
+    }
+
+    @Test
+    fun `an unknown timer leaves the walk unknown`() {
+        assertThat(ExpectedWalk.of(false, mapOf("inactive_to" to "30000"))).isNull()
+    }
+}

@@ -34,7 +34,8 @@ room {
 
 dependencies {
     api(project(":core:doze"))
-    implementation(libs.room.runtime)
+    // EvidenceDatabase is a RoomDatabase in the public API.
+    api(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)

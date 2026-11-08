@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "15a8a40e5585df54e507420a13117c71",
+    "identityHash": "bc3fec7029bb3c0228f00c79fb3ab427",
     "entities": [
       {
         "tableName": "action",
@@ -165,11 +165,117 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_event_time` ON `${TABLE_NAME}` (`time`)"
           }
         ]
+      },
+      {
+        "tableName": "session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `profileId` TEXT, `pluggedAtStart` INTEGER NOT NULL, `verdict` TEXT, `cause` TEXT, `expectedToDeepMillis` INTEGER, `timeToDeepMillis` INTEGER, `lateByMillis` INTEGER, `deepShare` REAL NOT NULL, `maintenanceWindows` INTEGER NOT NULL, `motionResets` INTEGER NOT NULL, `breaks` TEXT NOT NULL, `note` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pluggedAtStart",
+            "columnName": "pluggedAtStart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "verdict",
+            "columnName": "verdict",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cause",
+            "columnName": "cause",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "expectedToDeepMillis",
+            "columnName": "expectedToDeepMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "timeToDeepMillis",
+            "columnName": "timeToDeepMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lateByMillis",
+            "columnName": "lateByMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deepShare",
+            "columnName": "deepShare",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maintenanceWindows",
+            "columnName": "maintenanceWindows",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motionResets",
+            "columnName": "motionResets",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "breaks",
+            "columnName": "breaks",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_session_start",
+            "unique": false,
+            "columnNames": [
+              "start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_session_start` ON `${TABLE_NAME}` (`start`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15a8a40e5585df54e507420a13117c71')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc3fec7029bb3c0228f00c79fb3ab427')"
     ]
   }
 }
