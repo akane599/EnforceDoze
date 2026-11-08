@@ -43,6 +43,7 @@ import io.github.akane599.enforcedoze.design.SectionHeader
 import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.design.StripAxis
+import io.github.akane599.enforcedoze.design.Tag
 import io.github.akane599.enforcedoze.design.TimelineStrip
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.Verdict
@@ -139,12 +140,7 @@ private fun BoardLine(row: BoardRow, formats: Formats, wide: Boolean) {
     val palette = Ed.palette
     val from: @Composable () -> Unit = {
         if (row.from == null) {
-            Text(
-                stringResource(R.string.home_now),
-                style = MaterialTheme.typography.labelLarge,
-                color = palette.onAccent,
-                modifier = Modifier.background(palette.accent, MaterialTheme.shapes.extraSmall).padding(horizontal = 7.dp, vertical = 1.dp),
-            )
+            Tag(stringResource(R.string.home_now))
         } else {
             Text(formats.clock(row.from), style = MaterialTheme.typography.titleLarge, color = palette.ink)
         }

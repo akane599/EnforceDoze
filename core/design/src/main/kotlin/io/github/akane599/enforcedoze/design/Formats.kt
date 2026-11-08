@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import java.time.Instant
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -22,6 +23,9 @@ public class Formats(private val context: Context, private val zone: ZoneId = Zo
 
     public fun clock(millis: Long): String =
         DateTimeFormatter.ofPattern(clockPattern, locale).withZone(zone).format(Instant.ofEpochMilli(millis))
+
+    /** A wall-clock time with no date, such as a plan's window edge, on the owner's clock format. */
+    public fun time(time: LocalTime): String = DateTimeFormatter.ofPattern(clockPattern, locale).format(time)
 
     /** The hour alone for strip axes: "02" on a 24-hour clock, "2 AM" on a 12-hour one. */
     public fun hour(millis: Long): String {

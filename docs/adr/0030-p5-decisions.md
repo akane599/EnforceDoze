@@ -58,3 +58,20 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   blank golden cannot be recorded silently.
 - **Turkish puts `%` before the number** ("%62") and English after it ("62%"). These are the two
   languages' rules, kept as string resources rather than in code.
+- **`Tag` is a shared part of `:core:design`.** Home's "now" marker and the profile slot tags are
+  the same thing: an accent fill for the current item, a hairline outline for a quiet label such as
+  Recommended or Custom (ADR 0028).
+- **An engine action reports one shared outcome** (`ActionOutcome` in `:core:ui`): done,
+  unavailable with a reason, or failed with the raw error. Every feature shows a failed apply the
+  same way and never claims it worked (SPEC 0.2, honesty).
+- **A custom profile's cost is derived from its levers**, in a fixed order: forced idle, allowlist,
+  deep-idle window, sensors. Built-ins keep their written sentences (SPEC 6.1).
+- **The editor shows each timing in its own unit** (minutes, seconds, hours or a factor) and stores
+  milliseconds. A blank field leaves the key to the phone (ADR 0012). A decimal comma is accepted,
+  because the owner types in Turkish.
+- **A custom profile no slot uses can be deleted**; Delete is disabled while a slot uses it.
+  SPEC 9.1 lists clone and edit; deleting is the undo of a clone (SPEC 0.2: every change undoable).
+  Leaving the editor with unsaved changes asks first.
+- **Profile detail on a narrow screen folds the stock and profile columns into one line** ("Stock:
+  30 min · Night: 2 min"). From 360 dp × font scale it is a table. A key the profile leaves alone
+  reads "unchanged", and an unknown stock value is left out rather than shown as a dash.

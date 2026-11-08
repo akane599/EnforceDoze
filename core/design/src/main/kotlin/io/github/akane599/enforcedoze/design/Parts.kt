@@ -310,3 +310,31 @@ public fun EdTopBar(
         )
     }
 }
+
+/**
+ * A short label set like a timetable's service mark. The accent marks the current item, such as the slot
+ * running now (ADR 0028); otherwise a hairline outline in quiet ink.
+ */
+@Composable
+public fun Tag(text: String, modifier: Modifier = Modifier, accent: Boolean = true) {
+    val palette = Ed.palette
+    val shape = MaterialTheme.shapes.extraSmall
+    Text(
+        text,
+        style = MaterialTheme.typography.labelLarge,
+        color = if (accent) palette.onAccent else palette.quiet,
+        maxLines = 1,
+        modifier = modifier
+            .then(
+                if (accent) {
+                    Modifier.background(
+                        palette.accent,
+                        shape,
+                    )
+                } else {
+                    Modifier.border(BorderStroke(Space.hair, palette.hairline), shape)
+                },
+            )
+            .padding(horizontal = 7.dp, vertical = 1.dp),
+    )
+}
