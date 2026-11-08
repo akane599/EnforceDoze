@@ -27,6 +27,12 @@ public data class DeviceIdleDump(
     /** The motion sensor description, or null when the device has none (`mMotionSensor=null`). */
     val motionSensor: String? get() = fields["mMotionSensor"]?.takeUnless { it == "null" }
 
+    /**
+     * `mInactiveTimeout`: the INACTIVE time the next screen off uses, latched from `inactive_to` when
+     * the device last became active (ADR 0016). Printed as `+15s0ms` on API 35–37 (fixtures).
+     */
+    val inactiveTimeoutMillis: Long? get() = fields["mInactiveTimeout"]?.let(AndroidDuration::parseMillis)
+
     /** Settings keys this build reads that AOSP does not (One UI adds `skip_sensing`, for example). */
     val extraSettingKeys: Set<String> get() = settings.keys - AospDeviceIdle.KEYS
 

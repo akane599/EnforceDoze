@@ -51,4 +51,29 @@ class DozeEventLogTest {
         assertThat(log.firstTime).isEqualTo(EventTime.Epoch(1_794_082_053_012))
         assertThat(DozeEventLog.parse("--------- beginning of events\n").firstTime).isNull()
     }
+
+    @Test fun copyKeepsTheFirstLineAndTheDozeLines() {
+        val text = """
+            |--------- beginning of events
+            |         1794082050.000   587   587 I am_proc_start: [0,1,2]
+            |         1794082053.012   587   587 I device_idle: [1,no activity]
+            |         1794082053.100   587   587 I am_proc_died: [0,1,2]
+            |         1794082053.512   587  1496 I device_idle_light_step: 
+        """.trimMargin()
+        val copy = DozeEventLog.copyLines(text)
+        assertThat(copy.lines()).hasSize(3)
+        val log = DozeEventLog.parse(copy)
+        assertWithMessage("the copy covers what the read covered").that(log.firstTime).isEqualTo(EventTime.Epoch(1_794_082_050_000))
+        assertThat(log.events.map { it.tag }).containsExactly(DozeTag.DEEP, DozeTag.LIGHT_STEP).inOrder()
+        assertThat(DozeEventLog.copyLines("")).isEmpty()
+    }
+
+    @Test fun copyOfTheEmulatorWalkKeepsEveryDozeEvent() {
+        val text = Fixtures.capture("sdk_gphone64_x86_64", "api37_CE2A.260420.051.A3").text("events.txt")
+        val full = DozeEventLog.parse(text)
+        val copied = DozeEventLog.parse(DozeEventLog.copyLines(text))
+        assertThat(copied.events).isEqualTo(full.events)
+        assertThat(copied.firstTime).isEqualTo(full.firstTime)
+        assertThat(copied.otherLines).isAtMost(1)
+    }
 }

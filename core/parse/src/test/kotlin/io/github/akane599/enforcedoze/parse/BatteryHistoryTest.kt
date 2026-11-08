@@ -91,6 +91,10 @@ class BatteryHistoryTest {
         """.trimMargin()
         val history = BatteryHistory.parse(text, ZoneId.of("Europe/Istanbul"), 2020)
         assertThat(history.next).isEqualTo(123_456_789)
+        assertThat(BatteryHistory.nextCursor(text)).isEqualTo(123_456_789)
+        assertWithMessage(
+            "a read cut off before NEXT does not advance the cursor",
+        ).that(BatteryHistory.nextCursor(text.substringBefore("  NEXT"))).isNull()
         assertThat(history.lines[1].time).isEqualTo(epoch("2026-11-08T05:01:31.500", ZoneId.of("Europe/Istanbul")))
         assertThat(history.lines[2].items).containsExactly(
             HistoryItem.Value("device_idle", "full"),

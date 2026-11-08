@@ -43,6 +43,7 @@ class DeviceIdleDumpTest {
         assertThat(dump.screenOn).isTrue()
         assertThat(dump.sections.keys).contains("Whitelist (except idle) system apps")
         assertThat(dump.fields["mNextLightIdleDelay"]).isEqualTo("+5m0s0ms")
+        assertThat(dump.inactiveTimeoutMillis).isEqualTo(15_000)
     }
 
     @Test fun forcedDumpShowsForceAndOverride() {
@@ -60,6 +61,7 @@ class DeviceIdleDumpTest {
         assertThat(dump.settings["location_accuracy"]?.number).isEqualTo(20.0)
         assertThat(dump.motionSensor).contains("smd  Wakeup")
         assertThat(dump.useMotionSensor).isTrue()
+        assertThat(dump.inactiveTimeoutMillis).isEqualTo(180_000)
         assertThat(dump.unknownLines.map { it.trim() }).containsExactly("Doze Allowlist Gatekeeper: false")
         assertThat(dump.sections).containsKey("Allowlist History")
         assertThat(dump.sections.getValue("Allowlist History").first()).isEqualTo("- history count : 100")

@@ -108,6 +108,20 @@ public data class DozeEventLog(
             return DozeEventLog(events, unparsed, other, first)
         }
 
+        /**
+         * What a copy at a maintenance window keeps of a read (ADR 0020): the first timestamped line,
+         * which marks where the read's coverage starts, and every `device_idle*` line.
+         */
+        public fun copyLines(text: String): String {
+            var seenStamp = false
+            return text.lineSequence().filter { line ->
+                val isStamped = stamped(line) != null
+                val keep = (isStamped && !seenStamp) || DOZE_TAG.containsMatchIn(line)
+                if (isStamped) seenStamp = true
+                keep
+            }.joinToString("\n")
+        }
+
         /** The time, tag and payload of a log line in either format. */
         // Destructuring names the regex groups, which reads better than indices.
         @Suppress("DestructuringDeclarationWithTooManyEntries")

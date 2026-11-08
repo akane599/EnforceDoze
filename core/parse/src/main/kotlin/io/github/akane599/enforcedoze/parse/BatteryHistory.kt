@@ -85,6 +85,13 @@ public data class BatteryHistory(
             return reader.result()
         }
 
+        /**
+         * The `NEXT:` of a `--history-start` read without parsing its records: the screen-off read only
+         * advances the cursor (ADR 0020). Null when the read was cut off before it.
+         */
+        public fun nextCursor(text: String): Long? =
+            text.lineSequence().mapNotNull { NEXT.matchEntire(it)?.groupValues?.get(1)?.toLongOrNull() }.lastOrNull()
+
         /** Splits on spaces outside quotes; a doubled quote inside a quoted tag is part of the tag. */
         internal fun tokens(body: String): List<String> {
             val out = mutableListOf<String>()
