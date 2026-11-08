@@ -20,9 +20,9 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
- * The engine's composition root for the process, wired by hand until the first feature module brings
- * Hilt (docs/questions.md). The engine runs only while [EngineService] is up; [start] and [stop] are
- * called from there.
+ * The engine's composition root for the process. It is wired by hand while the app has one service; Hilt
+ * (SPEC 12.2) arrives with the first feature module in P5. The engine runs only while [EngineService] is
+ * up; [start] and [stop] are called from there.
  */
 internal class EngineGraph private constructor(context: Context) {
     val app: Context = context.applicationContext

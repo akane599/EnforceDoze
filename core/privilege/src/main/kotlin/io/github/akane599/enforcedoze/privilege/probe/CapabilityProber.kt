@@ -63,7 +63,8 @@ public class CapabilityProber(private val local: LocalReader, private val selfPa
                 PERSISTENCE,
                 "Lever A persistence",
                 ProbeStatus.SKIPPED,
-                "Needs the global string to be checked 10 minutes after a write and after a reboot; it runs with the engine (P2).",
+                "Not a one-off probe: the engine reads the global string back at start and at every screen off " +
+                    "and logs a lost write as drift (SPEC 5.6).",
             ),
         )
     }
