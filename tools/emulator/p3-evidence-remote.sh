@@ -108,7 +108,11 @@ start_server() {
 }
 
 started_emulator=0
-if ! adb devices | grep -q '^emulator-'; then
+if adb devices | grep -q '^emulator-'; then
+  # Only the project's own AVD (ADR 0021): an emulator another project started is left alone.
+  running=$(adb emu avd name | head -1 | tr -d '\r')
+  [[ $running == "$avd" ]] || { log "a different emulator ($running) is running; leaving it alone"; exit 1; }
+else
   log "starting $avd"
   nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
     -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &

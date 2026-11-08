@@ -29,7 +29,7 @@ import java.util.zip.ZipFile
  *         --es cmd profile --es arg test-everyday
  *
  * Start the engine first with `am start -n io.github.akane599.enforcedoze/io.github.akane599.enforcedoze.app.DebugStartActivity`.
- * Commands: `stop`, `status`, `profile <id>`, `plan <day>[,<night>,<HH:mm>,<HH:mm>]`, `follow-plan`,
+ * Commands: `stop`, `status`, `profile <id>`, `plan <day>[,<night>,<HH:mm[:ss]>,<HH:mm[:ss]>]`, `follow-plan`,
  * `night-start` (as if the window-start alarm arrived), `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
@@ -93,7 +93,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
             val plan = arg?.let(::plan)
             val unknown = listOfNotNull(plan?.dayProfileId, plan?.night?.profileId).filter { profiles.profile(it) == null }
             when {
-                plan == null -> "usage: plan <day>[,<night>,<HH:mm>,<HH:mm>]"
+                plan == null -> "usage: plan <day>[,<night>,<HH:mm[:ss]>,<HH:mm[:ss]>]"
                 unknown.isNotEmpty() -> "unknown profile ${unknown.joinToString()}"
                 else -> after(host) { setPlan(plan, SwitchReason.OWNER) }
             }
@@ -112,7 +112,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
 
     private fun rows(arg: String?): Int = arg?.toIntOrNull() ?: DEFAULT_ROWS
 
-    /** `everyday` or `everyday,night,23:00,07:30`; null when it does not read. */
+    /** `everyday` or `everyday,night,23:00,07:30` (seconds allowed, for the gate); null when it does not read. */
     private fun plan(arg: String): Plan? {
         val day = arg.substringBefore(',').trim()
         if (',' !in arg) return Plan(day)
@@ -143,7 +143,8 @@ class DebugCommandReceiver : BroadcastReceiver() {
     }
 
     private fun describe(status: EngineStatus): String = buildString {
-        appendLine("started=${status.started} mode=${status.mode} profile=${status.profileId} screenOn=${status.screenOn}")
+        append("started=${status.started} mode=${status.mode} profile=${status.profileId}")
+        appendLine(" screenOn=${status.screenOn} locked=${status.locked}")
         appendLine("holdOffs=${status.holdOffs.sorted()} guarded=${status.guarded.sorted()}")
         appendLine("missingKeys=${status.missingKeys.sorted()}")
         appendLine("constantsWriter=${status.constantsWriter} previous=${status.previousCaptured} stock=${status.stockCaptured}")
@@ -233,7 +234,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
         const val CMD = "cmd"
         const val ARG = "arg"
         const val DEFAULT_ROWS = 20
-        val NIGHT = Regex("""([^,\s]+)\s*,\s*(\d{2}:\d{2})\s*,\s*(\d{2}:\d{2})""")
+        val NIGHT = Regex("""([^,\s]+)\s*,\s*(\d{2}:\d{2}(?::\d{2})?)\s*,\s*(\d{2}:\d{2}(?::\d{2})?)""")
         const val TOP_WAKERS = 5
 
         /** Under the 60 s a background broadcast may take. */

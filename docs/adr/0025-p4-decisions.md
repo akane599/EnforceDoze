@@ -31,6 +31,9 @@ ADR 0023: choices that are cheap to reverse are made by the agent, each with a o
   protected broadcasts are in those filters, so no other app can reach them.
 - **The engine finishes each command before it answers.** It saves and publishes the status first,
   so a caller that reads the status right after a command sees that command's result.
+- **The P4 emulator gate turns on a Swipe lock screen** (`locksettings set-disabled false`) and
+  puts the AVD's setting back afterwards. With None, SystemUI unlocks at every wake, so "the lock
+  screen keeps the night" could not be shown.
 
 ## Consequences
 
