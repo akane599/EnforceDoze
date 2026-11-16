@@ -1,0 +1,16 @@
+[11:52:09] load 0.14 on 16 cores; busy processes: none; memory used 3,5Gi of 15Gi
+[11:52:09] starting ed-api37
+[11:52:24] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[11:53:02] cold start timeToInitialDisplayMs median: 190
+[11:53:02] PASS cold start under 500 ms
+[11:53:05] PASS Shizuku server running
+[11:53:20] PASS DUMP granted through the worker
+[11:53:20] PASS WRITE_SECURE_SETTINGS granted through the worker
+[11:53:20] PASS usage access set through the worker
+[11:53:26] PASS both tiles are in Quick Settings
+[11:53:29] PASS sensors still on after the cancelled confirmation
+[11:53:29] PASS no crash
+[11:53:29] done: 0 failed
+[11:53:29] cleanup
+[11:53:30] after: sync=none device_idle_constants=null
+[11:53:30] shutting down the emulator

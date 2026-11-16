@@ -1,0 +1,14 @@
+--------- beginning of main
+11-16 11:53:04.267  5919  5919 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-16 11:53:04.270  5919  5919 I AndroidRuntime: Using default boot image
+11-16 11:53:04.273  5919  5919 I AndroidRuntime: Leaving lock profiling enabled
+11-16 11:53:04.387  5919  5919 D AndroidRuntime: Calling main entry rikka.shizuku.server.ShizukuService
+11-16 11:53:04.579  5954  5954 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-16 11:53:04.581  5954  5954 I AndroidRuntime: Using default boot image
+11-16 11:53:04.581  5954  5954 I AndroidRuntime: Leaving lock profiling enabled
+11-16 11:53:04.682  5954  5954 D AndroidRuntime: Calling main entry moe.shizuku.starter.ServiceStarter
+11-16 11:53:24.565  6076  6076 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-16 11:53:24.567  6076  6076 I AndroidRuntime: Using default boot image
+11-16 11:53:24.567  6076  6076 I AndroidRuntime: Leaving lock profiling enabled
+11-16 11:53:24.614  6076  6076 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+11-16 11:53:25.683  6076  6076 D AndroidRuntime: Shutting down VM

@@ -1,0 +1,80 @@
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.benchmark.StartupBenchmark
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+io.github.akane599.enforcedoze.benchmark.StartupBenchmark:
+INSTRUMENTATION_STATUS: test=coldStart
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark/StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_max=206.804081
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_median=190.0219265
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_min=187.59354
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_stddev=7.45740089255377
+INSTRUMENTATION_STATUS: android.studio.display.benchmark=WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+StartupBenchmark_coldStart
+  timeToInitialDisplayMs   [min 187.6](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace),   [median 190.0](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace),   [max 206.8](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+    Traces: Iteration [0](file://StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace) [1](file://StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace) [2](file://StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace) [3](file://StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace) [4](file://StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace) [5](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace) [6](file://StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace) [7](file://StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace) [8](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace) [9](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark=WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+StartupBenchmark_coldStart
+  timeToInitialDisplayMs   [min 187.6](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace),   [median 190.0](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace),   [max 206.8](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+    Traces: Iteration [0](file://StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace) [1](file://StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace) [2](file://StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace) [3](file://StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace) [4](file://StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace) [5](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace) [6](file://StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace) [7](file://StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace) [8](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace) [9](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark=WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+StartupBenchmark_coldStart
+  timeToInitialDisplayMs   [min 187.6](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace),   [median 190.0](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace),   [max 206.8](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+    Traces: Iteration [0](file://StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace) [1](file://StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace) [2](file://StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace) [3](file://StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace) [4](file://StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace) [5](file://StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace) [6](file://StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace) [7](file://StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace) [8](file://StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace) [9](file://StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.akane599.enforcedoze.benchmark
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: class=io.github.akane599.enforcedoze.benchmark.StartupBenchmark
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=coldStart
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 32.383
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
