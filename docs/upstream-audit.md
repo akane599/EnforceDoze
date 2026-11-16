@@ -185,7 +185,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | drop (ADR 0036, Q13): SPEC 11.1 has no allowlist action; unlike every other call, a change survives Restore stock and clashes with Strict's trimmed list; by hand on the Allowlist screen and the report | — | removed (ADR 0036, 0037): it was open to any app and allowed shell injection |
 | 9 | Motion sensing off, with an allowed package | service, `PackageChooserActivity` | port | Lever C restricted mode (5.4) | upstream |
 | 10 | All sensors off in Doze | `setAllSensorsState` | port | Lever C `allSensorsOff`, Strict, "Sensors off" tile (5.4, 9.2) | upstream |
-| 11 | Biometrics off in Doze | service | port (root tier) | T3 (1.2) | upstream |
+| 11 | Biometrics off in Doze | service | drop (ADR 0038): the key does nothing on API 37 with the platform flag on | T3 (1.2) | dropped |
 | 12 | Wi-Fi off in Doze | service | port (root tier) | T3 (1.2) | upstream |
 | 13 | Mobile data off in Doze | `service call phone` | port (root tier), without transaction numbers | T3 (1.2, 12.4) | upstream |
 | 14 | App suspension during Doze | `BlockAppsActivity` | port (root tier) | T3 (1.2) | upstream |

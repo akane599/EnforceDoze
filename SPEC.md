@@ -66,7 +66,7 @@ The app gets the phone into deep Doze sooner and keeps it there longer while the
 ### 1.2 Scope
 
 - In: deep and light Doze control, sensor restriction during screen off, Doze allowlist, schedules, hold-offs, logs and reports, profiles, recommendation, Tasker and tile control.
-- Kept from upstream behind the root tier: mobile data and Wi-Fi off in Doze, biometrics off in Doze, app suspension during Doze.
+- Kept from upstream behind the root tier: mobile data and Wi-Fi off in Doze, app suspension during Doze, with the guardrails of ADR 0038. Biometrics off in Doze is dropped (ADR 0038).
 - Out: per-app battery attribution (that is Coulomb's job; section 11 connects the two), kernel or governor tuning.
 
 ### 1.3 Non-negotiables
@@ -164,7 +164,7 @@ Every privileged action runs through one typed Shizuku UserService (or Sui, or r
 | T0 | Normal permissions | Screen and power broadcasts, light/deep idle state, usage events (with usage access), UI |
 | T1 Durable grants | `pm grant` / `appops set` once through Shizuku, or by the user over ADB | `DUMP` (read `deviceidle`, `sensorservice`, `alarm`; `batterystats` also needs the usage-stats appop; `DUMP` alone also allows `dumpsys sensorservice restrict` / `enable`, ADR 0004), `WRITE_SECURE_SETTINGS` (lever A: the app writes the global `device_idle_constants` string itself, ADR 0012; `DUMP` also reads that string and its last writer from `dumpsys settings`, ADR 0014), `GET_USAGE_STATS` appop, `SCHEDULE_EXACT_ALARM` appop (only if the delay alarm is enabled), `READ_LOGS` for the events buffer (probe; else the worker reads it) |
 | T2 Worker | Shizuku or Sui UserService as shell (uid 2000) or root | `cmd deviceidle` / `dumpsys deviceidle` writes, reads of `settings get global device_idle_constants` and `device_config list device_idle` (shell may not write `device_config device_idle` on API 36–37, ADR 0012), \`dumpsys sensorservice restrict |
-| T3 Root | Shizuku as root, Sui, or libsu | Upstream root features: mobile data, Wi-Fi radio, biometrics in Doze, app suspension |
+| T3 Root | Shizuku as root, Sui, or libsu | Upstream root features: mobile data, Wi-Fi radio, app suspension (ADR 0038) |
 
 ### 4.2 Shizuku client
 

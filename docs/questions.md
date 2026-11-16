@@ -46,6 +46,18 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   not been checked on One UI 9. *Default:* the text stays as it is and is checked read-only in the next
   phone session (`cmd package resolve-activity` and a look at the menu). Say if the S22 may be used for
   it.
+- **Q15. The root-tier extras (ADR 0038).** Wi-Fi off, mobile data off and app suspension are engine
+  levers at T3, off by default. Four points are the owner's to weigh:
+  - **Biometrics off in Doze is dropped.** On API 37 upstream's setting does nothing while a
+    platform flag is on, and no power saving is measured. *Default:* dropped; say if you want it
+    back.
+  - **T3 only.** AOSP lets shell (T2, the owner's Shizuku) run the same commands. *Default:* T3, as
+    SPEC 1.2 says; say if they should open to T2.
+  - **A VoLTE call with mobile data off, and One UI's behaviour, are unchecked on the phone.** AOSP
+    keeps IMS up when data is off. *Default:* the Settings warning says this is unchecked until a
+    planned phone session.
+  - **The recommender does not tell nights with extras apart.** *Default:* left as is, since every
+    profile gets the same help.
 
 ## Answered
 
