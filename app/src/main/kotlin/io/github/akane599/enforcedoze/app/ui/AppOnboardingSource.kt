@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.combine
 /** Onboarding (SPEC 9.1) over the privilege layer, the capability probes, the recommendation and the quick proof. */
 internal class AppOnboardingSource(private val services: AppServices) : OnboardingSource {
     private val applied = MutableStateFlow<Plan?>(null)
+    private val keepAliveReads = MutableStateFlow(0)
 
     override val state: Flow<OnboardingState> = combine(
         combine(services.graph.controller.state, services.capabilities, services.prefs.changes) { privilege, report, _ ->
@@ -33,8 +34,8 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
         services.recommendations.current,
         services.profileNames,
         services.proof,
-        applied,
-    ) { (privilege, report), recommendation, names, proof, plan ->
+        combine(applied, keepAliveReads) { plan, _ -> plan to KeepAliveReader.read(services.graph.app) },
+    ) { (privilege, report), recommendation, names, proof, (plan, keepAlive) ->
         OnboardingState(
             privilege = finding(privilege),
             tier = privilege.tier.ordinal,
@@ -44,6 +45,7 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
             profileNames = names,
             proof = proof,
             applied = plan,
+            keepAlive = keepAlive,
         )
     }
 
@@ -51,6 +53,14 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
     private fun title(result: ProbeResult): String = PROBE_TITLES[result.id]?.let(services.graph.app::getString) ?: result.title
 
     override fun requestPermission() = services.graph.controller.requestShizukuPermission()
+
+    override fun allowBackground() = KeepAliveReader.requestExemption(services.graph.app)
+
+    override fun openAppSettings() = KeepAliveReader.openAppSettings(services.graph.app)
+
+    override fun refreshKeepAlive() {
+        keepAliveReads.value++
+    }
 
     override suspend fun recheck() {
         services.graph.controller.refresh()

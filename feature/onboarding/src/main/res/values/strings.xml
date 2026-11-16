@@ -62,4 +62,9 @@
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_proof_run">Run quick proof</string>
     <string name="onboarding_proof_running">Running…</string>
+    <string name="onboarding_keep_title">Keep EnforceDoze running</string>
+    <string name="onboarding_keep_body">Android and One UI may stop apps that run in the background. EnforceDoze then misses the screen going off and on, and the night has gaps. Let it run without battery limits.</string>
+    <string name="onboarding_keep_samsung">On this Samsung phone, also add it to Never sleeping apps: Settings › Battery › Background usage limits.</string>
+    <string name="onboarding_keep_allow">Allow</string>
+    <string name="onboarding_keep_settings">App settings</string>
 </resources>

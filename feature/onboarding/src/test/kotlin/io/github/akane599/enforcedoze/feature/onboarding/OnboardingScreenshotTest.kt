@@ -63,6 +63,11 @@ class OnboardingScreenshotTest {
         ),
         recommendation = recommendation,
         profileNames = mapOf("everyday" to "Everyday", "night" to "Night"),
+        keepAlive = KeepAlive(
+            exempt = true,
+            detail = "isIgnoringBatteryOptimizations=true appStandbyBucket=5 isBackgroundRestricted=false",
+            samsung = false,
+        ),
     )
 
     @Test fun welcome() = shoot(MODULE, "welcome") { OnboardingScreen(shell(), OnboardingStep.WELCOME, NoOnboarding) }
@@ -84,6 +89,20 @@ class OnboardingScreenshotTest {
     }
 
     @Test fun capabilities() = shoot(MODULE, "capabilities") { OnboardingScreen(shell(), OnboardingStep.CAPABILITIES, NoOnboarding) }
+
+    /** SPEC 3.3 on a Samsung phone that may still put the app to sleep. */
+    @Test fun capabilitiesKeepAlive() = shoot(
+        MODULE,
+        "capabilities-keep-alive",
+        listOf(Primary, Primary.copy(dark = false, turkish = true)),
+    ) {
+        val sleeping = KeepAlive(
+            exempt = false,
+            detail = "isIgnoringBatteryOptimizations=false appStandbyBucket=30 isBackgroundRestricted=false",
+            samsung = true,
+        )
+        OnboardingScreen(shell().copy(keepAlive = sleeping), OnboardingStep.CAPABILITIES, NoOnboarding)
+    }
 
     @Test fun urgency() = shoot(MODULE, "urgency", listOf(Primary, Primary.copy(dark = false, turkish = true, largeFont = true))) {
         OnboardingScreen(shell().copy(urgency = Urgency.IT_CAN_WAIT), OnboardingStep.URGENCY, NoOnboarding)
@@ -140,6 +159,10 @@ class OnboardingScreenshotTest {
 }
 
 private object NoOnboarding : OnboardingActions {
+    override fun allowBackground() = Unit
+
+    override fun openAppSettings() = Unit
+
     override fun next() = Unit
     override fun back() = Unit
     override fun grant() = Unit

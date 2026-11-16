@@ -33,6 +33,20 @@ public enum class ProbeWord { OK, MISSING, FAILED, SKIPPED }
 @Immutable
 public data class ProbeLine(val title: String, val status: ProbeWord, val detail: String)
 
+/**
+ * Whether the system lets EnforceDoze run in the background (SPEC 3.3). Without the battery-optimisation exemption,
+ * Android and One UI may stop it, and the nights get gaps.
+ */
+@Immutable
+public data class KeepAlive(
+    /** Exempt from battery optimisation and not background-restricted. */
+    val exempt: Boolean,
+    /** The platform's own values, as a raw line (SPEC 9.3). */
+    val detail: String,
+    /** A Samsung phone, where One UI's "Never sleeping apps" list applies as well. */
+    val samsung: Boolean,
+)
+
 /** Everything onboarding shows, mapped by the app from the privilege session, the probes and the recommender. */
 @Immutable
 public data class OnboardingState(
@@ -49,6 +63,8 @@ public data class OnboardingState(
     val proof: List<ProofStep>? = null,
     /** The plan the engine runs now: after Apply, the recommended one. */
     val applied: Plan? = null,
+    /** Null until read. */
+    val keepAlive: KeepAlive? = null,
 ) {
     /** Levers can be applied: tier T2 or T3 (SPEC 4.1). */
     public val canWrite: Boolean get() = tier >= WORKER_TIER
@@ -72,6 +88,15 @@ public interface OnboardingSource {
 
     /** Probes the server and the capabilities again (SPEC 4.4). */
     public suspend fun recheck()
+
+    /** The system's request to exempt EnforceDoze from battery optimisation (SPEC 3.3). */
+    public fun allowBackground()
+
+    /** The app's page in the system settings, where One UI keeps its battery options. */
+    public fun openAppSettings()
+
+    /** Reads [OnboardingState.keepAlive] again, as when the owner comes back from the system's dialog. */
+    public fun refreshKeepAlive()
 
     public suspend fun answer(urgency: Urgency)
 

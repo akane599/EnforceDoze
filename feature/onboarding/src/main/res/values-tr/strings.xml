@@ -62,4 +62,9 @@
     <string name="onboarding_skip">Atla</string>
     <string name="onboarding_proof_run">Hızlı kanıtı çalıştır</string>
     <string name="onboarding_proof_running">Çalışıyor…</string>
+    <string name="onboarding_keep_title">EnforceDoze çalışmayı sürdürsün</string>
+    <string name="onboarding_keep_body">Android ve One UI arka planda çalışan uygulamaları durdurabilir. O zaman EnforceDoze ekranın kapanıp açıldığını kaçırır ve gecede boşluklar olur. Pil sınırı olmadan çalışmasına izin verin.</string>
+    <string name="onboarding_keep_samsung">Bu Samsung telefonda onu Hiç uyumayan uygulamalar listesine de ekleyin: Ayarlar › Pil › Arka plan kullanım sınırları.</string>
+    <string name="onboarding_keep_allow">İzin ver</string>
+    <string name="onboarding_keep_settings">Uygulama ayarları</string>
 </resources>

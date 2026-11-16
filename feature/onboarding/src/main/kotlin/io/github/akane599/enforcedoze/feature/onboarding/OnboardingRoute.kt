@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.recommend.Urgency
@@ -21,8 +22,15 @@ public fun OnboardingRoute(viewModel: OnboardingViewModel, navigation: Onboardin
     val applyOutcome by viewModel.applyOutcome.collectAsStateWithLifecycle()
     val current = state ?: return Box(modifier.fillMaxSize().background(Ed.palette.ground))
     BackHandler(enabled = step != OnboardingStep.WELCOME) { viewModel.back() }
+    // Back from the system's battery dialog or the app's settings page: read the exemption again.
+    LifecycleResumeEffect(viewModel) {
+        viewModel.refreshKeepAlive()
+        onPauseOrDispose { }
+    }
     val actions = object : OnboardingActions {
         override fun next() = viewModel.next()
+        override fun allowBackground() = viewModel.allowBackground()
+        override fun openAppSettings() = viewModel.openAppSettings()
         override fun back() {
             viewModel.back()
         }

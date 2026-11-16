@@ -72,6 +72,10 @@ import io.github.akane599.enforcedoze.ui.word
 public interface OnboardingActions {
     public fun next()
 
+    public fun allowBackground()
+
+    public fun openAppSettings()
+
     public fun back()
 
     public fun grant()
@@ -113,7 +117,7 @@ public fun OnboardingScreen(
             when (step) {
                 OnboardingStep.WELCOME -> Welcome()
                 OnboardingStep.PRIVILEGE -> Privilege(state.privilege)
-                OnboardingStep.CAPABILITIES -> Capabilities(state, status.checking)
+                OnboardingStep.CAPABILITIES -> Capabilities(state, status.checking, actions)
                 OnboardingStep.URGENCY -> UrgencyStep(state.urgency, actions)
                 OnboardingStep.PLAN -> PlanStep(state, status.applyOutcome)
                 OnboardingStep.PROOF -> Proof(state)
@@ -253,10 +257,11 @@ private fun Option(title: Int, detail: Int, command: String? = null) {
 }
 
 @Composable
-private fun Capabilities(state: OnboardingState, checking: Boolean) {
+private fun Capabilities(state: OnboardingState, checking: Boolean, actions: OnboardingActions) {
     Heading(tierName(state.tier))
     Body(tierLine(state.tier))
     Spacer(Modifier.height(Space.l))
+    state.keepAlive?.let { KeepAliveBlock(it, actions) }
     val probes = state.probes
     if (probes == null) {
         Quiet(stringResource(if (checking) R.string.onboarding_checking else R.string.onboarding_not_checked))
@@ -279,6 +284,35 @@ private fun Capabilities(state: OnboardingState, checking: Boolean) {
             Text(probe.detail, style = RawLine, color = Ed.palette.quiet, modifier = Modifier.padding(top = Space.xs))
         }
         Rule()
+    }
+}
+
+/** SPEC 3.3: the app must keep running for the nights to be recorded; the system's own dialog grants it. */
+@Composable
+private fun KeepAliveBlock(keepAlive: KeepAlive, actions: OnboardingActions) {
+    val status = if (keepAlive.exempt) ProbeWord.OK else ProbeWord.MISSING
+    Column(Modifier.fillMaxWidth().padding(bottom = Space.l)) {
+        Row(Modifier.semantics(mergeDescendants = true) { }, verticalAlignment = Alignment.Top) {
+            Text(
+                stringResource(R.string.onboarding_keep_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = Ed.palette.ink,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                stringResource(status.word()),
+                style = MaterialTheme.typography.titleMedium,
+                color = status.tone().color(neutral = Ed.palette.quiet),
+                modifier = Modifier.padding(start = Space.m),
+            )
+        }
+        Body(stringResource(R.string.onboarding_keep_body), Modifier.padding(top = Space.xs))
+        if (keepAlive.samsung) Quiet(stringResource(R.string.onboarding_keep_samsung), Modifier.padding(top = Space.s))
+        Text(keepAlive.detail, style = RawLine, color = Ed.palette.quiet, modifier = Modifier.padding(top = Space.s))
+        Row(Modifier.padding(top = Space.xs)) {
+            if (!keepAlive.exempt) Secondary(R.string.onboarding_keep_allow, actions::allowBackground)
+            Secondary(R.string.onboarding_keep_settings, actions::openAppSettings)
+        }
     }
 }
 

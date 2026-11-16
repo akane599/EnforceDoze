@@ -39,6 +39,13 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   Allowlist screen and the report's "Add to allowlist" cover it by hand. Say "port" and it is built as
   two token-checked actions, under the conditions in ADR 0036, with a per-client switch that is off by
   default.
+- **Q14. One UI's "Never sleeping apps" path.** Onboarding asks for the battery-optimisation exemption
+  through the system's own dialog and reads it back with public calls. One UI's sleeping lists have no
+  public reading or documented deep link. The step therefore names the path instead: Settings › Battery
+  › Background usage limits, "Hiç uyumayan uygulamalar" in Turkish. This comes from One UI 6–8 and has
+  not been checked on One UI 9. *Default:* the text stays as it is and is checked read-only in the next
+  phone session (`cmd package resolve-activity` and a look at the menu). Say if the S22 may be used for
+  it.
 
 ## Answered
 

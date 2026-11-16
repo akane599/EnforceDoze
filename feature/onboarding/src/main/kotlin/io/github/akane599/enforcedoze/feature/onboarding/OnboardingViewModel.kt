@@ -56,6 +56,18 @@ public class OnboardingViewModel(
         source.requestPermission()
     }
 
+    public fun allowBackground() {
+        source.allowBackground()
+    }
+
+    public fun openAppSettings() {
+        source.openAppSettings()
+    }
+
+    public fun refreshKeepAlive() {
+        source.refreshKeepAlive()
+    }
+
     public fun recheck() {
         if (checkingState.value) return
         checkingState.value = true

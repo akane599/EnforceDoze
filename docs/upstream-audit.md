@@ -209,7 +209,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 32 | Doze tile | `ForceDozeTileService` | port | "Doze plan" tile (9.2, 11.2) | upstream |
 | 33 | Airplane-mode tile | `AirplaneTileService` | drop: the system tile covers it (SPEC 2.3) | — | removed (ADR 0037), dropped |
 | 34 | Doze tunables screen | `DozeTunablesActivity` | port | Custom profiles with guardrails (6.3) | upstream |
-| 35 | Self-allowlist and battery-optimisation request | `RequestIgnoreBatteryActivity` | port | Onboarding, One UI "Never sleeping apps" (3.3, 9.1) | upstream |
+| 35 | Self-allowlist and battery-optimisation request | `RequestIgnoreBatteryActivity` | port | Onboarding, One UI "Never sleeping apps" (3.3, 9.1) | replaced (ADR 0034): the capabilities step asks through the system dialog and reads the exemption back; `KeepAliveTest`, `OnboardingScreenshotTest`. The class stays while upstream code that is still in the tree uses it |
 | 36 | Start at boot and after update | `BootCompleteReceiver`, `AutoRestartOnUpdate` | port | Foreground service start (12.4) | replaced (ADR 0037): `EngineStartReceiver` (boot, own update only); `EngineStartTest` |
 | 37 | Re-enable Doze when disabled | `MainActivity` dialog | port | Capability probe and onboarding (4.4) | upstream |
 | 38 | About, sponsor link, Custom Tabs | `AboutAppActivity`, `CustomTabs` | port About with GPL notice and credits; drop the in-app Custom Tabs browser (links open the default browser) | Settings → About (9.1, 12.1) | About replaced (ADR 0037): Settings credits, `NOTICE` and licence assets; `LicenceAssetTest`, `SettingsScreenshotTest`. `CustomTabs` stays until the classes that use it go |

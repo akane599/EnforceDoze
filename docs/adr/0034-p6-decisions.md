@@ -70,6 +70,17 @@ around it.
 - **P6 debug commands** (`automation`, `automation-token`, `import-setup`, `switch-check`,
   `switch-state`) drive `tools/emulator/p6-integrations.sh`. They exist only in debug builds, like the
   other gate commands.
+- **Keeping the app running (SPEC 3.3, parity row 35) is a block in the capabilities step**, not a
+  seventh step, because SPEC 9.1 counts six.
+  - "Allow" opens the system's own dialog (`ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`), and
+    "App settings" opens the app's system page.
+  - The state is read back on return with public calls, shown as raw values: the exemption, the
+    standby bucket, background restriction.
+  - Background restriction counts as missing even with the exemption.
+  - One UI's "Never sleeping apps" has no public reading, so on Samsung the text names its path
+    (Q14).
+  - The worker could add the app to the allowlist silently. It does not: the owner should see and
+    grant this exemption.
 
 ## Review
 
