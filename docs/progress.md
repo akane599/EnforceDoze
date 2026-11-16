@@ -306,6 +306,18 @@ Carried over to P5:
   - the upstream Java screens and services are still in the APK (unregistered tiles included);
   - the automation API and the Tasker grant belong to P6 (SPEC 11); Settings answers "not in this
     build yet" for both.
+- Design pass (2026-11-16):
+  - `DESIGN.md` records the shipped tokens, and `PaletteTest` checks its colour table against the theme;
+  - critique and audit by a fresh reviewer found no P0 and five P1s, all fixed (ADR 0030), plus most
+    P2s and P3s;
+  - `impeccable detect` reads web files only: it reports zero on this Compose app without testing it;
+  - a cold-start macrobenchmark (`:testing:benchmark`) and `tools/emulator/p5-ui.sh`, which runs it
+    and a smoke run under Shizuku (grants, tiles, the sensors confirmation) on the API 37 emulator;
+  - still open from the audit (P2):
+    - two panes on a tablet exist only for Log/Report and Profiles;
+    - the report summary's figure grid sits close to "equal-weight tiles";
+    - Log rows have no strip;
+    - some feature screens still hold sizes that belong in `:core:design`.
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):
   - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
   - night rows with their own figures;

@@ -207,3 +207,24 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   - The variant matrix stays an orthogonal array of 8 (tablet = dark xor Turkish xor large font).
     Every pair of factors appears, so dark-tr-font200 is shot on a tablet and light-tr-font200 on
     a phone. Turkish at font 2.0 on a phone is covered by the light variant.
+- **P5 audit, P2 and P3 fixed in the same pass:**
+  - Yellow is kept for the primary action and the item running now (One Signal):
+    - the confidence tag, the profile slot tags and the allowlist "keep" chip are quiet now;
+    - a kept entry shows a check on a raised chip.
+  - Every primary action is the accent-filled tonal button, as on Home. Onboarding and Recommended
+    used an ink pill before.
+  - A slot a profile already runs in is a quiet tag, not a disabled button. Recommended drops its
+    Apply button when the plan is already in use, since the tag above says so.
+  - TalkBack hears a notice's tone, and "new" until it is seen.
+  - The top bar's title lines up with the reading column on wide screens.
+  - "Plugged in" no longer breaks before "in".
+- **Built-in profile names stay in English in both languages.** Everyday, Night, Pocket, Strict and
+  Stock are names, as in a Tasker action or a log line. Translating them would make one profile read
+  differently in the UI, the automation API and the exported logs. Custom profiles keep the owner's
+  own names.
+- **Lever names keep their capital inside Turkish sentences** ("Bunlar artık yazılamıyor: Zorunlu
+  derin uyku, …"). They are labels, the same as in Settings and the report.
+- **Recommended shows signal names, not the spec's letters.** S, M, N, D, R and Q are the spec's
+  working names; the UI already words each signal, so the letter column went (SPEC 10.4).
+- **Profile detail keeps constant keys in monospace.** `inactive_to` and the rest are raw tokens
+  from the device's dump, which is what DESIGN.md keeps the monospace face for.
