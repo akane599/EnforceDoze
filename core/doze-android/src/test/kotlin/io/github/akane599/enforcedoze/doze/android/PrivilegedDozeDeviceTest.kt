@@ -65,6 +65,13 @@ class PrivilegedDozeDeviceTest {
 
         override suspend fun flagSync() = record("flagSync()")
 
+        override suspend fun setWifiEnabled(enabled: Boolean) = record("setWifiEnabled($enabled)")
+
+        override suspend fun setMobileData(enabled: Boolean) = record("setMobileData($enabled)")
+
+        override suspend fun setPackagesSuspended(packages: List<String>, suspended: Boolean) =
+            record("setPackagesSuspended($packages, $suspended)")
+
         override suspend fun readDeviceIdle() = read("readDeviceIdle")
 
         override suspend fun readSensorService() = read("readSensorService")

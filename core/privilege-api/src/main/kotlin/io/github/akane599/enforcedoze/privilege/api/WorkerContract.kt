@@ -6,8 +6,9 @@ public object WorkerContract {
     /**
      * Raised whenever the AIDL or the meaning of a method changes. 2: device_config writes removed (ADR 0012).
      * 3: setBatteryUnplugged for the quick proof (SPEC 8.6). 4: setFlagSync and getFlagSync (SPEC 5.6).
+     * 5: setWifiEnabled, setMobileData and setPackagesSuspended, root only (ADR 0038).
      */
-    public const val VERSION: Int = 4
+    public const val VERSION: Int = 5
 
     /** The UserService class, loaded by name in the worker process (Shizuku and Sui). */
     public const val WORKER_CLASS: String = "io.github.akane599.enforcedoze.privilege.worker.DozeWorker"
@@ -57,6 +58,12 @@ public object WorkerContract {
      * `SettingsProvider.setSyncDisabledModeConfig` accepts (`packages/Shell/AndroidManifest.xml`).
      */
     public val SYNC_DISABLED_MODES: Set<String> = setOf("none", "persistent", "until_reboot")
+
+    /** The most packages one `setPackagesSuspended` call takes. */
+    public const val MAX_SUSPEND: Int = 32
+
+    /** Android's uid range per user (`UserHandle.PER_USER_RANGE`); the caller's user is its uid divided by it. */
+    public const val PER_USER_RANGE: Int = 100_000
 
     /** The only `device_config` namespace the worker reads. */
     public const val DEVICE_IDLE_NAMESPACE: String = "device_idle"

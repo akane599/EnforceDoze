@@ -34,6 +34,8 @@ public class DozeWorker internal constructor(
             packages = AndroidPackageChecker(context.packageManager),
             sensorPrivacy = HiddenSensorPrivacy,
             selfPackage = context.packageName,
+            workerUid = Process.myUid(),
+            appUid = context.applicationInfo.uid,
         ),
         allowedUid = context.applicationInfo.uid,
         callingUid = Binder::getCallingUid,
@@ -79,6 +81,13 @@ public class DozeWorker internal constructor(
     override fun setFlagSync(mode: String?): CommandOutcome = checked { core.setFlagSync(mode) }
 
     override fun getFlagSync(): CommandOutcome = checked { core.getFlagSync() }
+
+    override fun setWifiEnabled(enabled: Boolean): CommandOutcome = checked { core.setWifiEnabled(enabled) }
+
+    override fun setMobileData(enabled: Boolean): CommandOutcome = checked { core.setMobileData(enabled) }
+
+    override fun setPackagesSuspended(packages: Array<out String>?, suspended: Boolean): CommandOutcome =
+        checked { core.setPackagesSuspended(packages?.toList(), suspended) }
 
     override fun readDeviceIdle(pipe: ParcelFileDescriptor?): Unit = stream(pipe) { core.readDeviceIdleArgv() }
 

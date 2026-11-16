@@ -28,6 +28,10 @@ internal class WorkerCore(
     private val packages: PackageChecker,
     private val sensorPrivacy: SensorPrivacyAccess,
     private val selfPackage: String,
+    /** The worker's own uid: the root-tier extras run only at 0 (ADR 0038). */
+    private val workerUid: Int,
+    /** The app's uid, whose user `pm suspend` acts for. */
+    private val appUid: Int,
 ) {
     fun forceIdle(mode: String?): CommandOutcome {
         val argv = listOf("cmd", "deviceidle", "force-idle", mode.orEmpty())
@@ -127,6 +131,46 @@ internal class WorkerCore(
     fun readBatteryHistoryArgv(historyStart: Long): List<String> =
         listOf("dumpsys", "batterystats", "--history-start", historyStart.coerceAtLeast(0).toString())
 
+    /**
+     * Root-tier Wi-Fi switch (ADR 0038). `set-wifi-enabled` calls `WifiService.setWifiEnabled`
+     * (WifiShellCommand, android-17.0.0_r1).
+     */
+    fun setWifiEnabled(enabled: Boolean): CommandOutcome =
+        rootOnly(listOf("cmd", "wifi", "set-wifi-enabled", if (enabled) "enabled" else "disabled"))
+
+    /**
+     * Root-tier mobile data switch (ADR 0038): `data enable|disable` calls `enableDataConnectivity` or
+     * `disableDataConnectivity` (TelephonyShellCommand.handleDataTestModeCommand, android-17.0.0_r1).
+     */
+    fun setMobileData(enabled: Boolean): CommandOutcome = rootOnly(listOf("cmd", "phone", "data", if (enabled) "enable" else "disable"))
+
+    /**
+     * Root-tier app suspension (ADR 0038). `pm suspend|unsuspend [--user N] PACKAGE...` prints `Package X new
+     * suspended state: true|false` per package and records `root` as the suspender (PackageManagerShellCommand
+     * .runSuspend, android-17.0.0_r1). This app is never suspended: that would stop the undo.
+     */
+    fun setPackagesSuspended(names: List<String>?, suspended: Boolean): CommandOutcome {
+        val list = names.orEmpty()
+        val user = (appUid / WorkerContract.PER_USER_RANGE).toString()
+        val argv = listOf("pm", if (suspended) "suspend" else "unsuspend", "--user", user) + list
+        val problem = when {
+            list.isEmpty() -> "no package given"
+            list.size > WorkerContract.MAX_SUSPEND -> "more than ${WorkerContract.MAX_SUSPEND} packages"
+            list.toSet().size != list.size -> "a package is given twice"
+            selfPackage in list -> "EnforceDoze never suspends itself"
+            else -> list.firstNotNullOfOrNull(::packageProblem)
+        }
+        return problem?.let { CommandOutcome.rejected(argv, it) } ?: rootOnly(argv)
+    }
+
+    private fun rootOnly(argv: List<String>): CommandOutcome = if (workerUid ==
+        ROOT_UID
+    ) {
+        write(argv)
+    } else {
+        CommandOutcome.rejected(argv, "needs the root tier (T3); the worker runs as uid $workerUid")
+    }
+
     private fun write(argv: List<String>): CommandOutcome = runner.run(argv, WorkerContract.WRITE_TIMEOUT_MILLIS)
 
     private fun query(argv: List<String>): CommandOutcome = runner.run(argv, WorkerContract.WRITE_TIMEOUT_MILLIS)
@@ -163,6 +207,7 @@ internal class WorkerCore(
         private val SENSOR_PRIVACY_SET = listOf("ISensorPrivacyManager.setSensorPrivacy")
         private val SENSOR_PRIVACY_GET = listOf("ISensorPrivacyManager.isSensorPrivacyEnabled")
         private const val MILLIS_PER_SECOND = 1_000L
+        private const val ROOT_UID = 0
         private const val NANOS_PER_MILLI = 1_000_000L
     }
 }

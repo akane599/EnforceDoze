@@ -14,6 +14,7 @@ import java.io.IOException
  * the AIDL stub (SPEC 13.1). Reads return the command's whole output and throw [IOException] when
  * the worker reports a failure.
  */
+@Suppress("TooManyFunctions") // One function per typed worker method (SPEC 4.3), as in IDozeWorker.
 public interface DozeWorkerApi {
     public suspend fun uid(): Int
 
@@ -52,6 +53,15 @@ public interface DozeWorkerApi {
     /** `device_config get_sync_disabled_for_tests`; stdout is the mode. */
     public suspend fun flagSync(): CommandOutcome
 
+    /** `cmd wifi set-wifi-enabled`; the worker refuses it below root (ADR 0038). */
+    public suspend fun setWifiEnabled(enabled: Boolean): CommandOutcome
+
+    /** `cmd phone data enable|disable`; root only (ADR 0038). */
+    public suspend fun setMobileData(enabled: Boolean): CommandOutcome
+
+    /** `pm suspend|unsuspend`; root only (ADR 0038). */
+    public suspend fun setPackagesSuspended(packages: List<String>, suspended: Boolean): CommandOutcome
+
     public suspend fun readDeviceIdle(): String
 
     public suspend fun readSensorService(): String
@@ -67,6 +77,7 @@ public interface DozeWorkerApi {
 }
 
 /** [DozeWorkerApi] over the binder. Calls run on the IO dispatcher. */
+@Suppress("TooManyFunctions") // It implements DozeWorkerApi, one function per worker method.
 internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorkerApi {
     override suspend fun uid(): Int = io { worker.uid }
 
@@ -99,6 +110,13 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun setFlagSync(mode: String): CommandOutcome = io { worker.setFlagSync(mode) }
 
     override suspend fun flagSync(): CommandOutcome = io { worker.getFlagSync() }
+
+    override suspend fun setWifiEnabled(enabled: Boolean): CommandOutcome = io { worker.setWifiEnabled(enabled) }
+
+    override suspend fun setMobileData(enabled: Boolean): CommandOutcome = io { worker.setMobileData(enabled) }
+
+    override suspend fun setPackagesSuspended(packages: List<String>, suspended: Boolean): CommandOutcome =
+        io { worker.setPackagesSuspended(packages.toTypedArray(), suspended) }
 
     override suspend fun readDeviceIdle(): String = read { worker.readDeviceIdle(it) }
 

@@ -66,6 +66,15 @@ interface IDozeWorker {
     /** device_config get_sync_disabled_for_tests; stdout is none, persistent or until_reboot (VERSION 4). */
     CommandOutcome getFlagSync() = 26;
 
+    /** cmd wifi set-wifi-enabled enabled|disabled; root (T3) only (VERSION 5, ADR 0038). */
+    CommandOutcome setWifiEnabled(boolean enabled) = 27;
+
+    /** cmd phone data enable|disable; root (T3) only (VERSION 5, ADR 0038). */
+    CommandOutcome setMobileData(boolean enabled) = 28;
+
+    /** pm suspend|unsuspend --user USER PACKAGE...; root (T3) only, at most 32 installed packages (VERSION 5, ADR 0038). */
+    CommandOutcome setPackagesSuspended(in String[] packages, boolean suspended) = 29;
+
     /** dumpsys deviceidle */
     void readDeviceIdle(in ParcelFileDescriptor pipe) = 30;
 

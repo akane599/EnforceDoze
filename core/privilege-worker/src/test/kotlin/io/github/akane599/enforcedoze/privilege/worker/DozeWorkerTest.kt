@@ -20,7 +20,7 @@ class DozeWorkerTest {
 
         override fun setEnabled(enabled: Boolean) = Unit
     }
-    private val core = WorkerCore(runner, { true }, privacy, "io.github.akane599.enforcedoze")
+    private val core = WorkerCore(runner, { true }, privacy, "io.github.akane599.enforcedoze", workerUid = 2000, appUid = 10_123)
     private var caller = APP_UID
     private val worker = DozeWorker(core, APP_UID) { caller }
 

@@ -33,7 +33,8 @@ class WorkerCoreTest {
 
     private val runner = FakeRunner()
     private val privacy = FakePrivacy()
-    private val core = WorkerCore(runner, { it == "com.example.app" || it == SELF }, privacy, SELF)
+    private val core = WorkerCore(runner, { it == "com.example.app" || it == SELF }, privacy, SELF, workerUid = 2000, appUid = APP_UID)
+    private val root = WorkerCore(runner, { it == "com.example.app" || it == SELF }, privacy, SELF, workerUid = 0, appUid = APP_UID)
 
     @Test fun constantReadsUseFixedArgv() {
         assertThat(core.getDeviceIdleSettings().isSuccess).isTrue()
@@ -121,7 +122,7 @@ class WorkerCoreTest {
         assertThat(core.getAllSensorsOff().stdout).isEqualTo("false")
         assertThat(core.setAllSensorsOff(true).stdout).isEqualTo("true")
         assertThat(privacy.on).isTrue()
-        val broken = WorkerCore(runner, { true }, FakePrivacy(fail = true), SELF)
+        val broken = WorkerCore(runner, { true }, FakePrivacy(fail = true), SELF, workerUid = 2000, appUid = APP_UID)
         val out = broken.setAllSensorsOff(true)
         assertThat(out.isSuccess).isFalse()
         assertThat(out.error).contains("NoSuchMethodError")
@@ -146,7 +147,44 @@ class WorkerCoreTest {
         assertThat(core.readAlarmsArgv()).containsExactly("dumpsys", "alarm").inOrder()
     }
 
+    /** ADR 0038: the root-tier extras, refused below uid 0 and with fixed argument lists. */
+    @Test fun rootExtrasRunOnlyAsRoot() {
+        assertThat(core.setWifiEnabled(false).error).contains("root tier")
+        assertThat(core.setMobileData(false).error).contains("root tier")
+        assertThat(core.setPackagesSuspended(listOf("com.example.app"), true).error).contains("root tier")
+        assertThat(runner.ran).isEmpty()
+
+        root.setWifiEnabled(false)
+        root.setWifiEnabled(true)
+        root.setMobileData(false)
+        root.setMobileData(true)
+        root.setPackagesSuspended(listOf("com.example.app"), true)
+        root.setPackagesSuspended(listOf("com.example.app"), false)
+        assertThat(runner.ran).containsExactly(
+            listOf("cmd", "wifi", "set-wifi-enabled", "disabled"),
+            listOf("cmd", "wifi", "set-wifi-enabled", "enabled"),
+            listOf("cmd", "phone", "data", "disable"),
+            listOf("cmd", "phone", "data", "enable"),
+            listOf("pm", "suspend", "--user", "10", "com.example.app"),
+            listOf("pm", "unsuspend", "--user", "10", "com.example.app"),
+        ).inOrder()
+    }
+
+    @Test fun suspensionChecksEveryPackage() {
+        assertThat(root.setPackagesSuspended(emptyList(), true).error).isNotNull()
+        assertThat(root.setPackagesSuspended(null, true).error).isNotNull()
+        assertThat(root.setPackagesSuspended(listOf(SELF), true).error).contains("never suspends itself")
+        assertThat(root.setPackagesSuspended(listOf("com.example.app", "--user"), true).error).contains("not a package name")
+        assertThat(root.setPackagesSuspended(listOf("com.example.gone"), true).error).contains("not installed")
+        assertThat(root.setPackagesSuspended(listOf("com.example.app", "com.example.app"), true).error).contains("twice")
+        assertThat(root.setPackagesSuspended(List(33) { "com.example.app$it" }, true).error).contains("more than 32")
+        assertThat(runner.ran).isEmpty()
+    }
+
     private companion object {
         const val SELF = "io.github.akane599.enforcedoze"
+
+        /** User 10's app uid. */
+        const val APP_UID = 1_010_123
     }
 }
