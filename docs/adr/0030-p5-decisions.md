@@ -195,3 +195,15 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
     nothing there. Its "zero findings" at the P5 gate is therefore met without testing anything.
   - The design checks that do apply are the critique and audit passes over the screenshot set, and
     the P0 and P1 findings fixed. This is recorded so the gate is not read as more than it is.
+- **P5 critique and audit (2026-11-16): no P0; five P1s fixed.**
+  - Home puts the warnings straight under the plan board. The board says when the plan is only
+    partly in force (privilege lost, a key that did not take) or not in force at all (read-only);
+    then "now" is drawn unaccented. Quick proof names why it is unavailable without access.
+  - A lever a profile does not use is struck through in `quiet`, unboxed. The hairline outline it had
+    measured 1.5:1. A lever in use keeps its ink box (`Sizes.mark`, `Sizes.markStroke`).
+  - Probe names and the store error moved to `:core:ui`. The goldens now use the strings the app
+    shows, so the Turkish shots are Turkish. Probe details are set as raw lines.
+  - Captures at font scale 2.0 are twice as tall, so what would scroll is in the picture.
+  - The variant matrix stays an orthogonal array of 8 (tablet = dark xor Turkish xor large font).
+    Every pair of factors appears, so dark-tr-font200 is shot on a tablet and light-tr-font200 on
+    a phone. Turkish at font 2.0 on a phone is covered by the light variant.
