@@ -13,10 +13,6 @@ out=$dir/out
 mkdir -p "$out"
 A=$HOME/Android/Sdk/platform-tools/adb
 adb() { "$A" "$@" </dev/null; }
-# Device safety: every adb call goes to the emulator, never to a phone that happens to be connected over adb.
-# The emulator already running, or the one this script starts on the first free console port.
-ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
-export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 pkg=io.github.akane599.enforcedoze
 receiver=$pkg/io.github.akane599.enforcedoze.app.DebugCommandReceiver
@@ -114,16 +110,9 @@ start_server() {
   until_true 20 server_running
 }
 
-started_emulator=0
-if ! adb devices | grep -q '^emulator-'; then
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
-fi
-timeout 300 "$A" wait-for-device </dev/null
-timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
-log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
+source "$(dirname "$0")/lib.sh"
+load_check
+acquire_emulator "$avd" "$out/emulator.log"
 
 # What the device showed before this run; the cleanup puts it back and the restore scenario compares.
 baseline_constants=$(constants)

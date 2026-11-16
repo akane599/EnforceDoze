@@ -23,9 +23,10 @@ scp -q app/build/outputs/apk/benchmark/app-benchmark.apk akane-linux:$remote_dir
 scp -q testing/benchmark/build/outputs/apk/benchmark/benchmark-benchmark.apk akane-linux:$remote_dir/benchmark.apk
 scp -q app/build/outputs/apk/debug/app-debug.apk akane-linux:$remote_dir/app.apk
 scp -q tools/emulator/p5-ui-remote.sh akane-linux:$remote_dir/run.sh
+scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
 
 set +e
-ssh akane-linux "bash $remote_dir/run.sh '$avd'" </dev/null
+ssh akane-linux "SUITE_SERIAL='${SUITE_SERIAL:-}' bash $remote_dir/run.sh '$avd'" </dev/null
 status=$?
 set -e
 

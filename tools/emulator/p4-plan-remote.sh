@@ -13,10 +13,6 @@ out=$dir/out
 mkdir -p "$out"
 A=$HOME/Android/Sdk/platform-tools/adb
 adb() { "$A" "$@" </dev/null; }
-# Device safety: every adb call goes to the emulator, never to a phone that happens to be connected over adb.
-# The emulator already running, or the one this script starts on the first free console port.
-ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
-export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 pkg=io.github.akane599.enforcedoze
 receiver=$pkg/io.github.akane599.enforcedoze.app.DebugCommandReceiver
@@ -74,7 +70,7 @@ device_offset() { # +0300 -> 10800
   echo $((${sign}1 * (10#${z:1:2} * 3600 + 10#${z:3:2} * 60)))
 }
 local_time() { TZ=UTC date -u -d "@$(($1 + offset))" +%H:%M:%S; }
-wait_until() { while (($(device_epoch) < $1)); do sleep 5; done; }
+wait_until() { while (($(device_epoch) < $1)); do sleep 1; done; }
 
 # The app's pending window-start alarms as "<type> <origWhen ms>", one per line (dumpsys alarm prints
 # `RTC #n: Alarm{<hash> type <n> origWhen <wall ms> ...}` then `tag=*alarm*:<tag>`; `*walarm*` is a wakeup).
@@ -125,20 +121,9 @@ start_server() {
   until_true 20 server_running
 }
 
-started_emulator=0
-if adb devices | grep -q '^emulator-'; then
-  # Only the project's own AVD (ADR 0021): an emulator another project started is left alone.
-  running=$(adb emu avd name | head -1 | tr -d '\r')
-  [[ $running == "$avd" ]] || { log "a different emulator ($running) is running; leaving it alone"; exit 1; }
-else
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
-fi
-timeout 300 "$A" wait-for-device </dev/null
-timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
-log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
+source "$(dirname "$0")/lib.sh"
+load_check
+acquire_emulator "$avd" "$out/emulator.log"
 offset=$(device_offset)
 log "device zone $(adb shell getprop persist.sys.timezone | tr -d '\r'), offset ${offset}s"
 
@@ -219,7 +204,9 @@ setup() {
 # Day to night with the screen on: the alarm itself switches (SPEC 6.5).
 alarm() {
   local now start end
-  now=$(device_epoch); start=$((now + 90)); end=$((start + 1800))
+  # The checks before the window opens take about a second; 25 s leaves room and keeps the suite short
+  # (SPEC 13: under 20 minutes).
+  now=$(device_epoch); start=$((now + 25)); end=$((start + 1800))
   cmd plan "everyday,night,$(local_time $start),$(local_time $end)" > "$out/alarm-plan.txt"
   check "alarm: the plan starts in the day slot with Everyday" until_true 10 slot_is DAY
   check "alarm: Everyday is on the device" constants_are "$everyday"
@@ -240,7 +227,8 @@ alarm() {
 # the first unlock after the end brings the day (SPEC 6.5).
 unlock_scenario() {
   local now start end
-  now=$(device_epoch); start=$((now - 60)); end=$((now + 150))
+  # The steps inside the window take about 12 s; the end follows soon after.
+  now=$(device_epoch); start=$((now - 60)); end=$((now + 35))
   cmd plan "everyday,night,$(local_time $start),$(local_time $end)" > "$out/unlock-plan.txt"
   check "unlock: a plan set inside its window applies the night at once" until_true 10 slot_is NIGHT
   check "unlock: Night is on the device" until_true 15 constants_are "$night"
@@ -269,7 +257,9 @@ unlock_scenario() {
 maintenance() {
   local now start end
   adb shell dumpsys battery unplug
-  now=$(device_epoch); start=$((now + 150)); end=$((start + 1800))
+  # Deep idle is reached within about 15 s of stepping; the window starts 30 s after that, so the alarm finds
+  # the phone dozing.
+  now=$(device_epoch); start=$((now + 45)); end=$((start + 1800))
   cmd plan "everyday,night,$(local_time $start),$(local_time $end)" > "$out/maintenance-plan.txt"
   check "maintenance: the plan starts in the day slot" until_true 10 slot_is DAY
   check "maintenance: the alarm is set for the window start" alarm_at $start

@@ -12,10 +12,6 @@ out=$dir/out
 mkdir -p "$out/capabilities"
 A=$HOME/Android/Sdk/platform-tools/adb
 adb() { "$A" "$@" </dev/null; }
-# Device safety: every adb call goes to the emulator, never to a phone that happens to be connected over adb.
-# The emulator already running, or the one this script starts on the first free console port.
-ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
-export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 pkg=io.github.akane599.enforcedoze.privilege.test
 runner=$pkg/androidx.test.runner.AndroidJUnitRunner
@@ -32,16 +28,9 @@ log() { echo "[$(date +%T)] $*"; }
 # A bounded wait: `adb wait-for-device` blocks forever if the emulator went away (run 4 hung like that).
 wait_device() { timeout 120 "$A" wait-for-device </dev/null || { log "the emulator did not come back"; return 1; }; }
 
-started_emulator=0
-if ! adb devices | grep -q '^emulator-'; then
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
-fi
-timeout 300 "$A" wait-for-device </dev/null
-timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
-log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
+source "$(dirname "$0")/lib.sh"
+load_check
+acquire_emulator "$avd" "$out/emulator.log"
 
 # A Shizuku manager that is already on the shared AVD is used as it is and left installed, unless the
 # marker says an earlier run of this script installed it and was cut short before removing it.

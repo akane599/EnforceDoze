@@ -29,11 +29,18 @@ ssh akane-linux "rm -rf $remote_dir && mkdir -p $remote_dir" </dev/null
 ./gradlew -q :app:assembleDebug
 scp -q app/build/outputs/apk/debug/app-debug.apk akane-linux:$remote_dir/app.apk
 scp -q tools/emulator/p4-plan-remote.sh akane-linux:$remote_dir/run.sh
+scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
 
 set +e
-ssh akane-linux "bash $remote_dir/run.sh '$avd' '$scenarios'" </dev/null
+ssh akane-linux "SUITE_SERIAL='${SUITE_SERIAL:-}' bash $remote_dir/run.sh '$avd' '$scenarios'" </dev/null
 status=$?
 set -e
+
+if ((status == 75)); then
+  # Busy, or an emulator someone else runs: nothing ran, so the evidence of the last real run stays as it is.
+  echo "akane-linux busy; nothing ran (exit 75)"
+  exit 75
+fi
 
 evidence=docs/evidence/p4
 mkdir -p "$evidence"

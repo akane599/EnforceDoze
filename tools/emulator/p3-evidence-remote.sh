@@ -13,10 +13,6 @@ out=$dir/out
 mkdir -p "$out"
 A=$HOME/Android/Sdk/platform-tools/adb
 adb() { "$A" "$@" </dev/null; }
-# Device safety: every adb call goes to the emulator, never to a phone that happens to be connected over adb.
-# The emulator already running, or the one this script starts on the first free console port.
-ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
-export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 pkg=io.github.akane599.enforcedoze
 receiver=$pkg/io.github.akane599.enforcedoze.app.DebugCommandReceiver
@@ -111,22 +107,11 @@ start_server() {
   until_true 20 server_running
 }
 
-started_emulator=0
-if adb devices | grep -q '^emulator-'; then
-  # Only the project's own AVD (ADR 0021): an emulator another project started is left alone.
-  running=$(adb emu avd name | head -1 | tr -d '\r')
-  [[ $running == "$avd" ]] || { log "a different emulator ($running) is running; leaving it alone"; exit 1; }
-else
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
-fi
-timeout 300 "$A" wait-for-device </dev/null
-timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
+source "$(dirname "$0")/lib.sh"
+load_check
+acquire_emulator "$avd" "$out/emulator.log"
 sdk=$(adb shell getprop ro.build.version.sdk | tr -d '\r')
 build=$(adb shell getprop ro.build.id | tr -d '\r')
-log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
 
 baseline_constants=$(constants)
 adb shell dumpsys deviceidle whitelist > "$out/allowlist-before.txt"
@@ -294,12 +279,13 @@ with zipfile.ZipFile(sys.argv[1]) as z:
     assert z.testzip() is None
     manifest = json.loads(z.read("manifest.json"))
     sessions = json.loads(z.read("sessions.json"))
-    assert manifest["sdk"] > 0 and len(sessions) >= 2, (manifest, len(sessions))
+    nights = int(sys.argv[2])
+    assert manifest["sdk"] > 0 and len(sessions) >= nights, (manifest, len(sessions))
     assert all(s["session"]["verdict"] for s in sessions if s.get("night")), "a night without a verdict"
-    assert sum(1 for s in sessions if s.get("night")) >= 2, "fewer than 2 nights"
+    assert sum(1 for s in sessions if s.get("night")) >= nights, f"fewer than {nights} nights"
     assert z.read("actions.csv").decode().startswith("time,")
-' "$out/export-all.zip"
-  id=$(sed -n 's/^night id=[0-9]* session=\([0-9]*\) .*/\1/p' "$out/night-test-classic-report.txt")
+' "$out/export-all.zip" "$nights"
+  id=$(cat "$out"/night-test-*-report.txt 2>/dev/null | sed -n 's/^night id=[0-9]* session=\([0-9]*\) .*/\1/p' | tail -1)
   reply=$(cmd export "${id:-0}")
   echo "$reply" > "$out/export-session.txt"
   check "export session $id: one session with its raw dumps" grep -qE '^entry raw/[0-9]+/' <<<"$reply"
@@ -358,12 +344,14 @@ alarm_fixture() {
   check "alarm dump for api${sdk}_${build} has its Alarm Stats" grep -q '^  Alarm Stats:' "$out/alarm-api${sdk}_${build}.txt"
 }
 
+nights=0
 for scenario in $scenarios; do
   log "== $scenario"
   case $scenario in
     setup) setup || { log "setup failed"; exit 1; } ;;
-    night-everyday) night test-everyday 0 ;;
-    night-classic) night test-classic 1 ;;
+    # Each night is compared with the nights run before it; the suite runs one (tools/emulator/suite.sh).
+    night-everyday) night test-everyday "$nights"; nights=$((nights + 1)) ;;
+    night-classic) night test-classic "$nights"; nights=$((nights + 1)) ;;
     quick-proof) quick_proof ;;
     export) export_zip ;;
     restore) restore ;;

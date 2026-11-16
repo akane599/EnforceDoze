@@ -33,11 +33,18 @@ remote_dir=.cache/enforcedoze-p1
 ssh akane-linux "rm -rf $remote_dir && mkdir -p $remote_dir" </dev/null
 scp -q "$apk" akane-linux:$remote_dir/test.apk
 scp -q tools/emulator/p1-privilege-remote.sh akane-linux:$remote_dir/run.sh
+scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
 
 set +e
-ssh akane-linux "bash $remote_dir/run.sh '$avd' '$shizuku' '$scenarios'" </dev/null
+ssh akane-linux "SUITE_SERIAL='${SUITE_SERIAL:-}' bash $remote_dir/run.sh '$avd' '$shizuku' '$scenarios'" </dev/null
 status=$?
 set -e
+
+if ((status == 75)); then
+  # Busy, or an emulator someone else runs: nothing ran, so the evidence of the last real run stays as it is.
+  echo "akane-linux busy; nothing ran (exit 75)"
+  exit 75
+fi
 
 mkdir -p docs/evidence/p1 docs/capabilities
 scp -q "akane-linux:$remote_dir/out/*.txt" docs/evidence/p1/ 2>/dev/null || true

@@ -33,11 +33,18 @@ if [[ $scenarios != alarm-fixture ]]; then
   scp -q core/data/build/outputs/apk/androidTest/debug/data-debug-androidTest.apk akane-linux:$remote_dir/data-test.apk
 fi
 scp -q tools/emulator/p3-evidence-remote.sh akane-linux:$remote_dir/run.sh
+scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
 
 set +e
-ssh akane-linux "bash $remote_dir/run.sh '$avd' '$scenarios'" </dev/null
+ssh akane-linux "SUITE_SERIAL='${SUITE_SERIAL:-}' bash $remote_dir/run.sh '$avd' '$scenarios'" </dev/null
 status=$?
 set -e
+
+if ((status == 75)); then
+  # Busy, or an emulator someone else runs: nothing ran, so the evidence of the last real run stays as it is.
+  echo "akane-linux busy; nothing ran (exit 75)"
+  exit 75
+fi
 
 evidence=docs/evidence/p3
 mkdir -p "$evidence"
