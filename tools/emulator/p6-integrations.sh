@@ -28,6 +28,13 @@ ssh akane-linux "bash $remote_dir/run.sh '$avd'" </dev/null
 status=$?
 set -e
 
+if ((status == 75)); then
+  # Busy: nothing ran, so the evidence of the last real run stays as it is.
+  ssh akane-linux "cat $remote_dir/out/summary.txt" </dev/null
+  echo "akane-linux busy; nothing ran (exit 75)"
+  exit 75
+fi
+rm -rf docs/evidence/p6
 mkdir -p docs/evidence/p6
 scp -q "akane-linux:$remote_dir/out/*" docs/evidence/p6/ 2>/dev/null || true
 rm -f docs/evidence/p6/emulator.log
