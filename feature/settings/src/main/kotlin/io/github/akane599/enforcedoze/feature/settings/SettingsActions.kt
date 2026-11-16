@@ -17,6 +17,8 @@ public interface SettingsActions {
 
     public fun sensors()
 
+    public fun switchOver()
+
     public fun automation(on: Boolean)
 
     public fun wallpaperAccent(on: Boolean)
@@ -71,6 +73,9 @@ public interface SettingsNavigation {
 
     /** The sensors screen (SPEC 9.1). */
     public fun sensors()
+
+    /** The switch-over from another setup (SPEC 11.4). */
+    public fun switchOver()
 
     /** The phone's per-app language page for this app. */
     public fun language()

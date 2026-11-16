@@ -37,6 +37,9 @@
     <string name="ui_notice_another">%1$s, %2$s saatinde Doze ayarlarını yazdı</string>
     <string name="ui_notice_another_unknown">Başka bir uygulama</string>
     <string name="ui_notice_another_body">EnforceDoze kendi ayarlarını geri koydu. İki Doze yöneticisi birbiriyle çekişir; birini kapatın.</string>
+    <string name="ui_notice_two">İki Doze yöneticisi yüklü: %1$s</string>
+    <string name="ui_notice_two_body">O da Doze\'u değiştirebilir; iki yönetici birbirinin ayarını geri alır. EnforceDoze\'a geçin ya da onun Doze özelliklerini kapatın.</string>
+    <string name="ui_notice_switch_action">Geçiş yap</string>
     <string name="ui_notice_hold_off">%1$s, Doze\'u bütün gece kapalı tuttu</string>
     <string name="ui_notice_hold_off_body">Bir erteleme ekran kapanınca başladı, ekran açılana dek sürdü. Ayarlar, Ertelemeler bölümünden değiştirin.</string>
     <string name="ui_notice_error">%1$s</string>

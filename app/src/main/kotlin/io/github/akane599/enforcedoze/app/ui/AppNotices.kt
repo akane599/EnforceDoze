@@ -61,6 +61,11 @@ internal class AppNotices(
                     val writer = drift.writer.orEmpty()
                     add(StateNotice("another-${drift.time}", NoticeKind.ANOTHER_MANAGER, labels.label(writer) ?: writer, time = drift.time))
                 }
+            // SPEC 11.5: another Doze manager installed, whether or not it has written yet.
+            OtherManagers.installed(labels).takeIf { it.isNotEmpty() }?.let { managers ->
+                val id = "two-${managers.joinToString(",") { it.packageName }}"
+                add(StateNotice(id, NoticeKind.TWO_MANAGERS, managers.joinToString { it.label }))
+            }
             status?.storeError?.let { raw ->
                 add(StateNotice("store-error", NoticeKind.ERROR, context.getString(UiR.string.ui_error_store), raw = raw))
             }

@@ -37,6 +37,9 @@
     <string name="ui_notice_another">%1$s wrote Doze settings at %2$s</string>
     <string name="ui_notice_another_unknown">Another app</string>
     <string name="ui_notice_another_body">EnforceDoze put its own back. Two Doze managers fight each other; turn one off.</string>
+    <string name="ui_notice_two">Two Doze managers are installed: %1$s</string>
+    <string name="ui_notice_two_body">It can change Doze too, and two managers undo each other\'s settings. Switch over to EnforceDoze, or turn its Doze features off.</string>
+    <string name="ui_notice_switch_action">Switch over</string>
     <string name="ui_notice_hold_off">%1$s kept Doze off all night</string>
     <string name="ui_notice_hold_off_body">A hold-off ran from screen off to screen on. Change it in Settings, Hold-offs.</string>
     <string name="ui_notice_error">%1$s</string>

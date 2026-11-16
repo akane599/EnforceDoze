@@ -13,7 +13,7 @@ import io.github.akane599.enforcedoze.design.Notice
 import io.github.akane599.enforcedoze.design.Tone
 
 /** The states every screen handles (SPEC 9.3), apart from "no data yet", which each screen words itself. */
-public enum class NoticeKind { READ_ONLY, PRIVILEGE_LOST, PARTLY_APPLIED, ANOTHER_MANAGER, HOLD_OFF_ALL_NIGHT, ERROR }
+public enum class NoticeKind { READ_ONLY, PRIVILEGE_LOST, PARTLY_APPLIED, ANOTHER_MANAGER, TWO_MANAGERS, HOLD_OFF_ALL_NIGHT, ERROR }
 
 /**
  * One warning. [subject] is the levers or keys concerned, the other app's name, the hold-off's name, or the
@@ -72,6 +72,12 @@ public fun StateNoticeCard(
             Tone.WARNING,
         )
 
+        NoticeKind.TWO_MANAGERS -> Triple(
+            stringResource(R.string.ui_notice_two, subject),
+            stringResource(R.string.ui_notice_two_body),
+            Tone.WARNING,
+        )
+
         NoticeKind.HOLD_OFF_ALL_NIGHT -> Triple(
             stringResource(R.string.ui_notice_hold_off, subject),
             stringResource(R.string.ui_notice_hold_off_body),
@@ -83,6 +89,7 @@ public fun StateNoticeCard(
     val action = when (notice.kind) {
         NoticeKind.READ_ONLY -> stringResource(R.string.ui_notice_read_only_action)
         NoticeKind.PRIVILEGE_LOST -> stringResource(R.string.ui_notice_lost_action)
+        NoticeKind.ANOTHER_MANAGER, NoticeKind.TWO_MANAGERS -> stringResource(R.string.ui_notice_switch_action)
         else -> stringResource(R.string.ui_notice_details)
     }
     val seen by rememberUpdatedState(onSeen)

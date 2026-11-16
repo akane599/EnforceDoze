@@ -165,14 +165,14 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
         return if (locales.isEmpty) null else locales[0].getDisplayName(locales[0]).replaceFirstChar { it.titlecase(Locale.ROOT) }
     }
 
-    private companion object {
+    companion object {
         /** `device_config` sync modes (`WorkerContract.SYNC_DISABLED_MODES`). */
         private const val SYNC_ON = "none"
         private const val SYNC_STOPPED = "persistent"
 
-        const val TASKER = "net.dinglisch.android.taskerm"
-        const val ENGINE_DIR = "engine"
-        const val PROFILES_DIR = "profiles"
+        private const val TASKER = "net.dinglisch.android.taskerm"
+        private const val ENGINE_DIR = "engine"
+        private const val PROFILES_DIR = "profiles"
 
         /** A job's result as one outcome: refused, or stock not confirmed by read-back, is never shown as done. */
         fun outcome(result: JobResult): ActionOutcome = when {

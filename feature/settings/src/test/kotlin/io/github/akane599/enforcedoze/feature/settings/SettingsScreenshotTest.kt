@@ -94,8 +94,9 @@ private object NoSettings : SettingsActions {
     override fun licence() = Unit
     override fun allowlist() = Unit
     override fun sensors() = Unit
+    override fun switchOver() = Unit
     override fun notice(notice: StateNotice) = Unit
     override fun seen(notice: StateNotice) = Unit
 }
 
-private const val SETTINGS_LENGTH = 2520
+private const val SETTINGS_LENGTH = 2640

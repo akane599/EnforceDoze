@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.feature.profiles.SwitchOverViewModel
+import io.github.akane599.enforcedoze.feature.profiles.SwitchOverRoute
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -125,6 +127,7 @@ internal fun appEntries(
     entry<SensorsKey> { SensorsRoute(viewModel { SensorsViewModel(AppSensorsSource(services)) }, sensorsNavigation(navigator)) }
     entry<KeepAwakeKey> { KeepAwakePicker(services, navigator) }
     entry<ClientPickerKey> { ClientPicker(services, navigator) }
+    entry<SwitchOverKey> { SwitchOver(services, navigator, exports) }
     entry<LicenceKey> { LicenceScreen(onBack = navigator::back) }
     entry<OnboardingKey> { key ->
         val start = if (key.fromSettings) OnboardingStep.PRIVILEGE else OnboardingStep.WELCOME
@@ -212,6 +215,7 @@ private fun settingsNavigation(context: Context, navigator: Navigator, exports: 
     override fun privilege() = navigator.go(OnboardingKey(fromSettings = true))
     override fun addKeepAwake() = navigator.go(KeepAwakeKey)
     override fun addClient() = navigator.go(ClientPickerKey)
+    override fun switchOver() = navigator.go(SwitchOverKey)
     override fun exportAll() = exports.all()
 
     /** Android's per-app language page (API 33+). */
@@ -260,4 +264,10 @@ private fun ClientPicker(services: AppServices, navigator: Navigator) {
         },
         onBack = navigator::back,
     )
+}
+
+/** The switch-over from another setup (SPEC 11.4); it opens profiles the same way the profile screens do. */
+@Composable
+private fun SwitchOver(services: AppServices, navigator: Navigator, exports: ExportRequests) {
+    SwitchOverRoute(viewModel { SwitchOverViewModel(AppSwitchOverSource(services)) }, profilesNavigation(navigator, exports))
 }

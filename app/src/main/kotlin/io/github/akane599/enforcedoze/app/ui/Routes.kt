@@ -36,6 +36,9 @@ internal sealed interface Top : Route
 
 @Serializable internal data object KeepAwakeKey : Route
 
+/** The switch-over from another setup (SPEC 11.4). */
+@Serializable internal data object SwitchOverKey : Route
+
 /** The app picker for a new automation client (ADR 0033). */
 @Serializable internal data object ClientPickerKey : Route
 

@@ -81,4 +81,6 @@
     <string name="settings_allowlist_detail">Apps that Doze lets use the network and hold wake locks in deep idle.</string>
     <string name="settings_sensors">Sensors</string>
     <string name="settings_sensors_detail">Apps that held sensors at the last screen off, and the switch that turns all sensors off.</string>
+    <string name="settings_switch">Switch from another setup</string>
+    <string name="settings_switch_detail">What Tasker or another app set before EnforceDoze: keep it as a profile, check it is off, or go back to it.</string>
 </resources>

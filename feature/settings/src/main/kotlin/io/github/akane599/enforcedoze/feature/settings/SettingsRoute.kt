@@ -56,6 +56,7 @@ public fun SettingsRoute(viewModel: SettingsViewModel, navigation: SettingsNavig
         override fun licence() = navigation.licence()
         override fun allowlist() = navigation.allowlist()
         override fun sensors() = navigation.sensors()
+        override fun switchOver() = navigation.switchOver()
         override fun notice(notice: StateNotice) = navigation.notice(notice)
         override fun seen(notice: StateNotice) = viewModel.seen(notice)
     }

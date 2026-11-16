@@ -182,11 +182,6 @@ internal object ReportMapping {
     }
 
     /**
-     * The stored verdict ([EvidenceRows]) as every screen words it. No verdict, or one this build does not know, is
-     * Not judged: the report never shows a verdict the row does not hold. (`:core:ui` and `:core:evidence` have no
-     * mapping from the stored string, since only `:app` sees the rows.)
-     */
-    /**
      * A log row's strip: the report's fills from the session rows and their transitions, over the row's own span. A
      * night also shows its wake-ups; wakers and sensor snapshots are not needed for the strip.
      */
@@ -201,6 +196,11 @@ internal object ReportMapping {
         return strip(tracks, if (night) StoredNights.wakes(tracks.map { it.row }) else emptyList(), start, end)
     }
 
+    /**
+     * The stored verdict ([EvidenceRows]) as every screen words it. No verdict, or one this build does not know, is
+     * Not judged: the report never shows a verdict the row does not hold. (`:core:ui` and `:core:evidence` have no
+     * mapping from the stored string, since only `:app` sees the rows.)
+     */
     fun verdict(stored: String?): VerdictWord = when (stored) {
         EvidenceRows.HELD -> VerdictWord.HELD
         EvidenceRows.PARTLY -> VerdictWord.PARTLY

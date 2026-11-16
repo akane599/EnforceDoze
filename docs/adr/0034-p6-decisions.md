@@ -43,6 +43,23 @@ around it.
 - **Tasker is offered with one tap; any other app goes through the app picker.** The token is shown
   once in a dialog with a copy button, marked sensitive on the clipboard.
 - **Reset removes every client** and disables the receiver, like the rest of the app's records.
+- **The switch-over is a screen of the profiles feature** (`SwitchOverScreen`), not a new module: its
+  import makes a profile and its table is the profile screens' timings table. Its logic is pure JVM in
+  `:core:doze` (`SwitchOver`), next to the snapshots it reads.
+- **"What was set" is `previous.json` against `stock.json`.** The engine captures `previous.json`
+  before its first write, so it holds the owner's Tasker values whatever the screen state was then.
+  Values are shown as `dumpsys deviceidle` printed them, read like the profile screens' timings.
+- **The import keeps the string's keys and any other value lever A can write**, converted from
+  `dumpsys` syntax to milliseconds; a value that does not pass `DeviceIdleSettings.problems` (such as
+  `location_accuracy=50.0m`) is left out. It goes through the same guardrails as any custom profile, and
+  their problems are shown if it fails. Its id starts at `imported-setup`; the app remembers the last one.
+- **The check needs a watching engine.** A foreign write is logged only while EnforceDoze holds the
+  string (a profile with timings, managed), so without one the check says so instead of passing on
+  nothing. A drift with an unknown writer counts as foreign: the check fails rather than passes falsely.
+- **Other managers are found by app id**: upstream EnforceDoze (`com.akylas.enforcedoze`), ForceDoze
+  (`com.suyashsrijan.forcedoze`) and Battery Guru (`com.paget96.batteryguru`). `QUERY_ALL_PACKAGES` is
+  already held, for the app pickers. The "Two Doze managers" notice and the "another app wrote" notice
+  both open the switch-over (SPEC 5.7's guided switch-over), not the Log.
 
 ## Review
 

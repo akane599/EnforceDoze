@@ -47,7 +47,8 @@ internal class Navigator(private val stack: NavBackStack<NavKey>) {
         when (notice.kind) {
             NoticeKind.READ_ONLY, NoticeKind.PRIVILEGE_LOST -> go(OnboardingKey(fromSettings = true))
             NoticeKind.PARTLY_APPLIED -> go(PlanKey)
-            NoticeKind.ANOTHER_MANAGER -> tab(LogKey)
+            // SPEC 5.7: another writer gets the guided switch-over, not just the log.
+            NoticeKind.ANOTHER_MANAGER, NoticeKind.TWO_MANAGERS -> go(SwitchOverKey)
             NoticeKind.HOLD_OFF_ALL_NIGHT -> tab(SettingsKey)
             NoticeKind.ERROR -> Unit
         }

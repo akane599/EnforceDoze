@@ -64,6 +64,16 @@ internal class AppPrefs(context: Context) {
         get() = prefs.getBoolean(WALLPAPER_ACCENT, false)
         set(value) = prefs.edit { putBoolean(WALLPAPER_ACCENT, value) }
 
+    /** When the switch-over's check began (SPEC 11.4 step 3), epoch millis; null before it is started. */
+    var switchCheckSince: Long?
+        get() = prefs.getLong(SWITCH_CHECK, -1).takeIf { it >= 0 }
+        set(value) = prefs.edit { if (value == null) remove(SWITCH_CHECK) else putLong(SWITCH_CHECK, value) }
+
+    /** The custom profile the switch-over's import made last. */
+    var importedProfile: String?
+        get() = prefs.getString(IMPORTED_PROFILE, null)
+        set(value) = prefs.edit { putString(IMPORTED_PROFILE, value) }
+
     /** "Follow Recommended automatically" (SPEC 9.1 Plan). */
     var followRecommended: Boolean
         get() = prefs.getBoolean(FOLLOW, false)
@@ -140,6 +150,8 @@ internal class AppPrefs(context: Context) {
         private const val URGENCY = "urgency"
         private const val RETENTION = "retention_days"
         private const val AUTOMATION = "automation"
+        private const val SWITCH_CHECK = "switch-check-since"
+        private const val IMPORTED_PROFILE = "imported-profile"
         private const val WALLPAPER_ACCENT = "wallpaper-accent"
         private const val FOLLOW = "follow_recommended"
         private const val KEEP_AWAKE = "keep_awake"

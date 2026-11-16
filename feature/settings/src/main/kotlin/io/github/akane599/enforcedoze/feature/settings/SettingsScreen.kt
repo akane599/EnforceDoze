@@ -72,6 +72,7 @@ public fun SettingsScreen(state: SettingsState, actions: SettingsActions, modifi
             val open = stringResource(R.string.settings_open)
             Line(stringResource(R.string.settings_allowlist), stringResource(R.string.settings_allowlist_detail), open, actions::allowlist)
             Line(stringResource(R.string.settings_sensors), stringResource(R.string.settings_sensors_detail), open, actions::sensors)
+            Line(stringResource(R.string.settings_switch), stringResource(R.string.settings_switch_detail), open, actions::switchOver)
             Automation(state, actions, formats)
             SectionHeader(stringResource(R.string.settings_records))
             Line(
