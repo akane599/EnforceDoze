@@ -83,3 +83,12 @@ public interface HomeActions {
 
     public fun seen(notice: StateNotice)
 }
+
+/** Where Home sends the owner; the app's navigation implements it (ADR 0029). */
+public interface HomeNavigation {
+    public fun changePlan()
+
+    public fun openReport(sessionId: Long)
+
+    public fun notice(notice: StateNotice)
+}

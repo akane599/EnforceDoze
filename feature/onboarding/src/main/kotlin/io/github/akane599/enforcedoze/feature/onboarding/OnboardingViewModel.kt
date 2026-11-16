@@ -18,11 +18,16 @@ import kotlinx.coroutines.launch
 private const val STOP_MS = 5_000L
 private const val STEP_KEY = "step"
 
-public class OnboardingViewModel(private val source: OnboardingSource, private val saved: SavedStateHandle) : ViewModel() {
+/** [start] is the first step shown: the privilege step when Settings sends the owner to check access again. */
+public class OnboardingViewModel(
+    private val source: OnboardingSource,
+    private val saved: SavedStateHandle,
+    start: OnboardingStep = OnboardingStep.WELCOME,
+) : ViewModel() {
     public val state: StateFlow<OnboardingState?> = source.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_MS), null)
 
     /** The step on screen; kept across process death, so the owner returns where they left. */
-    public val step: StateFlow<OnboardingStep> = saved.getStateFlow(STEP_KEY, OnboardingStep.WELCOME)
+    public val step: StateFlow<OnboardingStep> = saved.getStateFlow(STEP_KEY, start)
 
     private val checkingState = MutableStateFlow(false)
     public val checking: StateFlow<Boolean> = checkingState.asStateFlow()
