@@ -18,6 +18,12 @@ Non-blocking questions for the owner. Each states the default in use, so work co
 
   Say if either should differ.
 
+- **Q10. Disk on build-server.** The shared Gradle volume (`/mnt/HC_Volume_*`, 50 GB) was at 99–100 %
+  on 2026-11-16 (288 MB free after the P5 benchmark build). Most of it is other projects' caches and
+  Gradle versions, which I do not touch. *Default:* only this project's builds; no deletions in the
+  shared caches beyond Gradle's own old daemon logs. Say if older Gradle caches (8.14, 9.0.0, 9.7.1) or
+  `build-cache-1` may go.
+
 ## Answered
 
 - **Q2. Name (SPEC 16.3 item 1).** *Answer 2026-11-16:* "EnforceDoze" stays (ADR 0032).
