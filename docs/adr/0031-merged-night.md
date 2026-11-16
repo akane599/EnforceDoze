@@ -1,6 +1,6 @@
 # 0031. A night joins sessions across short wake-ups
 
-- Status: Accepted
+- Status: Accepted; the clock window is superseded by ADR 0032
 - Date: 2026-11-08
 - Phase: P5
 - Spec: 7.2, 7.3, 8.5, 13.2

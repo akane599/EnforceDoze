@@ -5,35 +5,31 @@ Non-blocking questions for the owner. Each states the default in use, so work co
 
 ## Open
 
-- **Q2. Name (SPEC 16.3 item 1).** *Default:* "EnforceDoze", as an honest, credited fork with its own app
-  id. If you want a name of your own, three collision-checked proposals follow on request.
-- **Q4. Upstream features the spec does not list (`docs/upstream-audit.md` §6).** Decided so far:
-  drop airplane mode in Doze (blocks calls), Bluetooth off (cuts the watch and Android Auto), GPS off
-  (emergency location), battery saver on (One UI runs its own), the notification blocklist (binder
-  transaction numbers), the auto-rotate fix (obsolete), app shortcuts (v1) and upstream's other
-  translations; "wait for unlock" is kept as lever B's option `untilUnlock`, off by default (ADR 0017).
-  *Default:* as decided; say if any of them matters to you.
 - **Q5. The `akane599/AkaDoZe` repository.** Q1 asked to drop every other fork effort; AkaDoZe is a
   separate public repository (last pushed 2026-10-07), not a branch of this fork, and deleting a
   repository cannot be undone. *Default:* left untouched; say "delete AkaDoZe" and it goes.
 
-- **Q7. Design direction (SPEC 10.5).** Three directions for Home and the night report are in
-  `docs/design/directions/` and in the P5 review ZIP: A night timetable, B sleep lab (hypnogram),
-  C seismograph drum (stacked nights). *Default:* A, with C's stacked nights for comparisons
-  (ADR 0028). Say "B" or "C" and the tokens change in `:core:design`.
+- **Q9. Nights at any hour (ADR 0032).** Two readings of the rule of 2026-11-16 use these defaults:
+  - "At most one in 24 hours" is read as: of rests that start less than 12 h apart, only the
+    longest. A full 24 h after each night would drop the next sleep whenever it starts earlier on
+    the clock (00:30, then 23:30 the next evening), and would delete that earlier night's report.
+  - A phone left unplugged on a desk with the screen off for 4 h counts as a night as well, when no
+    longer rest is near it.
 
-- **Q8. Joined nights (ADR 0031).** The owner's rule is in place. Three choices around it use
-  these defaults:
-  - The 21:00–03:00 window now applies to the night report too, to the first session only. A long
-    screen-off stretch at noon gets a session report, not a night report.
-  - A battery level that rose during a screen-on gap ends the night, as a charger does.
-  - The report is written at the first unlock once the night has 4 h, and later sessions that join
-    extend it in place.
-
-  Say if any should differ.
+  Say if either should differ.
 
 ## Answered
 
+- **Q2. Name (SPEC 16.3 item 1).** *Answer 2026-11-16:* "EnforceDoze" stays (ADR 0032).
+- **Q4. Upstream features the spec does not list.** *Answer 2026-11-16:* every dropped feature is
+  approved; "wait for unlock" stays lever B's `untilUnlock` option (ADR 0017, 0032).
+- **Q7. Design direction (SPEC 10.5).** *Answer 2026-11-16:* go on with A. The owner may still
+  write after seeing the P5 review ZIP (ADR 0028, 0032).
+- **Q8. Joined nights (ADR 0031).** *Answer 2026-11-16:* a rising battery ending a night, and
+  writing at the first unlock and then extending, are approved. The clock window goes: a night is a
+  joined rest of 4 h at any hour, at most one in 24 hours (the longest). When the starts spread
+  over more than 3 h of the clock there is no fixed window: the why card says so, and Night is
+  offered by hand (ADR 0032; the reading of "24 hours" is Q9).
 - **Q1. The earlier fork work and the default branch.** *Answer 2026-11-08:* delete every other
   branch, commit and fork effort; keep only the current work and the original repository. Done:
   `main` is the default branch; `Base`, `master` and `codex/android16-reliability` deleted

@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -155,6 +156,19 @@ public abstract class SessionDao {
     /** A night that a later session joined (ADR 0031): the same row, its range and figures grown. */
     @Update
     public abstract suspend fun updateNight(row: NightRow)
+
+    @Delete
+    protected abstract suspend fun deleteNights(rows: List<NightRow>)
+
+    /**
+     * A longer rest became the night (ADR 0032): the shorter nights near it, naps after all, are no longer nights.
+     * Their sessions keep their own reports. Returns the new night's id.
+     */
+    @Transaction
+    public open suspend fun replaceNights(replaced: List<NightRow>, night: NightRow): Long {
+        deleteNights(replaced)
+        return insertNight(night)
+    }
 
     /**
      * The nights that started before [beforeMillis], newest first; with [profileId], only nights whose every

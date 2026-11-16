@@ -50,7 +50,7 @@
     <string name="ui_profile_purpose_stock">Başlangıç noktası. Telefonun kendi başına ne yaptığını gösterir; her rapor bununla karşılaştırır.</string>
     <string name="ui_profile_purpose_everyday">Hareketsiz, ekranı kapalı telefon bir saat yerine yaklaşık 10 dakikada derin uykuya geçer. Güvenli varsayılan.</string>
     <string name="ui_profile_purpose_pocket">Hareket hâlinde taşınan telefon için: yolda ya da yürürken. Hareket bekleyişi baştan başlatmaz, derin uyku cepte de sürer.</string>
-    <string name="ui_profile_purpose_night">Gece penceresindeki uzun, şarjsız ve ekranı kapalı süre için. Bakım pencereleri arası en uzun aralıklar.</string>
+    <string name="ui_profile_purpose_night">Uzun, şarjsız ve ekranı kapalı dinlenme için: uykunuz, saati ne olursa olsun. Bakım pencereleri arası en uzun aralıklar.</string>
     <string name="ui_profile_purpose_classic">EnforceDoze\'un özgün davranışı, eşdeğerlik için korunur: ekran kapanır kapanmaz derin uyku.</string>
     <string name="ui_profile_purpose_strict">Yolculuk, düşük pil ya da şarj aletinden uzak uzun bir gün için. Hiçbir zaman kendiliğinden önerilmez.</string>
     <string name="ui_profile_purpose_custom">Bu telefonda kayıtlı kendi profilin.</string>

@@ -60,7 +60,7 @@ internal object DebugHooks {
 
     fun setNightThreshold(context: Context, seconds: Long?) = set(context, NIGHT_SECONDS, seconds)
 
-    /** The night rule (ADR 0031); a shortened threshold scales the join gap with it and drops the clock window. */
+    /** The night rule (ADR 0031, 0032); a shortened threshold scales the join gap with it and turns the spacing off. */
     fun nightRule(context: Context): Nights.Rule {
         val threshold = nightThreshold(context)
         return if (threshold == NightReports.THRESHOLD) Nights.Rule() else Nights.Rule.compressed(threshold)

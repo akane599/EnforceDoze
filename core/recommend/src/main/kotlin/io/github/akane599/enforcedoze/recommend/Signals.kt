@@ -6,13 +6,9 @@ import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.DEEP_MARGIN
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.LONG_SESSION
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_JOIN_GAP
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_LENGTH
-import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_STARTS_FROM
-import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_STARTS_UNTIL
+import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_SPACING
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.SHORT_SESSION
 import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /** Why a signal has no value: the why card says so instead of guessing (ADR 0026). */
@@ -44,7 +40,7 @@ public data class Share(val count: Int, val of: Int) {
     val value: Double get() = if (of == 0) 0.0 else count.toDouble() / of
 }
 
-/** One unplugged night (signal N): the longest qualifying session that started in that night's window. */
+/** One night (signal N, ADR 0031, 0032): a joined unplugged rest of 4 h or more, the longest in the 24 hours around it. */
 public data class Night(val start: ZonedDateTime, val end: ZonedDateTime)
 
 /** The signals of SPEC 7.2 (Q is the answer, not a signal), each from the sessions it may use. */
@@ -62,9 +58,9 @@ public data class Signals(
     val neverDeep: Measured<Share>,
     /** M: motion resets per hour of long unplugged daytime screen-off with the sensors free. */
     val motionResetsPerHour: Measured<Double>,
-    /** N: the qualifying nights, one per night, oldest first; each from its first session's start to its last one's end. */
+    /** N: the nights, [NIGHT_SPACING] or more apart, oldest first; each from its first session's start to its last one's end. */
     val nights: List<Night>,
-    /** N: nights the history could hold a qualifying session in. */
+    /** N: how many nights the history could hold. */
     val availableNights: Int,
     /** D: share of long unplugged stock screen-off time spent in deep idle. */
     val deepShare: Measured<Double>,
@@ -81,7 +77,7 @@ public data class Signals(
             // M and N take the sessions that began inside it, so a night is never counted that was not available.
             val started = overlapping.filter { it.start >= history.from }
             // A night joins its sessions across short wake-ups (ADR 0031); every session of a night is night time.
-            val runs = nightRuns(overlapping, zone)
+            val runs = nightRuns(overlapping)
             val night = runs.flatten().toHashSet()
             val daytime = overlapping.filterNot { it in night }
             val screenOff = total(overlapping, clip)
@@ -95,7 +91,7 @@ public data class Signals(
                 shortDaytimeShare = shortShare(daytime, clip),
                 neverDeep = neverDeep(started.filterNot { it in night }),
                 motionResetsPerHour = motionResets(started.filterNot { it in night }),
-                nights = perNight(runs.filter { it.first().start >= history.from }, zone).map {
+                nights = runs.filter { it.first().start >= history.from }.map {
                     Night(it.first().start.atZone(zone), it.last().end.atZone(zone))
                 },
                 availableNights = availableNights(history),
@@ -109,18 +105,15 @@ public data class Signals(
         }
 
         /**
-         * SPEC 7.2 N with ADR 0031: runs of unplugged sessions joined across screen-on gaps under [NIGHT_JOIN_GAP], the
-         * first starting between [NIGHT_STARTS_FROM] and [NIGHT_STARTS_UNTIL], with [NIGHT_LENGTH] of screen-off in all.
-         * [sessions] must hold every session of the span, plugged ones too: one between two unplugged ones ends a run.
+         * SPEC 7.2 N with ADR 0031 and 0032: runs of unplugged sessions joined across screen-on gaps under
+         * [NIGHT_JOIN_GAP], with [NIGHT_LENGTH] of screen-off in all, at any hour; of two closer than [NIGHT_SPACING]
+         * only the longer. [sessions] must hold every session of the span, plugged ones too: one between two unplugged
+         * ones ends a run.
          */
-        internal fun nightRuns(sessions: List<ScreenOffSession>, zone: ZoneId): List<List<ScreenOffSession>> =
-            Nights.find(sessions, zone, Nights.Rule(NIGHT_LENGTH, NIGHT_JOIN_GAP)) { Nights.Stretch(it.start, it.end, it.unplugged) }
-
-        /** One run per night, the one with the most screen-off time; 01:00 on the 10th is the night of the 9th. */
-        internal fun perNight(runs: List<List<ScreenOffSession>>, zone: ZoneId): List<List<ScreenOffSession>> = runs
-            .groupBy { nightOf(it.first().start.atZone(zone)) }
-            .map { (_, same) -> same.maxBy { total(it) } }
-            .sortedBy { it.first().start }
+        internal fun nightRuns(sessions: List<ScreenOffSession>): List<List<ScreenOffSession>> =
+            Nights.find(sessions, Nights.Rule(NIGHT_LENGTH, NIGHT_JOIN_GAP, NIGHT_SPACING)) {
+                Nights.Stretch(it.start, it.end, it.unplugged)
+            }
 
         private fun shortShare(daytime: List<ScreenOffSession>, clip: (ScreenOffSession) -> Duration): Measured<Double> {
             val unplugged = daytime.filter { it.unplugged }
@@ -181,25 +174,11 @@ public data class Signals(
             return Measured.Known(value(known), known.size)
         }
 
-        /** The night a start belongs to is the date its evening began. */
-        internal fun nightOf(time: ZonedDateTime): LocalDate =
-            if (time.toLocalTime() < NIGHT_STARTS_UNTIL) time.toLocalDate().minusDays(1) else time.toLocalDate()
+        /** One night a day: how many days' nights, a day apart, fit inside the history with their [NIGHT_LENGTH]. */
+        private fun availableNights(history: History): Int =
+            if (history.span < NIGHT_LENGTH) 0 else (history.span.minus(NIGHT_LENGTH).toMillis() / DAY.toMillis()).toInt() + 1
 
-        /**
-         * A night is available when the history could hold a qualifying session in it: some start inside its
-         * window, at or after the history's start, with [NIGHT_LENGTH] still inside the history.
-         */
-        private fun availableNights(history: History): Int {
-            val zone = history.zone
-            val first = history.from.atZone(zone).toLocalDate().minusDays(1)
-            val last = history.to.atZone(zone).toLocalDate()
-            return generateSequence(first) { it.plusDays(1) }.takeWhile { it <= last }.count { date ->
-                val opens = date.atTime(NIGHT_STARTS_FROM).atZone(zone).toInstant()
-                val closes = date.plusDays(1).atTime(NIGHT_STARTS_UNTIL).atZone(zone).toInstant()
-                val earliest = maxOf(opens, history.from)
-                earliest < closes && !earliest.plus(NIGHT_LENGTH).isAfter(history.to)
-            }
-        }
+        private val DAY: Duration = Duration.ofDays(1)
     }
 }
 

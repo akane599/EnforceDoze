@@ -6,7 +6,6 @@ import io.github.akane599.enforcedoze.profile.NightSlot
 import io.github.akane599.enforcedoze.profile.Nights
 import io.github.akane599.enforcedoze.profile.Plan
 import java.time.Duration
-import java.time.LocalTime
 
 /**
  * The recommendation policy (SPEC 7.3, ADR 0026): `recommend(history, answers)` is pure and fast, so every rule
@@ -37,18 +36,16 @@ public object RecommendationPolicy {
 
     /**
      * Signal N, hours of screen-off time summed over the night's sessions: enough for the Night profile's long gaps
-     * to pay. The night rule itself is shared with the night report, so these four are `Nights`' values (ADR 0031).
+     * to pay. The night rule itself is shared with the night report, so these three are `Nights`' values
+     * (ADR 0031, 0032). A night has no clock window: the owner sleeps at irregular hours.
      */
     public val NIGHT_LENGTH: Duration = Nights.MIN_SCREEN_OFF
 
-    /** Signal N, local time: a night's first session starts at or after this... */
-    public val NIGHT_STARTS_FROM: LocalTime = Nights.STARTS_FROM
-
-    /** ...and before this, the next morning. */
-    public val NIGHT_STARTS_UNTIL: LocalTime = Nights.STARTS_UNTIL
-
     /** Signal N, minutes: a screen-on gap shorter than this keeps the sessions on either side one night. */
     public val NIGHT_JOIN_GAP: Duration = Nights.JOIN_GAP
+
+    /** Signal N, hours: a rest starting less than this from a longer one is not a night, so a nap and the sleep are not two. */
+    public val NIGHT_SPACING: Duration = Nights.SPACING
 
     /** Rule 3, nights: N must hold this often (or on every available night when fewer), so one late night is not a habit. */
     public const val NIGHTS_NEEDED: Int = 3
@@ -58,6 +55,12 @@ public object RecommendationPolicy {
 
     /** ...and widened by this on each side, so an ordinary early or late night still falls inside. */
     public val WINDOW_PADDING: Duration = Duration.ofMinutes(30)
+
+    /**
+     * Rule 3, hours on the clock: when the nights' starts spread over more than this, no fixed window fits them, so
+     * Night is offered to switch on by hand, from the tile or an automation, and the why card says why (ADR 0032).
+     */
+    public val WINDOW_MAX_SPREAD: Duration = Duration.ofHours(3)
 
     /** Rule 4, battery percent per hour under stock settings: at or below this, little is left to save. */
     public const val DOZING_WELL_DRAIN_PER_HOUR: Double = 0.3
@@ -92,7 +95,7 @@ public object RecommendationPolicy {
         val reasons = mutableListOf<Reason>(Reason.ScreenOffPerDay(signals.screenOffHoursPerDay))
         val inUse = history.feedback.current?.plan
         val day = daySlot(signals, answers.urgency, inUse, reasons, notes)
-        var fresh = Plan(day, nightSlot(signals, answers.urgency, reasons))
+        var fresh = Plan(day, nightSlot(signals, answers.urgency, reasons, notes))
         if (dozingWell(signals)) {
             if (day == POCKET || day == CLASSIC) fresh = trim(fresh, fresh.copy(dayProfileId = EVERYDAY), reasons, notes)
             reasons += Reason.DozingWell(signals.drainPerHour.valueOrNull!!, signals.deepShare.valueOrNull!!)
@@ -143,12 +146,18 @@ public object RecommendationPolicy {
         return to
     }
 
-    /** Rule 3: N on enough of the available nights, and messages may wait. */
-    private fun nightSlot(signals: Signals, urgency: Urgency, reasons: MutableList<Reason>): NightSlot? {
+    /** Rule 3: N on enough of the available nights, messages may wait, and the nights start close enough on the clock. */
+    private fun nightSlot(signals: Signals, urgency: Urgency, reasons: MutableList<Reason>, notes: MutableSet<Note>): NightSlot? {
         val nights = signals.nights
         if (nights.isEmpty() || nights.size < minOf(NIGHTS_NEEDED, signals.availableNights)) return null
         if (urgency == Urgency.RIGHT_AWAY) {
             reasons += Reason.MessagesRightAway(listOf(NIGHT))
+            return null
+        }
+        val spread = NightWindow.spread(nights)
+        if (spread > WINDOW_MAX_SPREAD) {
+            reasons += Reason.IrregularNights(nights.size, signals.availableNights, spread)
+            notes += Note.NIGHT_BY_HAND
             return null
         }
         val window = NightWindow.learn(nights)

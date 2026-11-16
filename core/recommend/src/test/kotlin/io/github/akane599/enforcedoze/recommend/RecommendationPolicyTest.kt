@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.profile.Plan
 import org.junit.Test
 import java.time.Duration
+import kotlin.math.roundToLong
 
 /** One test per threshold of SPEC 7.3, on both sides of it. */
 class RecommendationPolicyTest {
@@ -68,18 +69,37 @@ class RecommendationPolicyTest {
     }
 
     @Test
+    fun `WINDOW_MAX_SPREAD - starts more than 3 h apart on the clock get Night by hand, not a window`() {
+        // The night of day d: a start after midnight falls on the next date.
+        fun week(vararg starts: String) = history(8, starts.mapIndexed { d, start -> sleep(if (start < "12:00") d + 1 else d, start, 420) })
+        val regular = recommend(week("22:00", "01:00", "23:30", "22:30", "00:30", "23:00", "22:15"))
+        assertThat(regular.plan.night).isNotNull()
+        assertThat(regular.notes).doesNotContain(Note.NIGHT_BY_HAND)
+        // 22:00 to 01:01 is 3 h 1 min of the clock.
+        val irregular = recommend(week("22:00", "01:01", "23:30", "22:30", "00:30", "23:00", "22:15"))
+        assertThat(irregular.plan.night).isNull()
+        assertThat(irregular.notes).contains(Note.NIGHT_BY_HAND)
+        assertThat(irregular.reasons).contains(Reason.IrregularNights(7, 8, Duration.ofMinutes(181)))
+        // Messages that cannot wait drop Night, by hand as well.
+        val rightAway = recommend(week("22:00", "01:01", "23:30", "22:30", "00:30", "23:00", "22:15"), Urgency.RIGHT_AWAY)
+        assertThat(rightAway.notes).doesNotContain(Note.NIGHT_BY_HAND)
+    }
+
+    @Test
     fun `DOZING_WELL - stock drain up to 0_3 percent an hour with 70 percent deep caps the day slot`() {
-        // Ten hours away a day, the walk restarting three times an hour, yet deep idle most of the time.
-        fun day(it: Int, deep: Int, drop: Double) =
-            session(it, "08:00", 600).copy(timeInDeep = deep.min, motionResets = 30, batteryDrop = drop)
-        fun week(deep: Int, drop: Double) = history(7, (0 until 7).flatMap { listOf(day(it, deep, drop), charging(it)) })
+        // Ten hours away a day in three stretches under 4 h, so none is a night (ADR 0032); the walk restarts three
+        // times an hour, yet the phone is in deep idle most of the time.
+        fun day(it: Int, deep: Int, drop: Double) = listOf("08:00", "11:30", "15:00").map { start ->
+            session(it, start, 200).copy(timeInDeep = (deep / 3.0).roundToLong().toInt().min, motionResets = 10, batteryDrop = drop / 3)
+        }
+        fun week(deep: Int, drop: Double) = history(7, (0 until 7).flatMap { day(it, deep, drop) + charging(it) })
         val well = recommend(week(420, 3.0))
         assertThat(well.plan).isEqualTo(Plan("everyday"))
         assertThat(well.notes).contains(Note.LITTLE_TO_GAIN)
         assertThat(well.reasons).contains(Reason.DozingWell(0.3, 0.7))
         assertThat(well.reasons.filterIsInstance<Reason.MotionResets>()).isEmpty()
         assertThat(recommend(week(420, 3.1)).plan).isEqualTo(Plan("pocket"))
-        assertThat(recommend(week(419, 3.0)).plan).isEqualTo(Plan("pocket"))
+        assertThat(recommend(week(417, 3.0)).plan).isEqualTo(Plan("pocket"))
     }
 
     @Test

@@ -10,10 +10,10 @@ import kotlinx.serialization.Serializable
 import java.time.Duration
 
 /**
- * A night (SPEC 8.5, ADR 0031): unplugged screen-off sessions joined across screen-on gaps shorter than 10
- * minutes, the first starting in the night window, with at least [NightReports.THRESHOLD] of screen off in
- * all. The report is built from the sessions' rows; this row keeps the night's own figures, which later
- * nights compare against, and the comparison as it stood when it was generated.
+ * A night (SPEC 8.5, ADR 0031, 0032): unplugged screen-off sessions joined across screen-on gaps shorter than 10
+ * minutes, with at least [NightReports.THRESHOLD] of screen off in all, at whatever hour, and the longest rest
+ * within 12 hours of its start. The report is built from the sessions' rows; this row keeps the night's own
+ * figures, which later nights compare against, and the comparison as it stood when it was generated.
  */
 @Entity(
     tableName = "night",

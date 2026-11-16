@@ -32,6 +32,12 @@ public sealed interface Reason {
     /** Signal N: [nights] of [of] available nights were long and unplugged; the window learned from them. */
     public data class UnpluggedNights(val nights: Int, val of: Int, val start: LocalTime, val end: LocalTime) : Reason
 
+    /**
+     * Signal N held on [nights] of [of] available nights, but their starts spread over [spread] of the clock, too
+     * much for one fixed window: Night is offered to switch on by hand (ADR 0032).
+     */
+    public data class IrregularNights(val nights: Int, val of: Int, val spread: Duration) : Reason
+
     /** Rule 4: the phone already dozes well under stock settings. */
     public data class DozingWell(val drainPerHour: Double, val deepShare: Double) : Reason
 
@@ -58,6 +64,9 @@ public enum class Note {
 
     /** Pocket stays: its own sensor restriction hides movement, so M cannot be measured while it runs (ADR 0026). */
     MOTION_NOT_MEASURED,
+
+    /** Night has no fixed window: the owner turns it on from the tile or an automation (ADR 0032). */
+    NIGHT_BY_HAND,
 }
 
 public data class Recommendation(

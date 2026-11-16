@@ -8,14 +8,14 @@ import java.time.Duration
 class SignalsTest {
     private fun signals(days: Int, sessions: List<ScreenOffSession>) = Signals.from(history(days, sessions))
 
-    private fun isNight(vararg sessions: ScreenOffSession) = Signals.nightRuns(sessions.toList(), ZONE).isNotEmpty()
+    private fun isNight(vararg sessions: ScreenOffSession) = Signals.nightRuns(sessions.toList()).isNotEmpty()
 
     @Test
-    fun `a night starts from 21_00 until 03_00, has 4 h of screen off and is unplugged`() {
+    fun `a night is 4 h of unplugged screen off at whatever hour (ADR 0032)`() {
         assertThat(isNight(session(1, "21:00", 240))).isTrue()
-        assertThat(isNight(session(1, "20:59", 240))).isFalse()
-        assertThat(isNight(session(1, "02:59", 240))).isTrue()
-        assertThat(isNight(session(1, "03:00", 240))).isFalse()
+        assertThat(isNight(session(1, "20:59", 240))).isTrue()
+        assertThat(isNight(session(1, "03:00", 240))).isTrue()
+        assertThat(isNight(session(1, "09:30", 240))).isTrue()
         assertThat(isNight(session(1, "23:00", 239))).isFalse()
         assertThat(isNight(session(1, "23:00", 240).copy(plugged = true))).isFalse()
         // Plug state the sources did not record is not unplugged: Doze does not run on the charger.
@@ -39,27 +39,31 @@ class SignalsTest {
     fun `a joined night spans its first start to its last end and its sessions are not daytime`() {
         val s = signals(2, listOf(session(0, "23:30", 200), session(1, "02:55", 60), session(1, "04:00", 180)))
         assertThat(s.nights.map { it.start.toInstant() to it.end.toInstant() }).containsExactly(at(0, "23:30") to at(1, "07:00"))
-        // The 02:55 and 04:00 sessions start outside the window but belong to the night, so nothing is daytime.
+        // The 02:55 and 04:00 sessions belong to the night, so nothing is daytime.
         assertThat(s.shortDaytimeShare).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
     }
 
     @Test
-    fun `one night per evening, the one with most screen off, and 01_00 belongs to the evening before`() {
+    fun `of rests less than 12 h apart the longest is the night, and the next day's sleep stays its own`() {
+        // 21:00 for 245 min and 01:30 for 300 min start 4.5 h apart: one night, the longer. 23:30 the next evening is
+        // 22 h later, earlier on the clock than 01:30, and still a night of its own.
         val s = signals(3, listOf(session(0, "21:00", 245), session(1, "01:30", 300), session(1, "23:30", 420)))
         assertThat(s.nights.map { it.start.toInstant() }).containsExactly(at(1, "01:30"), at(1, "23:30")).inOrder()
+        // A 4.5 h afternoon rest 9 h before a 7 h sleep is a nap: it is daytime, not a night.
+        val nap = signals(2, listOf(session(0, "14:00", 270), session(0, "23:00", 420)))
+        assertThat(nap.nights.map { it.start.toInstant() }).containsExactly(at(0, "23:00"))
+        assertThat(nap.shortDaytimeShare).isEqualTo(Measured.Known(0.0, 1))
     }
 
     @Test
-    fun `available nights are those the history could hold a whole night session in`() {
-        // Noon day 0 to noon day 2: the nights of day 0 and day 1.
+    fun `available nights are one a day that the history could hold with its 4 h`() {
+        // Noon day 0 to noon day 2: two days.
         assertThat(signals(2, emptyList()).availableNights).isEqualTo(2)
-        // From 02:00: a night can still start before 03:00, so the night before counts as well.
-        val early = History(at(0, "02:00"), at(2, "12:00"), ZONE, emptyList())
-        assertThat(Signals.from(early).availableNights).isEqualTo(3)
-        // Ending at 00:59 leaves no 4 h after 21:00 that evening.
-        val short = History(at(0, "12:00"), at(1, "00:59"), ZONE, emptyList())
-        assertThat(Signals.from(short).availableNights).isEqualTo(0)
-        assertThat(Signals.from(History(at(0, "12:00"), at(1, "01:00"), ZONE, emptyList())).availableNights).isEqualTo(1)
+        assertThat(Signals.from(History(at(0, "02:00"), at(2, "12:00"), ZONE, emptyList())).availableNights).isEqualTo(3)
+        // Under 4 h of history holds no night; 4 h holds one; a day and 4 h hold two.
+        assertThat(Signals.from(History(at(0, "12:00"), at(0, "15:59"), ZONE, emptyList())).availableNights).isEqualTo(0)
+        assertThat(Signals.from(History(at(0, "12:00"), at(0, "16:00"), ZONE, emptyList())).availableNights).isEqualTo(1)
+        assertThat(Signals.from(History(at(0, "12:00"), at(1, "16:00"), ZONE, emptyList())).availableNights).isEqualTo(2)
     }
 
     @Test

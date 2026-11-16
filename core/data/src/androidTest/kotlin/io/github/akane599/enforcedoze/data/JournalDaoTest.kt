@@ -172,8 +172,23 @@ class JournalDaoTest {
         assertThat(dao.latestNights(1).single().id).isEqualTo(id)
         assertThat(dao.recordOf(-1)).isNull()
 
+        // A longer rest near it takes its place (ADR 0032); the replaced night's sessions stay.
+        val longer = dao.record(session(32 * hour + 600_000, 9))
+        val replacement = NightReports.night(
+            dao.sessionsBetween(start + 32 * hour, start + 42 * hour).filter {
+                it.id == longer
+            },
+            0,
+            recent,
+            recent,
+        )
+        val newId = dao.replaceNights(listOf(night), replacement)
+        assertThat(dao.night(id)).isNull()
+        assertThat(dao.night(newId)?.sessionId).isEqualTo(longer)
+        assertThat(dao.session(second)).isNotNull()
+
         // Retention removes the night with its first session.
         dao.deleteSessionsBefore(start + 9 * hour)
-        assertThat(dao.latestNights(10).map { it.sessionId }).containsExactly(first)
+        assertThat(dao.latestNights(10).map { it.sessionId }).containsExactly(longer)
     }
 }

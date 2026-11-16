@@ -295,6 +295,13 @@ Carried over to P5:
   - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
   - night rows with their own figures;
   - the report's wake-up marks.
+- Nights at any hour (ADR 0032, owner's answers of 2026-11-16):
+  - no clock window;
+  - the longest rest within 12 h of another is the night, and it takes the place of a shorter
+    night's report;
+  - no fixed Night window when the starts spread over more than 3 h. Night is offered by hand
+    instead.
+- The emulator gate scripts pin adb to the emulator, since the owner's S22 can be connected over adb.
 - For the `:app` mapper:
   - the reason line of a Partly night with no break and no late arrival;
   - `ReportSummary.sessionId` is the night's first session, and the route finds the night by it

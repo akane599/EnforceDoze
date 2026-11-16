@@ -16,7 +16,7 @@ class NightsTest {
     private fun s(from: java.time.Instant, to: java.time.Instant, unplugged: Boolean = true) = Stretch(from, to, unplugged)
 
     private fun nights(vararg stretches: Stretch, min: Duration = Nights.MIN_SCREEN_OFF) =
-        Nights.find(stretches.toList(), zone, Nights.Rule(minScreenOff = min)) { it }
+        Nights.find(stretches.toList(), Nights.Rule(minScreenOff = min)) { it }
 
     @Test fun `a short wake-up does not split the night`() {
         val first = s(at(1, 23, 30), at(2, 3, 10))
@@ -50,14 +50,40 @@ class NightsTest {
         assertThat(Nights.runs(listOf(first, charging, second)) { it }).containsExactly(listOf(first), listOf(second)).inOrder()
     }
 
-    @Test fun `the first session must start in the window, the joined ones may start after it`() {
-        val evening = s(at(1, 20, 50), at(2, 2, 0))
-        assertThat(nights(evening)).isEmpty()
-        val late = s(at(2, 2, 50), at(2, 4, 0))
-        val after = s(at(2, 4, 5), at(2, 8, 0))
-        assertThat(nights(late, after)).containsExactly(listOf(late, after))
-        assertThat(Nights.startsInWindow(at(2, 3, 0), zone)).isFalse()
-        assertThat(Nights.startsInWindow(at(1, 21, 0), zone)).isTrue()
+    @Test fun `a rest is a night at whatever hour it falls`() {
+        val daySleep = s(at(2, 9, 30), at(2, 13, 0))
+        val afterLunch = s(at(2, 13, 6), at(2, 15, 0))
+        assertThat(nights(daySleep, afterLunch)).containsExactly(listOf(daySleep, afterLunch))
+        assertThat(nights(s(at(2, 18, 0), at(2, 22, 0)))).hasSize(1)
+    }
+
+    @Test fun `of two rests less than 12 hours apart only the longer is a night`() {
+        val nap = s(at(2, 14, 0), at(2, 18, 30))
+        val sleep = s(at(2, 23, 0), at(3, 7, 0))
+        assertThat(nights(nap, sleep)).containsExactly(listOf(sleep))
+        val napAfter = s(at(3, 9, 59), at(3, 14, 30))
+        assertThat(nights(sleep, napAfter)).containsExactly(listOf(sleep))
+        val tie = s(at(3, 10, 0), at(3, 18, 0))
+        assertThat(nights(sleep, tie)).containsExactly(listOf(sleep))
+    }
+
+    @Test fun `sleeps on consecutive days stay two, even when the second starts earlier on the clock`() {
+        val first = s(at(2, 1, 0), at(2, 6, 0))
+        val second = s(at(2, 23, 30), at(3, 6, 30))
+        assertThat(nights(first, second)).containsExactly(listOf(first), listOf(second)).inOrder()
+        val closer = s(at(2, 12, 59), at(2, 21, 0))
+        assertThat(nights(first, closer)).containsExactly(listOf(closer))
+        val apart = s(at(2, 13, 0), at(2, 21, 0))
+        assertThat(nights(first, apart)).containsExactly(listOf(first), listOf(apart)).inOrder()
+    }
+
+    @Test fun `a longer rest replaces the night before it, and the next shorter one is dropped`() {
+        // 5 h from 01:00; 8 h from 10:00 starts 9 h later and is longer, so it is the night; 6 h from 21:00 starts 11 h
+        // after that and is shorter, so it is dropped, though it is 20 h after the first.
+        val first = s(at(2, 1, 0), at(2, 6, 0))
+        val long = s(at(2, 10, 0), at(2, 18, 0))
+        val third = s(at(2, 21, 0), at(3, 3, 0))
+        assertThat(nights(first, long, third)).containsExactly(listOf(long))
     }
 
     @Test fun `sessions are taken in start order whatever order they come in`() {
@@ -75,19 +101,17 @@ class NightsTest {
         assertThat(Nights.screenOff(run) { it }).isEqualTo(Duration.ofMinutes(180 + 115 + 177))
     }
 
-    @Test fun `a night stays open until the screen has been on for ten minutes`() {
-        assertThat(Nights.closed(at(2, 7, 0), at(2, 7, 9))).isFalse()
-        assertThat(Nights.closed(at(2, 7, 0), at(2, 7, 10))).isTrue()
-    }
-
-    @Test fun `the compressed night scales the gap with the threshold and runs at any hour`() {
+    @Test fun `the compressed night scales the gap with the threshold and has no spacing`() {
         val rule = Nights.Rule.compressed(Duration.ofMinutes(4))
         assertThat(rule.gap).isEqualTo(Duration.ofSeconds(10))
+        assertThat(rule.spacing).isEqualTo(Duration.ZERO)
         val first = s(at(2, 14, 0), at(2, 14, 2))
         val second = s(at(2, 14, 2).plusSeconds(9), at(2, 14, 4).plusSeconds(9))
-        assertThat(Nights.find(listOf(first, second), zone, rule) { it }).containsExactly(listOf(first, second))
+        assertThat(Nights.find(listOf(first, second), rule) { it }).containsExactly(listOf(first, second))
         val apart = s(at(2, 14, 2).plusSeconds(10), at(2, 14, 6).plusSeconds(10))
-        assertThat(Nights.find(listOf(first, apart), zone, rule) { it }).containsExactly(listOf(apart))
+        assertThat(Nights.find(listOf(first, apart), rule) { it }).containsExactly(listOf(apart))
+        val next = s(at(2, 14, 7), at(2, 14, 12))
+        assertThat(Nights.find(listOf(apart, next), rule) { it }).containsExactly(listOf(apart), listOf(next)).inOrder()
     }
 
     @Test fun `a charge during the screen-on gap ends the run`() {

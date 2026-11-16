@@ -3,28 +3,29 @@ package io.github.akane599.enforcedoze.profile
 
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneId
 
 /**
- * What one night is (SPEC 7.2 N, 8.5; ADR 0031). Unplugged screen-off sessions count as one night when every
+ * What one night is (SPEC 7.2 N, 8.5; ADR 0031, 0032). Unplugged screen-off sessions count as one rest when every
  * screen-on gap between them is shorter than [JOIN_GAP]: a glance at the clock or a trip to the kitchen does not
- * split the night in two. The night begins with its first session, which starts between [STARTS_FROM] and
- * [STARTS_UNTIL]; the sessions it joins may start later, since a night runs past 03:00. It needs [MIN_SCREEN_OFF]
- * of screen-off time in all, the gaps not counted. The recommender's N signal and the night report both use it.
+ * split it in two. A rest with [MIN_SCREEN_OFF] of screen-off time in all, the gaps not counted, is a night at
+ * whatever hour it falls, because the owner sleeps at irregular hours (ADR 0032). Of rests that start less than
+ * [SPACING] apart only the longest is a night, so each night is the longest rest in the 24 hours around its start:
+ * a nap and the main sleep are not two nights, and two sleeps on consecutive days stay two even when the second
+ * starts earlier on the clock. The recommender's N signal and the night report both use it.
  */
 public object Nights {
-    /** The earliest a night's first session may start. */
-    public val STARTS_FROM: LocalTime = LocalTime.of(21, 0)
-
-    /** A first session from here on belongs to the day. */
-    public val STARTS_UNTIL: LocalTime = LocalTime.of(3, 0)
-
     /** Screen-off time a night needs, summed over its sessions (SPEC 7.2 N, 8.5). */
     public val MIN_SCREEN_OFF: Duration = Duration.ofHours(4)
 
     /** A screen-on gap shorter than this joins the sessions on either side into one night (ADR 0031). */
     public val JOIN_GAP: Duration = Duration.ofMinutes(10)
+
+    /**
+     * Two nights start at least this far apart; of two rests closer than this, the longer is the night (ADR 0032).
+     * Half a day either side of a rest is the owner's "at most one in 24 hours". A full day after each night would
+     * also drop the next sleep whenever it starts earlier on the clock than the last one did.
+     */
+    public val SPACING: Duration = Duration.ofHours(12)
 
     /**
      * One screen-off session as the rule sees it. [unplugged] is true only when the session had no charger at all;
@@ -36,16 +37,16 @@ public object Nights {
     public data class Wake(val start: Instant, val end: Instant)
 
     /**
-     * The rule's numbers. Only the compressed-night test (SPEC 13.2) changes them: it scales the night down to
-     * minutes and drops the clock window, so a test night can run at any hour (ADR 0031).
+     * The rule's numbers. Only the compressed-night test (SPEC 13.2) changes them. It scales the threshold and the
+     * join gap down to minutes and turns the spacing off, so two test nights minutes apart stay two (ADR 0032).
      */
-    public data class Rule(val minScreenOff: Duration = MIN_SCREEN_OFF, val gap: Duration = JOIN_GAP, val window: Boolean = true) {
+    public data class Rule(val minScreenOff: Duration = MIN_SCREEN_OFF, val gap: Duration = JOIN_GAP, val spacing: Duration = SPACING) {
         public companion object {
-            /** The whole rule scaled so a night needs [minScreenOff]: the join gap shrinks by the same factor. */
+            /** The rule scaled so a night needs [minScreenOff]: the join gap shrinks by the same factor, no spacing. */
             public fun compressed(minScreenOff: Duration): Rule = Rule(
                 minScreenOff,
                 Duration.ofMillis(JOIN_GAP.toMillis() * minScreenOff.toMillis() / MIN_SCREEN_OFF.toMillis()),
-                window = false,
+                spacing = Duration.ZERO,
             )
         }
     }
@@ -77,21 +78,38 @@ public object Nights {
         return runs
     }
 
-    /** True when [start] falls where a night may begin, read on the clock in [zone]. */
-    public fun startsInWindow(start: Instant, zone: ZoneId): Boolean {
-        val time = start.atZone(zone).toLocalTime()
-        return time >= STARTS_FROM || time < STARTS_UNTIL
-    }
-
-    /** The runs of [sessions] that are nights: the first session starts in the window, with enough screen off in all. */
-    public fun <T> find(
+    /** The runs of [sessions] long enough to be a night, before the spacing picks among them. */
+    public fun <T> rests(
         sessions: List<T>,
-        zone: ZoneId,
         rule: Rule = Rule(),
         charged: (before: T, after: T) -> Boolean = { _, _ -> false },
         stretch: (T) -> Stretch,
-    ): List<List<T>> = runs(sessions, rule.gap, charged, stretch).filter { run ->
-        (!rule.window || startsInWindow(stretch(run.first()).start, zone)) && screenOff(run, stretch) >= rule.minScreenOff
+    ): List<List<T>> = runs(sessions, rule.gap, charged, stretch).filter { screenOff(it, stretch) >= rule.minScreenOff }
+
+    /** The nights among [sessions]: the rests, at most one per [Rule.spacing], each the longest ([keep]). */
+    public fun <T> find(
+        sessions: List<T>,
+        rule: Rule = Rule(),
+        charged: (before: T, after: T) -> Boolean = { _, _ -> false },
+        stretch: (T) -> Stretch,
+    ): List<List<T>> = keep(rests(sessions, rule, charged, stretch), rule.spacing, stretch)
+
+    /**
+     * Of [rests] in start order, the ones that are nights, decided as they come, the way the report decides them at
+     * each unlock: a rest that starts less than [spacing] after the last night takes its place if it has more screen
+     * off, and is dropped otherwise (a tie keeps the night already there). Nights then start at least [spacing] apart.
+     */
+    public fun <T> keep(rests: List<List<T>>, spacing: Duration, stretch: (T) -> Stretch): List<List<T>> {
+        val nights = mutableListOf<List<T>>()
+        for (rest in rests.sortedBy { stretch(it.first()).start }) {
+            val last = nights.lastOrNull()
+            if (last == null || Duration.between(stretch(last.first()).start, stretch(rest.first()).start) >= spacing) {
+                nights += rest
+            } else if (screenOff(rest, stretch) > screenOff(last, stretch)) {
+                nights[nights.lastIndex] = rest
+            }
+        }
+        return nights
     }
 
     /** Screen-off time of a run; the screen-on gaps between its sessions do not count. */
@@ -101,10 +119,4 @@ public object Nights {
     /** The screen-on gaps inside a run, in order. */
     public fun <T> wakes(run: List<T>, stretch: (T) -> Stretch): List<Wake> =
         run.map(stretch).zipWithNext().filter { (a, b) -> b.start > a.end }.map { (a, b) -> Wake(a.end, b.start) }
-
-    /**
-     * A run can still grow until the screen has stayed on for [gap] after its last session ended, so a night is
-     * closed, and its report written, only then (or when the phone is plugged in, which the caller knows).
-     */
-    public fun closed(lastEnd: Instant, now: Instant, gap: Duration = JOIN_GAP): Boolean = !now.isBefore(lastEnd.plus(gap))
 }

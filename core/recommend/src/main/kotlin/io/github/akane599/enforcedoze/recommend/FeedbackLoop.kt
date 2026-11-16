@@ -57,13 +57,10 @@ public object FeedbackLoop {
         return applied.mapIndexedNotNull { i, plan ->
             if (gentler(plan.plan) == plan.plan) return@mapIndexedNotNull null
             val until = applied.getOrNull(i + 1)?.since ?: history.to
-            // Whole nights only (ADR 0031): every session of the night inside the plan's time and with its battery drop.
-            val runs = Signals.nightRuns(history.sessions, history.zone)
-                .filter { run ->
-                    run.first().start >= maxOf(plan.since, from) && run.first().start < until &&
-                        run.all { it.batteryDrop != null }
-                }
-            val nights = Signals.perNight(runs, history.zone)
+            // Whole nights only (ADR 0031, 0032): every session of the night inside the plan's time with its battery drop.
+            val nights = Signals.nightRuns(history.sessions).filter { run ->
+                run.first().start >= maxOf(plan.since, from) && run.first().start < until && run.all { it.batteryDrop != null }
+            }
             if (nights.size < LOW_GAIN_NIGHTS) return@mapIndexedNotNull null
             val drain =
                 nights.sumOf { run -> run.sumOf { it.batteryDrop!! } } /

@@ -54,6 +54,13 @@ class FixtureHistoriesTest {
         (if (d in 1..5) shorts(d, 20) else emptyList()) + evening + charging(d)
     }
 
+    /** Seven hours' sleep at a different hour every day, as the owner sleeps (ADR 0032): each 16 h or more apart. */
+    private fun irregular() = listOf(0 to "23:00", 1 to "15:00", 2 to "09:00", 3 to "01:00", 3 to "19:00", 4 to "12:00", 5 to "23:30")
+        .map { (d, start) -> sleep(d, start, 420) }
+
+    /** Night shifts: asleep from 08:30 to 15:30 every day, the phone unplugged. */
+    private fun daySleeper() = (1..7).map { sleep(it, "08:30", 420) }
+
     /** Glances by day and long, deep nights at 0.2 %/h under stock settings. */
     private fun dozing() = (0 until 7).flatMap { d ->
         val night = session(d, "23:10", 470).copy(timeInDeep = 400.min, motionResets = 0, batteryDrop = 470 * 0.2 / 60)
@@ -156,12 +163,30 @@ class FixtureHistoriesTest {
             "two days of history, one night on the charger",
             history(
                 2,
-                listOf(session(0, "13:00", 240), sleep(0, "23:10", 540), session(1, "13:00", 240), charging(1).copy(end = at(2, "08:10"))),
+                // The afternoons stay under 4 h, so they are not nights either (ADR 0032).
+                listOf(session(0, "13:00", 230), sleep(0, "23:10", 540), session(1, "13:00", 230), charging(1).copy(end = at(2, "08:10"))),
             ),
             Urgency.WITHIN_THE_HOUR,
             Plan("everyday"),
             Confidence.MEDIUM,
             listOf(Reason.ScreenOffPerDay::class),
+        ),
+        Case(
+            "irregular sleeper: nights at any hour, Night by hand",
+            history(7, irregular()),
+            Urgency.WITHIN_THE_HOUR,
+            Plan("everyday"),
+            Confidence.HIGH,
+            listOf(Reason.ScreenOffPerDay::class, Reason.IrregularNights::class),
+            setOf(Note.NIGHT_BY_HAND),
+        ),
+        Case(
+            "day sleeper: a night by day gets its window",
+            history(8, daySleeper()),
+            Urgency.WITHIN_THE_HOUR,
+            Plan("everyday", NightSlot("night", LocalTime.of(8, 0), LocalTime.of(16, 0))),
+            Confidence.HIGH,
+            listOf(Reason.ScreenOffPerDay::class, Reason.UnpluggedNights::class),
         ),
         Case(
             // Days 24 to 31 hold 2026-03-29, when Berlin goes from 02:00 to 03:00; eight days, as that week is 167 h.

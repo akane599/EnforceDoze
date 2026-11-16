@@ -14,6 +14,8 @@ import android.util.Log
 import io.github.akane599.enforcedoze.data.EvidenceRows
 import io.github.akane599.enforcedoze.data.JournalDao
 import io.github.akane599.enforcedoze.data.NightReports
+import io.github.akane599.enforcedoze.data.SessionRow
+import io.github.akane599.enforcedoze.data.NightRow
 import io.github.akane599.enforcedoze.data.StoredNights
 import io.github.akane599.enforcedoze.data.OpenSession
 import io.github.akane599.enforcedoze.data.PendingSnapshot
@@ -281,22 +283,32 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
     }
 
     /**
-     * SPEC 8.5, ADR 0031: the sessions of the last day, grouped into nights. A night not yet reported is written
-     * now; one a later session joined after a short wake-up grows in place, keeping its id.
+     * SPEC 8.5, ADR 0031 and 0032: the sessions of the last day, grouped into rests, each decided against the night
+     * rows near it. A new night is written now, and takes the place of shorter nights less than 12 h from it; one a
+     * later session joined after a short wake-up grows in place, keeping its id.
      */
     private suspend fun unlocked(time: Long) {
-        val stored = sessions.sessionsBetween(time - NIGHT_LOOKBACK.toMillis(), time)
-        for (night in StoredNights.nights(stored, ZoneId.systemDefault(), DebugHooks.nightRule(context))) {
-            val first = night.first()
-            val known = sessions.nightsBetween(first.start, night.last().end)
-            val same = known.firstOrNull { it.sessionId == first.id }
-            // A night already there for part of this run started before the lookback: leave it as it is.
-            if (known.any { it.sessionId != first.id } || same?.sessionCount == night.size) continue
-            val recent = sessions.nightsBefore(first.start, null, NightReports.RECENT)
-            val stock = sessions.nightsBefore(first.start, BuiltInProfiles.STOCK.id, NightReports.RECENT)
-            val row = NightReports.night(night, time, recent, stock)
-            if (same == null) sessions.insertNight(row) else sessions.updateNight(row.copy(id = same.id))
+        val rule = DebugHooks.nightRule(context)
+        val spacing = rule.spacing.toMillis()
+        for (rest in StoredNights.rests(sessions.sessionsBetween(time - NIGHT_LOOKBACK.toMillis(), time), rule)) {
+            val first = rest.first()
+            val near = sessions.nightsBetween(first.start - spacing, first.start + spacing)
+            when (val decision = StoredNights.decide(rest, near, rule.spacing)) {
+                StoredNights.Decision.Leave -> Unit
+                is StoredNights.Decision.Grow -> sessions.updateNight(night(rest, time, emptySet()).copy(id = decision.row.id))
+                is StoredNights.Decision.Write ->
+                    sessions.replaceNights(decision.replaces, night(rest, time, decision.replaces.map { it.id }.toSet()))
+            }
         }
+    }
+
+    /** The row for [rest], compared with the nights before it; [replaced] rows are naps now and do not count. */
+    private suspend fun night(rest: List<SessionRow>, time: Long, replaced: Set<Long>): NightRow {
+        val start = rest.first().start
+        val limit = NightReports.RECENT + replaced.size
+        val recent = sessions.nightsBefore(start, null, limit).filter { it.id !in replaced }.take(NightReports.RECENT)
+        val stock = sessions.nightsBefore(start, BuiltInProfiles.STOCK.id, limit).filter { it.id !in replaced }.take(NightReports.RECENT)
+        return NightReports.night(rest, time, recent, stock)
     }
 
     /** The screen-on batch (SPEC 8.2), timed; the raw dumps are kept first, so a parser bug loses nothing. */

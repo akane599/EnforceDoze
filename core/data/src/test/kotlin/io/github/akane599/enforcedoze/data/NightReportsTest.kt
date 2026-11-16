@@ -46,24 +46,54 @@ class NightReportsTest {
     )
 
     @Test fun aNightIsFourHoursOfUnpluggedScreenOff() {
-        assertThat(StoredNights.nights(listOf(part(1, 0, 240)), zone)).hasSize(1)
-        assertThat(StoredNights.nights(listOf(part(1, 0, 239)), zone)).isEmpty()
-        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(chargedMillis = 60_000)), zone)).isEmpty()
-        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(pluggedAtStart = true)), zone)).isEmpty()
+        assertThat(StoredNights.nights(listOf(part(1, 0, 240)))).hasSize(1)
+        assertThat(StoredNights.nights(listOf(part(1, 0, 239)))).isEmpty()
+        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(chargedMillis = 60_000)))).isEmpty()
+        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(pluggedAtStart = true)))).isEmpty()
         assertWithMessage("the compressed night of the debug build").that(
-            StoredNights.nights(listOf(part(1, 0, 5)), zone, Nights.Rule.compressed(Duration.ofMinutes(4))),
+            StoredNights.nights(listOf(part(1, 0, 5)), Nights.Rule.compressed(Duration.ofMinutes(4))),
         ).hasSize(1)
     }
 
     @Test fun shortWakeUpsJoinOneNightAndAChargeBetweenEndsIt() {
         val first = part(1, 0, 180, batteryStart = 80, batteryEnd = 78)
         val second = part(2, 185, 480, batteryStart = 78, batteryEnd = 74)
-        assertWithMessage("3 h + 4 h 55 min of screen off, 5 min awake between").that(StoredNights.nights(listOf(second, first), zone))
+        assertWithMessage("3 h + 4 h 55 min of screen off, 5 min awake between").that(StoredNights.nights(listOf(second, first)))
             .containsExactly(listOf(first, second))
         assertThat(StoredNights.wakes(listOf(first, second))).containsExactly(Span(at(180), at(185)))
         val charged = second.copy(batteryStart = 85)
-        assertWithMessage("the battery rose while the screen was on").that(StoredNights.nights(listOf(first, charged), zone))
+        assertWithMessage("the battery rose while the screen was on").that(StoredNights.nights(listOf(first, charged)))
             .containsExactly(listOf(charged))
+    }
+
+    @Test fun aNightIsARestAtAnyHourAndTheLongerOfTwoWithin12Hours() {
+        // 23:00 plus 15 h is 14:00 the next day.
+        val daySleep = part(1, 15 * 60, 15 * 60 + 300)
+        assertThat(StoredNights.nights(listOf(daySleep))).containsExactly(listOf(daySleep))
+        val nap = part(2, 15 * 60 + 360, 15 * 60 + 600)
+        assertWithMessage("a 4 h rest 6 h after a 5 h one is a nap").that(StoredNights.nights(listOf(daySleep, nap)))
+            .containsExactly(listOf(daySleep))
+    }
+
+    @Test fun aLongerRestTakesTheNightsPlaceAndAShorterOneLeavesIt() {
+        val spacing = Nights.SPACING
+        val napNight = NightReports.night(listOf(part(1, -9 * 60, -9 * 60 + 270)), 0, emptyList(), emptyList()).copy(id = 3)
+        val sleep = listOf(part(2, 0, 480))
+        assertThat(StoredNights.decide(sleep, listOf(napNight), spacing)).isEqualTo(StoredNights.Decision.Write(listOf(napNight)))
+        val longNight = napNight.copy(screenOffMillis = 8 * hour)
+        assertWithMessage("a tie keeps the night already there").that(StoredNights.decide(sleep, listOf(longNight), spacing))
+            .isEqualTo(StoredNights.Decision.Leave)
+        val farNight = napNight.copy(start = at(-12 * 60))
+        assertWithMessage("12 h apart is another night").that(StoredNights.decide(sleep, listOf(farNight), spacing))
+            .isEqualTo(StoredNights.Decision.Write(emptyList()))
+    }
+
+    @Test fun theSameFirstSessionGrowsItsNightOrLeavesIt() {
+        val first = part(1, 0, 240)
+        val row = NightReports.night(listOf(first), 0, emptyList(), emptyList()).copy(id = 9)
+        assertThat(StoredNights.decide(listOf(first), listOf(row), Nights.SPACING)).isEqualTo(StoredNights.Decision.Leave)
+        assertThat(StoredNights.decide(listOf(first, part(2, 245, 400)), listOf(row), Nights.SPACING))
+            .isEqualTo(StoredNights.Decision.Grow(row))
     }
 
     @Test fun theComparisonAveragesWhatEachNightHas() {

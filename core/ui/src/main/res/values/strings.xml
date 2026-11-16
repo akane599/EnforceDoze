@@ -50,7 +50,7 @@
     <string name="ui_profile_purpose_stock">The baseline. Proves what the phone does on its own, and is the comparison in every report.</string>
     <string name="ui_profile_purpose_everyday">Deep idle within about 10 minutes of a still, screen-off phone instead of an hour. The safe default.</string>
     <string name="ui_profile_purpose_pocket">For a phone carried while moving: on a commute or a walk. Motion no longer starts the wait over, so deep idle holds in a pocket.</string>
-    <string name="ui_profile_purpose_night">For the long unplugged, screen-off stretch in the night window. The longest gaps between maintenance windows.</string>
+    <string name="ui_profile_purpose_night">For the long unplugged, screen-off rest: your sleep, at whatever hour. The longest gaps between maintenance windows.</string>
     <string name="ui_profile_purpose_classic">Upstream EnforceDoze\'s behaviour, kept for parity: deep idle the moment the screen turns off.</string>
     <string name="ui_profile_purpose_strict">For travel, low battery or a long day away from a charger. Never recommended automatically.</string>
     <string name="ui_profile_purpose_custom">Your own profile, saved on this phone.</string>

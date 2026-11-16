@@ -61,4 +61,19 @@ class NightWindowTest {
         assertThat(learned.start).isEqualTo(t("20:30"))
         assertThat(learned.end).isEqualTo(t("20:15"))
     }
+
+    @Test
+    fun `nights by day get a window by day, also across noon (ADR 0032)`() {
+        assertThat(window(night(0, "08:30", 420), night(1, "08:45", 420), night(2, "08:15", 420))).isEqualTo(t("08:00") to t("16:00"))
+        assertThat(window(night(0, "11:30", 300), night(1, "12:30", 300), night(2, "12:00", 300))).isEqualTo(t("11:30") to t("17:30"))
+    }
+
+    @Test
+    fun `the spread is the smallest stretch of the clock holding every start`() {
+        assertThat(NightWindow.spread(listOf(night(0, "23:00", 300), night(1, "01:30", 300), night(2, "22:30", 300))))
+            .isEqualTo(java.time.Duration.ofMinutes(180))
+        assertThat(NightWindow.spread(listOf(night(0, "11:00", 300), night(1, "13:00", 300)))).isEqualTo(java.time.Duration.ofHours(2))
+        assertThat(NightWindow.spread(listOf(night(0, "02:00", 300), night(1, "14:00", 300)))).isEqualTo(java.time.Duration.ofHours(12))
+        assertThat(NightWindow.spread(listOf(night(0, "02:00", 300)))).isEqualTo(java.time.Duration.ZERO)
+    }
 }
