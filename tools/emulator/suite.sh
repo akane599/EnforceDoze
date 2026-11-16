@@ -20,22 +20,29 @@ while (($#)); do
 done
 limit=1200
 
+remote_dir=.cache/enforcedoze-suite
+ssh akane-linux "mkdir -p $remote_dir" </dev/null
+scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
+scp -q tools/emulator/suite-remote.sh akane-linux:$remote_dir/suite-remote.sh
+# Before the build: a busy akane-linux or a full disk ends the run here (exit 75).
+set +e
+ssh akane-linux "bash $remote_dir/suite-remote.sh check '$avd'" </dev/null
+status=$?
+set -e
+if ((status == 75)); then echo "akane-linux cannot run the suite now; nothing ran (exit 75)"; exit 75; fi
+((status == 0)) || { echo "the check on akane-linux failed ($status)"; exit 1; }
+
 export JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-21-openjdk-amd64}
 # Everything once, so each phase's own build is already up to date.
 ./gradlew -q :app:assembleDebug :app:assembleBenchmark :testing:benchmark:assembleBenchmark \
   :testing:silent-audio:assembleDebug :testing:evidence-client:assembleDebug \
   :core:privilege:assembleDebugAndroidTest :core:data:assembleDebugAndroidTest
 
-remote_dir=.cache/enforcedoze-suite
-ssh akane-linux "mkdir -p $remote_dir" </dev/null
-scp -q tools/emulator/lib.sh akane-linux:$remote_dir/lib.sh
-scp -q tools/emulator/suite-remote.sh akane-linux:$remote_dir/suite-remote.sh
-
 set +e
 serial=$(ssh akane-linux "bash $remote_dir/suite-remote.sh start '$avd'" </dev/null)
 status=$?
 set -e
-if ((status == 75)); then echo "akane-linux busy; nothing ran (exit 75)"; exit 75; fi
+if ((status == 75)); then echo "akane-linux cannot run the suite now; nothing ran (exit 75)"; exit 75; fi
 ((status == 0)) || { echo "the suite's emulator did not start ($status)"; exit 1; }
 trap 'ssh akane-linux "bash $remote_dir/suite-remote.sh stop $serial" </dev/null' EXIT
 export SUITE_SERIAL=$serial
