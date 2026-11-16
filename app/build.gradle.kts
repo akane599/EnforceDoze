@@ -44,7 +44,16 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        // The release build as shipped, debug-signed and profileable, for the macrobenchmark (SPEC 10.5 optimize).
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+        }
     }
+
+    // The benchmark build is the release build: it takes release's no-op debug hooks.
+    sourceSets.getByName("benchmark").kotlin.directories += "src/release/kotlin"
 
     lint {
         // Upstream 1.10.2 shipped with 2 errors and 157 warnings (docs/upstream-audit.md). The baseline
