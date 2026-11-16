@@ -165,6 +165,10 @@ cmd extras data=on > /dev/null
 check "mobile data off is armed with the screen on" until_true 10 lever_has MOBILE_DATA ARMED
 screen_off
 check "at screen off mobile data goes off and reads back off" until_true 20 lever_has MOBILE_DATA 'APPLIED .*seen=mobile data off'
+# What the app process saw of the networks, and the system's own view, for the record.
+cmd radios > "$out/radios-screen-off.txt"
+lever MOBILE_DATA >> "$out/radios-screen-off.txt"
+adb shell dumpsys connectivity | grep -E 'Active default network' > "$out/connectivity-screen-off.txt"
 adb shell settings list global | grep -i mobile_data > "$out/mobile-data-engaged.txt"
 adb shell cmd wifi set-wifi-enabled disabled
 check "when Wi-Fi goes, mobile data comes back on its own" until_true 30 lever_has MOBILE_DATA 'seen=mobile data on'
@@ -196,6 +200,8 @@ check "at screen off an unconnected Wi-Fi goes off" until_true 20 wifi_disabled
 lever WIFI > "$out/wifi-engaged.txt"
 screen_on
 check "screen on turns Wi-Fi back on" until_true 20 wifi_enabled
+wifi_release_ok() { cmd actions 10 | grep 'lever=WIFI, command=cmd wifi set-wifi-enabled enabled' | tail -1 | grep -q 'outcome=OK'; }
+check "the Wi-Fi release reads back on once Wi-Fi has started" until_true 10 wifi_release_ok
 adb shell cmd wifi connect-network AndroidWifi open > /dev/null
 check "the emulator's network is saved and connected again" until_true 60 wifi_connected
 

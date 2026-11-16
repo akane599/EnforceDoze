@@ -116,19 +116,25 @@ public object NeverSuspendRules {
 internal class AndroidExtrasReader(private val context: Context, private val keepAwake: () -> Set<String>) : ExtrasReader {
     private val pm: PackageManager get() = context.packageManager
 
+    /**
+     * `activeNetwork` is null for this app: without `INTERNET` its uid counts as blocked, so the default network is
+     * hidden from it (probed on `ed-api37`, `docs/evidence/p6-extras/radios-screen-off.txt`: active=null while the
+     * system's default was a validated Wi-Fi network). The list of networks is not filtered that way, so "on a working
+     * Wi-Fi network" means a validated, unrestricted Wi-Fi network with internet, not behind a VPN; such a network is the
+     * system's default over cellular.
+     */
     override fun radios(): RadioReading {
         val connectivity = context.getSystemService(ConnectivityManager::class.java)
 
         @Suppress("DEPRECATION") // allNetworks still lists every network; its replacement needs a callback.
         val wifiNetworks = connectivity.allNetworks.mapNotNull(connectivity::getNetworkCapabilities)
-            .filter { it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) }
-        // The default network: null while the app is blocked, which reads as "not on Wi-Fi", so mobile data stays on.
-        val active = connectivity.activeNetwork?.let(connectivity::getNetworkCapabilities)
+            .filter { it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) && !it.hasTransport(NetworkCapabilities.TRANSPORT_VPN) }
         return RadioReading(
             wifiEnabled = context.getSystemService(WifiManager::class.java).isWifiEnabled,
             wifiConnected = wifiNetworks.isNotEmpty(),
-            wifiValidated = active?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true &&
-                active.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED),
+            wifiValidated = wifiNetworks.any { caps ->
+                WORKING.all(caps::hasCapability)
+            },
             dataEnabled = dataEnabled(),
             airplane = Settings.Global.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1,
         )
@@ -190,6 +196,13 @@ internal class AndroidExtrasReader(private val context: Context, private val kee
             .mapNotNull { it.activityInfo?.packageName }.toSet()
 
     private companion object {
+        /** A Wi-Fi network that carries the phone's connection. */
+        val WORKING = listOf(
+            NetworkCapabilities.NET_CAPABILITY_INTERNET,
+            NetworkCapabilities.NET_CAPABILITY_VALIDATED,
+            NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED,
+        )
+
         /** Shizuku's manager app: suspending it would stop the worker that lifts the suspension. */
         const val SHIZUKU_MANAGER = "moe.shizuku.privileged.api"
     }

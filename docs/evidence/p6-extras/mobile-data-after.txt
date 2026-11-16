@@ -1,0 +1,2 @@
+mobile_data=1
+mobile_data_always_on=1

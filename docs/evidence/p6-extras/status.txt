@@ -1,0 +1,15 @@
+started=true mode=MANAGED profile=everyday screenOn=true locked=false
+holdOffs=[] guarded=[]
+missingKeys=[]
+constantsWriter=null previous=true stock=false
+forcedWithoutWorker=false storeError=null
+batteryFrozen=false
+extras=Extras(wifiOff=false, dataOff=true, suspend=[]) extrasStuck=[]
+lever CONSTANTS WAITING wanted=null written=absent seen=absent reason=previous.json and stock.json are not captured yet
+lever FORCE_IDLE UNUSED wanted=null written=released seen=released reason=null
+lever SENSORS UNUSED wanted=null written=NORMAL seen=NORMAL reason=null
+lever SENSOR_PRIVACY UNUSED wanted=null written=sensors on seen=sensors on reason=null
+lever ALLOWLIST UNUSED wanted=null written=null seen=null reason=null
+lever WIFI UNUSED wanted=null written=null seen=Wi-Fi on reason=null
+lever MOBILE_DATA ARMED wanted=null written=null seen=mobile data on reason=null
+lever APP_SUSPENSION UNUSED wanted=null written=null seen=null reason=null

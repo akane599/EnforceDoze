@@ -30,6 +30,8 @@ public data class TargetInputs(
     val suspension: SuspensionReading? = null,
     /** Extras someone else changed while the screen was off: left alone until the next screen off. */
     val letGo: Set<Lever> = emptySet(),
+    /** Wi-Fi was connected since the screen went off (ADR 0038). */
+    val wifiConnected: Boolean = false,
 )
 
 /**
@@ -164,9 +166,9 @@ public object Targets {
                 Setting.WIFI_ON,
                 engaged,
                 start = wifiStart(radios),
-                keep = UNREAD.takeIf {
-                    radios == null
-                },
+                keep = UNREAD.takeIf { radios == null },
+                // Wi-Fi turned on inside airplane mode would override it; it comes back when airplane mode ends.
+                defer = "airplane mode is on, so Wi-Fi comes back when it ends".takeIf { radios?.airplane == true },
             )
             val data = when {
                 radios == null -> UNREAD
@@ -178,11 +180,16 @@ public object Targets {
             suspension(engaged)
         }
 
-        /** Wi-Fi goes off only on, unconnected and outside airplane mode: without a connection there is no Wi-Fi calling. */
+        /**
+         * Wi-Fi goes off only on, unconnected since the screen went off, with mobile data on and outside airplane mode:
+         * without a connection there is no Wi-Fi calling, and with data on the phone stays reachable.
+         */
         private fun wifiStart(radios: RadioReading?): String? = when {
             radios == null -> UNREAD
             !radios.wifiEnabled -> "Wi-Fi is already off"
             radios.wifiConnected -> "Wi-Fi is connected, and calls may need it"
+            inputs.wifiConnected -> "Wi-Fi was connected since the screen went off, so it stays on to reconnect"
+            !radios.dataEnabled -> "mobile data is off, so Wi-Fi stays on"
             radios.airplane -> "airplane mode is on"
             else -> null
         }
@@ -209,8 +216,8 @@ public object Targets {
         }
 
         /**
-         * [start] says why the extra may not go on now; [keep] why it must come off although the engine set it.
-         * Null means it may.
+         * [start] says why the extra may not go on now; [keep] why it must come off although the engine set it; [defer]
+         * why the engine's own change waits to be put back. Null means it may.
          */
         @Suppress("LongParameterList") // One call per extra; each argument is a separate rule input.
         private fun extra(
@@ -221,17 +228,21 @@ public object Targets {
             start: String?,
             keep: String?,
             ours: Boolean = inputs.written[lever] == on,
+            defer: String? = null,
         ) {
             val chosen = inputs.extras.uses(lever)
             if (chosen) used += lever
-            val usable = chosen && lever !in inputs.guarded && lever !in inputs.letGo
-            val active = usable && engaged && keep == null && (ours || start == null)
+            val active = usable(lever) && engaged && keep == null && (ours || start == null)
             when {
                 active -> wanted[lever] = on
+                ours && defer != null -> waiting[lever] = defer
                 ours -> wanted[lever] = off
             }
             if (chosen && !active) rest(lever, keep ?: start)
         }
+
+        /** Chosen, not guarded, and not let go of tonight. */
+        private fun usable(lever: Lever): Boolean = inputs.extras.uses(lever) && lever !in inputs.guarded && lever !in inputs.letGo
 
         /** Where a chosen extra that is not on stands: armed, held off, or idle with the reason. */
         private fun rest(lever: Lever, reason: String?) {

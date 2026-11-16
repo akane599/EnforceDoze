@@ -44,9 +44,6 @@ internal class EngineCore(
     /** The profile id last logged as missing, so each screen event does not log it again. */
     private var missing: String? = null
 
-    /** Extras someone else changed while the screen was off: left alone until the next screen off (ADR 0038). */
-    private var letGo: Set<Lever> = emptySet()
-
     private val mode: Mode get() = book.persisted.mode
 
     /** Restart rule (SPEC 12.4): load the book, read everything, log what drifted while stopped, then reconcile. */
@@ -65,6 +62,7 @@ internal class EngineCore(
         // A plan in the book decides the profile; the window may have opened or closed while the app was stopped.
         book.persisted.plan?.let { movePlan(PlanSchedule.started(it, localTime(), screenOn, locked), SwitchReason.SCHEDULE) }
         observer.read(Lever.entries.toSet())
+        noteWifi()
         // Paused or hands off, other writers are expected; drift only means something while managed.
         val drifted = if (mode == Mode.MANAGED) drifts(Lever.entries, whileStopped = true) else emptyList()
         capturePrevious()
@@ -115,7 +113,7 @@ internal class EngineCore(
             // On without the keyguard is unlocked as well, whether USER_PRESENT came first, comes later or not at all.
             movePlan(if (on && !lockedNow) PlanSchedule.unlocked(awake, localTime()) else awake, SwitchReason.SCHEDULE)
         }
-        letGo = emptySet()
+        book.persisted = book.persisted.copy(extrasNight = ExtrasNight())
         if (!started) return
         if (on) {
             reconcile(Cause.SCREEN_ON)
@@ -130,7 +128,16 @@ internal class EngineCore(
     private suspend fun readExtras(levers: Set<Lever>): Set<Lever> {
         val needed = levers.filter { book.persisted.extras.uses(it) || book.written[it] != null }.toSet()
         if (needed.isNotEmpty()) observer.read(needed)
+        noteWifi()
         return needed
+    }
+
+    /** A Wi-Fi connection seen with the screen off keeps Wi-Fi on until the next screen event (ADR 0038). */
+    private fun noteWifi() {
+        val night = book.persisted.extrasNight
+        if (!screenOn && !night.wifiConnected && book.radios?.wifiConnected == true) {
+            book.persisted = book.persisted.copy(extrasNight = night.copy(wifiConnected = true))
+        }
     }
 
     /** The owner chose the extras in Settings (ADR 0038); what changed applies at the next screen off. */
@@ -450,7 +457,8 @@ internal class EngineCore(
             extras = book.persisted.extras,
             radios = book.radios,
             suspension = book.suspension,
-            letGo = letGo,
+            letGo = book.persisted.extrasNight.letGo,
+            wifiConnected = book.persisted.extrasNight.wifiConnected,
         ),
     )
 
@@ -535,10 +543,13 @@ internal class EngineCore(
      * engine still wants what it wrote, and never a third time within an hour: that trips the guard.
      */
     private suspend fun corrections(drifted: List<Lever>): Set<Lever> {
-        // An extra someone else changed is theirs: never re-applied, not held, left alone until the next screen off.
+        // An extra someone else changed is theirs: never re-applied, left alone until the next screen event. Of a
+        // suspension the apps that still read as suspended stay booked, so they are lifted.
         drifted.filter { it.extra }.forEach { lever ->
-            book.forgetWritten(lever)
-            letGo = letGo + lever
+            val stillHeld = (book.seen[lever] as? Setting.Suspension)?.takeIf { lever == Lever.APP_SUSPENSION }
+            if (stillHeld != null) book.wrote(stillHeld) else book.forgetWritten(lever)
+            val night = book.persisted.extrasNight
+            book.persisted = book.persisted.copy(extrasNight = night.copy(letGo = night.letGo + lever))
         }
         if (drifted.isEmpty() || !book.persisted.reapplyOnDrift) return emptySet()
         val wanted = targets().wanted

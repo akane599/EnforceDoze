@@ -304,4 +304,121 @@ class ExtrasEngineTest {
         assertThat(device.log.filter { it == "read:radios" || it == "read:suspension" }).isEmpty()
         assertThat(engine.status.value.levers.filterKeys { it.extra }.values.map { it.state }.toSet()).containsExactly(LeverState.UNUSED)
     }
+
+    /** Review of dcbd23a, finding 1: a chosen app someone else suspended is theirs, never drift of the engine's. */
+    @Test
+    fun `an app someone else suspended is no drift, and after a restart the engine's own are still lifted`() = runTest {
+        device.suspended = setOf("org.example.paused")
+        val engine = engine()
+        engine.startWith(Extras(suspend = setOf("org.example.feed", "org.example.chat", "org.example.paused")))
+        engine.screenOff()
+        assertThat(engine.state(Lever.APP_SUSPENSION).state).isEqualTo(LeverState.APPLIED)
+
+        val next = engine()
+        next.start(EngineStart(BuiltInProfiles.EVERYDAY, screenOn = false, writable = Writable.EVERYTHING))
+        assertThat(journal.events<EngineEvent.Drift>()).isEmpty()
+        next.screenOn()
+        assertThat(device.suspended).containsExactly("org.example.paused")
+        assertThat(store.state.written).doesNotContainKey(Lever.APP_SUSPENSION)
+    }
+
+    @Test
+    fun `when someone lifts one of the engine's apps, the others are lifted too and the lever is let go`() = runTest {
+        val engine = engine()
+        engine.startWith(Extras(suspend = setOf("org.example.feed", "org.example.chat")))
+        engine.screenOff()
+        device.suspended = setOf("org.example.chat")
+        val next = engine()
+        next.start(EngineStart(BuiltInProfiles.EVERYDAY, screenOn = false, writable = Writable.EVERYTHING))
+        assertThat(journal.events<EngineEvent.Drift>().single().lever).isEqualTo(Lever.APP_SUSPENSION)
+        assertThat(device.suspended).isEmpty()
+        assertThat(store.state.written).doesNotContainKey(Lever.APP_SUSPENSION)
+        assertThat(extraWrites().count { it is DeviceWrite.Suspend && it.suspended }).isEqualTo(1)
+    }
+
+    /** Finding 2: a suspension that answers after its read-back stays booked, so screen on lifts it. */
+    @Test
+    fun `a suspension that times out stays booked and is lifted at screen on`() = runTest {
+        device.hang += "write:Suspend"
+        val engine = engine()
+        engine.startWith(Extras(suspend = setOf("org.example.feed")))
+        engine.screenOff()
+        assertThat(store.state.written[Lever.APP_SUSPENSION]).isEqualTo(Setting.Suspension(setOf("org.example.feed")))
+        testScheduler.advanceUntilIdle()
+        assertThat(device.suspended).containsExactly("org.example.feed")
+        device.hang.clear()
+        engine.screenOn()
+        assertThat(device.suspended).isEmpty()
+    }
+
+    /** Finding 3: Wi-Fi never goes off while mobile data is off, or once it was connected since the screen went off. */
+    @Test
+    fun `Wi-Fi stays on with mobile data off, and after losing its network at night`() = runTest {
+        device.data = false
+        val engine = engine()
+        engine.startWith(Extras(wifiOff = true))
+        engine.screenOff()
+        assertThat(device.wifi).isTrue()
+        assertThat(engine.state(Lever.WIFI).reason).isEqualTo("mobile data is off, so Wi-Fi stays on")
+        engine.screenOn()
+
+        device.data = true
+        device.wifiConnected = true
+        engine.screenOff()
+        // The router restarts at night: Wi-Fi stays on so the phone reconnects, even across a restart of the app.
+        device.wifiConnected = false
+        engine.radiosChanged()
+        val next = engine()
+        next.start(EngineStart(BuiltInProfiles.EVERYDAY, screenOn = false, writable = Writable.EVERYTHING))
+        next.holdOff(HoldOff.CALL, active = true)
+        next.holdOff(HoldOff.CALL, active = false)
+        assertThat(extraWrites()).isEmpty()
+        assertThat(next.state(Lever.WIFI).reason).contains("was connected since the screen went off")
+        next.screenOn()
+        next.screenOff()
+        assertThat(device.wifi).isFalse()
+    }
+
+    /** Finding 4: Wi-Fi reads on only once it has started, so the release waits for that before judging. */
+    @Test
+    fun `a Wi-Fi release waits for Wi-Fi to start before it is judged`() = runTest {
+        device.wifiStartReads = 3
+        val engine = engine()
+        engine.startWith(Extras(wifiOff = true))
+        engine.screenOff()
+        engine.screenOn()
+        assertThat(journal.actions.map { it.outcome }).containsExactly(Outcome.OK, Outcome.OK)
+        assertThat(store.state.written).doesNotContainKey(Lever.WIFI)
+    }
+
+    /** Finding 5: a lever let go of stays let go across a restart, until the next screen event. */
+    @Test
+    fun `a lever let go of stays let go when the app restarts`() = runTest {
+        val engine = engine()
+        engine.startWith(Extras(wifiOff = true))
+        engine.screenOff()
+        device.wifi = true
+        engine.radiosChanged()
+        val next = engine()
+        next.start(EngineStart(BuiltInProfiles.EVERYDAY, screenOn = false, writable = Writable.EVERYTHING))
+        assertThat(device.wifi).isTrue()
+        assertThat(extraWrites()).containsExactly(DeviceWrite.Wifi(false))
+    }
+
+    /** Finding 6: Wi-Fi the engine holds off is not turned on inside airplane mode; it comes back when that ends. */
+    @Test
+    fun `Wi-Fi held off waits out airplane mode`() = runTest {
+        val engine = engine()
+        engine.startWith(Extras(wifiOff = true))
+        engine.screenOff()
+        device.airplane = true
+        engine.radiosChanged()
+        engine.screenOn()
+        assertThat(device.wifi).isFalse()
+        assertThat(engine.state(Lever.WIFI).state).isEqualTo(LeverState.WAITING)
+        device.airplane = false
+        engine.radiosChanged()
+        assertThat(device.wifi).isTrue()
+        assertThat(store.state.written).doesNotContainKey(Lever.WIFI)
+    }
 }

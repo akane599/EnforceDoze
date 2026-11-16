@@ -36,14 +36,31 @@ internal class Observer(private val device: DozeDevice, private val calls: Devic
         book.seen[Lever.MOBILE_DATA] = Setting.MobileData(reading.dataEnabled)
     }
 
-    /** The chosen apps and any the engine still holds; the lever reads as the suspended ones among them. */
+    /**
+     * The chosen apps and any the engine still holds are read; the lever reads as the held ones that are suspended.
+     * A chosen app someone else suspended is in [Book.suspension] only: it is theirs, so it is never drift (ADR 0038).
+     * The read waits behind a suspension call still running, so it never reports an app a late call then suspends.
+     */
     private suspend fun readSuspension() {
         val held = (book.written[Lever.APP_SUSPENSION] as? Setting.Suspension)?.packages.orEmpty()
         val asked = book.persisted.extras.suspend + held
-        val reading = (calls.run(null) { device.readSuspension(asked) } as? DeviceResult.Ok)?.value
+        val reading = (calls.run(Lever.APP_SUSPENSION) { device.readSuspension(asked) } as? DeviceResult.Ok)?.value
         book.suspension = reading
-        reading?.let { book.seen[Lever.APP_SUSPENSION] = Setting.Suspension(it.suspended intersect asked) }
+        reading?.let { book.seen[Lever.APP_SUSPENSION] = Setting.Suspension(it.suspended intersect held) }
             ?: book.seen.remove(Lever.APP_SUSPENSION)
+    }
+
+    /**
+     * Re-reads the radios until [expected] shows or [settleMillis] pass: Wi-Fi reports on only once its state machine
+     * has started, a moment after the command returns (ADR 0038).
+     */
+    suspend fun settleRadios(expected: List<Setting>, settleMillis: Long, pollMillis: Long) {
+        var waited = 0L
+        while (expected.any { book.seen[it.lever] != it } && waited < settleMillis) {
+            delay(pollMillis)
+            waited += pollMillis
+            readRadios()
+        }
     }
 
     suspend fun readConstants(): Boolean {

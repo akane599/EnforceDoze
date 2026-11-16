@@ -1,0 +1,1 @@
+lever APP_SUSPENSION APPLIED wanted=suspended [io.github.akane599.enforcedoze.evidenceclient] written=suspended [io.github.akane599.enforcedoze.evidenceclient] seen=suspended [io.github.akane599.enforcedoze.evidenceclient] reason=null

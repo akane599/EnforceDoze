@@ -1,0 +1,1 @@
+lever WIFI APPLIED wanted=Wi-Fi off written=Wi-Fi off seen=Wi-Fi off reason=null

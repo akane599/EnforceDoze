@@ -1,0 +1,4 @@
+                android.title=String (EnforceDoze cannot put a setting back)
+                android.reduced.images=Boolean (true)
+                android.template=String (android.app.Notification$BigTextStyle)
+                android.text=String (Mobile data is still off: turn it on in Quick Settings.)

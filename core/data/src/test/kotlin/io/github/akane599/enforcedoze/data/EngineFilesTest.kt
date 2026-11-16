@@ -4,6 +4,7 @@ package io.github.akane599.enforcedoze.data
 import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.doze.ConstantsValue
 import io.github.akane599.enforcedoze.doze.Extras
+import io.github.akane599.enforcedoze.doze.ExtrasNight
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
@@ -65,6 +66,7 @@ class EngineFilesTest {
                 override = "pocket",
             ),
             extras = Extras(wifiOff = true, dataOff = true, suspend = setOf("org.example.feed")),
+            extrasNight = ExtrasNight(letGo = setOf(Lever.WIFI), wifiConnected = true),
         )
         val files = files()
         files.save(state)

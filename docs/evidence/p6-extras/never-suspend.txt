@@ -1,0 +1,3 @@
+io.github.akane599.enforcedoze.evidenceclient: allowed
+com.google.android.deskclock: a system app
+io.github.akane599.enforcedoze: EnforceDoze needs it to undo the suspension

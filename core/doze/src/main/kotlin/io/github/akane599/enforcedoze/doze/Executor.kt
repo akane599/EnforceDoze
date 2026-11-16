@@ -53,6 +53,7 @@ internal class Executor(
         val touched = plan.map { it.lever }.toSet()
         touched.forEach { book.seen.remove(it) }
         observer.read(touched)
+        settleRadios(attempts)
         val constants = attempts.entries.firstOrNull { (setting, tries) ->
             setting is Setting.Constants && tries.any { it.result !is DeviceResult.Failed }
         }?.key as? Setting.Constants
@@ -74,6 +75,14 @@ internal class Executor(
                 detail = detail,
             ).also { journal.action(it) }
         }
+    }
+
+    /** Radio writes that answered are re-read until they show: Wi-Fi reports on only once it has started. */
+    private suspend fun settleRadios(attempts: Map<Setting, List<Attempt>>) {
+        val radios = attempts.filter { (setting, tries) ->
+            (setting is Setting.Wifi || setting is Setting.MobileData) && tries.all { it.result is DeviceResult.Ok }
+        }.keys.toList()
+        if (radios.isNotEmpty()) observer.settleRadios(radios, DozeEngine.RADIO_SETTLE_MILLIS, DozeEngine.SETTLE_POLL_MILLIS)
     }
 
     /** A write that takes a lever back to where the engine found it: off, normal, no string, the owner's allowlist. */
@@ -102,10 +111,12 @@ internal class Executor(
     /** Books [setting] or puts back what was booked [before], after the read-back (see the class comment). */
     private fun settleBooking(setting: Setting, attempts: List<Attempt>, before: Setting?) {
         if (setting is Setting.Suspension) {
-            // The engine holds what it asked for or held before and that reads as suspended; unread, it keeps all of it.
+            // The engine holds what it asked for or held before and that reads as suspended. Unread, or with a call
+            // that timed out and may still suspend after the read, it keeps all of it.
             val asked = setting.packages + held(before)
             val seen = (book.seen[Lever.APP_SUSPENSION] as? Setting.Suspension)?.packages
-            book.wrote(Setting.Suspension(seen?.let { asked intersect it } ?: asked))
+            val unsure = seen == null || attempts.any { it.result == null }
+            book.wrote(Setting.Suspension(if (unsure) asked else asked intersect seen.orEmpty()))
             return
         }
         val seen = book.seen[setting.lever]

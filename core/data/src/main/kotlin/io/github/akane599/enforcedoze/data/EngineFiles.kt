@@ -4,6 +4,7 @@ package io.github.akane599.enforcedoze.data
 import io.github.akane599.enforcedoze.doze.ConstantsValue
 import io.github.akane599.enforcedoze.doze.EngineStore
 import io.github.akane599.enforcedoze.doze.Extras
+import io.github.akane599.enforcedoze.doze.ExtrasNight
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
@@ -192,6 +193,8 @@ internal data class StateFile(
     val plan: PlanFile? = null,
     /** The root-tier extras (ADR 0038); absent while none is chosen. */
     val extras: ExtrasFile? = null,
+    /** What the extras learned since the last screen event (ADR 0038); absent while empty. */
+    val extrasNight: ExtrasNightFile? = null,
 ) {
     fun toState(): PersistedState = PersistedState(
         mode = Mode.valueOf(mode),
@@ -205,6 +208,7 @@ internal data class StateFile(
         proofStartedAt = proofStartedAt?.let(Instant::parse),
         plan = plan?.toState(),
         extras = extras?.toExtras() ?: Extras(),
+        extrasNight = extrasNight?.toNight() ?: ExtrasNight(),
     )
 
     companion object {
@@ -220,6 +224,7 @@ internal data class StateFile(
             proofStartedAt = state.proofStartedAt?.toString(),
             plan = state.plan?.let(PlanFile::of),
             extras = state.extras.takeIf { it != Extras() }?.let(ExtrasFile::of),
+            extrasNight = state.extrasNight.takeIf { it != ExtrasNight() }?.let(ExtrasNightFile::of),
         )
     }
 }
@@ -231,6 +236,16 @@ internal data class ExtrasFile(val wifiOff: Boolean = false, val dataOff: Boolea
 
     companion object {
         fun of(extras: Extras): ExtrasFile = ExtrasFile(extras.wifiOff, extras.dataOff, extras.suspend.sorted())
+    }
+}
+
+/** Since the last screen event (ADR 0038): the extras let go of, and whether Wi-Fi was connected. */
+@Serializable
+internal data class ExtrasNightFile(val letGo: List<String> = emptyList(), val wifiConnected: Boolean = false) {
+    fun toNight(): ExtrasNight = ExtrasNight(letGo.mapNotNull { name -> Lever.entries.find { it.name == name } }.toSet(), wifiConnected)
+
+    companion object {
+        fun of(night: ExtrasNight): ExtrasNightFile = ExtrasNightFile(night.letGo.map { it.name }.sorted(), night.wifiConnected)
     }
 }
 

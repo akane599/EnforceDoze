@@ -220,6 +220,16 @@ public data class PersistedState(
     val plan: PlanState? = null,
     /** The root-tier extras the owner chose (ADR 0038). */
     val extras: Extras = Extras(),
+    /** What the extras learned since the last screen event; kept so a restart does not undo it (ADR 0038). */
+    val extrasNight: ExtrasNight = ExtrasNight(),
+)
+
+/** Since the last screen event (ADR 0038). Cleared at every screen on and off. */
+public data class ExtrasNight(
+    /** Extras someone else changed: neither re-applied nor turned on again until the next screen event. */
+    val letGo: Set<Lever> = emptySet(),
+    /** Wi-Fi was connected since the screen went off: it stays on, so it can reconnect when the network returns. */
+    val wifiConnected: Boolean = false,
 )
 
 /** The root-tier extras (ADR 0038): all off until the owner turns one on, at T3 only. */

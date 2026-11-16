@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import android.net.NetworkCapabilities
+import android.net.Network
+import android.net.ConnectivityManager
 import io.github.akane599.enforcedoze.doze.android.neverSuspend
 import io.github.akane599.enforcedoze.doze.Extras
 import kotlinx.coroutines.flow.first
@@ -41,7 +44,8 @@ import java.util.zip.ZipFile
  * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`; for P6, `automation <on|off>`,
  * `automation-token <package>`, `import-setup`, `switch-check` and `switch-state`; `privilege` (the state the screens
  * see) and `grant-durable` (SPEC 4.1 T1 through the worker, then the state); for ADR 0038,
- * `extras wifi=<on|off>,data=<on|off>,suspend=<pkg>[;<pkg>]` and `never-suspend <pkg>[;<pkg>]`.
+ * `extras wifi=<on|off>,data=<on|off>,suspend=<pkg>[;<pkg>]`, `never-suspend <pkg>[;<pkg>]` and `radios` (what the
+ * app process sees of the networks).
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -110,6 +114,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
         "switch-state" to { graph, _ -> describe(AppSwitchOverSource(graph.ui).state.first()) },
         "privilege" to { graph, _ -> "seen=${graph.controller.state.value}\nnow=${graph.controller.refresh()}" },
         "grant-durable" to { graph, _ -> "added=${graph.ui.grantDurable()}\nnow=${graph.controller.refresh()}" },
+        "radios" to { graph, _ -> radios(graph.app) },
         "never-suspend" to { graph, arg ->
             val names = arg.orEmpty().split(';').filter { it.isNotBlank() }.toSet()
             names.associateWith { neverSuspend(graph.app, it.let(::setOf), graph.prefs.keepAwake)[it]?.line ?: "allowed" }
@@ -304,3 +309,34 @@ private fun describe(state: SwitchOverState): String = listOf(
     "watching=${state.watching} handsOff=${state.handsOff}",
     "check=${state.check}",
 ).joinToString("\n")
+
+/**
+ * Every network as this app sees it, and its default one: why the extras' radio reading says what it says. Only
+ * transports and the capabilities the reader checks, never the transport info (SSID, BSSID, addresses).
+ */
+@Suppress("DEPRECATION") // allNetworks, as the extras' reader uses it.
+private fun radios(context: Context): String {
+    val connectivity = context.getSystemService(ConnectivityManager::class.java)
+    fun describe(network: Network?): String {
+        val caps = network?.let(connectivity::getNetworkCapabilities) ?: return "none"
+        val transports = TRANSPORTS.filter { caps.hasTransport(it.key) }.values
+        val capabilities = CAPABILITIES.filter { caps.hasCapability(it.key) }.values
+        return "$network ${transports.joinToString("+")} ${capabilities.joinToString("&")}"
+    }
+    return buildString {
+        appendLine("active=${describe(connectivity.activeNetwork)}")
+        connectivity.allNetworks.forEach { appendLine("network ${describe(it)}") }
+    }.trimEnd()
+}
+
+private val TRANSPORTS = mapOf(
+    NetworkCapabilities.TRANSPORT_WIFI to "WIFI",
+    NetworkCapabilities.TRANSPORT_CELLULAR to "CELLULAR",
+    NetworkCapabilities.TRANSPORT_VPN to "VPN",
+)
+
+private val CAPABILITIES = mapOf(
+    NetworkCapabilities.NET_CAPABILITY_INTERNET to "INTERNET",
+    NetworkCapabilities.NET_CAPABILITY_VALIDATED to "VALIDATED",
+    NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED to "NOT_RESTRICTED",
+)

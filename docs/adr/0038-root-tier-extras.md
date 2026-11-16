@@ -165,3 +165,31 @@ Wireless Android Auto is covered by the car-mode hold-off, which releases every 
   - an emulator run at T3 (Shizuku as root on `ed-api37`), including a reboot with an extra on.
 - **One phone check before 1.0.0:** a VoLTE call with mobile data off on the owner's carrier, and One
   UI's behaviour for each command (Q15). Until then the Settings warning says so.
+
+## Addendum: the engine review (2026-11-16)
+
+A fresh read-only reviewer read the engine change (dcbd23a) before the gate, as AGENTS.md asks for the
+engine. Its findings and what changed:
+- **A suspension drift forgot apps the engine still held.** The lever now reads as the held apps that
+  are suspended. A chosen app someone else suspended is theirs and is never drift. On drift the held
+  apps that still read as suspended stay booked, so they are lifted.
+- **A suspension call that timed out could land after its read-back.** Suspension reads now wait behind
+  a suspension call still running. A plan with a timed-out call keeps everything it asked for booked.
+- **Both radios could end up off.** Wi-Fi no longer goes off while mobile data is off, whoever turned it
+  off. Once Wi-Fi was connected with the screen off, it stays on until the next screen event, so it can
+  reconnect after a router restart.
+- **The Wi-Fi release was judged before Wi-Fi had started.** The emulator run showed it: a release
+  read back off, logged as a mismatch. Radio writes are now re-read for up to 6 s until they show.
+- **The let-go set lived only in memory.** It is kept in `state.json`, with the Wi-Fi rule above, as
+  `extrasNight`, cleared at every screen event. Old files load unchanged.
+- **Wi-Fi came back inside airplane mode.** A held Wi-Fi now waits for airplane mode to end. The network
+  watch also listens for `ACTION_AIRPLANE_MODE_CHANGED`. Restore stock still puts it back at once,
+  because the owner asked for it.
+
+Each finding has a test in `ExtrasEngineTest`.
+
+The first emulator run found one more: mobile data never went off. `ConnectivityManager.activeNetwork`
+is null for this app, because without `INTERNET` its uid counts as blocked, even while the system's
+default is a validated Wi-Fi network (`docs/evidence/p6-extras/radios-screen-off.txt`). The reader
+now looks through the list of networks for a validated, unrestricted Wi-Fi network with internet that
+is not behind a VPN.

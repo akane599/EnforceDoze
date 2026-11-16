@@ -39,6 +39,10 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
     var airplane = false
     var canReadRadios = true
 
+    /** Reads after `set-wifi-enabled enabled` that still show Wi-Fi off, as its state machine takes a moment to start. */
+    var wifiStartReads = 0
+    private var wifiStarting = 0
+
     /** Suspended apps, whoever suspended them, and the never-suspend list's answers. */
     var suspended: Set<String> = emptySet()
     var blocked: Map<String, String> = emptyMap()
@@ -110,6 +114,7 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
                 is DeviceWrite.Battery -> batteryUnplugged = write.unplugged
 
                 is DeviceWrite.Wifi -> {
+                    if (write.enabled && !wifi) wifiStarting = wifiStartReads
                     wifi = write.enabled
                     if (!write.enabled) {
                         wifiConnected = false
@@ -145,7 +150,9 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
         override suspend fun readAllowlist(): DeviceResult<Set<String>> = read("allowlist", true) { allowlist }
 
         override suspend fun readRadios(): DeviceResult<RadioReading> = read("radios", canReadRadios) {
-            RadioReading(wifi, wifiConnected, wifiValidated, data, airplane)
+            val starting = wifiStarting > 0
+            if (starting) wifiStarting--
+            RadioReading(wifi && !starting, wifiConnected, wifiValidated, data, airplane)
         }
 
         override suspend fun readSuspension(packages: Set<String>): DeviceResult<SuspensionReading> =

@@ -1,0 +1,3 @@
+ok=false refused=null notWritable=[]
+skipped={} stockDifferences=null unverified=stock.json was never captured, so the values could not be compared with it
+action APP_SUSPENSION OK expected=io.github.akane599.enforcedoze.evidenceclient not suspended readBack=io.github.akane599.enforcedoze.evidenceclient not suspended Package io.github.akane599.enforcedoze.evidenceclient new suspended state: false

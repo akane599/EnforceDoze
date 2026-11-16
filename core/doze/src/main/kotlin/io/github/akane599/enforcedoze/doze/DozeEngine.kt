@@ -163,5 +163,8 @@ public class DozeEngine(
         /** SPEC 6.5: about 2 s for the system to reload the string. */
         public const val SETTLE_MILLIS: Long = 2_000
         public const val SETTLE_POLL_MILLIS: Long = 250
+
+        /** How long a radio's read-back may take to show a write: Wi-Fi takes a few seconds to start (ADR 0038). */
+        public const val RADIO_SETTLE_MILLIS: Long = 6_000
     }
 }

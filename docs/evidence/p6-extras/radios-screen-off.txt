@@ -1,0 +1,3 @@
+active=none
+network 101 WIFI INTERNET&VALIDATED&NOT_RESTRICTED
+lever MOBILE_DATA APPLIED wanted=mobile data off written=mobile data off seen=mobile data off reason=null
