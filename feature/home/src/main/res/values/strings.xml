@@ -38,4 +38,5 @@
     <string name="home_empty_title">No night recorded yet</string>
     <string name="home_empty_body">The first report appears the morning after an unplugged night of 4 hours or more. Quick proof shows Doze working now, in two minutes.</string>
 
+    <string name="home_proof_result">Quick proof</string>
 </resources>

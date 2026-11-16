@@ -50,6 +50,7 @@ import io.github.akane599.enforcedoze.design.Verdict
 import io.github.akane599.enforcedoze.design.hourLabels
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.evidence.Cause
+import io.github.akane599.enforcedoze.ui.ProofCard
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.VerdictWord
 import io.github.akane599.enforcedoze.ui.sentence
@@ -86,6 +87,10 @@ public fun HomeScreen(state: HomeState, actions: HomeActions, modifier: Modifier
                 OutlinedButton(onClick = actions::quickProof, enabled = state.plan.canWrite && !state.proofRunning) {
                     Text(stringResource(if (state.proofRunning) R.string.home_proof_running else R.string.home_quick_proof))
                 }
+            }
+            state.proof?.let { steps ->
+                SectionHeader(stringResource(R.string.home_proof_result))
+                ProofCard(steps)
             }
             if (state.notices.isNotEmpty()) Spacer(Modifier.height(Space.xl))
             state.notices.forEach { notice ->

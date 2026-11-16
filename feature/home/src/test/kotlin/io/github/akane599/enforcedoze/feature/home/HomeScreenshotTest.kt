@@ -10,6 +10,9 @@ import io.github.akane599.enforcedoze.testing.screenshots.Primary
 import io.github.akane599.enforcedoze.testing.screenshots.ownerClock
 import io.github.akane599.enforcedoze.testing.screenshots.shoot
 import io.github.akane599.enforcedoze.ui.NoticeKind
+import io.github.akane599.enforcedoze.ui.ProofStep
+import io.github.akane599.enforcedoze.ui.ProofStepKind
+import io.github.akane599.enforcedoze.ui.ProofStepStatus
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.VerdictWord
 import org.junit.Before
@@ -31,6 +34,20 @@ class HomeScreenshotTest {
 
     @Test fun noDataYet() = shoot(MODULE, "no-data", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
         HomeScreen(HomeFixtures.firstRun, NoActions)
+    }
+
+    @Test fun proof() = shoot(MODULE, "proof", listOf(Primary, Primary.copy(dark = false, turkish = true)), tall = true) {
+        HomeScreen(
+            HomeFixtures.held.copy(
+                proof = listOf(
+                    ProofStep(ProofStepKind.CONSTANTS, ProofStepStatus.OK, "inactive_to=+30s read back"),
+                    ProofStep(ProofStepKind.FORCE_IDLE, ProofStepStatus.OK, "cmd deviceidle get deep: IDLE"),
+                    ProofStep(ProofStepKind.SENSORS, ProofStepStatus.OK, "Mode : RESTRICTED : io.github.akane599.enforcedoze"),
+                    ProofStep(ProofStepKind.UNDO, ProofStepStatus.OK, "unforce; sensorservice enable; battery reset"),
+                ),
+            ),
+            NoActions,
+        )
     }
 
     @Test fun readOnly() = shoot(MODULE, "read-only", listOf(Primary)) { HomeScreen(HomeFixtures.readOnly, NoActions) }

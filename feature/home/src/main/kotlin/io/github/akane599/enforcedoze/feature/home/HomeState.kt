@@ -4,6 +4,8 @@ package io.github.akane599.enforcedoze.feature.home
 import androidx.compose.runtime.Immutable
 import io.github.akane599.enforcedoze.design.StripModel
 import io.github.akane599.enforcedoze.evidence.Cause
+import io.github.akane599.enforcedoze.ui.ProofStep
+import io.github.akane599.enforcedoze.ui.ProofStepStatus
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.VerdictWord
 
@@ -14,8 +16,12 @@ public data class HomeState(
     /** Null until the first session is recorded (SPEC 9.3 "no data yet"). */
     val night: NightSummary? = null,
     val notices: List<StateNotice> = emptyList(),
-    val proofRunning: Boolean = false,
-)
+    /** The last quick proof's steps (SPEC 8.6 step 5), while it runs and after; null before one ran. */
+    val proof: List<ProofStep>? = null,
+) {
+    public val proofRunning: Boolean get() = proof?.any { it.status == ProofStepStatus.RUNNING || it.status == ProofStepStatus.WAITING } ==
+        true
+}
 
 /** The plan as a departure board: one row per slot, the current one first (SPEC 9.1). */
 @Immutable
