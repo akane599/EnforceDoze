@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: GPL-3.0-or-later. Shape: Material Icons "bedtime" (Apache-2.0). -->
+<!--
+  SPDX-License-Identifier: GPL-3.0-or-later
+  The timeline strip in miniature (DESIGN.md signature element): an active stretch, light idle as an
+  outline and deep idle solid. No moon (DESIGN.md "Avoid").
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -7,5 +11,13 @@
     android:viewportHeight="24">
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M12.34,2.02C6.59,1.82 2,6.42 2,12c0,5.52 4.48,10 10,10c3.71,0 6.93,-2.02 8.66,-5.02C13.15,16.73 8.57,8.55 12.34,2.02z" />
+        android:pathData="M2,8h5v8h-5z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M8.75,8.75h4.5v6.5h-4.5z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M15,8h7v8h-7z" />
 </vector>
