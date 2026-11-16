@@ -296,8 +296,10 @@ Carried over to P5:
   (flat frames, ADR 0030).
 - `:app` wiring (2026-11-16): a Compose launcher activity, Navigation 3, the nine screen sources
   over shared engine, evidence and privilege services, and the report mapper with its JVM tests.
+- Day zero (2026-11-16): the first recommendation comes from the phone's battery history and UsageStats
+  screen events (`DayZero`); the durable grants are given through the worker once Shizuku allows it.
+  Untested on a device yet: the emulator run after 09:00 covers it.
   Still open in P5, each a spec item, not optional:
-  - the day-zero recommendation from the phone's battery history (SPEC 7.2, SPEC 15 checklist);
   - probe titles come in English from `:core:privilege`; map the probe ids to string resources;
   - the allowlist below T2 (read with `DUMP`), and suggestions for alarm and messaging apps;
   - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);

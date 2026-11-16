@@ -150,3 +150,23 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   (SPEC 7.2) is still to come.
 - **Tasker is found by its public package name.** SPEC 11 grants Tasker the automation permission
   by that name, so naming it in code tells nothing about any one phone.
+- **Day zero reads the battery history and UsageStats screen events** (SPEC 7.1), in
+  `:core:recommend` (`DayZero`), which now depends on `:core:parse` for the history's records.
+  - Sessions run from `-screen` to `+screen`. Each carries its plug state, its deep idle
+    (`device_idle=full`) and its battery drop. A reboot or lost records drop the stretch they cut.
+  - Screen events reach back before the battery history with the screen alone.
+  - The event-log buffer is not read: it covers hours, and M falls back to deep idle that never
+    came (SPEC 7.2).
+- **Day-zero time counts as stock only when nothing says otherwise.**
+  - At the read: no constants string, idle not forced, sensors normal.
+  - No unplugged session may reach deep idle sooner than `inactive_to` + `idle_after_inactive_to`
+    minus a minute; only forced idle does that. Battery Saver's quick doze also trips the check.
+  - A wrong "unknown" only leaves D and R unmeasured. A wrong "stock" would mislead them, and the
+    owner's own setup (a constants string) is exactly that case.
+- **The recommendation's range starts where the records start**, capped at 30 days. Before, a
+  fixed 30-day range spread two days of records over thirty: S read low, and a single session had
+  a 30-day span for confidence.
+- **The durable grants are given through the worker as soon as Shizuku or Sui allows it** (SPEC
+  4.1 T1): `DUMP`, `WRITE_SECURE_SETTINGS` (lever A writes from the app, ADR 0012) and usage
+  access. `READ_LOGS` stays with the worker, which reads the events buffer anyway, and the exact
+  alarm op is only for the optional delay alarm.
