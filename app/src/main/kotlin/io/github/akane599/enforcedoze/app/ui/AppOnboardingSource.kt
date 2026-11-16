@@ -88,6 +88,7 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
         private val PROBE_TITLES = mapOf(
             CapabilityProber.READ to R.string.ui_probe_read,
             CapabilityProber.KEYS to R.string.ui_probe_keys,
+            CapabilityProber.VENDOR to R.string.ui_probe_vendor,
             CapabilityProber.WRITE to R.string.ui_probe_write,
             CapabilityProber.FORCE to R.string.ui_probe_force,
             CapabilityProber.RESTRICT to R.string.ui_probe_restrict,

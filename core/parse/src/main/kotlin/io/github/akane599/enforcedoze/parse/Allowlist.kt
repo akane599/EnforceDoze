@@ -11,6 +11,29 @@ public data class Allowlist(val entries: List<AllowlistEntry>, val unknownLines:
     public companion object {
         private val ROW = Regex("""^([a-z-]+),([A-Za-z0-9_.]+),(\d+)$""")
 
+        /**
+         * The same list from `dumpsys deviceidle`, which needs only `DUMP` (below the worker's tier). Its sections are
+         * `Whitelist (except idle) system apps`, `Whitelist system apps` and `Whitelist user apps`, one package a line
+         * and no uid, as both API 37 captures under `fixtures/` print them; there they list the same rows as
+         * `cmd deviceidle whitelist`. A section the device leaves out, as the emulator does for user apps when there
+         * are none, holds no rows.
+         */
+        public fun fromDump(dump: DeviceIdleDump): Allowlist {
+            val entries = DUMP_SECTIONS.flatMap { (section, kind) ->
+                dump.sections[section].orEmpty().map { AllowlistEntry(kind, it.trim(), null) }
+            }
+            val (valid, unknown) = entries.partition { PACKAGE.matches(it.packageName) }
+            return Allowlist(valid, unknown.map { it.packageName })
+        }
+
+        private val PACKAGE = Regex("""[A-Za-z0-9_.]+""")
+
+        private val DUMP_SECTIONS = listOf(
+            "Whitelist (except idle) system apps" to "system-excidle",
+            "Whitelist system apps" to "system",
+            "Whitelist user apps" to "user",
+        )
+
         public fun parse(text: String): Allowlist {
             val entries = mutableListOf<AllowlistEntry>()
             val unknown = mutableListOf<String>()

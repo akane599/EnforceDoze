@@ -22,4 +22,17 @@ class AllowlistTest {
         assertThat(list.entries.groupingBy { it.kind }.eachCount())
             .containsExactly("system-excidle", 76, "system", 73, "user", 36)
     }
+
+    @Test
+    fun `the deviceidle dump lists the same rows as the whitelist command`() {
+        for (build in listOf("sm-s938b" to "api37_CP2A.260605.016", "sdk_gphone64_x86_64" to "api37_CE2A.260420.051.A3")) {
+            val capture = Fixtures.capture(build.first, build.second)
+            val fromDump = Allowlist.fromDump(DeviceIdleDump.parse(capture.text("deviceidle.txt")))
+            val fromCommand = Allowlist.parse(capture.text("deviceidle-whitelist.txt"))
+            assertThat(fromDump.entries.map { it.kind to it.packageName })
+                .containsExactlyElementsIn(fromCommand.entries.map { it.kind to it.packageName })
+            assertThat(fromDump.entries.all { it.uid == null }).isTrue()
+            assertThat(fromDump.unknownLines).isEmpty()
+        }
+    }
 }

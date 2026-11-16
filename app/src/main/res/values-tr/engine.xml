@@ -37,4 +37,5 @@
     <string name="ui_probe_history">Pil geçmişi</string>
     <string name="ui_probe_one_ui">One UI sürümü</string>
     <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
+    <string name="ui_probe_vendor">Üretici alanları</string>
 </resources>
