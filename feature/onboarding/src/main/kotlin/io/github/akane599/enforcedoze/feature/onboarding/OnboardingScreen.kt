@@ -143,7 +143,11 @@ private fun Route(step: OnboardingStep, actions: OnboardingActions) {
                     repeat(count) { i ->
                         val center = Offset(r + i * gap, r)
                         when {
-                            i == step.ordinal -> drawCircle(palette.accent, r, center)
+                            i == step.ordinal -> {
+                                drawCircle(palette.accent, r, center)
+                                // Yellow on the light ground is 1.3:1, so an ink ring carries the mark's 3:1 there (SPEC 10.4).
+                                if (!palette.dark) drawCircle(palette.ink, r - LINE.toPx() / 2, center, style = Stroke(LINE.toPx()))
+                            }
 
                             i < step.ordinal -> drawCircle(palette.ink, r * DONE_SCALE, center)
 

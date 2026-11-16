@@ -86,7 +86,8 @@ public fun Palette.scheme(): ColorScheme {
         inverseOnSurface = ground,
         error = critical,
         onError = ground,
-        errorContainer = raisedHigh,
+        // raised, not raisedHigh: critical text on raisedHigh is 4.4:1 in the light theme (ContrastTest).
+        errorContainer = raised,
         onErrorContainer = critical,
         outline = quiet,
         outlineVariant = hairline,
