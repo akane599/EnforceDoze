@@ -4,6 +4,8 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.licensee)
 }
 
@@ -27,6 +29,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     compileOptions {
@@ -74,6 +77,26 @@ dependencies {
     implementation(project(":core:doze-android"))
     implementation(project(":core:data"))
     implementation(project(":core:evidence"))
+    implementation(project(":core:profile"))
+    implementation(project(":core:recommend"))
+    implementation(project(":core:design"))
+    implementation(project(":core:ui"))
+    listOf("home", "report", "profiles", "plan", "log", "settings", "allowlist", "sensors", "onboarding").forEach {
+        implementation(project(":feature:$it"))
+    }
+    // The Compose shell and Navigation 3 with list-detail scenes (ADR 0029).
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.material3.navigation.suite)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
+    implementation(libs.lifecycle.viewmodel.navigation3)
+    implementation(libs.adaptive.navigation3)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
     // Upstream classes still call Shizuku directly until the worker replaces them (SPEC 12.1).
