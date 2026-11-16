@@ -59,16 +59,6 @@
 
 
 
-    <issue
-        id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields; this is a memory leak"
-        errorLine1="    private static Context context;"
-        errorLine2="            ~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/MyApplication.java"
-            line="6"
-            column="13"/>
-    </issue>
 
 
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <!-- Palette.Dark.ground, oklch(0.155 0.020 285.0). -->
+    <color name="window_ground">#0B0B14</color>
+</resources>

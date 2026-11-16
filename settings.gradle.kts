@@ -20,11 +20,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // libsu and upstream's libsuperuser are published only on JitPack.
+        // libsu is published only on JitPack.
         maven("https://jitpack.io") {
             content {
                 includeGroup("com.github.topjohnwu.libsu")
-                includeGroup("eu.chainfire")
             }
         }
     }

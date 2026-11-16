@@ -1,43 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppThemeBase" parent="Theme.Material3.Light.NoActionBar">
-    </style>
-    <style name="AppThemeOverlay" parent="AppThemeBase">
-    </style>
-
-    <style name="AppTheme" parent="AppThemeOverlay">
-        <item name="appBarLayoutStyle">@style/Widget.App.AppBarLayout</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
-    </style>
-
-    <style name="ThemeOverlay.App.Preference" parent="PreferenceThemeOverlay">
-        <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreference</item>
-    </style>
-
-    <style name="App.Preference.SwitchPreference" parent="Preference.SwitchPreference.Material">
-        <item name="android:widgetLayout">@layout/my_material_switch_layout</item>
-    </style>
-
-    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
-        <!--        <item name="titleTextColor">@android:color/white</item>-->
-        <!--        <item name="navigationIconTint">@android:color/white</item>-->
-    </style>
-    <style name="Widget.App.AppBarLayout" parent="Widget.Material3.AppBarLayout">
-        <!-- Change the background color of the AppBarLayout so the AppBarLayout is green.
-                The toolbar is transparent by default so you will see this color through the toolbar. -->
-    </style>
-    <style name="ThemeOverlay.App.Toolbar" parent="">
-        <!--        <item name="colorControlNormal">@android:color/white</item>-->
+    <!-- The window behind the Compose UI (ADR 0037): a platform theme, so no upstream Material or preference
+         library is needed. Its background is the palette's ground, so a cold start shows no other colour
+         (DESIGN.md; ThemeTest checks the value against Palette). Edge-to-edge and the bar icons are set by
+         enableEdgeToEdge in MainActivity. -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_ground</item>
     </style>
 </resources>

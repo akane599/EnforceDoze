@@ -39,18 +39,6 @@ androidx-test-core = "1.7.0"
 # Espresso 3.5 reflects on InputManager.getInstance(), gone on SDK 36; 3.7.0 does not (ADR 0030).
 espresso = "3.7.0"
 
-# Upstream 1.10.2 dependencies, kept until the classes using them are replaced (SPEC 12.1).
-upstream-appcompat = "1.7.0"
-upstream-material = "1.12.0"
-upstream-browser = "1.8.0"
-upstream-media2 = "1.3.0"
-upstream-preference = "1.2.1"
-upstream-localbroadcastmanager = "1.1.0"
-upstream-material-dialogs = "0.9.3.0"
-upstream-libsuperuser = "1.1.0.+"
-upstream-nanotasks = "1.1.0"
-upstream-process-phoenix = "2.1.2"
-
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 detekt-cli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
@@ -88,16 +76,6 @@ roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = 
 roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
 roborazzi-junit-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
 
-upstream-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "upstream-appcompat" }
-upstream-material = { module = "com.google.android.material:material", version.ref = "upstream-material" }
-upstream-browser = { module = "androidx.browser:browser", version.ref = "upstream-browser" }
-upstream-media2-session = { module = "androidx.media2:media2-session", version.ref = "upstream-media2" }
-upstream-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "upstream-preference" }
-upstream-localbroadcastmanager = { module = "androidx.localbroadcastmanager:localbroadcastmanager", version.ref = "upstream-localbroadcastmanager" }
-upstream-material-dialogs = { module = "com.afollestad.material-dialogs:core", version.ref = "upstream-material-dialogs" }
-upstream-libsuperuser = { module = "eu.chainfire:libsuperuser", version.ref = "upstream-libsuperuser" }
-upstream-nanotasks = { module = "com.fabiendevos:nanotasks", version.ref = "upstream-nanotasks" }
-upstream-process-phoenix = { module = "com.jakewharton:process-phoenix", version.ref = "upstream-process-phoenix" }
 
 # UI layer (ADR 0029).
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }

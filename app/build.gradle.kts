@@ -75,16 +75,6 @@ configurations.configureEach {
 }
 
 dependencies {
-    implementation(libs.upstream.material.dialogs)
-    implementation(libs.upstream.appcompat)
-    implementation(libs.upstream.material)
-    implementation(libs.upstream.browser)
-    implementation(libs.upstream.media2.session)
-    implementation(libs.upstream.preference.ktx)
-    implementation(libs.upstream.libsuperuser)
-    implementation(libs.upstream.nanotasks)
-    implementation(libs.upstream.process.phoenix)
-    implementation(libs.upstream.localbroadcastmanager)
     implementation(project(":core:privilege"))
     implementation(project(":core:doze-android"))
     implementation(project(":core:data"))
@@ -111,8 +101,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
-    // Upstream classes still call Shizuku directly until the worker replaces them (SPEC 12.1).
-    implementation(libs.shizuku.api)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

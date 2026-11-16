@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
-    <color name="colorPrimary">#FF4081</color>
-    <color name="colorPrimaryDark">#181C25</color>
-    <color name="colorAccent">#FF4081</color>
+    <!-- Palette.Light.ground, oklch(0.975 0.006 285.0). -->
+    <color name="window_ground">#F6F6FB</color>
 </resources>
