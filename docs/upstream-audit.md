@@ -181,8 +181,8 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 4 | Wait for unlock before leaving Doze | service | port, off by default (ADR 0017): a locked screen on keeps what lever B and C set, unlock releases it | Lever B option `untilUnlock` (5.3, 6.4) | upstream |
 | 5 | Disable when charging | service | port | Charging hold-off (5.5), always on | upstream |
 | 6 | Execution mode (root / Shizuku) | settings | port | Tiers T0–T3 (4) | upstream |
-| 7 | Doze allowlist screen | `WhitelistAppsActivity` | port | Lever D, Allowlist screen (5, 9.1) | upstream |
-| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | drop (ADR 0036, Q13): SPEC 11.1 has no allowlist action; unlike every other call, a change survives Restore stock and clashes with Strict's trimmed list; by hand on the Allowlist screen and the report | — | upstream; unregistered (ADR 0036): open to any app and a shell injection |
+| 7 | Doze allowlist screen | `WhitelistAppsActivity` | port | Lever D, Allowlist screen (5, 9.1) | replaced (ADR 0037): Allowlist screen and lever D; `AllowlistScreenshotTest`, `TargetsTest`, `DozeEngineTest`, `AllowlistTest`, `WorkerCoreTest` |
+| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | drop (ADR 0036, Q13): SPEC 11.1 has no allowlist action; unlike every other call, a change survives Restore stock and clashes with Strict's trimmed list; by hand on the Allowlist screen and the report | — | removed (ADR 0036, 0037): it was open to any app and allowed shell injection |
 | 9 | Motion sensing off, with an allowed package | service, `PackageChooserActivity` | port | Lever C restricted mode (5.4) | upstream |
 | 10 | All sensors off in Doze | `setAllSensorsState` | port | Lever C `allSensorsOff`, Strict, "Sensors off" tile (5.4, 9.2) | upstream |
 | 11 | Biometrics off in Doze | service | port (root tier) | T3 (1.2) | upstream |
@@ -193,7 +193,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 16 | Bluetooth off in Doze | service | drop: cuts the Galaxy Watch link and Android Auto that SPEC 3.3 and 5.5 protect | — | upstream |
 | 17 | GPS off in Doze | service | drop: deep idle already stops app location; switching the location setting touches emergency location (0.2 rule 1) | — | upstream |
 | 18 | Battery saver on in Doze | service | drop: One UI power saving runs its own quick Doze; the report labels it instead (3.3), and the app does not become a second manager of it | — | upstream |
-| 19 | Notification blocklist during Doze | `BlockNotificationsActivity`, `service call notification` | drop: binder transaction numbers (12.4) and outside scope (1.2); Doze already defers normal-priority notifications | — | upstream |
+| 19 | Notification blocklist during Doze | `BlockNotificationsActivity`, `service call notification` | drop: binder transaction numbers (12.4) and outside scope (1.2); Doze already defers normal-priority notifications | — | removed (ADR 0037), dropped |
 | 20 | Hotspot exception | service | port | Hotspot hold-off (5.5) | upstream |
 | 21 | Music exception | service, `NotificationService` | port | Audio hold-off via `AudioManager` playback configurations (5.5) | upstream |
 | 22 | Keep the current foreground app awake | service | port | "Keep awake" app hold-off (5.5) | upstream |
@@ -202,17 +202,17 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 25 | Persistent / disabled notification | service | port | Foreground-service notification (9.2) | upstream |
 | 26 | Doze stats and battery stats screens | `DozeStatsActivity`, `DozeBatteryStatsActivity` | port (replaced) | Sessions, verdicts, night report (8) | upstream |
 | 27 | Battery consumption list | `BatteryConsumptionAdapter` | drop: Coulomb covers per-app attribution (SPEC 1.2, 2.3) | — | upstream |
-| 28 | Log screen and logcat toggle | `LogActivity` | port (replaced) | Log screen, action log (8, 9.1) | upstream |
+| 28 | Log screen and logcat toggle | `LogActivity` | port (replaced) | Log screen, action log (8, 9.1) | replaced (ADR 0037): Log screen and action log; `LogScreenshotTest`, `LogFilterTest`, `ReportMappingTest` |
 | 29 | Reset EnforceDoze, reset stats | settings | port | Restore stock, reset app (5.6, 9.1) | upstream |
-| 30 | Tasker broadcasts screen and receivers | `TaskerBroadcastsActivity`, `Enable/DisableForceDozeService`, `SettingsChangeReceiver` | port | Automation API (11.1), `docs/automation.md` | upstream |
-| 31 | Re-enter Doze broadcast | `ReenterDoze` | port | Automation `APPLY_PLAN` / `RESUME` (11.1) | upstream |
+| 30 | Tasker broadcasts screen and receivers | `TaskerBroadcastsActivity`, `Enable/DisableForceDozeService`, `SettingsChangeReceiver` | port | Automation API (11.1), `docs/automation.md` | partly removed (ADR 0037): the screen and receivers are gone; `EnableForceDozeService` stays while `Utils` uses it. New home tested by `AutomationTest` |
+| 31 | Re-enter Doze broadcast | `ReenterDoze` | port | Automation `APPLY_PLAN` / `RESUME` (11.1) | replaced (ADR 0037): `APPLY_PLAN` and `RESUME`; `AutomationTest` |
 | 32 | Doze tile | `ForceDozeTileService` | port | "Doze plan" tile (9.2, 11.2) | upstream |
-| 33 | Airplane-mode tile | `AirplaneTileService` | drop: the system tile covers it (SPEC 2.3) | — | upstream |
+| 33 | Airplane-mode tile | `AirplaneTileService` | drop: the system tile covers it (SPEC 2.3) | — | removed (ADR 0037), dropped |
 | 34 | Doze tunables screen | `DozeTunablesActivity` | port | Custom profiles with guardrails (6.3) | upstream |
 | 35 | Self-allowlist and battery-optimisation request | `RequestIgnoreBatteryActivity` | port | Onboarding, One UI "Never sleeping apps" (3.3, 9.1) | upstream |
-| 36 | Start at boot and after update | `BootCompleteReceiver`, `AutoRestartOnUpdate` | port | Foreground service start (12.4) | upstream |
+| 36 | Start at boot and after update | `BootCompleteReceiver`, `AutoRestartOnUpdate` | port | Foreground service start (12.4) | replaced (ADR 0037): `EngineStartReceiver` (boot, own update only); `EngineStartTest` |
 | 37 | Re-enable Doze when disabled | `MainActivity` dialog | port | Capability probe and onboarding (4.4) | upstream |
-| 38 | About, sponsor link, Custom Tabs | `AboutAppActivity`, `CustomTabs` | port About with GPL notice and credits; drop the in-app Custom Tabs browser (links open the default browser) | Settings → About (9.1, 12.1) | upstream |
+| 38 | About, sponsor link, Custom Tabs | `AboutAppActivity`, `CustomTabs` | port About with GPL notice and credits; drop the in-app Custom Tabs browser (links open the default browser) | Settings → About (9.1, 12.1) | About replaced (ADR 0037): Settings credits, `NOTICE` and licence assets; `LicenceAssetTest`, `SettingsScreenshotTest`. `CustomTabs` stays until the classes that use it go |
 | 39 | App shortcuts (Settings, Battery stats) | `res/xml/shortcuts.xml` | drop for v1: Home and the tile cover the entry points; revisit after P5 | — | dropped (ADR 0036): no longer registered; they targeted upstream's package and never resolved |
 | 40 | Upstream translations (Weblate) | `res/values-*` | drop: all copy is rewritten; English and Turkish only (9); translators stay credited in `NOTICE` | — | upstream |
 | 41 | Upstream website, store metadata, release workflow | `docs/index.html`, `fastlane/`, `.github/workflows/release.yml` | drop: the fork ships through GitHub Releases (12.6); removed in P7 | — | upstream |

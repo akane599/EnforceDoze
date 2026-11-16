@@ -82,7 +82,11 @@ class EngineService : Service() {
 /** Starts the engine after a reboot or an update of the app, when the owner turned it on (SPEC 12.4). */
 class EngineStartReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val starts = intent.action == Intent.ACTION_BOOT_COMPLETED || intent.action == Intent.ACTION_MY_PACKAGE_REPLACED
-        if (starts && EngineGraph.get(context).switch.enabled) EngineService.start(context)
+        if (starts(intent.action) && EngineGraph.get(context).switch.enabled) EngineService.start(context)
+    }
+
+    internal companion object {
+        /** After a reboot or an update of this app, the engine comes back if the owner left it on (parity row 36). */
+        fun starts(action: String?): Boolean = action == Intent.ACTION_BOOT_COMPLETED || action == Intent.ACTION_MY_PACKAGE_REPLACED
     }
 }
