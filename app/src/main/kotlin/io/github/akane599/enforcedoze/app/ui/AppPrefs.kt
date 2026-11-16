@@ -41,6 +41,11 @@ internal class AppPrefs(context: Context) {
         get() = prefs.getBoolean(NOTIFICATIONS_ASKED, false)
         set(value) = prefs.edit { putBoolean(NOTIFICATIONS_ASKED, value) }
 
+    /** The app stopped server flag sync (SPEC 5.6), so Restore stock lets it run again. */
+    var flagSyncStopped: Boolean
+        get() = prefs.getBoolean(FLAG_SYNC_STOPPED, false)
+        set(value) = prefs.edit { putBoolean(FLAG_SYNC_STOPPED, value) }
+
     var urgency: Urgency
         get() = prefs.getString(URGENCY, null)?.let { runCatching { Urgency.valueOf(it) }.getOrNull() } ?: Urgency.WITHIN_THE_HOUR
         set(value) = prefs.edit { putString(URGENCY, value.name) }
@@ -126,6 +131,7 @@ internal class AppPrefs(context: Context) {
         private const val PREFS = "ui"
         private const val ONBOARDED = "onboarded"
         private const val NOTIFICATIONS_ASKED = "notifications-asked"
+        private const val FLAG_SYNC_STOPPED = "flag-sync-stopped"
         private const val URGENCY = "urgency"
         private const val RETENTION = "retention_days"
         private const val AUTOMATION = "automation"

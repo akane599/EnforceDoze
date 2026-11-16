@@ -16,6 +16,8 @@ import io.github.akane599.enforcedoze.privilege.probe.ProbeStatus
 import io.github.akane599.enforcedoze.ui.ActionOutcome
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import io.github.akane599.enforcedoze.privilege.WorkerResult
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import java.io.File
@@ -24,6 +26,7 @@ import java.util.Locale
 /** Settings (SPEC 9.1) over the app's preferences, the engine's saved choices and the privilege layer. */
 internal class AppSettingsSource(private val services: AppServices) : SettingsSource {
     private val app = services.graph.app
+    private val syncReads = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val state: Flow<SettingsState> = combine(
@@ -31,9 +34,10 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
         services.engine,
         services.prefs.changes,
         services.notices.notices,
-        services.capabilities,
+        combine(services.capabilities, syncReads) { report, _ -> report },
     ) { privilege, _, _, notices, report -> Triple(privilege, notices, report) }
         .mapLatest { (privilege, notices, report) ->
+            val canWrite = services.notices.canWrite(privilege)
             SettingsState(
                 privilege = PrivilegeStatus(
                     tier = privilege.tier.ordinal,
@@ -47,10 +51,9 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
                 tasker = if (services.labels.installed(TASKER)) TaskerState.NOT_ALLOWED else TaskerState.NOT_INSTALLED,
                 retentionDays = services.prefs.retentionDays,
                 language = language(),
-                // Not readable without a worker call this build lacks; shown as off, which is the phone's default.
-                flagSyncDisabled = false,
+                flagSyncDisabled = canWrite && flagSyncMode()?.let { it != SYNC_ON } == true,
                 version = app.packageManager.getPackageInfo(app.packageName, 0).versionName.orEmpty(),
-                canWrite = services.notices.canWrite(privilege),
+                canWrite = canWrite,
                 notices = notices,
             )
         }
@@ -77,10 +80,32 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
     /** The automation permission arrives with SPEC 11 (phase P6); until then there is nothing to grant. */
     override suspend fun allowTasker(): ActionOutcome = ActionOutcome.Unavailable(app.getString(R.string.ui_not_in_build))
 
-    /** Needs a worker call for `device_config set_sync_disabled_for_tests`, which this build does not have yet. */
-    override suspend fun flagSync(disabled: Boolean): ActionOutcome = ActionOutcome.Unavailable(app.getString(R.string.ui_not_in_build))
+    /** The phone's mode, read through the worker; null when it cannot be read. */
+    private suspend fun flagSyncMode(): String? =
+        (services.graph.controller.withWorker { it.flagSync() } as? WorkerResult.Ok)?.value?.takeIf { it.isSuccess }?.stdout?.trim()
 
-    override suspend fun restoreStock(): ActionOutcome = services.access.send(turnOn = true) { outcome(it.engine.restoreStock()) }
+    /**
+     * Stops server flag sync for good (`persistent`) or lets it run again (`none`), then reads it back (SPEC 5.6). The
+     * app remembers that it stopped sync, so Restore stock and Reset can let it run again.
+     */
+    override suspend fun flagSync(disabled: Boolean): ActionOutcome {
+        val mode = if (disabled) SYNC_STOPPED else SYNC_ON
+        val result = services.graph.controller.withWorker { it.setFlagSync(mode) }
+        syncReads.value++
+        val outcome = AppAllowlistSource.outcome(result)
+        if (outcome != ActionOutcome.Done) return outcome
+        val now = flagSyncMode()
+        if (now != mode) return ActionOutcome.Failed("device_config get_sync_disabled_for_tests: ${now ?: "unreadable"}, wanted $mode")
+        services.prefs.flagSyncStopped = disabled
+        return ActionOutcome.Done
+    }
+
+    /** The engine's Restore stock, then server flag sync running again when the app had stopped it (SPEC 0.2). */
+    override suspend fun restoreStock(): ActionOutcome {
+        val restored = services.access.send(turnOn = true) { outcome(it.engine.restoreStock()) }
+        if (restored != ActionOutcome.Done || !services.prefs.flagSyncStopped) return restored
+        return flagSync(disabled = false)
+    }
 
     /** Restore stock first; only when the phone is back to stock are the app's own records and settings removed. */
     override suspend fun reset(): ActionOutcome {
@@ -117,6 +142,10 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
     }
 
     private companion object {
+        /** `device_config` sync modes (`WorkerContract.SYNC_DISABLED_MODES`). */
+        private const val SYNC_ON = "none"
+        private const val SYNC_STOPPED = "persistent"
+
         const val TASKER = "net.dinglisch.android.taskerm"
         const val ENGINE_DIR = "engine"
         const val PROFILES_DIR = "profiles"
