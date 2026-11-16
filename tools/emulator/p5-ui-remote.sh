@@ -17,6 +17,9 @@ bench_pkg=io.github.akane599.enforcedoze.benchmark
 shizuku_pkg=moe.shizuku.privileged.api
 shizuku_apk=$cache/shizuku-v13.7.0-thedjchi.apk
 shizuku_marker=$cache/shizuku-installed-by-p5
+plan_tile=$pkg/io.github.akane599.enforcedoze.app.PlanTileService
+sensors_tile=$pkg/io.github.akane599.enforcedoze.app.SensorsTileService
+tiles_added=0
 
 log() { echo "[$(date +%T)] $*" | tee -a "$out/summary.txt"; }
 failures=0
@@ -82,6 +85,10 @@ baseline_constants=$(adb shell settings get global device_idle_constants | tr -d
 
 cleanup() {
   log "cleanup"
+  if ((tiles_added)); then
+    for t in $plan_tile $sensors_tile; do adb shell cmd statusbar remove-tile "$t"; done
+    adb shell cmd statusbar collapse
+  fi
   local pids
   pids=$(adb shell pidof shizuku_server | tr -d '\r')
   [[ -n $pids ]] && adb shell kill $pids
@@ -137,6 +144,21 @@ granted() { adb shell dumpsys package "$pkg" | grep -q "$1: granted=true"; }
 check "DUMP granted through the worker" granted android.permission.DUMP
 check "WRITE_SECURE_SETTINGS granted through the worker" granted android.permission.WRITE_SECURE_SETTINGS
 check "usage access set through the worker" bash -c "'$A' shell appops get $pkg GET_USAGE_STATS </dev/null | grep -q allow"
+# The tiles (SPEC 9.2): added to Quick Settings, shown, the sensors tile's confirmation shown and cancelled, then
+# removed. `cmd statusbar add-tile|remove-tile|click-tile|expand-settings|collapse` are StatusBarShellCommand's
+# (android-17.0.0_r1).
+tiles_added=1
+for t in $plan_tile $sensors_tile; do adb shell cmd statusbar add-tile "$t"; done
+adb shell cmd statusbar expand-settings
+sleep 4
+adb exec-out screencap -p > "$out/tiles.png"
+adb shell cmd statusbar click-tile "$sensors_tile"
+sleep 3
+adb exec-out screencap -p > "$out/tile-sensors-confirm.png"
+adb shell input keyevent KEYCODE_BACK
+privacy_off() { adb shell dumpsys sensorservice | grep -qE '^Sensor Privacy *: *disabled'; }
+check "sensors still on after the cancelled confirmation" privacy_off
+adb shell cmd statusbar collapse
 adb logcat -b crash -d > "$out/crash.txt"
 check "no crash" test ! -s "$out/crash.txt"
 adb logcat -d -s DayZero UsedApps AndroidRuntime > "$out/app-log.txt"
