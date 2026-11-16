@@ -11,6 +11,9 @@ import java.time.Duration
 internal object DebugHooks {
     fun profiles(): List<Profile> = emptyList()
 
+    /** Coulomb alone reads the evidence provider in a release build (ADR 0035). */
+    fun evidenceClients(): Set<String> = emptySet()
+
     @Suppress("UNUSED_PARAMETER", "UnusedParameter") // Same signature as the debug build's.
     fun minimumSession(context: Context): Duration = Verdicts.MINIMUM
 

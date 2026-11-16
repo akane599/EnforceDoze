@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import kotlinx.coroutines.flow.first
+import io.github.akane599.enforcedoze.feature.profiles.SwitchOverState
+import io.github.akane599.enforcedoze.app.ui.AppSwitchOverSource
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -33,7 +36,8 @@ import java.util.zip.ZipFile
  * `night-start` (as if the window-start alarm arrived), `capture-stock`, `restore-stock`,
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
- * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`.
+ * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`; for P6, `automation <on|off>`,
+ * `automation-token <package>`, `import-setup`, `switch-check` and `switch-state`.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -81,6 +85,25 @@ class DebugCommandReceiver : BroadcastReceiver() {
         },
         "last-night" to { graph, _ -> lastNight(graph)?.let(::describe) ?: "no night yet" },
         "export" to { graph, arg -> export(graph, arg) },
+        "automation" to { graph, arg ->
+            val on = arg == "on"
+            graph.prefs.automation = on
+            graph.ui.automation.syncReceiver(on)
+            "automation ${if (on) "on" else "off"}"
+        },
+        // Debug only: the token goes back to the test script, which sends it as the client would (ADR 0033).
+        "automation-token" to { graph, arg ->
+            arg?.let { "token=${graph.ui.automation.clients.issue(it)}" } ?: "usage: automation-token <package>"
+        },
+        "import-setup" to { graph, _ ->
+            val problems = AppSwitchOverSource(graph.ui).import("Imported setup")
+            problems.ifEmpty { listOf("imported ${graph.prefs.importedProfile}") }.joinToString("\n")
+        },
+        "switch-check" to { graph, _ ->
+            AppSwitchOverSource(graph.ui).startCheck()
+            "check started at ${graph.prefs.switchCheckSince}"
+        },
+        "switch-state" to { graph, _ -> describe(AppSwitchOverSource(graph.ui).state.first()) },
     )
 
     private val engineCommands: Map<String, suspend EngineGraph.(EngineHost, String?) -> String> = mapOf(
@@ -246,3 +269,14 @@ class DebugCommandReceiver : BroadcastReceiver() {
         const val TIMEOUT_MILLIS = 50_000L
     }
 }
+
+/** The switch-over as the P6 gate reads it: what was found, the import and where the check stands. */
+private fun describe(state: SwitchOverState): String = listOf(
+    "found=${state.found?.let { "changed=${it.changed} constants=${it.constants.keys.joinToString(",")} writer=${it.writer}" }}",
+    "differences=${state.found?.differences?.joinToString(",") { "${it.key}:${it.found}/${it.stock}" }}",
+    "sensorsRestricted=${state.found?.sensorsRestricted}",
+    "imported=${state.imported?.let { "${it.id} ${it.deviceIdle}" }}",
+    "managers=${state.managers.joinToString(",") { it.packageName }}",
+    "watching=${state.watching} handsOff=${state.handsOff}",
+    "check=${state.check}",
+).joinToString("\n")

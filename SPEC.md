@@ -547,10 +547,10 @@ Screenshot tests (Roborazzi or Paparazzi, chosen in an ADR) for every screen: li
 
 ### 11.1 Automation API (Tasker and similar)
 
-- Explicit broadcasts to one exported receiver, protected by the permission `io.github.akane599.enforcedoze.permission.CONTROL` (protection level dangerous). Settings has "Allow Tasker": the worker runs `pm grant <tasker package> <permission>`, so the owner never touches adb.
+- Explicit broadcasts to one exported receiver, disabled while the API is off. Each call carries a client's token, bound to that client's package and kept only as a hash; Settings lists the clients and shows a new token once (ADR 0033: `pm grant` cannot grant a permission a package does not request, so Tasker cannot be given one).
 - Actions: `APPLY_PROFILE` (extra `id`), `APPLY_PLAN`, `PAUSE` (back to Stock), `RESUME`, `RESTORE_STOCK`, `SENSORS_OFF` (extra `on`), `GET_STATUS`.
 - `GET_STATUS` replies with a broadcast carrying: plan, active profile, tier, last session verdict, last deep-idle share, last drain %/h, and any warning code.
-- Each call is an action-log row with the caller's package. At most one profile switch per 30 s from automation; extra calls are logged and dropped.
+- Each call is a journal row with the caller's package (ADR 0034). At most one state change per 30 s from automation; extra calls are logged and dropped.
 - `/docs/automation.md` lists every action and extra, with ready-to-import Tasker task XML examples.
 
 ### 11.2 Quick Settings tiles
@@ -560,7 +560,7 @@ Screenshot tests (Roborazzi or Paparazzi, chosen in an ADR) for every screen: li
 ### 11.3 Coulomb
 
 - **One writer.** When both apps are installed, EnforceDoze owns every Doze write; Coulomb reads.
-- EnforceDoze exposes a read-only `ContentProvider` (`…enforcedoze.evidence`) with `status` and `sessions` (verdict, deep share, drain, profile). Protected by a signature permission when both apps are signed with the same key on the build server (recommended), otherwise by a dangerous permission granted through the worker.
+- EnforceDoze exposes a read-only `ContentProvider` (`…enforcedoze.evidence`) with `status` and `sessions` (verdict, deep share, drain, profile). Protected by a signature permission (both apps share the build server's key) and a check that the caller is Coulomb; the report opens through a permission-protected `OPEN_REPORT` activity alias. ADR 0035 holds the columns.
 - Coulomb's Action Center shows "Doze is managed by EnforceDoze" with the last verdict and a link to the report, instead of its own Doze actions. That change belongs to Coulomb's repo: the appendix has a paste-ready note for the Coulomb agent.
 - If Coulomb ever writes Doze settings, EnforceDoze treats it like any other manager (5.7).
 
@@ -813,7 +813,7 @@ The agent decides each with an ADR and keeps going; none blocks a phase.
 
 ### 16.4 Paste-ready note for the Coulomb agent
 
-> EnforceDoze (the owner's fork, app id `io.github.akane599.enforcedoze`) now owns all Doze writes on this phone. When it is installed, Coulomb must not write Doze constants, force idle or change sensor modes. Read its evidence provider (`…enforcedoze.evidence`, `status` and `sessions`) and show "Doze is managed by EnforceDoze" in the Action Center, with the last verdict and a link that opens EnforceDoze's report. Record this as an ADR; if both apps share a signing key, use the signature permission, otherwise request the dangerous permission and have the owner grant it through Shizuku.
+> EnforceDoze (the owner's fork, app id `io.github.akane599.enforcedoze`) now owns all Doze writes on this phone. When it is installed, Coulomb must not write Doze constants, force idle or change sensor modes. Read its evidence provider (`content://io.github.akane599.enforcedoze.evidence/status` and `/sessions`; columns in EnforceDoze's ADR 0035, `api_version` 1) and show "Doze is managed by EnforceDoze" in the Action Center while `state` is `MANAGED`, with the last verdict and a link that opens EnforceDoze's report: `startActivity(Intent("io.github.akane599.enforcedoze.action.OPEN_REPORT").setPackage("io.github.akane599.enforcedoze").putExtra("session_id", report_session_id))`. Declare `<uses-permission android:name="io.github.akane599.enforcedoze.permission.READ_EVIDENCE"/>` (signature: both apps share the key) and `<queries><package android:name="io.github.akane599.enforcedoze"/></queries>`. Query off the main thread, read each cursor fully, and treat a null cursor, `SecurityException` or `IllegalArgumentException` as "unavailable" (show the plain line). Record this as an ADR.
 
 ### 16.5 Sources
 

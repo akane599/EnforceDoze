@@ -61,6 +61,16 @@ around it.
   already held, for the app pickers. The "Two Doze managers" notice and the "another app wrote" notice
   both open the switch-over (SPEC 5.7's guided switch-over), not the Log.
 
+- **The provider's emulator test runs from a stand-in for Coulomb**, `:testing:evidence-client`: its own
+  package and uid, signed with the debug key, self-instrumenting. An `androidTest` of `:app` would run
+  inside the app's own process and uid, where neither the permission nor the caller check applies. Debug
+  builds accept that package as a caller; release builds accept Coulomb alone.
+- **Upstream's empty `ApplicationTest` is gone.** It was the Android Studio template (no assertions) and
+  used `android.test`, which no longer compiles; nothing else lived in `app/src/androidTest`.
+- **P6 debug commands** (`automation`, `automation-token`, `import-setup`, `switch-check`,
+  `switch-state`) drive `tools/emulator/p6-integrations.sh`. They exist only in debug builds, like the
+  other gate commands.
+
 ## Review
 
 A fresh read-only security reviewer read commit 6ffe761. They found no way for an app without a

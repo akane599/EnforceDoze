@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- What Coulomb declares (ADR 0035): the signature permission and the package it queries. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="io.github.akane599.enforcedoze.permission.READ_EVIDENCE" />
+    <queries>
+        <package android:name="io.github.akane599.enforcedoze" />
+    </queries>
+</manifest>

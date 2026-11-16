@@ -45,6 +45,9 @@ internal object DebugHooks {
 
     fun profiles(): List<Profile> = listOf(TEST_EVERYDAY, TEST_CLASSIC)
 
+    /** The stand-in for Coulomb (`:testing:evidence-client`) may read the evidence provider, for the P6 gate (ADR 0035). */
+    fun evidenceClients(): Set<String> = setOf("io.github.akane599.enforcedoze.evidenceclient")
+
     fun minimumSession(context: Context): Duration {
         val seconds = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getLong(MINIMUM_SECONDS, -1)
         return if (seconds < 0) Verdicts.MINIMUM else Duration.ofSeconds(seconds)

@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Coulomb reads the evidence provider and opens a report with it (SPEC 11.3, ADR 0035). Signature: both apps are
+         signed with the build server's key; the provider also checks that the caller is Coulomb. -->
+    <permission
+        android:name="io.github.akane599.enforcedoze.permission.READ_EVIDENCE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -236,7 +242,23 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/export_paths" />
         </provider>
-            <!-- The automation API (SPEC 11.1): exported with no permission, each call checked by a client's token; disabled
+            <provider
+            android:name="io.github.akane599.enforcedoze.app.evidence.EvidenceProvider"
+            android:authorities="io.github.akane599.enforcedoze.evidence"
+            android:exported="true"
+            android:permission="io.github.akane599.enforcedoze.permission.READ_EVIDENCE" />
+        <!-- The report link for Coulomb (ADR 0035): a stable action and extra, not the activity's class or its own extras. -->
+        <activity-alias
+            android:name="io.github.akane599.enforcedoze.EvidenceReport"
+            android:exported="true"
+            android:permission="io.github.akane599.enforcedoze.permission.READ_EVIDENCE"
+            android:targetActivity="io.github.akane599.enforcedoze.app.ui.MainActivity">
+            <intent-filter>
+                <action android:name="io.github.akane599.enforcedoze.action.OPEN_REPORT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <!-- The automation API (SPEC 11.1): exported with no permission, each call checked by a client's token; disabled
              until the owner turns the API on (ADR 0033). -->
         <receiver
             android:name="io.github.akane599.enforcedoze.app.automation.AutomationReceiver"

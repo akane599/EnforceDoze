@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import io.github.akane599.enforcedoze.app.evidence.EvidenceProvider
 import android.content.Context
 import androidx.core.content.edit
 import io.github.akane599.enforcedoze.app.ui.AppPrefs
@@ -83,6 +87,10 @@ internal class EngineGraph private constructor(context: Context) {
             withContext(Dispatchers.Main.immediate) { recorder.start() }
             running = Running(engineScope, host, recorder)
             hostState.value = host
+            // Coulomb's view follows a stored session and a change of mode or profile (ADR 0035).
+            engineScope.launch {
+                EvidenceProvider.notifyChanges(app, sessions.revision(), host.status.map { it.mode to it.profileId }.distinctUntilChanged())
+            }
         }
     }
 

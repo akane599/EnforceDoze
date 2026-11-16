@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.automation
 
+import io.github.akane599.enforcedoze.app.evidence.LastResults
 import android.util.Log
 import android.os.SystemClock
 import kotlinx.coroutines.CancellationException
@@ -134,7 +135,8 @@ internal class Automation(private val services: AppServices) {
     private suspend fun reply(client: String) {
         val status = graph.hosts.value?.status?.value
         val saved = graph.store.load()
-        val last = graph.sessions.latestSessions(1).firstOrNull()
+        // The same last verdict Home and the evidence provider show: the night when there is one (ADR 0035).
+        val last = LastResults.latest(graph.sessions)
         val warning = services.notices.notices.first().firstOrNull()?.kind?.name
         val plan = saved.plan?.plan
         val reply = Intent(STATUS_ACTION)
@@ -146,6 +148,7 @@ internal class Automation(private val services: AppServices) {
             .putExtra("verdict", last?.verdict)
             .putExtra("deep_share", last?.deepShare)
             .putExtra("drain", last?.drainPerHour)
+            .putExtra("report_session_id", last?.sessionId)
             .putExtra("warning", warning)
         graph.app.sendBroadcast(reply)
     }
