@@ -151,13 +151,15 @@ private fun ProfileRow(profile: Profile, state: ProfilesState, formats: Formats,
     }
 }
 
-/** The slot a profile runs in (accent: it is the current item), and quiet marks for Recommended and custom. */
+/** Quiet marks for the slot a profile runs in, Recommended and custom; the accent is kept for what runs now (Home). */
 @Composable
 internal fun ProfileTags(profile: Profile, state: ProfilesState, formats: Formats, showCustom: Boolean = false) {
     val slots = state.slots(profile.id)
-    if (Slot.DAY in slots) Tag(stringResource(R.string.profiles_by_day))
+    if (Slot.DAY in slots) Tag(stringResource(R.string.profiles_by_day), accent = false)
     if (Slot.NIGHT in slots) {
-        state.plan.night?.let { Tag(stringResource(R.string.profiles_at_night, formats.time(it.start), formats.time(it.end))) }
+        state.plan.night?.let {
+            Tag(stringResource(R.string.profiles_at_night, formats.time(it.start), formats.time(it.end)), accent = false)
+        }
     }
     if (profile.id in state.recommended) Tag(stringResource(R.string.profiles_recommended), accent = false)
     if (showCustom && !profile.builtIn) Tag(stringResource(R.string.profiles_custom_tag), accent = false)

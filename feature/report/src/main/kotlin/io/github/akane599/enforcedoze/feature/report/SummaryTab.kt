@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.akane599.enforcedoze.design.ColumnHead
@@ -60,7 +61,10 @@ internal fun ColumnScope.SummaryTab(state: ReportState, formats: Formats, action
     Spacer(Modifier.height(Space.xl))
     ReportStrip(summary, formats)
     Spacer(Modifier.height(Space.l))
+    // The four key numbers lead as one ruled row, as on Home; the rest follow as a quiet table, not equal tiles
+    // (ADR 0028, DESIGN.md).
     FigureRow(figures(summary, formats))
+    DetailTable(details(summary, formats))
     state.compared?.let { ComparedSection(it, summary, formats) }
     TopWakers(state, showWakers)
     Spacer(Modifier.height(Space.xl))
@@ -127,26 +131,43 @@ internal fun ReportStrip(summary: ReportSummary, formats: Formats) {
 @Composable
 private fun figures(summary: ReportSummary, formats: Formats): List<Figure> {
     val dash = unknown()
-    val mah = stringResource(io.github.akane599.enforcedoze.design.R.string.ed_unit_mah)
     fun share(value: Double?, label: String) = value?.let { formats.percent(it, label) } ?: Figure(dash, label)
     val drain = stringResource(R.string.report_fig_drain)
     return listOf(
         Figure(summary.timeToDeep?.let(formats::duration) ?: dash, stringResource(R.string.report_fig_to_deep)),
         share(summary.deepShare, stringResource(R.string.report_fig_deep)),
-        share(summary.lightShare, stringResource(R.string.report_fig_light)),
-        share(summary.activeShare, stringResource(R.string.report_fig_active)),
         summary.drainPerHour?.let { formats.drain(it, drain) } ?: Figure(dash, drain),
-        Figure(
-            summary.drainMah?.roundToInt()?.toString() ?: dash,
-            stringResource(R.string.report_fig_used),
-            after = mah.takeIf {
-                summary.drainMah !=
-                    null
-            },
-        ),
-        Figure(summary.motionResets?.toString() ?: dash, stringResource(R.string.report_fig_motion)),
         Figure(summary.ownWakeups?.toString() ?: dash, stringResource(R.string.report_fig_own)),
     )
+}
+
+/** The rest of SPEC 8.4's numbers: label and value per ruled line. */
+@Composable
+private fun details(summary: ReportSummary, formats: Formats): List<Pair<String, String>> {
+    val dash = unknown()
+    val mah = stringResource(io.github.akane599.enforcedoze.design.R.string.ed_unit_mah)
+    return listOf(
+        stringResource(R.string.report_fig_light) to (summary.lightShare?.let(formats::percentText) ?: dash),
+        stringResource(R.string.report_fig_active) to (summary.activeShare?.let(formats::percentText) ?: dash),
+        stringResource(R.string.report_fig_used) to (summary.drainMah?.let { "${it.roundToInt()}\u00A0$mah" } ?: dash),
+        stringResource(R.string.report_fig_motion) to (summary.motionResets?.toString() ?: dash),
+    )
+}
+
+@Composable
+private fun DetailTable(rows: List<Pair<String, String>>) {
+    Column(Modifier.fillMaxWidth()) {
+        rows.forEach { (label, value) ->
+            Row(
+                Modifier.fillMaxWidth().padding(vertical = Space.s).semantics(mergeDescendants = true) { },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(label, style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet, modifier = Modifier.weight(1f))
+                Text(value, style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink, textAlign = TextAlign.End)
+            }
+            Rule()
+        }
+    }
 }
 
 /** SPEC 8.5 item 3: this night stacked over the nights before it, then the baselines side by side. */

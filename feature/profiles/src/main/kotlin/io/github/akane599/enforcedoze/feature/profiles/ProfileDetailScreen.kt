@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.feature.profiles
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -43,7 +45,9 @@ import io.github.akane599.enforcedoze.design.RawLine
 import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.SectionHeader
+import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
+import io.github.akane599.enforcedoze.design.Tag
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.profile.Profile
@@ -130,15 +134,23 @@ public fun ProfileDetailScreen(
     }
 }
 
+/** A slot the profile already runs in is shown as a quiet tag (state); otherwise the button that puts it there. */
+@Composable
+private fun SlotUse(inUse: Boolean, inUseLabel: Int, useLabel: Int, canWrite: Boolean, onUse: () -> Unit) {
+    if (inUse) {
+        Box(Modifier.heightIn(min = Sizes.touch), contentAlignment = Alignment.Center) { Tag(stringResource(inUseLabel), accent = false) }
+    } else {
+        OutlinedButton(onClick = onUse, enabled = canWrite) { Text(stringResource(useLabel)) }
+    }
+}
+
 @Composable
 private fun SlotButtons(state: ProfilesState, profile: Profile, actions: ProfileDetailActions) {
     val slots = state.slots(profile.id)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(Space.s), verticalArrangement = Arrangement.spacedBy(Space.s)) {
-        OutlinedButton(onClick = { actions.apply(Slot.DAY) }, enabled = state.canWrite && Slot.DAY !in slots) {
-            Text(stringResource(if (Slot.DAY in slots) R.string.profiles_in_use_day else R.string.profiles_use_day))
-        }
-        OutlinedButton(onClick = { actions.apply(Slot.NIGHT) }, enabled = state.canWrite && Slot.NIGHT !in slots) {
-            Text(stringResource(if (Slot.NIGHT in slots) R.string.profiles_in_use_night else R.string.profiles_use_night))
+        SlotUse(Slot.DAY in slots, R.string.profiles_in_use_day, R.string.profiles_use_day, state.canWrite) { actions.apply(Slot.DAY) }
+        SlotUse(Slot.NIGHT in slots, R.string.profiles_in_use_night, R.string.profiles_use_night, state.canWrite) {
+            actions.apply(Slot.NIGHT)
         }
         // The secondary actions wrap as one group, so "Edit" never sits alone on a line.
         Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {

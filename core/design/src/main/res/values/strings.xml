@@ -13,4 +13,9 @@
     <string name="ed_drain_before"></string>
     <string name="ed_drain_after">%/h</string>
     <string name="ed_back">Back</string>
+    <!-- What TalkBack says for the icon of a notice: its tone, and "new" until it is seen. -->
+    <string name="ed_tone_critical">Critical</string>
+    <string name="ed_tone_warning">Warning</string>
+    <string name="ed_tone_note">Note</string>
+    <string name="ed_tone_new">%1$s, new</string>
 </resources>

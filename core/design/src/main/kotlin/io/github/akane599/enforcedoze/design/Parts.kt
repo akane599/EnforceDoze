@@ -261,7 +261,12 @@ public fun Notice(
             .padding(start = Space.l, end = Space.l, top = Space.l, bottom = if (action == null) Space.l else Space.xs),
     ) {
         Row(Modifier.semantics(mergeDescendants = true) { }) {
-            Icon(icon, contentDescription = null, tint = if (seen) palette.quiet else color, modifier = Modifier.size(Sizes.icon))
+            Icon(
+                icon,
+                contentDescription = spokenTone(tone, seen),
+                tint = if (seen) palette.quiet else color,
+                modifier = Modifier.size(Sizes.icon),
+            )
             Spacer(Modifier.width(Space.m))
             Column {
                 Text(title, style = MaterialTheme.typography.titleSmall, color = palette.ink)
@@ -274,6 +279,19 @@ public fun Notice(
             }
         }
     }
+}
+
+/** What TalkBack says for a notice's icon: its tone, and "new" until the owner has seen it. */
+@Composable
+private fun spokenTone(tone: Tone, seen: Boolean): String {
+    val word = stringResource(
+        when (tone) {
+            Tone.CRITICAL -> R.string.ed_tone_critical
+            Tone.WARNING -> R.string.ed_tone_warning
+            else -> R.string.ed_tone_note
+        },
+    )
+    return if (!seen && tone != Tone.NEUTRAL) stringResource(R.string.ed_tone_new, word) else word
 }
 
 /** A screen's scrolling column with the gutter and the large-screen measure (SPEC 9). */
@@ -300,7 +318,8 @@ public fun EdTopBar(
     Box(modifier.fillMaxWidth().background(Ed.palette.ground).statusBarsPadding(), contentAlignment = Alignment.TopCenter) {
         TopAppBar(
             title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-            modifier = Modifier.widthIn(max = Space.column + Space.gutter * 2),
+            // The title's own 16 dp inset puts it on the column's gutter line, and a back arrow's glyph lines up too.
+            modifier = Modifier.widthIn(max = Space.column),
             navigationIcon = {
                 onBack?.let { IconButton(onClick = it) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = backLabel) } }
             },

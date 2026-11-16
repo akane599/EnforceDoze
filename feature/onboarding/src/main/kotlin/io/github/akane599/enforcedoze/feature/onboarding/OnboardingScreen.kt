@@ -22,7 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -480,7 +480,7 @@ private fun ProofActions(state: OnboardingState, actions: OnboardingActions) {
 
 @Composable
 private fun Main(label: Int, onClick: () -> Unit, enabled: Boolean = true) {
-    Button(onClick = onClick, enabled = enabled) { Text(stringResource(label)) }
+    FilledTonalButton(onClick = onClick, enabled = enabled) { Text(stringResource(label)) }
 }
 
 @Composable

@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -162,6 +165,17 @@ private fun LazyListScope.yours(state: AllowlistState, actions: AllowlistActions
                 selected = entry.keep,
                 onClick = { actions.keep(entry, !entry.keep) },
                 label = { Text(stringResource(R.string.allowlist_keep)) },
+                // Kept shows as a check on a raised chip, not in the accent (DESIGN.md One Signal).
+                leadingIcon = if (entry.keep) {
+                    { Icon(Icons.Outlined.Check, contentDescription = null, modifier = Modifier.size(FilterChipDefaults.IconSize)) }
+                } else {
+                    null
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Ed.palette.raisedHigh,
+                    selectedLabelColor = Ed.palette.ink,
+                    selectedLeadingIconColor = Ed.palette.ink,
+                ),
                 modifier = Modifier.semantics { stateDescription = kept },
             )
             TextButton(onClick = { actions.remove(entry) }, enabled = state.canWrite) { Text(stringResource(R.string.allowlist_remove)) }

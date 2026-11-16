@@ -11,7 +11,7 @@
     <string name="log_no_match">No session matches these filters.</string>
     <string name="log_clear_filters">Clear filters</string>
     <string name="log_unplugged">Unplugged</string>
-    <string name="log_plugged">Plugged in</string>
+    <string name="log_plugged">Plugged\u00A0in</string>
     <string name="log_any_profile">Any profile</string>
     <string name="log_mixed_profiles">Mixed profiles</string>
     <string name="log_open">Open the report</string>
