@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="plan_title">Plan</string>
+    <string name="plan_recommended_title">Önerilen</string>
+    <string name="plan_recommended_none_title">Henüz dayanak yok</string>
+    <string name="plan_recommended_none">Henüz ekran kapalı süre kaydedilmedi. İlk plan, telefonun ilk ekran kapalı oturumundan sonra görünür ve ilk geceden sonra netleşir.</string>
+    <string name="plan_why">Neden</string>
+    <string name="plan_give_up">Neyden vazgeçersiniz</string>
+    <string name="plan_signals">Sinyaller</string>
+    <string name="plan_history_range">%1$s – %2$s arası geçmişten</string>
+    <string name="plan_change_answer">Cevabınızı değiştirin</string>
+    <string name="plan_in_use">Kullanılıyor</string>
+    <string name="plan_apply">Uygula</string>
+    <string name="plan_something_else">Başka bir şey seçin</string>
+    <string name="plan_signal_s">Ekran kapalı</string>
+    <string name="plan_per_day">günde %1$s</string>
+    <string name="plan_signal_s_detail">%1$s kadarı 30 dk ve daha uzun oturumlarda</string>
+    <string name="plan_signal_m">Hareket derin uykuyu engelledi</string>
+    <string name="plan_of">%2$d içinden %1$d</string>
+    <string name="plan_signal_m_detail">saatte %1$s kez baştan başladı</string>
+    <string name="plan_signal_n">Uzun şarjsız geceler</string>
+    <string name="plan_signal_d">Stokta derin uyku</string>
+    <string name="plan_signal_r">Stokta tüketim</string>
+    <string name="plan_signal_q">Kilitliyken mesajlar</string>
+    <string name="plan_hours">%1$s–%2$s</string>
+    <string name="plan_slot_day">Gündüz</string>
+    <string name="plan_slot_night">Gece</string>
+    <string name="plan_all_day">Bütün gün</string>
+    <string name="plan_by_hand">Elle</string>
+    <string name="plan_applying">Uygulanıyor…</string>
+    <string name="plan_apply_failed">Plan uygulanmadı</string>
+    <string name="plan_open">Aç</string>
+    <string name="plan_recommended_in_use">Kullanılan plan bu. %1$s.</string>
+    <string name="plan_recommended_differs">Kullanılan plandan farklı. %1$s.</string>
+    <string name="plan_follow">Önerileni otomatik izle</string>
+    <string name="plan_follow_detail">Kapalı: değişen bir öneri kart olarak görünür ve dokunmanızı bekler. Açık: sormadan uygulanır.</string>
+    <string name="plan_night_off_detail">Kapalı: gündüz profili gece gündüz çalışır.</string>
+    <string name="plan_night_on_detail">Aşağıdaki saatler için ikinci bir profil.</string>
+    <string name="plan_window_rule">Gece, %1$s saatinden sonra telefon ilk uyandığında başlar; ekran kapalıysa bir sonraki bakım penceresinde. Gündüz, %2$s sonrasındaki ilk kilit açılışında döner.</string>
+    <string name="plan_change">Değiştir</string>
+    <string name="plan_from">Başlangıç</string>
+    <string name="plan_until">Bitiş</string>
+    <string name="plan_cancel">İptal</string>
+    <string name="plan_set">Ayarla</string>
+    <string name="plan_window_empty">Başlangıç ve bitiş aynı saat olamaz.</string>
+    <string name="plan_pick_day">Gündüz profili</string>
+    <string name="plan_pick_night">Gece profili</string>
+    <string name="plan_pick_start">Gece başlangıcı</string>
+    <string name="plan_pick_end">Gece bitişi</string>
+</resources>

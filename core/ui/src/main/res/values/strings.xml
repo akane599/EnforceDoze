@@ -73,4 +73,36 @@
     <string name="ui_profile_cost_windows_from">Normal-priority messages can wait %1$s in the first deep-idle window, longer later.</string>
     <string name="ui_profile_cost_sensors">Step counting pauses while the screen is off.</string>
     <string name="ui_profile_cost_all_sensors_off">Every sensor is off while the screen is off, so step counting, lift-to-wake and rotation stop.</string>
+    <!-- The "why" card, notes and answers of Recommended (SPEC 7.4); shared with onboarding. -->
+    <string name="ui_why_thin">Only %1$s of screen-off time so far. The plan refines after the first night.</string>
+    <string name="ui_why_screen_off">Your phone is screen-off about %1$s a day.</string>
+    <string name="ui_why_motion_kept">In %1$d of the last %2$d long sessions, movement kept it out of deep idle. %3$s keeps deep idle while you move.</string>
+    <string name="ui_why_motion_resets">Movement restarted the walk to deep idle %1$s times an hour. %2$s keeps deep idle while you move.</string>
+    <string name="ui_why_short">%1$s of daytime screen-off time is glances under 15 minutes, and messages can wait. %2$s goes to deep idle as soon as the screen turns off.</string>
+    <string name="ui_why_right_away">Messages must reach you right away, so the plan leaves out %1$s.</string>
+    <string name="ui_why_nights">%1$d of the last %2$d nights were long and unplugged. %3$s runs from %4$s to %5$s.</string>
+    <string name="ui_why_irregular">%1$d of the last %2$d nights were long and unplugged, but they began across %3$s of the clock, so no fixed window fits.</string>
+    <string name="ui_why_dozing_well">Under stock settings it already spends %1$s of long unplugged time in deep idle, at %2$s.</string>
+    <plurals name="ui_why_low_gain">
+        <item quantity="one">Over the last night the plan saved only %2$s against Stock, so it steps one notch gentler.</item>
+        <item quantity="other">Over the last %1$d nights the plan saved only %2$s against Stock, so it steps one notch gentler.</item>
+    </plurals>
+    <string name="ui_why_late">You said something arrived late on %1$s at %2$s, so the plan stays one notch gentler for 30 days.</string>
+    <string name="ui_note_refines">Refines after the first night.</string>
+    <string name="ui_note_little_to_gain">Little to gain here.</string>
+    <string name="ui_note_stock_not_measured">Stock is not measured yet. One night on %1$s measures it.</string>
+    <string name="ui_note_gentler">Kept gentler because of your feedback.</string>
+    <string name="ui_note_motion_not_measured">%1$s hides movement while it runs, so it stays until movement can be measured again.</string>
+    <string name="ui_note_night_by_hand">%1$s by hand: from the tile or an automation.</string>
+    <string name="ui_confidence_low">Low confidence</string>
+    <string name="ui_confidence_medium">Medium confidence</string>
+    <string name="ui_confidence_high">High confidence</string>
+    <string name="ui_urgency_question">When a message arrives while the phone is locked, how soon do you need to see it?</string>
+    <string name="ui_urgency_right_away">Right away</string>
+    <string name="ui_urgency_within_hour">Within the hour</string>
+    <string name="ui_urgency_can_wait">It can wait</string>
+    <string name="ui_unmeasured_no_sessions">No sessions of this kind yet</string>
+    <string name="ui_unmeasured_no_stock">No time under stock settings yet</string>
+    <string name="ui_unmeasured_not_recorded">Not recorded</string>
+    <string name="ui_unmeasured_sensors_restricted">Sensors were restricted</string>
 </resources>

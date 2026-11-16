@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="plan_title">Plan</string>
+    <string name="plan_recommended_title">Recommended</string>
+    <string name="plan_recommended_none_title">Nothing to go on yet</string>
+    <string name="plan_recommended_none">No screen-off time is recorded yet. A first plan appears after the phone\'s first screen-off session and refines after the first night.</string>
+    <string name="plan_why">Why</string>
+    <string name="plan_give_up">What you give up</string>
+    <string name="plan_signals">Signals</string>
+    <string name="plan_history_range">From the history of %1$s to %2$s</string>
+    <string name="plan_change_answer">Change your answer</string>
+    <string name="plan_in_use">In use</string>
+    <string name="plan_apply">Apply</string>
+    <string name="plan_something_else">Choose something else</string>
+    <string name="plan_signal_s">Screen off</string>
+    <string name="plan_per_day">%1$s a day</string>
+    <string name="plan_signal_s_detail">%1$s in sessions of 30 min or more</string>
+    <string name="plan_signal_m">Movement kept it out of deep idle</string>
+    <string name="plan_of">%1$d of %2$d</string>
+    <string name="plan_signal_m_detail">%1$s restarts an hour</string>
+    <string name="plan_signal_n">Long unplugged nights</string>
+    <string name="plan_signal_d">Deep idle under stock</string>
+    <string name="plan_signal_r">Drain under stock</string>
+    <string name="plan_signal_q">Messages while locked</string>
+    <string name="plan_hours">%1$s–%2$s</string>
+    <string name="plan_slot_day">Day</string>
+    <string name="plan_slot_night">Night</string>
+    <string name="plan_all_day">All day</string>
+    <string name="plan_by_hand">By hand</string>
+    <string name="plan_applying">Applying…</string>
+    <string name="plan_apply_failed">The plan was not applied</string>
+    <string name="plan_open">Open</string>
+    <string name="plan_recommended_in_use">This is the plan in use. %1$s.</string>
+    <string name="plan_recommended_differs">Differs from the plan in use. %1$s.</string>
+    <string name="plan_follow">Follow Recommended automatically</string>
+    <string name="plan_follow_detail">Off: a changed recommendation shows a card and waits for your tap. On: it is applied without asking.</string>
+    <string name="plan_night_off_detail">Off: the day profile runs around the clock.</string>
+    <string name="plan_night_on_detail">A second profile for the hours below.</string>
+    <string name="plan_window_rule">Night begins at %1$s when the phone is next awake, or at the next maintenance window if the screen is off. Day returns at the first unlock after %2$s.</string>
+    <string name="plan_change">Change</string>
+    <string name="plan_from">From</string>
+    <string name="plan_until">Until</string>
+    <string name="plan_cancel">Cancel</string>
+    <string name="plan_set">Set</string>
+    <string name="plan_window_empty">Start and end cannot be the same time.</string>
+    <string name="plan_pick_day">Day profile</string>
+    <string name="plan_pick_night">Night profile</string>
+    <string name="plan_pick_start">Night starts at</string>
+    <string name="plan_pick_end">Night ends at</string>
+</resources>

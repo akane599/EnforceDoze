@@ -73,4 +73,36 @@
     <string name="ui_profile_cost_windows_from">Normal öncelikli mesajlar ilk derin uyku penceresinde %1$s, sonrakilerde daha uzun bekleyebilir.</string>
     <string name="ui_profile_cost_sensors">Ekran kapalıyken adım sayımı durur.</string>
     <string name="ui_profile_cost_all_sensors_off">Ekran kapalıyken tüm sensörler kapanır; adım sayımı, kaldırınca uyanma ve döndürme durur.</string>
+    <!-- The "why" card, notes and answers of Recommended (SPEC 7.4); shared with onboarding. -->
+    <string name="ui_why_thin">Şimdilik yalnızca %1$s ekran kapalı süre var. Plan ilk geceden sonra netleşir.</string>
+    <string name="ui_why_screen_off">Telefonunuzun ekranı günde yaklaşık %1$s kapalı.</string>
+    <string name="ui_why_motion_kept">Son %2$d uzun oturumun %1$d tanesinde hareket derin uykuyu engelledi. %3$s hareket ederken derin uykuyu korur.</string>
+    <string name="ui_why_motion_resets">Hareket derin uykuya gidişi saatte %1$s kez baştan başlattı. %2$s hareket ederken derin uykuyu korur.</string>
+    <string name="ui_why_short">Gündüz ekran kapalı sürenin %1$s kadarı 15 dakikadan kısa bakışlar ve mesajlar bekleyebilir. %2$s ekran kapanır kapanmaz derin uykuya geçer.</string>
+    <string name="ui_why_right_away">Mesajların size hemen ulaşması gerekiyor, bu yüzden plan %1$s profilini dışarıda bırakır.</string>
+    <string name="ui_why_nights">Son %2$d gecenin %1$d tanesi uzun ve şarjsızdı. %3$s %4$s ile %5$s arasında çalışır.</string>
+    <string name="ui_why_irregular">Son %2$d gecenin %1$d tanesi uzun ve şarjsızdı, ama başlangıçları saatin %3$s kadarına yayıldı; sabit bir pencere uymuyor.</string>
+    <string name="ui_why_dozing_well">Stok ayarlarla bile uzun şarjsız sürenin %1$s kadarı derin uykuda geçiyor, tüketim %2$s.</string>
+    <plurals name="ui_why_low_gain">
+        <item quantity="one">Son gecede plan Stock\'a göre yalnızca %2$s tasarruf etti, bu yüzden bir kademe yumuşar.</item>
+        <item quantity="other">Son %1$d gecede plan Stock\'a göre yalnızca %2$s tasarruf etti, bu yüzden bir kademe yumuşar.</item>
+    </plurals>
+    <string name="ui_why_late">%1$s %2$s saatinde bir şeyin geç geldiğini söylediniz; plan 30 gün boyunca bir kademe yumuşak kalır.</string>
+    <string name="ui_note_refines">İlk geceden sonra netleşir.</string>
+    <string name="ui_note_little_to_gain">Burada kazanılacak az şey var.</string>
+    <string name="ui_note_stock_not_measured">Stok henüz ölçülmedi. %1$s ile bir gece onu ölçer.</string>
+    <string name="ui_note_gentler">Geri bildiriminiz nedeniyle daha yumuşak tutuldu.</string>
+    <string name="ui_note_motion_not_measured">%1$s çalışırken hareketi gizler; hareket yeniden ölçülebilene dek kalır.</string>
+    <string name="ui_note_night_by_hand">%1$s elle: kutucuktan ya da bir otomasyonla.</string>
+    <string name="ui_confidence_low">Düşük güven</string>
+    <string name="ui_confidence_medium">Orta güven</string>
+    <string name="ui_confidence_high">Yüksek güven</string>
+    <string name="ui_urgency_question">Telefon kilitliyken bir mesaj geldiğinde onu ne kadar çabuk görmeniz gerekir?</string>
+    <string name="ui_urgency_right_away">Hemen</string>
+    <string name="ui_urgency_within_hour">Bir saat içinde</string>
+    <string name="ui_urgency_can_wait">Bekleyebilir</string>
+    <string name="ui_unmeasured_no_sessions">Henüz bu türde oturum yok</string>
+    <string name="ui_unmeasured_no_stock">Henüz stok ayarlarla geçen süre yok</string>
+    <string name="ui_unmeasured_not_recorded">Kaydedilmedi</string>
+    <string name="ui_unmeasured_sensors_restricted">Sensörler kısıtlıydı</string>
 </resources>
