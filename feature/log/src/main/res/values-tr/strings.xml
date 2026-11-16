@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="log_title">Kayıt</string>
+    <string name="log_export">Bir aralığı dışa aktar</string>
+    <string name="log_export_title">Dışa aktarılacak günler</string>
+    <string name="log_export_confirm">Dışa aktar</string>
+    <string name="log_cancel">İptal</string>
+    <string name="log_empty_title">Henüz kayıt yok</string>
+    <string name="log_empty">Ekran her kapandığında, yeniden açıldığında burada bir oturum kaydedilir. Şarjsız ekran kapalı süre 4 saate ulaşınca bir gece görünür.</string>
+    <string name="log_no_match">Bu süzgeçlere uyan oturum yok.</string>
+    <string name="log_clear_filters">Süzgeçleri temizle</string>
+    <string name="log_unplugged">Şarjsız</string>
+    <string name="log_plugged">Şarjda</string>
+    <string name="log_any_profile">Her profil</string>
+    <string name="log_mixed_profiles">Karışık profiller</string>
+    <string name="log_open">Raporu aç</string>
+    <string name="log_hours">%1$s–%2$s</string>
+    <plurals name="log_retention">
+        <item quantity="one">Kayıtlar %1$d gün saklanır. Ayarlardan değiştirebilirsiniz.</item>
+        <item quantity="other">Kayıtlar %1$d gün saklanır. Ayarlardan değiştirebilirsiniz.</item>
+    </plurals>
+    <plurals name="log_night_report">
+        <item quantity="one">Gece raporu</item>
+        <item quantity="other">Gece raporu, %1$d oturum</item>
+    </plurals>
+</resources>

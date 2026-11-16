@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="log_title">Log</string>
+    <string name="log_export">Export a range</string>
+    <string name="log_export_title">Days to export</string>
+    <string name="log_export_confirm">Export</string>
+    <string name="log_cancel">Cancel</string>
+    <string name="log_empty_title">Nothing logged yet</string>
+    <string name="log_empty">Each time the screen goes off, a session is logged here when it comes back on. A night appears once 4 hours of unplugged screen-off time join up.</string>
+    <string name="log_no_match">No session matches these filters.</string>
+    <string name="log_clear_filters">Clear filters</string>
+    <string name="log_unplugged">Unplugged</string>
+    <string name="log_plugged">Plugged in</string>
+    <string name="log_any_profile">Any profile</string>
+    <string name="log_mixed_profiles">Mixed profiles</string>
+    <string name="log_open">Open the report</string>
+    <string name="log_hours">%1$s–%2$s</string>
+    <plurals name="log_retention">
+        <item quantity="one">Records are kept for %1$d day. Change it in Settings.</item>
+        <item quantity="other">Records are kept for %1$d days. Change it in Settings.</item>
+    </plurals>
+    <plurals name="log_night_report">
+        <item quantity="one">Night report</item>
+        <item quantity="other">Night report, %1$d sessions</item>
+    </plurals>
+</resources>
