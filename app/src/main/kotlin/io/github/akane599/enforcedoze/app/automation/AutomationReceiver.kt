@@ -44,7 +44,6 @@ class AutomationReceiver : BroadcastReceiver() {
          * At process start: a backup restore brings the switch back but not the component state (nor the tokens, which
          * live outside backup), so the receiver is matched to the switch again.
          */
-        @JvmStatic
         fun sync(context: Context) = enable(context, AppPrefs(context).automation)
     }
 }
