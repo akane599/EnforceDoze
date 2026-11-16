@@ -81,15 +81,16 @@ fi
 ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
 export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 started_emulator=0
+# An emulator that is already running belongs to someone else, even when it is ed-api37 (another session or the
+# owner): leave it alone and try again later, like a busy machine.
 if adb devices | grep -q '^emulator-'; then
-  running=$(adb emu avd name | head -1 | tr -d '\r')
-  [[ $running == "$avd" ]] || { log "a different emulator ($running) is running; leaving it alone"; exit 1; }
-else
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
+  log "an emulator is already running ($(adb emu avd name | head -1 | tr -d '\r')); not touching it"
+  exit 75
 fi
+log "starting $avd"
+nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
+  -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
+started_emulator=1
 timeout 300 "$A" wait-for-device </dev/null
 timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
 log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"

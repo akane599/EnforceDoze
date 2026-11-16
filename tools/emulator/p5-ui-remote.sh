@@ -65,15 +65,16 @@ ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; e
 export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 started_emulator=0
+# An emulator that is already running belongs to someone else, even when it is ed-api37 (another session or the
+# owner): leave it alone and try again later, like a busy machine.
 if adb devices | grep -q '^emulator-'; then
-  running=$(adb emu avd name | head -1 | tr -d '\r')
-  [[ $running == "$avd" ]] || { log "a different emulator ($running) is running; leaving it alone"; exit 1; }
-else
-  log "starting $avd"
-  nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
-    -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
-  started_emulator=1
+  log "an emulator is already running ($(adb emu avd name | head -1 | tr -d '\r')); not touching it"
+  exit 75
 fi
+log "starting $avd"
+nohup "$HOME/Android/Sdk/emulator/emulator" -avd "$avd" -no-window -no-audio -no-boot-anim \
+  -no-snapshot-save -gpu swiftshader_indirect > "$out/emulator.log" 2>&1 &
+started_emulator=1
 timeout 300 "$A" wait-for-device </dev/null
 timeout 300 "$A" shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done' </dev/null
 log "booted $(adb shell getprop ro.build.fingerprint | tr -d '\r')"
@@ -154,11 +155,14 @@ check "usage access set through the worker" bash -c "'$A' shell appops get $pkg 
 tiles_added=1
 for t in $plan_tile $sensors_tile; do adb shell cmd statusbar add-tile "$t"; done
 adb shell cmd statusbar expand-settings
-sleep 3
-# Added tiles go to the end, on the second page of Quick Settings: swipe the pager left.
-adb shell input swipe 900 1100 150 1100 300
-sleep 3
+sleep 4
+# The two tiles are the first two round tiles: "Sensors off" (a crossed circle) and "Doze plan" (three bars).
 adb exec-out screencap -p > "$out/tiles.png"
+# `uiautomator dump` (frameworks/base/cmds/uiautomator, android-17.0.0_r1) lists what SystemUI shows.
+adb shell uiautomator dump /sdcard/ed-qs.xml >/dev/null 2>&1
+adb shell cat /sdcard/ed-qs.xml > "$out/tiles-ui.xml" 2>/dev/null
+adb shell rm -f /sdcard/ed-qs.xml
+check "both tiles are in Quick Settings" bash -c "grep -q 'content-desc=\"Doze plan' '$out/tiles-ui.xml' && grep -q 'content-desc=\"Sensors off' '$out/tiles-ui.xml'"
 adb shell cmd statusbar click-tile "$sensors_tile"
 sleep 3
 adb exec-out screencap -p > "$out/tile-sensors-confirm.png"
