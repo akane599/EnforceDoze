@@ -302,7 +302,6 @@ Carried over to P5:
   Still open in P5, each a spec item, not optional:
   - allowlist suggestions for alarm and messaging apps (late reports already suggest);
   - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);
-  - the report's offer of a late app is not yet passed to the allowlist;
   - an app waker's wakeup count includes alarm wakeups only when both alarm dumps were read
     (ADR 0019); the report's own-wakeups figure already says "unknown" then, the per-app rows do not;
   - tiles and notifications (SPEC 9.2); the upstream Java screens are still in the APK;

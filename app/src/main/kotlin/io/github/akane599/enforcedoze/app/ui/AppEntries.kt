@@ -116,8 +116,11 @@ internal fun appEntries(
         val context = LocalContext.current
         SettingsRoute(viewModel { SettingsViewModel(AppSettingsSource(services)) }, settingsNavigation(context, navigator, exports))
     }
-    entry<AllowlistKey> {
-        AllowlistRoute(viewModel { AllowlistViewModel(AppAllowlistSource(services)) }, allowlistNavigation(navigator))
+    entry<AllowlistKey> { key ->
+        AllowlistRoute(
+            viewModel(key = "allowlist-${key.offer}") { AllowlistViewModel(AppAllowlistSource(services, key.offer)) },
+            allowlistNavigation(navigator),
+        )
     }
     entry<SensorsKey> { SensorsRoute(viewModel { SensorsViewModel(AppSensorsSource(services)) }, sensorsNavigation(navigator)) }
     entry<KeepAwakeKey> { KeepAwakePicker(services, navigator) }

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.mapLatest
  * `dumpsys deviceidle` lists it (needs `DUMP`), the keep marks from the engine's state and suggestions from the
  * owner's late reports.
  */
-internal class AppAllowlistSource(private val services: AppServices) : AllowlistSource {
+internal class AppAllowlistSource(private val services: AppServices, private val offer: String? = null) : AllowlistSource {
     private val reads = MutableStateFlow(0)
     private val local = LocalReader()
 
@@ -75,9 +75,13 @@ internal class AppAllowlistSource(private val services: AppServices) : Allowlist
         return Read(null, lines.joinToString("\n").ifBlank { "exit ${own.exitCode}" })
     }
 
-    /** Apps named in late reports that are not on the list yet, the latest report first (SPEC 9.1). */
+    /**
+     * Apps named in late reports that are not on the list yet, the latest report first (SPEC 9.1); the app the owner
+     * came from a report to add, [offer], leads.
+     */
     private fun suggestions(listed: Set<String>): List<Suggestion> = services.prefs.lateApps
         .filter { (app, _) -> app !in listed && services.labels.installed(app) }
+        .sortedByDescending { (app, _) -> app == offer }
         .map { (app, time) -> Suggestion(app, services.labels.label(app) ?: app, SuggestionReason.Late(time)) }
 
     override suspend fun add(packageName: String): ActionOutcome = change(packageName, add = true)
