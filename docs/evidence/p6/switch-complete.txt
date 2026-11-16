@@ -1,0 +1,7 @@
+found=changed=true constants=inactive_to,idle_after_inactive_to,sensing_to writer=com.android.shell
+differences=idle_after_inactive_to:+5m0s0ms/+15s0ms,inactive_to:+5m0s0ms/+15s0ms,sensing_to:+1m0s0ms/+15s0ms
+sensorsRestricted=false
+imported=imported-setup {inactive_to=300000, idle_after_inactive_to=300000, sensing_to=60000}
+managers=
+watching=true handsOff=false
+check=Complete(since=2026-11-16T08:54:40.264Z, at=2026-11-16T08:55:20.311Z)

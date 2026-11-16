@@ -1,0 +1,11 @@
+Error while accessing provider:io.github.akane599.enforcedoze.evidence
+java.lang.SecurityException: Permission Denial: opening provider io.github.akane599.enforcedoze.app.evidence.EvidenceProvider from (null) (pid=3641, uid=2000) requires io.github.akane599.enforcedoze.permission.READ_EVIDENCE or io.github.akane599.enforcedoze.permission.READ_EVIDENCE
+	at android.os.Parcel.createExceptionOrNull(Parcel.java:3392)
+	at android.os.Parcel.createException(Parcel.java:3376)
+	at android.os.Parcel.readException(Parcel.java:3359)
+	at android.os.Parcel.readException(Parcel.java:3301)
+	at android.app.IActivityManager$Stub$Proxy.getContentProviderExternal(IActivityManager.java:8487)
+	at com.android.commands.content.Content$Command.execute(Content.java:516)
+	at com.android.commands.content.Content.main(Content.java:735)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:367)

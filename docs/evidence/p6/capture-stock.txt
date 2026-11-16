@@ -1,0 +1,4 @@
+ok=true refused=null notWritable=[]
+skipped={} stockDifferences=null unverified=null
+action CONSTANTS OK expected=absent readBack=absent 
+action CONSTANTS OK expected=inactive_to=300000,idle_after_inactive_to=300000,sensing_to=60000 readBack=inactive_to=300000,idle_after_inactive_to=300000,sensing_to=60000

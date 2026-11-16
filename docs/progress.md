@@ -288,7 +288,7 @@ Carried over to P5:
   missing override only at the next start, and a tap on the active profile becomes an override.
 - P3 carry-overs still stand.
 
-## P5 UI and design (in progress)
+## P5 UI and design — gate passed 2026-11-16
 
 - Committed: Home, the night report and Profiles with their screenshot sets (ADR 0028–0030).
 - Committed on 2026-11-16: Plan and Recommended, Log, Settings, Allowlist, Sensors and Onboarding with
@@ -313,6 +313,8 @@ Carried over to P5:
   - `impeccable detect` reads web files only: it reports zero on this Compose app without testing it;
   - a cold-start macrobenchmark (`:testing:benchmark`) and `tools/emulator/p5-ui.sh`, which runs it
     and a smoke run under Shizuku (grants, tiles, the sensors confirmation) on the API 37 emulator;
+  - the review package (`EnforceDoze-p5-review-20261116`, ZIP and one-page PDF) is in the owner's
+    projects folder;
   - still open from the audit (P2): two panes on a tablet exist only for Log/Report and Profiles. The
     shared table columns moved to `:core:design` (`Sizes.valueColumn`, `timeColumn`, `markColumn`);
   - Log rows now carry their session's or night's strip, from one query of transitions (ADR 0028);
@@ -367,7 +369,7 @@ Carried over to P5:
       state;
     - the hold-off still starts as off until the first broadcast (unchanged).
 
-## P6 Integrations (in progress)
+## P6 Integrations — gate passed 2026-11-16
 
 - Automation API (SPEC 11.1, ADR 0033, 0034): a token per client instead of a permission, kept as a
   SHA-256; the receiver is disabled while the switch is off; one state change per 30 s across all
@@ -388,7 +390,30 @@ Carried over to P5:
   stays exported. Parity row 8 (allowlist calls) is dropped after a second opinion (Q13).
 - The evidence provider's security review found that `OPEN_REPORT` could be sent to `MainActivity`
   directly, skipping the alias's permission. Fixed: the route is taken only through the alias.
-- Gate: the JVM tests pass (automation, switch-over, provider contract). The emulator run
-  (`tools/emulator/p6-integrations.sh`: provider from another app and from the shell, both install
-  orders' grant, automation token and limit, switch-over against a simulated Tasker) waits for
-  akane-linux to be free, like the P5 run.
+- Gate: the JVM tests pass (automation, switch-over, provider contract), and so does the emulator run
+  (`tools/emulator/p6-integrations.sh`, API 37, 2026-11-16): 30 checks, none failed. Evidence is in
+  `docs/evidence/p6`.
+  - The provider:
+    - the stand-in for Coulomb gets the signature permission in both install orders;
+    - it reads status and sessions with a limit, and refusals hold;
+    - the shell is denied both the provider and the report alias.
+  - No upstream receiver answers.
+  - The automation API:
+    - with the API off, nothing reaches the app;
+    - a bad token is rejected and logged;
+    - a token applies Everyday;
+    - a second change within 30 s is dropped;
+    - `SENSORS_OFF` without `on` is rejected;
+    - `GET_STATUS` replies;
+    - turning the API off disables the receiver.
+  - The switch-over, against Tasker values written from the shell:
+    - the found setup and its import;
+    - a foreign write at screen off fails the check;
+    - a clean screen off and on completes it;
+    - "Return to my previous setup" puts the Tasker string back and leaves EnforceDoze hands off.
+- Upstream code (ADR 0037, after a second opinion): the fourteen leaf classes whose rows are covered are
+  removed.
+- Open spec work, found by the same review, to finish before P7's gate:
+  - rows 11–14, the root-tier extras. They get a safety ADR first: Wi-Fi off cuts Wi-Fi calling, and
+    a suspended clock app misses alarms;
+  - row 35, the battery-optimisation and "Never sleeping apps" step (SPEC 3.3).

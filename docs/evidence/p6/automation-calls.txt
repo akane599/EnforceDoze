@@ -1,0 +1,12 @@
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.GET_STATUS flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.GET_STATUS flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.APPLY_PROFILE flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.PAUSE flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.SENSORS_OFF flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0
+Broadcasting: Intent { act=io.github.akane599.enforcedoze.action.GET_STATUS flg=0x400000 cmp=io.github.akane599.enforcedoze/.app.automation.AutomationReceiver (has extras) }
+Broadcast completed: result=0

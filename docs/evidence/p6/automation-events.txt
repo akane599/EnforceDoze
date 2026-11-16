@@ -1,0 +1,6 @@
+EventRow(id=1, time=1794819265578, kind=AUTOMATION, lever=null, holdOff=null, expected=null, found=null, writer=unknown, whileStopped=null, mode=null, profileId=null, reason=GET_STATUS: rejected: unknown token)
+EventRow(id=3, time=1794819265621, kind=AUTOMATION, lever=null, holdOff=null, expected=null, found=null, writer=com.android.shell, whileStopped=null, mode=null, profileId=everyday, reason=APPLY_PROFILE: done)
+EventRow(id=2, time=1794819265622, kind=PROFILE, lever=null, holdOff=null, expected=null, found=null, writer=null, whileStopped=null, mode=null, profileId=everyday, reason=TASKER)
+EventRow(id=4, time=1794819265901, kind=AUTOMATION, lever=null, holdOff=null, expected=null, found=null, writer=com.android.shell, whileStopped=null, mode=null, profileId=null, reason=PAUSE: dropped: within 30 s of the last change)
+EventRow(id=5, time=1794819265933, kind=AUTOMATION, lever=null, holdOff=null, expected=null, found=null, writer=com.android.shell, whileStopped=null, mode=null, profileId=null, reason=SENSORS_OFF: rejected: on must be true or false)
+EventRow(id=6, time=1794819265966, kind=AUTOMATION, lever=null, holdOff=null, expected=null, found=null, writer=com.android.shell, whileStopped=null, mode=null, profileId=null, reason=GET_STATUS: replied)

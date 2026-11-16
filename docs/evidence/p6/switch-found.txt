@@ -1,0 +1,7 @@
+found=changed=true constants=inactive_to,idle_after_inactive_to,sensing_to writer=com.android.shell
+differences=idle_after_inactive_to:+5m0s0ms/+15s0ms,inactive_to:+5m0s0ms/+15s0ms,sensing_to:+1m0s0ms/+15s0ms
+sensorsRestricted=false
+imported=null
+managers=
+watching=true handsOff=false
+check=NotStarted
