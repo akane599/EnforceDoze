@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPEC 12.4 and 15: no `service call` transaction numbers anywhere, and no reflection outside the
-# worker process (core/privilege-worker). Upstream's Java code still has both until its classes are
-# deleted (SPEC 12.1); those uses are frozen in forbidden-calls-baseline.txt as "count<TAB>file<TAB>match".
-# A use that is new, or more of an existing one, fails. --update rewrites the baseline; run it only
-# when deleting upstream code shrank it.
+# worker process (core/privilege-worker). Upstream's Java code had both; its uses were frozen in
+# forbidden-calls-baseline.txt as "count<TAB>file<TAB>match" until its classes were deleted (ADR 0037),
+# and the baseline is now empty. A use that is new, or more of an existing one, fails. --update rewrites
+# the baseline; run it only when deleting code shrank it.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 

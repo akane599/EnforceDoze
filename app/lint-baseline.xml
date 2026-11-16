@@ -1,241 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <issues format="6" by="lint 8.13.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.2)" variant="all" version="8.13.2">
 
-    <issue
-        id="MissingPermission"
-        message="Setting Exact alarms with `setExactAndAllowWhileIdle` requires the `SCHEDULE_EXACT_ALARM` permission or power exemption from user; it is intended for applications where the user knowingly schedules actions to happen at a precise time such as alarms, clocks, calendars, etc. Check out the javadoc on this permission to make sure your use case is valid."
-        errorLine1="                mgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 200 ,pi);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="68"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="MissingPermission"
-        message="Setting Exact alarms with `setExactAndAllowWhileIdle` requires the `SCHEDULE_EXACT_ALARM` permission or power exemption from user; it is intended for applications where the user knowingly schedules actions to happen at a precise time such as alarms, clocks, calendars, etc. Check out the javadoc on this permission to make sure your use case is valid."
-        errorLine1="                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="131"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="MissingPermission"
-        message="Setting Exact alarms with `setExact` requires the `SCHEDULE_EXACT_ALARM` permission or power exemption from user; it is intended for applications where the user knowingly schedules actions to happen at a precise time such as alarms, clocks, calendars, etc. Check out the javadoc on this permission to make sure your use case is valid."
-        errorLine1="                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="133"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 34 (current min is 33): `android.content.pm.ServiceInfo#FOREGROUND_SERVICE_TYPE_SPECIAL_USE`"
-        errorLine1="                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/ForceDozeService.java"
-            line="966"
-            column="21"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 26 (current min is 23): `android.provider.Settings#ACTION_CHANNEL_NOTIFICATION_SETTINGS`"
-        errorLine1="        Intent notificationIntent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/ForceDozeService.java"
-            line="999"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 26 (current min is 23): `android.provider.Settings#EXTRA_APP_PACKAGE`"
-        errorLine1="        notificationIntent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());"
-        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/ForceDozeService.java"
-            line="1000"
-            column="37"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 26 (current min is 23): `android.provider.Settings#EXTRA_CHANNEL_ID`"
-        errorLine1="        notificationIntent.putExtra(Settings.EXTRA_CHANNEL_ID, CHANNEL_SILENT);"
-        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/ForceDozeService.java"
-            line="1001"
-            column="37"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 34 (current min is 33): `android.content.pm.ServiceInfo#FOREGROUND_SERVICE_TYPE_SPECIAL_USE`"
-        errorLine1="                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/ForceDozeService.java"
-            line="1022"
-            column="21"/>
-    </issue>
 
-    <issue
-        id="InlinedApi"
-        message="Field requires API level 33 (current min is 23): `android.Manifest.permission#POST_NOTIFICATIONS`"
-        errorLine1="        return context.checkCallingOrSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;"
-        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="282"
-            column="53"/>
-    </issue>
 
-    <issue
-        id="OldTargetApi"
-        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
-        errorLine1="        targetSdkVersion 36"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="24"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="PrivateApi"
-        message="Accessing internal APIs via reflection is not supported and may not work on all devices or in the future"
-        errorLine1="            method = wifi.getClass().getDeclaredMethod(&quot;getWifiApState&quot;);"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="450"
-            column="22"/>
-    </issue>
 
-    <issue
-        id="SimpleDateFormat"
-        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
-        errorLine1="        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;dd MMMM yyyy HH:mm:ss&quot;);"
-        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="328"
-            column="39"/>
-    </issue>
 
-    <issue
-        id="SuspiciousIndentation"
-        message="Suspicious indentation: This is indented but is not nested under the previous expression (`if (single_instance `...)"
-        errorLine1="            single_instance.loadTunables();"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/DozeTunableHandler.java"
-            line="19"
-            column="13"/>
-        <location
-            file="src/main/java/com/akylas/enforcedoze/DozeTunableHandler.java"
-            line="17"
-            column="9"
-            message="Previous statement here"/>
-    </issue>
 
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `iconSpaceReserved` is only used in API level 26 and higher (current min is 23)"
-        errorLine1="&lt;PreferenceScreen xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; android:key=&quot;tunablesPreferenceScreen&quot; android:iconSpaceReserved=&quot;false&quot;>"
-        errorLine2="                                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/prefs_doze_tunables.xml"
-            line="2"
-            column="117"/>
-    </issue>
 
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
-        errorLine1="        android:shortcutId=&quot;launchSettings&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/shortcuts.xml"
-            line="3"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
-        errorLine1="        android:shortcutShortLabel=&quot;@string/settings_menu_item&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/shortcuts.xml"
-            line="6"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
-        errorLine1="        android:shortcutId=&quot;launchBatteryStats&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/shortcuts.xml"
-            line="13"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
-        errorLine1="        android:shortcutShortLabel=&quot;@string/doze_stats_menu_item&quot;>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/xml/shortcuts.xml"
-            line="16"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="BatteryLife"
-        message="Use of `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` violates the Play Store Content Policy regarding acceptable use cases, as described in https://developer.android.com/training/monitoring-device-state/doze-standby.html"
-        errorLine1="        Intent requestIntent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/RequestIgnoreBatteryActivity.java"
-            line="37"
-            column="52"/>
-    </issue>
 
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="            convertView = layoutInflater.inflate(R.layout.list_row_layout_stats, null);"
-        errorLine2="                                                                                 ~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="39"
-            column="82"/>
-    </issue>
 
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="            View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_number_picker_dialog, null);"
-        errorLine2="                                                                                                                                                      ~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/NumberPickerPreference.java"
-            line="141"
-            column="151"/>
-    </issue>
 
 
     <issue
@@ -249,246 +34,30 @@
             column="20"/>
     </issue>
 
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of Gradle than 8.13 is available: 8.14.6"
-        errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="$HOME/projects/EnforceDoze/gradle/wrapper/gradle-wrapper.properties"
-            line="3"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.8.0"
-        errorLine1="    implementation &apos;androidx.appcompat:appcompat:1.7.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="78"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.google.android.material:material than 1.12.0 is available: 1.14.0"
-        errorLine1="    implementation &apos;com.google.android.material:material:1.12.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="79"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.browser:browser than 1.8.0 is available: 1.10.0"
-        errorLine1="    implementation &apos;androidx.browser:browser:1.8.0&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="80"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDynamicVersion"
-        message="Avoid using + in version numbers; can lead to unpredictable and unrepeatable builds (eu.chainfire:libsuperuser:1.1.0.+)"
-        errorLine1="    implementation &apos;eu.chainfire:libsuperuser:1.1.0.+&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="84"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.jakewharton:process-phoenix than 2.1.2 is available: 3.0.0"
-        errorLine1="    implementation &apos;com.jakewharton:process-phoenix:2.1.2&apos;"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="86"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="DiscouragedApi"
-        message="Use of this function is discouraged because resource reflection makes it harder to perform build optimizations and compile-time verification of code. It is much more efficient to retrieve resources by identifier (e.g. `R.foo.bar`) than by name (e.g. `getIdentifier(&quot;bar&quot;, &quot;foo&quot;, null)`)."
-        errorLine1="        return Resources.getSystem().getBoolean(Resources.getSystem().getIdentifier(&quot;config_enableAutoPowerModes&quot;, &quot;bool&quot;, &quot;android&quot;));"
-        errorLine2="                                                                      ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="338"
-            column="71"/>
-    </issue>
-
-    <issue
-        id="UseAppTint"
-        message="Must use `app:tint` instead of `android:tint`"
-        errorLine1="                    android:tint=&quot;?attr/colorOnSurface&quot; />"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/material_small_image_card_custom.xml"
-            line="47"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="Typos"
-        message="&quot;periodo&quot; is a common misspelling; did you mean &quot;período&quot;?"
-        errorLine1="    &lt;string name=&quot;how_doze_works_dialog_text&quot;>Como funciona o modo Doze no seu dispositivo:\n\nSe um usuário deixa seu dispositivo desconectado e inativo por um período de tempo (30 mins), com a tela desligada, seu dispositivo entra em modo Doze. Em modo Doze, o sistema tenta conservar a bateria controlando os aplicativos, os accesos à rede e os serviços que usam a CPU de forma intensa. Ele também previne que os aplicativos acessem a rede adiando suas tarefas, sicronizações e alarmes padrões.\n\nPeriodicamente, o sistema sai do Doze por um breve período de manutenção para permitir que os aplicativos completem suas atividades adiadas. Durante esse período de manutenção, o sistema executa todas as sincronizações adiadas, tarefas, alarmes e permite que os aplicativos acessem a rede.\n\nAo concluir cada período de manutenção, o sistema entra novamente em Doze, suspendendo o acceso a rede e adiando as tarefas, sincronizações e alarmes. Com o passar do tempo, os intervalos de manutenção do sistema são menos frequentes, ajudando a reduzir o consumo de bateria em casos de longos períodos de inatividade quando o dispositivo não está conectado a um carregador.\n\nEle acorda imediatamente após o usuário movimentar o dispositivo, ligar a tela ou conectar o carregador, o sistema sai do modo Doze e todos os aplicativos retornam ao seu modo de atividade normal.\n\nComo funciona EnforceDoze:\n\nEnforceDoze permite que o dispositivo entre em modo Doze imediatamente ao desligar a tela (ou depois de um atraso determinado pelo usuário), ao invés de ter que esperar 30 mins para que o dispositivo fique inativo. Além disso, EnforceDoze também desativa os sensores de movimento do dispositivo, dessa forma Doze não se desativará quando você movimentar seu dispositivo. Doze só se desativará durante o intervalo de manutenção (como foi explicado anteriormente) ou quando você ligar sua tela, o que significa que seu dispositivo permanecerá em modo Doze por um periodo maior de tempo mesmo sem estar inativo, portanto a economia da bateria será significativamente maior do que o modo Doze normal.&lt;/string>"
-        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ~~~~~~~">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="26"
-            column="1964"/>
-    </issue>
-
-    <issue
-        id="Typos"
-        message="&quot;perchè&quot; is a common misspelling; did you mean &quot;perché&quot;?"
-        errorLine1="    &lt;string name=&quot;app_blocklist_dialog_text&quot;>Alcune app possono continuare ad essere attive loro o i suoi processi in background anche durante Doze, quindi accorciando la durata della batteria in stanby. Puoi usare questa funzione per evitare l\&apos;attivazione delle app durante Doze.  Nota bene: Disattivare un\&apos;app significa che sia l\&apos;app che i suoi servizi in background non saranno attivi durante Doze. Quindi non riceverai nessuna notifica per quella app. Non disattivare app di cui hai bisogno durante Doze.\n\nNON bloccare app di sistema tipo SystemUI e altre perchè potrebbero causare blocchi anomali o riavvii.&lt;/string>"
-        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~">
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="120"
-            column="566"/>
-    </issue>
-
-    <issue
-        id="Typos"
-        message="&quot;via&quot; is a common misspelling; did you mean &quot;vía&quot;?"
-        errorLine1="    &lt;string name=&quot;tasker_broadcast_setting_summary&quot;>Mostrar broadcasts que se pueden usar via Tasker&lt;/string>"
-        errorLine2="                                                                                          ~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="127"
-            column="91"/>
-    </issue>
-
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="70"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="78"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="86"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="94"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="102"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="110"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="                    blockDozeApps.notifyDataSetChanged();"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BlockAppsActivity.java"
-            line="169"
-            column="21"/>
-    </issue>
 
 
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="130"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="137"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/Utils.java"
-            line="271"
-            column="13"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 23. Merge all the resources in this folder into `values`.">
-        <location
-            file="src/main/res/values-v23"/>
-    </issue>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <issue
         id="StaticFieldLeak"
@@ -501,16 +70,6 @@
             column="13"/>
     </issue>
 
-    <issue
-        id="StaticFieldLeak"
-        message="Do not place Android context classes in static fields (static reference to `MaterialDialog` which has field `titleFrame` pointing to `View`); this is a memory leak"
-        errorLine1="    static MaterialDialog progressDialog1 = null;"
-        errorLine2="    ~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/SettingsActivity.java"
-            line="55"
-            column="5"/>
-    </issue>
 
 
     <issue
@@ -546,38 +105,8 @@
             column="25"/>
     </issue>
 
-    <issue
-        id="InefficientWeight"
-        message="Use a `layout_width` of `0dp` instead of `match_parent` for better performance"
-        errorLine1="                android:layout_width=&quot;match_parent&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/non_root_workaround.xml"
-            line="21"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="InefficientWeight"
-        message="Use a `layout_width` of `0dp` instead of `match_parent` for better performance"
-        errorLine1="                android:layout_width=&quot;match_parent&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/non_root_workaround.xml"
-            line="54"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="UnusedResources"
-        message="The resource `R.xml.changelog_master` appears to be unused"
-        errorLine1="&lt;changelog>"
-        errorLine2="^">
-        <location
-            file="src/main/res/xml/changelog_master.xml"
-            line="2"
-            column="1"/>
-    </issue>
 
     <issue
         id="UnusedResources"
@@ -586,12 +115,6 @@
             file="src/main/res/drawable-hdpi/ic_add_white_48dp.png"/>
     </issue>
 
-    <issue
-        id="UnusedResources"
-        message="The resource `R.mipmap.ic_battery_full_black_round` appears to be unused">
-        <location
-            file="src/main/res/mipmap-hdpi/ic_battery_full_black_round.png"/>
-    </issue>
 
     <issue
         id="UnusedResources"
@@ -621,12 +144,6 @@
             file="src/main/res/drawable-hdpi/ic_settings_black_18dp.png"/>
     </issue>
 
-    <issue
-        id="UnusedResources"
-        message="The resource `R.mipmap.ic_settings_green_round` appears to be unused">
-        <location
-            file="src/main/res/mipmap-hdpi/ic_settings_green_round.png"/>
-    </issue>
 
     <issue
         id="UnusedResources"
@@ -760,522 +277,52 @@
             column="13"/>
     </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>டோச் புள்ளிவிவரங்களை அழித்தல் ...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ta/strings.xml"
-            line="9"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>A solicitar acceso SU...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="26"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>ホワイトリストに登録されたパッケージを読み込み中...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ja/strings.xml"
-            line="27"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>A carregar as apps instaladas...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="28"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>Fordere SU Zugriff an...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="29"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>Solicitando acceso SU...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="29"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>Запрашивается доступ SU...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="29"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>SU erişme isteği...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-tr/strings.xml"
-            line="29"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>Requesting SU access...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="30"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>Lese die installierten Apps...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="31"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>Carregando os aplicativos instalados...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="31"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>Загрузка установленных приложений...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="31"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>正在请求root访问权限...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="31"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>Loading installed apps...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="32"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>正在加载已安装的应用...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="33"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>SU அணுகலைக் கோருகிறது ...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ta/strings.xml"
-            line="37"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>நிறுவப்பட்ட பயன்பாடுகளை ஏற்றுகிறது ...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ta/strings.xml"
-            line="39"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>Requiriendo acceso SU...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="41"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Disable seall sensors when the device goes into Doze mode (motion, camera...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="43"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>当设备进入休眠模式时（运动、摄像头...）禁用传感器&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="44"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>Cargando aplicaciones instaladas...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="45"
-            column="48"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>சாதனம் டோச் பயன்முறையில் (இயக்கம், கேமரா ...) செல்லும்போது Chanl சென்சார்களை முடக்கு&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ta/strings.xml"
-            line="50"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>A carregar a lista branca de pacotes ...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="66"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Lade Paketnamen von der Positivliste...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="73"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Carregando a lista branca de pacotes ...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="73"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Загрузка пакетов из белого списка...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="73"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Beyaz listeye eklenen paketler yükleniyor...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-tr/strings.xml"
-            line="73"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Cargando paquetes de la lista de permitidas...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="87"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;requesting_su_access_text&quot;>SUアクセスを要求しています...&lt;/string>"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ja/strings.xml"
-            line="87"
-            column="46"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>正在加载白名单软件...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="87"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>அனுமதிப்பட்டியல் தொகுப்புகளை ஏற்றுகிறது ...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ta/strings.xml"
-            line="89"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_whitelisted_packages&quot;>Loading whitelisted packages...&lt;/string>"
-        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="98"
-            column="49"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>A apagar estatísticas dormitar...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt/strings.xml"
-            line="100"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Lösche die Doze Statistiken...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="108"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Apagando estatísticas Doze...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-pt-rBR/strings.xml"
-            line="108"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Очистка статистики Doze...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="108"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Doze istasiklerini sıfırla...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-tr/strings.xml"
-            line="108"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Alle Sensoren deaktivieren wenn das Gerät im Dozemodus ist (Bewegung, Kamera, ...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="115"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Отключать все датчики при входе в режим Doze (движение, камера...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ru/strings.xml"
-            line="115"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>清除Doze统计...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-zh-rCN/strings.xml"
-            line="124"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Dozeの統計情報をクリア中...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ja/strings.xml"
-            line="129"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Clearing Doze stats...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="135"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Disattiva i sensori di tenuta quando il dispositivo entra in modalità Doze (movimento, telecamera...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-it/strings.xml"
-            line="136"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Cihaz Doze modundayken bütün sensörleri devre dışı bırak (hareket, kamera, ...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-tr/strings.xml"
-            line="137"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;clearing_doze_stats_text&quot;>Borrando estadísticas de Doze...&lt;/string>"
-        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="138"
-            column="45"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;disable_all_sensors_setting_summary&quot;>Desactivar los sensores de seguridad cuando el dispositivo entre en modo Doze (movimiento, cámara...)&lt;/string>"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-es/strings.xml"
-            line="145"
-            column="56"/>
-    </issue>
 
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading_installed_apps_text&quot;>インストール済みアプリを読み込み中...&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-ja/strings.xml"
-            line="149"
-            column="48"/>
-    </issue>
 
     <issue
         id="IconDensities"
@@ -1284,365 +331,39 @@
             file="src/main/res/drawable-mdpi"/>
     </issue>
 
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_battery_full_black.png, ic_battery_full_black_round.png">
-        <location
-            file="src/main/res/mipmap-hdpi/ic_battery_full_black_round.png"/>
-        <location
-            file="src/main/res/mipmap-hdpi/ic_battery_full_black.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_battery_full_black.png, ic_battery_full_black_round.png">
-        <location
-            file="src/main/res/mipmap-mdpi/ic_battery_full_black_round.png"/>
-        <location
-            file="src/main/res/mipmap-mdpi/ic_battery_full_black.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_battery_full_black.png, ic_battery_full_black_round.png">
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_battery_full_black_round.png"/>
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_battery_full_black.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_battery_full_black.png, ic_battery_full_black_round.png">
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_battery_full_black_round.png"/>
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_battery_full_black.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_battery_full_black.png, ic_battery_full_black_round.png">
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_battery_full_black_round.png"/>
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_battery_full_black.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_settings_green.png, ic_settings_green_round.png">
-        <location
-            file="src/main/res/mipmap-hdpi/ic_settings_green_round.png"/>
-        <location
-            file="src/main/res/mipmap-hdpi/ic_settings_green.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_settings_green.png, ic_settings_green_round.png">
-        <location
-            file="src/main/res/mipmap-mdpi/ic_settings_green_round.png"/>
-        <location
-            file="src/main/res/mipmap-mdpi/ic_settings_green.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_settings_green.png, ic_settings_green_round.png">
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_settings_green_round.png"/>
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_settings_green.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_settings_green.png, ic_settings_green_round.png">
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_settings_green_round.png"/>
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_settings_green.png"/>
-    </issue>
-
-    <issue
-        id="IconDuplicates"
-        message="The following unrelated icon files have identical contents: ic_settings_green.png, ic_settings_green_round.png">
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_settings_green_round.png"/>
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_settings_green.png"/>
-    </issue>
-
-    <issue
-        id="AlwaysShowAction"
-        message="Prefer &quot;`ifRoom`&quot; instead of &quot;`always`&quot;"
-        errorLine1="        app:showAsAction=&quot;always&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/block_app_doze_menu.xml"
-            line="10"
-            column="9"/>
-        <location
-            file="src/main/res/menu/block_app_doze_menu.xml"
-            line="28"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="AlwaysShowAction"
-        message="Prefer &quot;`ifRoom`&quot; instead of &quot;`always`&quot;"
-        errorLine1="        app:showAsAction=&quot;always&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/block_app_notifications_menu.xml"
-            line="10"
-            column="9"/>
-        <location
-            file="src/main/res/menu/block_app_notifications_menu.xml"
-            line="27"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="AlwaysShowAction"
-        message="Prefer &quot;`ifRoom`&quot; instead of &quot;`always`&quot;"
-        errorLine1="        app:showAsAction=&quot;always&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/doze_stats_menu_new.xml"
-            line="21"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="AlwaysShowAction"
-        message="Prefer &quot;`ifRoom`&quot; instead of &quot;`always`&quot;"
-        errorLine1="        app:showAsAction=&quot;always&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/main.xml"
-            line="30"
-            column="9"/>
-        <location
-            file="src/main/res/menu/main.xml"
-            line="37"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="AlwaysShowAction"
-        message="Prefer &quot;`ifRoom`&quot; instead of &quot;`always`&quot;"
-        errorLine1="        app:showAsAction=&quot;always&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/whitelist_menu.xml"
-            line="10"
-            column="9"/>
-        <location
-            file="src/main/res/menu/whitelist_menu.xml"
-            line="33"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView android:id=&quot;@+id/icon&quot;"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="5"
-            column="6"/>
-    </issue>
 
 
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="            holder.timestamp.setText(&quot;Exited Doze mode at &quot;.concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="50"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="            holder.timestamp.setText(&quot;Entered Doze mode at &quot;.concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="52"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="            holder.timestamp.setText(&quot;Exited Doze mode for maintenance at &quot;.concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="54"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="            holder.timestamp.setText(&quot;Entered Doze mode after maintenance at &quot;.concat(Utils.getDateCurrentTimeZone(Long.valueOf(data[0]))));"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="56"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="String literal in `setText` can not be translated. Use Android resources instead."
-        errorLine1="        holder.batteryPerc.setText(&quot;Battery level: &quot;.concat(data[1]).concat(&quot;%&quot;));"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/akylas/enforcedoze/BatteryConsumptionAdapter.java"
-            line="58"
-            column="36"/>
-    </issue>
 
 
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Doze tunables&quot;, should use `@string` resource"
-        errorLine1="        android:title=&quot;Doze tunables&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/menu/main.xml"
-            line="29"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;adb -d shell pm grant com.akylas.enforcedoze android.permission.DUMP&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;adb -d shell pm grant com.akylas.enforcedoze android.permission.DUMP&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/non_root_workaround.xml"
-            line="25"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;adb -d shell pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;adb -d shell pm grant com.akylas.enforcedoze android.permission.WRITE_SECURE_SETTINGS&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/non_root_workaround.xml"
-            line="58"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Save&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Save&quot; />"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/view_number_picker_dialog.xml"
-            line="34"
-            column="13"/>
-    </issue>
 
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingEnd` you should probably also define `paddingStart` for right-to-left symmetry"
-        errorLine1="                    android:paddingEnd=&quot;16dp&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/material_small_image_card_custom.xml"
-            line="56"
-            column="21"/>
-    </issue>
 
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingLeft` you should probably also define `paddingRight` for right-to-left symmetry"
-        errorLine1="        android:paddingLeft=&quot;15dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="23"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_marginLeft` with `android:layout_marginStart=&quot;10dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_marginLeft=&quot;10dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="8"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_alignParentLeft` with `android:layout_alignParentStart=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_alignParentLeft=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="10"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:paddingLeft` with `android:paddingStart=&quot;2dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:paddingLeft=&quot;2dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="11"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:paddingRight` with `android:paddingEnd=&quot;3dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:paddingRight=&quot;3dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="14"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_toRightOf` with `android:layout_toEndOf=&quot;@id/icon&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_toRightOf=&quot;@id/icon&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="20"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:paddingLeft` with `android:paddingStart=&quot;15dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:paddingLeft=&quot;15dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/package_chooser_row.xml"
-            line="23"
-            column="9"/>
-    </issue>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </issues>

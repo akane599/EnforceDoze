@@ -417,3 +417,11 @@ Carried over to P5:
   - rows 11–14, the root-tier extras. They get a safety ADR first: Wi-Fi off cuts Wi-Fi calling, and
     a suspended clock app misses alarms;
   - row 35, the battery-optimisation and "Never sleeping apps" step (SPEC 3.3).
+- Row 35 (be0b6ad): the onboarding's keep-alive step, with Samsung's "Never sleeping apps" path.
+- Rows 22, 25 and 32 (9cff504): keep-awake, the notifications and the tiles have tests of their own.
+- Rows 11–14, the root-tier extras (ADR 0038, after a second opinion):
+  - biometrics are dropped; the key does nothing on API 37 with the platform flag on;
+  - Wi-Fi off, mobile data off and app suspension are engine levers at T3 (1da9137 worker, dcbd23a engine);
+  - they come on only at screen off with no hold-off, on a fresh read, and go off at every screen on;
+  - `ExtrasEngineTest` (15 cases), `NeverSuspendRulesTest`, worker and device tests, `settings-extras` goldens;
+  - the emulator run at T3 is `tools/emulator/p6-extras.sh` (76d7363).
