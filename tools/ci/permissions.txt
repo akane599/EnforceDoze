@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Every permission the merged manifest may ask for (ADR 0037 audit). Adding one is a reviewed change.
+# :core:doze-android: the hotspot hold-off and the root-tier extras' reads.
+android.permission.ACCESS_NETWORK_STATE
+android.permission.ACCESS_WIFI_STATE
+# :core:privilege: the T1 grants.
+android.permission.DUMP
+android.permission.PACKAGE_USAGE_STATS
+android.permission.READ_LOGS
+android.permission.WRITE_SECURE_SETTINGS
+moe.shizuku.manager.permission.API_V23
+# :app: the engine service, boot start, notifications, the exemption dialog and the app pickers.
+android.permission.FOREGROUND_SERVICE
+android.permission.FOREGROUND_SERVICE_SPECIAL_USE
+android.permission.POST_NOTIFICATIONS
+android.permission.QUERY_ALL_PACKAGES
+android.permission.RECEIVE_BOOT_COMPLETED
+android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+# AndroidX core declares it for its RECEIVER_NOT_EXPORTED compatibility on older releases.
+io.github.akane599.enforcedoze.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION

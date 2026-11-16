@@ -70,7 +70,7 @@ to the owner once the SPEC 15 checklist is done (ADR 0023).
 ```sh
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # JDK 21, Gradle 9.9, AGP 9.5 (ADR 0007)
 ./gradlew assembleDebug testDebugUnitTest lintDebug detekt ktlintCheck :app:licensee   # CI
-tools/ci/forbidden-calls.sh && tools/ci/module-graph.sh                               # CI scripts
+tools/ci/forbidden-calls.sh && tools/ci/module-graph.sh && tools/ci/permissions.sh   # CI scripts
 ./gradlew ktlintFormat                                 # fix style before committing
 ./gradlew updateLintBaseline                           # only when deleting upstream code shrinks it
 tools/ci/forbidden-calls.sh --update                   # same rule for its baseline

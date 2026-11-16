@@ -8,37 +8,26 @@
         android:name="io.github.akane599.enforcedoze.permission.READ_EVIDENCE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Permission audit (ADR 0037): each permission is declared by the module that uses it. The modules add
+         ACCESS_WIFI_STATE and ACCESS_NETWORK_STATE (:core:doze-android: the hotspot hold-off and the root-tier
+         extras' reads) and DUMP, WRITE_SECURE_SETTINGS, READ_LOGS and PACKAGE_USAGE_STATS (:core:privilege: the
+         T1 grants). Upstream's WAKE_LOCK, CHANGE_WIFI_STATE, READ_PHONE_STATE and WRITE_SETTINGS are gone:
+         nothing holds a wake lock, Wi-Fi and data go through the worker, calls are read from the audio mode. -->
+    <!-- The engine starts at boot and after its own update (EngineStartReceiver). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- EngineService, a special-use foreground service that watches the screen (SPEC 5). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-<!--    <uses-permission android:name="android.permission.MANAGE_SENSOR_PRIVACY"-->
-<!--        tools:ignore="ProtectedPermissions" />-->
-    <uses-permission android:name="android.permission.READ_LOGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
-    <uses-permission
-        android:name="android.permission.DUMP"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <!-- Usage access (SPEC 4.1 T0/T1): lists the app under Settings > Usage access and backs the
-         GET_USAGE_STATS appop that usage events and batterystats need. -->
-    <uses-permission
-        android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
         android:minSdkVersion="34" />
+    <!-- The engine's notification, the night report and the stuck-extra notice. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- The capabilities step asks for the exemption through the system dialog (SPEC 3.3, ADR 0034). -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- The app pickers (allowlist, keep-awake, suspension) list every app. -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <!-- The Shizuku permission (API_V23) is declared by :core:privilege. -->
 
     <application
