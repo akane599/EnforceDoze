@@ -69,18 +69,15 @@ class MainActivity : ComponentActivity() {
                 else -> null
             }
         }
-        // Coulomb's report link (ADR 0035); a session that is gone opens the Log.
-        if (intent.action == OPEN_REPORT) return intent.getLongExtra(EXTRA_SESSION_ID, -1).takeIf { it >= 0 }?.let(::ReportKey) ?: LogKey
+        // Coulomb's report link, only through the alias (ADR 0035); a session that is gone opens the Log.
+        if (intent.action == ReportLink.ACTION) {
+            return ReportLink.route(intent.component?.className, intent.getLongExtra(ReportLink.EXTRA_SESSION_ID, -1))
+        }
         return when (intent.getStringExtra(Notifications.EXTRA_OPEN)) {
             Notifications.OPEN_REPORT -> intent.getLongExtra(Notifications.EXTRA_SESSION, -1).takeIf { it >= 0 }?.let(::ReportKey)
             Notifications.OPEN_PLAN -> PlanKey
             Notifications.OPEN_SENSORS -> SensorsKey
             else -> null
         }
-    }
-
-    private companion object {
-        const val OPEN_REPORT = "io.github.akane599.enforcedoze.action.OPEN_REPORT"
-        const val EXTRA_SESSION_ID = "session_id"
     }
 }

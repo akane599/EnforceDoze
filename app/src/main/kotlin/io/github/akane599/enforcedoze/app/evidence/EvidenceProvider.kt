@@ -59,6 +59,7 @@ class EvidenceProvider : ContentProvider() {
         selectionArgs: Array<String>?,
         sortOrder: String?,
     ): Cursor {
+        checkCaller()
         require(selection == null && sortOrder == null) { "selection and sort order are not supported" }
         return query(uri, projection, null as Bundle?, null)
     }
@@ -109,6 +110,9 @@ class EvidenceProvider : ContentProvider() {
             ContentResolver.QUERY_ARG_SQL_SORT_ORDER,
             ContentResolver.QUERY_ARG_SORT_COLUMNS,
             ContentResolver.QUERY_ARG_OFFSET,
+            ContentResolver.QUERY_ARG_SQL_LIMIT,
+            ContentResolver.QUERY_ARG_SQL_GROUP_BY,
+            ContentResolver.QUERY_ARG_SQL_HAVING,
         )
 
         private val MATCHER = UriMatcher(UriMatcher.NO_MATCH).apply {
@@ -121,10 +125,12 @@ class EvidenceProvider : ContentProvider() {
 
         /** Tells observers (Coulomb, while its screen shows) that both paths changed; a spare notice costs one query. */
         suspend fun notifyChanges(context: Context, vararg changes: Flow<Any?>) {
-            merge(*changes).collect {
-                context.contentResolver.notifyChange(uri(EvidenceContract.STATUS_PATH), null)
-                context.contentResolver.notifyChange(uri(EvidenceContract.SESSIONS_PATH), null)
-            }
+            merge(*changes).collect { notifyNow(context) }
+        }
+
+        fun notifyNow(context: Context) {
+            context.contentResolver.notifyChange(uri(EvidenceContract.STATUS_PATH), null)
+            context.contentResolver.notifyChange(uri(EvidenceContract.SESSIONS_PATH), null)
         }
     }
 }

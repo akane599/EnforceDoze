@@ -53,7 +53,7 @@ start_server() {
 # The owner's load rule (2026-11-16): wait while a render, build or other heavy job runs.
 cores=$(nproc)
 load=$(awk '{print $1}' /proc/loadavg)
-heavy=$(ps -eo pcpu=,comm= --sort=-pcpu | awk '$1 > 50 { print $2 " " $1 "%" }' | head -3 | tr '\n' ' ')
+heavy=$(ps -eo pcpu=,comm= --sort=-pcpu | awk '$1 > 50 && $2 != "ps" { print $2 " " $1 "%" }' | head -3 | tr '\n' ' ')
 log "load $load on $cores cores; busy processes: ${heavy:-none}; $(free -h | awk '/^Mem:/ { print "memory used " $3 " of " $2 }')"
 if awk -v l="$load" -v c="$cores" 'BEGIN { exit !(l > c * 0.5) }' || [[ -n $heavy ]]; then
   log "busy: not starting the emulator"

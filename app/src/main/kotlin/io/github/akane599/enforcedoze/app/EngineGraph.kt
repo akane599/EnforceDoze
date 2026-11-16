@@ -106,6 +106,8 @@ internal class EngineGraph private constructor(context: Context) {
             current.scope.cancel()
             controller.stop()
         }
+        // The state Coulomb reads is now OFF (ADR 0035).
+        EvidenceProvider.notifyNow(app)
     }
 
     companion object {

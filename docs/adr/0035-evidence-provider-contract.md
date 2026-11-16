@@ -50,7 +50,9 @@ I agreed with all of it.
 
 - **Access.** Permission `io.github.akane599.enforcedoze.permission.READ_EVIDENCE`, protection level
   `signature`, set as the provider's `android:permission`, so it covers reading and writing.
-  - Insert, update, delete and `call` are not supported.
+  - Insert, update and delete throw `UnsupportedOperationException`. `call` keeps the framework's
+    default and returns null; Android does not check the provider's permission for `call`, so it must
+    never do anything.
   - The provider also checks `getCallingPackage()`: Coulomb only. Debug builds also accept
     `io.github.akane599.enforcedoze.evidenceclient`, the stand-in for Coulomb in the emulator test
     (ADR 0034).
@@ -75,15 +77,19 @@ I agreed with all of it.
   - `_id` is the session id, which `OPEN_REPORT` takes.
 - **Query rules.**
   - `QUERY_ARG_LIMIT` is honoured.
-  - A selection, sort order or unknown projection column is an `IllegalArgumentException`.
+  - A selection, sort order, offset, SQL limit, grouping or unknown projection column is an
+    `IllegalArgumentException`. The caller is checked before anything else.
   - Unknown enum values map to a neutral display on Coulomb's side.
 - **Report link.** The activity alias `io.github.akane599.enforcedoze.EvidenceReport` targets
   `MainActivity` and is protected by the same permission.
   - It takes action `io.github.akane599.enforcedoze.action.OPEN_REPORT` with the long extra
     `session_id`.
+  - `MainActivity` is exported as the launcher, so it honours `OPEN_REPORT` only when the intent's
+    component is the alias, which Android keeps for an intent started through it. Sent to
+    `MainActivity` directly, the action opens Home.
   - A session that no longer exists opens the Log instead.
-- **Changes.** EnforceDoze calls `notifyChange` on both paths when a session is stored or the engine's
-  mode or profile changes.
+- **Changes.** EnforceDoze calls `notifyChange` on both paths when a session is stored, the engine's
+  mode or profile changes, or the engine is switched off.
 - **One "last verdict".** `GET_STATUS` and the provider use the same function: the last session, or its
   night when it has one, with the night verdict Home shows. `deep_share` is null when there is no
   verdict.
@@ -94,6 +100,10 @@ I agreed with all of it.
 
 - Coulomb declares `<uses-permission android:name="io.github.akane599.enforcedoze.permission.READ_EVIDENCE"/>`
   and `<queries><package android:name="io.github.akane599.enforcedoze"/></queries>`.
+- Coulomb checks who owns the provider before trusting it: another app could take the authority or
+  define the permission first. `resolveContentProvider(...)` must name `io.github.akane599.enforcedoze`,
+  signed with the same certificate (`PackageManager.hasSigningCertificate`). It starts the report link as
+  an explicit intent to the alias.
 - Coulomb queries off its main thread and reads each cursor fully. It treats a null cursor,
   `SecurityException` or `IllegalArgumentException` as "unavailable".
 - Coulomb's wording follows `state`: "managed" only while it is `MANAGED`.
@@ -101,4 +111,16 @@ I agreed with all of it.
   should be granted when the defining app arrives. The emulator test installs in both orders and reads
   the grant, rather than trusting this.
 - Debug builds of both apps are signed with the build server's debug key, so the signature matches
-  there too. Release builds share the Coulomb key (Q3).
+  there too. Release builds share the Coulomb key (Q3). The debug-only extra caller is a package signed
+  with that same debug key; a debug build is never the owner's daily install.
+
+## Review
+
+A fresh read-only security reviewer read the shipped provider (commit a217c81). They found no way for
+an app without both the key and Coulomb's package name to read anything or watch for changes. They
+raised one reachable problem, fixed: `MainActivity` took `OPEN_REPORT` from any app, so the alias's
+permission could be skipped. The result was navigation only, with nothing returned or changed. Their
+hardening points are taken: the caller check comes first on both query paths; SQL limit and grouping
+arguments are refused too; switching the engine off notifies; Coulomb checks the provider's owner. The
+notification extras (`open`) that also route `MainActivity` stay as they are: they predate this ADR,
+open a screen the launcher opens anyway, and return nothing.
