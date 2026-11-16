@@ -45,8 +45,14 @@ internal object Notifications {
         )
     }
 
-    /** One line: the profile in force, or Stock while the plan is paused. */
+    /**
+     * One line: the profile in force, or Stock while the plan is paused. Shown at once: by default the system holds a
+     * new foreground service's notification back for up to 10 s and then posts it for the app, with a wakelock booked
+     * to the app. A screen that goes off within those 10 s, as after a reboot, would see that post in deep idle as
+     * one of the app's own wakeups (`Notification.Builder.setForegroundServiceBehavior`, public since API 31; ADR 0039).
+     */
     fun engine(context: Context, line: String): Notification = Notification.Builder(context, ENGINE)
+        .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
         .setSmallIcon(R.drawable.icon_monochrome)
         .setContentTitle(line)
         .setContentIntent(open(context, null, null))
