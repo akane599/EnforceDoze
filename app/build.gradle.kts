@@ -19,12 +19,9 @@ android {
         applicationId = "io.github.akane599.enforcedoze"
         minSdk = 34
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 10000 // major × 10000 + minor × 100 + patch (ADR 0039)
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Release signing with Coulomb's key is wired in P7 (ADR 0006); until then every build is
-        // debug-signed.
-        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildFeatures {
@@ -41,6 +38,8 @@ android {
     }
 
     buildTypes {
+        // Built unsigned: tools/release/build-release.sh signs it with Coulomb's key through apksigner, which reads the
+        // password from its file (ADR 0006, ADR 0039). Debug and benchmark builds are debug-signed.
         release {
             vcsInfo { include = false }
             isMinifyEnabled = true
