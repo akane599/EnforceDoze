@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
 /** A Doze change inside a session (SPEC 8.1 "Doze transition"). */
@@ -139,6 +140,13 @@ public abstract class SessionDao {
 
     @Query("SELECT * FROM session ORDER BY start DESC, id DESC LIMIT :limit")
     public abstract suspend fun latestSessions(limit: Int): List<SessionRow>
+
+    /**
+     * Emits whenever a session or a night is written or removed, so a screen reads its rows again. Room re-runs it
+     * on every change to either table; the number itself means nothing.
+     */
+    @Query("SELECT (SELECT COUNT(*) FROM session) + (SELECT COUNT(*) FROM night)")
+    public abstract fun revision(): Flow<Long>
 
     @Query("SELECT * FROM transition WHERE sessionId = :sessionId ORDER BY time, id")
     public abstract suspend fun transitions(sessionId: Long): List<TransitionRow>
