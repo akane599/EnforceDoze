@@ -30,6 +30,7 @@
     <string name="home_fig_drain">drain</string>
     <string name="home_fig_own">own wakeups</string>
     <string name="home_strip_summary">Screen off %1$s, screen on %2$s. %3$s in deep idle, %4$s, %5$s.</string>
+    <string name="home_strip_summary_unjudged">Screen off %1$s, screen on %2$s. Not judged, so no deep-idle total; %3$s.</string>
 
     <string name="home_open_report">Open report</string>
     <string name="home_quick_proof">Quick proof</string>

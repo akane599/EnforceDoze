@@ -80,6 +80,7 @@ internal object ReportMapping {
         val parts = Parts(records, night.start, night.end, report.wakes, report.holdOffs, report.drift, names)
         val shares = parts.shares(night.deepShare)
         val verdict = verdict(report.verdict)
+        val judgedAll = sessions.all { it.verdict != null }
         val summary = ReportSummary(
             sessionId = night.sessionId,
             start = night.start,
@@ -92,9 +93,10 @@ internal object ReportMapping {
             // The largest of the sessions', so a late start after a wake-up is not hidden behind an early first one.
             lateBy = sessions.mapNotNull { it.lateByMillis }.maxOrNull(),
             strip = parts.strip,
-            timeInDeep = report.timeInDeepMillis,
-            maintenanceWindows = report.maintenanceWindows,
-            motionResets = sessions.sumOf { it.motionResets },
+            // A night with an unjudged session has a hole in its totals, so they are left out as for a session.
+            timeInDeep = report.timeInDeepMillis.takeIf { judgedAll },
+            maintenanceWindows = report.maintenanceWindows.takeIf { judgedAll },
+            motionResets = sessions.sumOf { it.motionResets }.takeIf { judgedAll },
             timeToDeep = sessions.firstOrNull()?.timeToDeepMillis,
             deepShare = shares.deep,
             lightShare = shares.light,
@@ -153,9 +155,9 @@ internal object ReportMapping {
             note = notes(listOf(row)),
             lateBy = row.lateByMillis,
             strip = parts.strip,
-            timeInDeep = row.timeInDeepMillis,
-            maintenanceWindows = row.maintenanceWindows,
-            motionResets = row.motionResets,
+            timeInDeep = row.timeInDeepMillis.takeIf { row.verdict != null },
+            maintenanceWindows = row.maintenanceWindows.takeIf { row.verdict != null },
+            motionResets = row.motionResets.takeIf { row.verdict != null },
             timeToDeep = row.timeToDeepMillis,
             deepShare = shares.deep,
             lightShare = shares.light,

@@ -304,8 +304,8 @@ Carried over to P5:
   - the allowlist below T2 (read with `DUMP`), and suggestions for alarm and messaging apps;
   - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);
   - the report's offer of a late app is not yet passed to the allowlist;
-  - `ReportState` holds some figures as non-null that an unread session does not have (time in
-    deep, maintenance windows, motion resets, app wakeups); make them nullable in `:feature:report`;
+  - an app waker's wakeup count includes alarm wakeups only when both alarm dumps were read
+    (ADR 0019); the report's own-wakeups figure already says "unknown" then, the per-app rows do not;
   - tiles and notifications (SPEC 9.2); the upstream Java screens are still in the APK;
   - the automation API and the Tasker grant belong to P6 (SPEC 11); Settings answers "not in this
     build yet" for both.

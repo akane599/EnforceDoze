@@ -30,6 +30,7 @@
     <string name="home_fig_drain">tüketim</string>
     <string name="home_fig_own">kendi uyandırması</string>
     <string name="home_strip_summary">Ekran %1$s kapandı, %2$s açıldı. %3$s derin uykuda, %4$s, %5$s.</string>
+    <string name="home_strip_summary_unjudged">Ekran %1$s kapandı, %2$s açıldı. Değerlendirilmedi, bu yüzden derin uyku toplamı yok; %3$s.</string>
 
     <string name="home_open_report">Raporu aç</string>
     <string name="home_quick_proof">Hızlı kanıt</string>

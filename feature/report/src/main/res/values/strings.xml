@@ -17,6 +17,7 @@
     <string name="report_line_no_drain">%1$s in deep idle, %2$s.</string>
     <string name="report_line_late">Deep idle came %1$s late.</string>
     <string name="report_strip_summary">Screen off %1$s, screen on %2$s. %3$s in deep idle, %4$s, %5$s.</string>
+    <string name="report_strip_summary_unjudged">Screen off %1$s, screen on %2$s. Not judged, so no deep-idle total; %3$s.</string>
 
     <string name="report_fig_to_deep">to deep idle</string>
     <string name="report_fig_deep">in deep idle</string>

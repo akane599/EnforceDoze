@@ -80,11 +80,14 @@ internal fun ColumnScope.SummaryTab(state: ReportState, formats: Formats, action
 /** SPEC 8.5 item 1: "6 h 40 min in deep idle, 7 maintenance windows, 0.21 %/h." or the cause. */
 @Composable
 private fun verdictLine(summary: ReportSummary, formats: Formats): String {
-    val deep = formats.duration(summary.timeInDeep)
-    val windows = pluralStringResource(UiR.plurals.ui_maintenance_count, summary.maintenanceWindows, summary.maintenanceWindows)
     val drain = summary.drainPerHour?.let(formats::drainText)
+    val inDeep = summary.timeInDeep
+    val windowCount = summary.maintenanceWindows
     return when (summary.verdict) {
         VerdictWord.HELD, VerdictWord.PARTLY -> {
+            if (inDeep == null || windowCount == null) return summary.note ?: stringResource(UiR.string.ui_not_judged)
+            val deep = formats.duration(inDeep)
+            val windows = pluralStringResource(UiR.plurals.ui_maintenance_count, windowCount, windowCount)
             val late = summary.lateBy?.let { stringResource(R.string.report_line_late, formats.duration(it)) }
             val line = if (drain == null) {
                 stringResource(R.string.report_line_no_drain, deep, windows)
@@ -102,14 +105,21 @@ private fun verdictLine(summary: ReportSummary, formats: Formats): String {
 
 @Composable
 internal fun ReportStrip(summary: ReportSummary, formats: Formats) {
-    val description = stringResource(
-        R.string.report_strip_summary,
-        formats.clock(summary.start),
-        formats.clock(summary.end),
-        formats.duration(summary.timeInDeep),
-        pluralStringResource(UiR.plurals.ui_maintenance_count, summary.maintenanceWindows, summary.maintenanceWindows),
-        pluralStringResource(UiR.plurals.ui_break_count, summary.strip.breaks.size, summary.strip.breaks.size),
-    ) + stripWakes(summary.strip.wakes.size)
+    val inDeep = summary.timeInDeep
+    val windowCount = summary.maintenanceWindows
+    val breaks = pluralStringResource(UiR.plurals.ui_break_count, summary.strip.breaks.size, summary.strip.breaks.size)
+    val description = if (inDeep != null && windowCount != null) {
+        stringResource(
+            R.string.report_strip_summary,
+            formats.clock(summary.start),
+            formats.clock(summary.end),
+            formats.duration(inDeep),
+            pluralStringResource(UiR.plurals.ui_maintenance_count, windowCount, windowCount),
+            breaks,
+        )
+    } else {
+        stringResource(R.string.report_strip_summary_unjudged, formats.clock(summary.start), formats.clock(summary.end), breaks)
+    } + stripWakes(summary.strip.wakes.size)
     TimelineStrip(summary.strip, description, Modifier.fillMaxWidth().height(Sizes.stripLarge + 8.dp))
     StripAxis(hourLabels(summary.start, summary.end, formats), summary.start, summary.end)
 }
@@ -134,7 +144,7 @@ private fun figures(summary: ReportSummary, formats: Formats): List<Figure> {
                     null
             },
         ),
-        Figure(summary.motionResets.toString(), stringResource(R.string.report_fig_motion)),
+        Figure(summary.motionResets?.toString() ?: dash, stringResource(R.string.report_fig_motion)),
         Figure(summary.ownWakeups?.toString() ?: dash, stringResource(R.string.report_fig_own)),
     )
 }

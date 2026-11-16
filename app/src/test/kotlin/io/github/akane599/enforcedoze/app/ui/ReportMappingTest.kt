@@ -172,7 +172,10 @@ class ReportMappingTest {
         assertEquals(VerdictWord.NOT_JUDGED, summary.verdict)
         assertEquals(note, summary.note)
         assertEquals(10 * MIN, summary.timeToDeep)
-        // Not judged: a gap hides part of the session, so no share is shown.
+        // Not judged: a gap hides part of the session, so no share or total is shown.
+        assertNull(summary.timeInDeep)
+        assertNull(summary.maintenanceWindows)
+        assertNull(summary.motionResets)
         assertNull(summary.deepShare)
         assertNull(summary.lightShare)
         assertNull(summary.activeShare)
@@ -228,6 +231,8 @@ class ReportMappingTest {
         )
         assertNull(nightState.summary.ownWakeups)
         assertNull(nightState.summary.drainMah)
+        // Both sessions are judged, so the night's totals stand.
+        assertEquals(first.session.timeInDeepMillis + unknown.session.timeInDeepMillis, nightState.summary.timeInDeep)
         assertEquals(Baseline(0, null, null), nightState.compared?.recent)
         assertEquals(1, nightState.compared?.nights?.size)
     }

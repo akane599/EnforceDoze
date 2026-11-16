@@ -203,14 +203,21 @@ private fun LastNight(night: NightSummary, formats: Formats) {
     )
     Verdict(night.verdict.word(), reason(night, formats), night.verdict.tone, settle = night.fresh)
     Spacer(Modifier.height(Space.l))
-    val summary = stringResource(
-        R.string.home_strip_summary,
-        formats.clock(night.start),
-        formats.clock(night.end),
-        formats.duration(night.timeInDeep),
-        pluralStringResource(UiR.plurals.ui_maintenance_count, night.maintenanceWindows, night.maintenanceWindows),
-        pluralStringResource(UiR.plurals.ui_break_count, night.strip.breaks.size, night.strip.breaks.size),
-    ) + stripWakes(night.strip.wakes.size)
+    val inDeep = night.timeInDeep
+    val windowCount = night.maintenanceWindows
+    val breaks = pluralStringResource(UiR.plurals.ui_break_count, night.strip.breaks.size, night.strip.breaks.size)
+    val summary = if (inDeep != null && windowCount != null) {
+        stringResource(
+            R.string.home_strip_summary,
+            formats.clock(night.start),
+            formats.clock(night.end),
+            formats.duration(inDeep),
+            pluralStringResource(UiR.plurals.ui_maintenance_count, windowCount, windowCount),
+            breaks,
+        )
+    } else {
+        stringResource(R.string.home_strip_summary_unjudged, formats.clock(night.start), formats.clock(night.end), breaks)
+    } + stripWakes(night.strip.wakes.size)
     TimelineStrip(night.strip, summary, Modifier.fillMaxWidth().height(Sizes.stripSmall + 8.dp))
     StripAxis(hourLabels(night.start, night.end, formats), night.start, night.end)
     Spacer(Modifier.height(Space.l))
@@ -230,14 +237,14 @@ private fun LastNight(night: NightSummary, formats: Formats) {
 
 @Composable
 private fun reason(night: NightSummary, formats: Formats): String {
-    val deep = formats.duration(night.timeInDeep)
+    val deep = night.timeInDeep?.let(formats::duration)
     return when (night.verdict) {
-        VerdictWord.HELD -> stringResource(R.string.home_reason_held, deep)
+        VerdictWord.HELD -> deep?.let { stringResource(R.string.home_reason_held, it) } ?: stringResource(UiR.string.ui_not_judged)
 
-        VerdictWord.PARTLY -> if (night.breaks == 0 && night.lateBy != null) {
-            stringResource(R.string.home_reason_late, formats.duration(night.lateBy), deep)
-        } else {
-            pluralStringResource(R.plurals.home_reason_partly, night.breaks, night.breaks, deep)
+        VerdictWord.PARTLY -> when {
+            deep == null -> stringResource(UiR.string.ui_not_judged)
+            night.breaks == 0 && night.lateBy != null -> stringResource(R.string.home_reason_late, formats.duration(night.lateBy), deep)
+            else -> pluralStringResource(R.plurals.home_reason_partly, night.breaks, night.breaks, deep)
         }
 
         VerdictWord.DID_NOT_DOZE -> stringResource((night.cause ?: Cause.UNKNOWN).sentence())

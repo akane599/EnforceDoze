@@ -45,9 +45,10 @@ public data class ReportSummary(
     val note: String? = null,
     val lateBy: Long? = null,
     val strip: StripModel,
-    val timeInDeep: Long,
-    val maintenanceWindows: Int,
-    val motionResets: Int,
+    /** Null when the session was not judged: a gap hides part of it, so a total would be a guess (SPEC 0.2). */
+    val timeInDeep: Long?,
+    val maintenanceWindows: Int?,
+    val motionResets: Int?,
     val timeToDeep: Long?,
     val deepShare: Double?,
     val lightShare: Double?,

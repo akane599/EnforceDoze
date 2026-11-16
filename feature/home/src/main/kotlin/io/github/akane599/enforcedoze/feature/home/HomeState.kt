@@ -56,8 +56,9 @@ public data class NightSummary(
     val cause: Cause? = null,
     val breaks: Int = 0,
     val lateBy: Long? = null,
-    val timeInDeep: Long,
-    val maintenanceWindows: Int,
+    /** Null when the session was not judged (a gap hides part of it), as in the report. */
+    val timeInDeep: Long?,
+    val maintenanceWindows: Int?,
     val strip: StripModel,
     val timeToDeep: Long?,
     val deepShare: Double?,
