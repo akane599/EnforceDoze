@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.app.Tiles
 import io.github.akane599.enforcedoze.data.NightReports
 import io.github.akane599.enforcedoze.feature.sensors.SensorHolder
 import io.github.akane599.enforcedoze.feature.sensors.SensorModeNow
@@ -52,6 +53,7 @@ internal class AppSensorsSource(private val services: AppServices) : SensorsSour
     override suspend fun allSensorsOff(on: Boolean): ActionOutcome {
         val result = services.graph.controller.withWorker { it.setAllSensorsOff(on) }
         reads.value++
+        Tiles.refresh(services.graph.app)
         return AppAllowlistSource.outcome(result)
     }
 

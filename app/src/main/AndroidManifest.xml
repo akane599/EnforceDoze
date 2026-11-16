@@ -45,22 +45,23 @@
         <!-- The fork's Compose app is the launcher (ADR 0029). -->
         <activity android:name="io.github.akane599.enforcedoze.app.ui.MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity>
-        <!-- Upstream's screen, kept until the tiles that open it are replaced (SPEC 12.1). -->
-        <activity android:name="com.akylas.enforcedoze.MainActivity"
-            android:exported="true">
+            <!-- A tile's long press (SPEC 9.2): the tile's component names the screen to open. -->
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+        <!-- Upstream's screen: no entry point since the tiles were replaced; removed with the upstream code (SPEC 12.1). -->
+        <activity android:name="com.akylas.enforcedoze.MainActivity"
+            android:exported="false" />
         <receiver android:name="com.akylas.enforcedoze.BootCompleteReceiver"
             android:exported="true">
             <intent-filter>
@@ -145,32 +146,37 @@
             android:name="com.akylas.enforcedoze.ForceDozeService"
             android:enabled="true"
             android:exported="false" android:foregroundServiceType="specialUse"/>
+        <!-- SPEC 9.2, 11.2: the "Doze plan" and "Sensors off" tiles replace upstream's Doze and airplane tiles. -->
         <service
-            android:name="com.akylas.enforcedoze.ForceDozeTileService"
-            android:icon="@drawable/ic_power_settings_new_white_24dp"
-            android:label="@string/tile_label"
+            android:name="io.github.akane599.enforcedoze.app.PlanTileService"
+            android:icon="@drawable/ic_tile_plan"
+            android:label="@string/tile_plan"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true"
-            tools:targetApi="n">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="true" />
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
         </service>
         <service
-            android:name="com.akylas.enforcedoze.AirplaneTileService"
-            android:icon="@drawable/ic_airplane_white_24dp"
-            android:label="@string/airplane_tile_label"
+            android:name="io.github.akane599.enforcedoze.app.SensorsTileService"
+            android:icon="@drawable/ic_tile_sensors"
+            android:label="@string/tile_sensors"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true"
-            tools:targetApi="n">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
                 android:value="true" />
         </service>
         <service
