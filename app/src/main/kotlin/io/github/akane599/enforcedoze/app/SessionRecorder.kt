@@ -14,6 +14,9 @@ import android.util.Log
 import io.github.akane599.enforcedoze.data.EvidenceRows
 import io.github.akane599.enforcedoze.data.JournalDao
 import io.github.akane599.enforcedoze.data.NightReports
+import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.ui.R as UiR
+import io.github.akane599.enforcedoze.design.Formats
 import io.github.akane599.enforcedoze.data.SessionRow
 import io.github.akane599.enforcedoze.data.NightRow
 import io.github.akane599.enforcedoze.data.StoredNights
@@ -298,10 +301,29 @@ internal class SessionRecorder(private val graph: EngineGraph, private val scope
             when (val decision = StoredNights.decide(rest, near, rule.spacing)) {
                 StoredNights.Decision.Leave -> Unit
                 is StoredNights.Decision.Grow -> sessions.updateNight(night(rest, time, emptySet()).copy(id = decision.row.id))
-                is StoredNights.Decision.Write ->
-                    sessions.replaceNights(decision.replaces, night(rest, time, decision.replaces.map { it.id }.toSet()))
+                is StoredNights.Decision.Write -> {
+                    val row = night(rest, time, decision.replaces.map { it.id }.toSet())
+                    sessions.replaceNights(decision.replaces, row)
+                    notifyNight(rest, row)
+                }
             }
         }
+    }
+
+    /** SPEC 9.2: the night report notification, once per new night; it opens the night's report. */
+    private fun notifyNight(rest: List<SessionRow>, row: NightRow) {
+        val word = when (NightReports.verdict(rest).first) {
+            EvidenceRows.HELD -> UiR.string.ui_verdict_held
+            EvidenceRows.PARTLY -> UiR.string.ui_verdict_partly
+            EvidenceRows.DID_NOT_DOZE -> UiR.string.ui_verdict_did_not_doze
+            else -> UiR.string.ui_verdict_not_judged
+        }
+        val formats = Formats(context)
+        val text = row.deepShare?.let { context.getString(R.string.report_notification_deep, formats.percentText(it)) }
+            ?: row.drainPerHour?.let { context.getString(R.string.report_notification_drain, formats.drainText(it)) }
+            ?: ""
+        val title = context.getString(R.string.report_notification_title, context.getString(word))
+        Notifications.nightReport(context, row.sessionId, title, text)
     }
 
     /** The row for [rest], compared with the nights before it; [replaced] rows are naps now and do not count. */

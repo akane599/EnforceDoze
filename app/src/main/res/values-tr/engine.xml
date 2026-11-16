@@ -38,4 +38,23 @@
     <string name="ui_probe_one_ui">One UI sürümü</string>
     <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
     <string name="ui_probe_vendor">Üretici alanları</string>
+    <string name="engine_line">%1$s profili uygulanıyor</string>
+    <string name="engine_line_paused">Plan duraklatıldı: telefon Stok ayarlarla çalışıyor</string>
+    <string name="report_channel_name">Gece raporları</string>
+    <string name="report_channel_description">Doze\'un gece nasıl tuttuğu, kilit ilk açıldığında</string>
+    <string name="report_notification_title">Dün gece: %1$s</string>
+    <string name="report_notification_deep">Gecenin %1$s kadarı derin uykuda</string>
+    <string name="report_notification_drain">%1$s tüketim</string>
+    <string name="tile_plan">Doze planı</string>
+    <string name="tile_plan_off">Stok</string>
+    <string name="tile_plan_none">Henüz plan yok</string>
+    <string name="tile_sensors">Sensörler kapalı</string>
+    <string name="tile_sensors_on">Tüm sensörler kapalı</string>
+    <string name="tile_sensors_off">Sensörler normal</string>
+    <string name="tile_sensors_unknown">Durum bilinmiyor</string>
+    <string name="tile_needs_worker">Shizuku gerekli</string>
+    <string name="tile_sensors_confirm_title">Tüm sensörler kapatılsın mı?</string>
+    <string name="tile_sensors_confirm_body">Bu kutucuktan ya da Sensörler ekranından açana dek her uygulama için her sensör, kamera ve mikrofon durur. Bu arada görüntülü aramalar ve kamera çalışmaz.</string>
+    <string name="tile_sensors_confirm">Kapat</string>
+    <string name="tile_cancel">İptal</string>
 </resources>

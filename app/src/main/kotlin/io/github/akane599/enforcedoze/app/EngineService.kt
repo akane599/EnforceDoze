@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,6 +8,13 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
 import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.doze.Mode
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -19,38 +23,52 @@ import kotlinx.coroutines.launch
  */
 class EngineService : Service() {
     private val graph by lazy { EngineGraph.get(this) }
+    private var lines: Job? = null
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(NOTIFICATION_ID, notification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        Notifications.channels(this)
+        startForeground(
+            Notifications.ENGINE_ID,
+            Notifications.engine(this, getString(R.string.engine_notification_title)),
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+        )
         graph.scope.launch { graph.start() }
+        lines = graph.scope.launch { followStatus() }
+    }
+
+    /** SPEC 9.2: the notification names the profile in force in one line, and the tiles follow the same status. */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun followStatus() {
+        graph.hosts.flatMapLatest { host -> host?.status ?: flowOf(null) }
+            .map { status -> status?.let { it.mode to it.plan?.profileId } }
+            .distinctUntilChanged()
+            .collect { state ->
+                Tiles.refresh(this)
+                val (mode, profileId) = state ?: return@collect
+                val line = if (mode == Mode.PAUSED || profileId == null) {
+                    getString(R.string.engine_line_paused)
+                } else {
+                    getString(R.string.engine_line, graph.profiles.profile(profileId)?.name ?: profileId)
+                }
+                Notifications.updateEngine(this, line)
+            }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onDestroy() {
-        graph.scope.launch { graph.stop() }
+        lines?.cancel()
+        graph.scope.launch {
+            graph.stop()
+            Tiles.refresh(this@EngineService)
+        }
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun notification(): Notification {
-        val manager = getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(CHANNEL, getString(R.string.engine_channel_name), NotificationManager.IMPORTANCE_MIN)
-        channel.description = getString(R.string.engine_channel_description)
-        manager.createNotificationChannel(channel)
-        return Notification.Builder(this, CHANNEL)
-            .setSmallIcon(R.drawable.icon_monochrome)
-            .setContentTitle(getString(R.string.engine_notification_title))
-            .setOngoing(true)
-            .build()
-    }
-
     companion object {
-        private const val CHANNEL = "engine"
-        private const val NOTIFICATION_ID = 0x0D0E
-
         fun start(context: Context) {
             context.startForegroundService(Intent(context, EngineService::class.java))
         }

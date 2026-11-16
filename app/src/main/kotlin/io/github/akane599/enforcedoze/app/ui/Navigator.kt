@@ -27,6 +27,16 @@ internal class Navigator(private val stack: NavBackStack<NavKey>) {
         if (top != HomeKey) stack.add(top)
     }
 
+    /** A screen opened from outside the app, on top of the tab it belongs to, so Back leads somewhere sensible. */
+    fun open(key: Route) {
+        when (key) {
+            is ReportKey -> tab(LogKey)
+            SensorsKey, is AllowlistKey -> tab(SettingsKey)
+            else -> tab(HomeKey)
+        }
+        if (key !is Top) go(key)
+    }
+
     fun restart(key: Route) {
         stack.clear()
         stack.add(key)

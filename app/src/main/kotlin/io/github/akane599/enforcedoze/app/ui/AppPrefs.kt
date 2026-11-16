@@ -36,6 +36,11 @@ internal class AppPrefs(context: Context) {
         get() = prefs.getBoolean(ONBOARDED, false)
         set(value) = prefs.edit { putBoolean(ONBOARDED, value) }
 
+    /** The notification permission was asked for once (SPEC 9.2); Android shows the question once anyway. */
+    var notificationsAsked: Boolean
+        get() = prefs.getBoolean(NOTIFICATIONS_ASKED, false)
+        set(value) = prefs.edit { putBoolean(NOTIFICATIONS_ASKED, value) }
+
     var urgency: Urgency
         get() = prefs.getString(URGENCY, null)?.let { runCatching { Urgency.valueOf(it) }.getOrNull() } ?: Urgency.WITHIN_THE_HOUR
         set(value) = prefs.edit { putString(URGENCY, value.name) }
@@ -120,6 +125,7 @@ internal class AppPrefs(context: Context) {
     companion object {
         private const val PREFS = "ui"
         private const val ONBOARDED = "onboarded"
+        private const val NOTIFICATIONS_ASKED = "notifications-asked"
         private const val URGENCY = "urgency"
         private const val RETENTION = "retention_days"
         private const val AUTOMATION = "automation"

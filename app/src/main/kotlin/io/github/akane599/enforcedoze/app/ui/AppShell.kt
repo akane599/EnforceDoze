@@ -21,6 +21,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +44,14 @@ import java.time.LocalDate
 /** The app: the navigation bar (a rail on wide screens) around one Navigation 3 back stack (ADR 0029). */
 @Composable
 @OptIn(ExperimentalMaterial3AdaptiveApi::class) // list-detail scenes, adaptive-navigation3 1.3.0 (ADR 0029)
-internal fun EnforceDozeApp(services: AppServices) {
+internal fun EnforceDozeApp(services: AppServices, opening: Route? = null, opened: () -> Unit = {}) {
     val backStack = rememberNavBackStack(if (services.prefs.onboarded) HomeKey else OnboardingKey())
     val navigator = remember(backStack) { Navigator(backStack) }
+    // A notification or a tile's long press names a screen; before onboarding is done, onboarding stays.
+    LaunchedEffect(opening) {
+        if (opening != null && services.prefs.onboarded) navigator.open(opening)
+        if (opening != null) opened()
+    }
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
     val saved = stringResource(R.string.ui_saved)

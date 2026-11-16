@@ -39,4 +39,23 @@
     <string name="ui_probe_one_ui">One UI version</string>
     <string name="ui_probe_persistence">Doze timing kept after a restart</string>
     <string name="ui_probe_vendor">Manufacturer fields</string>
+    <string name="engine_line">%1$s profile in force</string>
+    <string name="engine_line_paused">Plan paused: the phone runs Stock</string>
+    <string name="report_channel_name">Night reports</string>
+    <string name="report_channel_description">How Doze held overnight, after the first unlock</string>
+    <string name="report_notification_title">Last night: %1$s</string>
+    <string name="report_notification_deep">%1$s of the night in deep idle</string>
+    <string name="report_notification_drain">%1$s drain</string>
+    <string name="tile_plan">Doze plan</string>
+    <string name="tile_plan_off">Stock</string>
+    <string name="tile_plan_none">No plan yet</string>
+    <string name="tile_sensors">Sensors off</string>
+    <string name="tile_sensors_on">All sensors off</string>
+    <string name="tile_sensors_off">Sensors normal</string>
+    <string name="tile_sensors_unknown">State unknown</string>
+    <string name="tile_needs_worker">Needs Shizuku</string>
+    <string name="tile_sensors_confirm_title">Turn all sensors off?</string>
+    <string name="tile_sensors_confirm_body">Every sensor, the camera and the microphone stop for every app until you turn this off from this tile or the Sensors screen. Video calls and the camera will not work meanwhile.</string>
+    <string name="tile_sensors_confirm">Turn off</string>
+    <string name="tile_cancel">Cancel</string>
 </resources>
