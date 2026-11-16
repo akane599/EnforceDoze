@@ -14,7 +14,7 @@ import android.util.Log
 import io.github.akane599.enforcedoze.data.EvidenceRows
 import io.github.akane599.enforcedoze.data.JournalDao
 import io.github.akane599.enforcedoze.data.NightReports
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.ui.R as UiR
 import io.github.akane599.enforcedoze.design.Formats
 import io.github.akane599.enforcedoze.data.SessionRow

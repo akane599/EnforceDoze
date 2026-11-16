@@ -10,9 +10,9 @@ plugins {
 }
 
 android {
-    // The upstream Java package (and R class) stays until its classes are replaced; the application
-    // id is the fork's own so it installs beside upstream (SPEC 3.1).
-    namespace = "com.akylas.enforcedoze"
+    // The fork's own package for R and BuildConfig since upstream's classes went (ADR 0037); the
+    // application id is the fork's own so it installs beside upstream (SPEC 3.1).
+    namespace = "io.github.akane599.enforcedoze"
     compileSdk = 37
 
     defaultConfig {

@@ -82,7 +82,7 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 
 | Path | What |
 | --- | --- |
-| `app/` | Upstream 1.10.2 Java app (package `com.akylas.enforcedoze`, app id `io.github.akane599.enforcedoze`), replaced module by module (SPEC 12.1, 12.3) |
+| `app/` | The app shell, Kotlin only (package and app id `io.github.akane599.enforcedoze`); upstream 1.10.2's Java code is gone, kept at `upstream-baseline` (SPEC 12.1, ADR 0037) |
 | `core/parse` | Pure-JVM parsers for `dumpsys` and the event log, one per source (SPEC 8, 12.4) |
 | `core/profile`, `core/doze` | Pure-JVM profiles, plan and guardrails; the engine actor behind ports (SPEC 5, 6, ADR 0015) |
 | `core/doze-android` | The engine's Android side: device port over the privilege layer, hold-off sources, host |

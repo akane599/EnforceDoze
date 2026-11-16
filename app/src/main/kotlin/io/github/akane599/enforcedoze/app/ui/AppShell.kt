@@ -42,7 +42,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.ui.ActionOutcome
 import kotlinx.coroutines.launch

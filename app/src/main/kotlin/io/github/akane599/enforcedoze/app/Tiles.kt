@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.app.ui.MainActivity
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.parse.SensorServiceDump

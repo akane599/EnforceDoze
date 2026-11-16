@@ -10,7 +10,7 @@ import io.github.akane599.enforcedoze.doze.android.neverSuspend
 import io.github.akane599.enforcedoze.doze.Extras
 import android.app.LocaleManager
 import io.github.akane599.enforcedoze.app.EngineService
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.doze.JobResult
 import io.github.akane599.enforcedoze.feature.settings.AppRef
 import io.github.akane599.enforcedoze.feature.settings.PrivilegeStatus

@@ -4,7 +4,7 @@ package io.github.akane599.enforcedoze.app
 import android.app.Application
 import androidx.compose.ui.graphics.toArgb
 import androidx.test.core.app.ApplicationProvider
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.design.Palette
 import org.junit.Test

@@ -9,7 +9,7 @@ import io.github.akane599.enforcedoze.doze.LeverStatus
 import io.github.akane599.enforcedoze.doze.LeverState
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.app.EngineGraph
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.doze.HoldOff
 import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.Mode

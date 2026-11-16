@@ -12,7 +12,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.design.EdTopBar
 import io.github.akane599.enforcedoze.design.RawLine

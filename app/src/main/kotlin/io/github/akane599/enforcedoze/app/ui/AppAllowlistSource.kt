@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistEntry
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistSource
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistState

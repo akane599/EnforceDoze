@@ -4,7 +4,7 @@ package io.github.akane599.enforcedoze.app
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.FileProvider
-import com.akylas.enforcedoze.BuildConfig
+import io.github.akane599.enforcedoze.BuildConfig
 import io.github.akane599.enforcedoze.data.EvidenceExport
 import io.github.akane599.enforcedoze.data.ExportContent
 import io.github.akane599.enforcedoze.data.ExportManifest

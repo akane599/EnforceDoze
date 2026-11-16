@@ -5,7 +5,7 @@ import android.util.Log
 import android.content.Context
 import io.github.akane599.enforcedoze.app.EngineGraph
 import io.github.akane599.enforcedoze.app.EngineService
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.android.EngineHost
 import io.github.akane599.enforcedoze.ui.ActionOutcome

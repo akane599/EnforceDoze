@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.R
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistNavigation
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistRoute
 import io.github.akane599.enforcedoze.feature.allowlist.AllowlistViewModel
