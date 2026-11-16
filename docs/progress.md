@@ -300,7 +300,6 @@ Carried over to P5:
   screen events (`DayZero`); the durable grants are given through the worker once Shizuku allows it.
   Untested on a device yet: the emulator run after 09:00 covers it.
   Still open in P5, each a spec item, not optional:
-  - allowlist suggestions for alarm and messaging apps (late reports already suggest);
   - the flag sync worker calls (contract VERSION 4) still need their emulator contract test run;
   - an app waker's wakeup count includes alarm wakeups only when both alarm dumps were read
     (ADR 0019); the report's own-wakeups figure already says "unknown" then, the per-app rows do not;

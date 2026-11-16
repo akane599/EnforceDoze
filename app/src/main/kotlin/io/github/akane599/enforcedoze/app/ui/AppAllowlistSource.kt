@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.mapLatest
 internal class AppAllowlistSource(private val services: AppServices, private val offer: String? = null) : AllowlistSource {
     private val reads = MutableStateFlow(0)
     private val local = LocalReader()
+    private val used = UsedApps(services.graph.app)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val state: Flow<AllowlistState> = combine(
@@ -76,13 +77,19 @@ internal class AppAllowlistSource(private val services: AppServices, private val
     }
 
     /**
-     * Apps named in late reports that are not on the list yet, the latest report first (SPEC 9.1); the app the owner
-     * came from a report to add, [offer], leads.
+     * SPEC 9.1: apps named in late reports, the latest first, then the alarm app and the messaging apps the owner uses
+     * most; none already on the list. The app the owner came from a report to add, [offer], leads.
      */
-    private fun suggestions(listed: Set<String>): List<Suggestion> = services.prefs.lateApps
-        .filter { (app, _) -> app !in listed && services.labels.installed(app) }
-        .sortedByDescending { (app, _) -> app == offer }
-        .map { (app, time) -> Suggestion(app, services.labels.label(app) ?: app, SuggestionReason.Late(time)) }
+    private fun suggestions(listed: Set<String>): List<Suggestion> {
+        val late = services.prefs.lateApps.map { (app, time) -> app to SuggestionReason.Late(time) }
+        val alarm = listOfNotNull(used.alarm()).map { it to SuggestionReason.Alarm }
+        val messaging = used.messaging().map { it to SuggestionReason.Messaging }
+        return (late + alarm + messaging)
+            .filter { (app, _) -> app !in listed && app != services.graph.app.packageName && services.labels.installed(app) }
+            .distinctBy { it.first }
+            .sortedByDescending { (app, _) -> app == offer }
+            .map { (app, reason) -> Suggestion(app, services.labels.label(app) ?: app, reason) }
+    }
 
     override suspend fun add(packageName: String): ActionOutcome = change(packageName, add = true)
 

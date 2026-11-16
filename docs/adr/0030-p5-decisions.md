@@ -188,3 +188,4 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   - The switch sets `persistent`, so the owner's choice survives a reboot, and is read back.
   - The app remembers that it stopped sync. Restore stock (and so Reset) lets sync run again, so
     the change stays undoable.
+- **Alarm and messaging suggestions use public calls only**: the next alarm clock's creator, the default SMS app, and social and communication apps by last week's foreground time (usage access), three at most.
