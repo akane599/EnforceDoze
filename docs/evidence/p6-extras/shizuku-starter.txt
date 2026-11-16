@@ -2,15 +2,15 @@ info: switch cgroup succeeded, cgroup in /sys/fs/cgroup
 info: switching mount namespace to init...
 info: starter begin
 info: killing old process...
-info: apk path is /data/app/~~7UOm1yVJ0C-EyMISVJjpBw==/moe.shizuku.privileged.api-UP1raQsFlBBRoBaw6o-BUg==/base.apk
+info: apk path is /data/app/~~b96Qv00Y9T68sHd7gul8xw==/moe.shizuku.privileged.api-oUtJtHdSc5vJBCpwtya5sg==/base.apk
 info: starting server...
-info: shizuku_server pid is 3565
+info: shizuku_server pid is 15193
 info: shizuku_starter exit with 0
 info: switch cgroup succeeded, cgroup in /sys/fs/cgroup
 info: switching mount namespace to init...
 info: starter begin
 info: killing old process...
-info: apk path is /data/app/~~7UOm1yVJ0C-EyMISVJjpBw==/moe.shizuku.privileged.api-UP1raQsFlBBRoBaw6o-BUg==/base.apk
+info: apk path is /data/app/~~b96Qv00Y9T68sHd7gul8xw==/moe.shizuku.privileged.api-oUtJtHdSc5vJBCpwtya5sg==/base.apk
 info: starting server...
-info: shizuku_server pid is 3269
+info: shizuku_server pid is 2805
 info: shizuku_starter exit with 0

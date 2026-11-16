@@ -1,84 +1,64 @@
-[11:59:19] starting ed-api37
-[11:59:34] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
-[11:59:34] before: device_idle_constants=null
-[11:59:34] == setup
-[11:59:39] PASS the engine starts in its foreground service
-[11:59:41] PASS the Shizuku server starts
-[11:59:41] PASS the worker can write forced idle
-[11:59:41] PASS stock.json is captured
-[11:59:41] PASS the night threshold is 4 minutes
-[11:59:41] == night-everyday
-[11:59:42] PASS test-everyday: constants applied
-[11:59:42] test-everyday: no motion sensor, so the walk to IDLE is stepped at the profile's timers (ADR 0016)
-[12:00:52] PASS test-everyday: the stepped walk reaches IDLE
-[12:04:43] test-everyday: verdict=HELD cause=null profile=test-everyday id=1
-[12:04:43] test-everyday: verdict=HELD timeInDeepMs=230490 maintenance=2 drainPerHour=0.0 ownWakeups=0
-[12:04:43] PASS test-everyday: verdict Held
-[12:04:43] PASS test-everyday: the app's own wakeups are 0
-[12:04:43] PASS test-everyday: alarm stats read at both ends
-[12:04:43] PASS test-everyday: the screen-on collection took 105 ms (under 2 s)
-[12:04:43] PASS test-everyday: sensor snapshots at screen off, a maintenance window and screen on
-[12:04:43] PASS test-everyday: no gap in the Doze record
-[12:04:43] PASS test-everyday: a night report exists at the unlock
-[12:04:43] PASS test-everyday: the verdict line is Held with 0 own wakeups
-[12:04:43] PASS test-everyday: the timeline shows deep idle and a maintenance window
-[12:04:43] PASS test-everyday: compared with 0 earlier night(s)
-[12:04:43] PASS test-everyday: the stock comparison is there
-[12:04:43] PASS test-everyday: the app is not among the wakers
-[12:04:43] test-everyday: report has 9 app, 0 kernel, 5 sensor, 1 change and 2 action lines
-[12:04:43] == night-classic
-[12:04:43] PASS test-classic: constants applied
-[12:04:44] PASS test-classic: forced idle and sensor restriction engage at screen off
-[12:09:45] test-classic: verdict=HELD cause=null profile=test-classic id=2
-[12:09:45] test-classic: verdict=HELD timeInDeepMs=299375 maintenance=2 drainPerHour=0.0 ownWakeups=0
-[12:09:45] PASS test-classic: verdict Held
-[12:09:45] PASS test-classic: the app's own wakeups are 0
-[12:09:45] PASS test-classic: alarm stats read at both ends
-[12:09:45] PASS test-classic: the screen-on collection took 80 ms (under 2 s)
-[12:09:45] PASS test-classic: sensor snapshots at screen off, a maintenance window and screen on
-[12:09:45] PASS test-classic: no gap in the Doze record
-[12:09:45] PASS test-classic: a night report exists at the unlock
-[12:09:45] PASS test-classic: the verdict line is Held with 0 own wakeups
-[12:09:45] PASS test-classic: the timeline shows deep idle and a maintenance window
-[12:09:45] PASS test-classic: compared with 1 earlier night(s)
-[12:09:45] PASS test-classic: the stock comparison is there
-[12:09:45] PASS test-classic: the app is not among the wakers
-[12:09:45] test-classic: report has 4 app, 0 kernel, 3 sensor, 0 change and 5 action lines
-[12:09:45] PASS test-classic: the report lists the screen-off actions
-[12:09:45] PASS test-classic: released at screen on
-[12:09:45] == quick-proof
-[12:09:46] PASS quick proof: the battery is held unplugged before
-[12:09:47] PASS quick proof: ok
-[12:09:47] PASS quick proof: eight steps, all ok
-[12:09:47] PASS quick proof: deep idle confirmed
-[12:09:47] PASS quick proof: forced idle undone on the device
-[12:09:47] PASS quick proof: sensors normal on the device
-[12:09:47] PASS quick proof: the battery is given back to the system
-[12:09:47] PASS quick proof: the engine no longer marks the battery
-[12:09:47] PASS quick proof: the battery steps are logged
-[12:09:47] == export
-[12:09:47] PASS export all: manifest.json
-[12:09:47] PASS export all: sessions.json
-[12:09:47] PASS export all: actions.csv
-[12:09:47] PASS export all: events.csv
-[12:09:47] PASS export all: the profile files in use
-[12:09:47] PASS export all: the raw dumps
-[12:09:47] PASS export all: the ZIP is valid
-[12:09:47] PASS export session 2: one session with its raw dumps
-[12:09:47] == restore
-[12:09:48] PASS restore: the job is ok
-[12:09:48] PASS restore: no key differs from stock.json
-[12:09:48] PASS restore: the global string is as before the run
-[12:09:48] PASS restore: forced idle released
-[12:09:48] PASS restore: sensors normal
-[12:09:48] PASS restore: the allowlist is as before
-[12:09:48] == contract
-[12:09:59] contract: OK (17 tests) 
-[12:09:59] PASS worker contract tests pass as Shizuku
-[12:10:01] == dao
-[12:10:02] dao: OK (3 tests) 
-[12:10:02] PASS Room DAO tests pass
-[12:10:02] failures: 0
-[12:10:02] cleanup
-[12:10:04] after: device_idle_constants=null
-[12:10:04] shutting down the emulator
+[18:44:02] using the suite's emulator (emulator-5554)
+[18:44:02] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[18:44:02] before: device_idle_constants=null
+[18:44:02] == setup
+[18:44:04] PASS the engine starts in its foreground service
+[18:44:05] PASS the Shizuku server starts
+[18:44:05] PASS the worker can write forced idle
+[18:44:06] PASS stock.json is captured
+[18:44:06] PASS the night threshold is 4 minutes
+[18:44:06] == night-classic
+[18:44:06] PASS test-classic: constants applied
+[18:44:07] PASS test-classic: forced idle and sensor restriction engage at screen off
+[18:49:08] test-classic: verdict=HELD cause=null profile=test-classic id=1
+[18:49:08] test-classic: verdict=HELD timeInDeepMs=299493 maintenance=2 drainPerHour=0.0 ownWakeups=1
+[18:49:08] PASS test-classic: verdict Held
+[18:49:08] FAIL test-classic: the app's own wakeups are 0
+[18:49:08] PASS test-classic: alarm stats read at both ends
+[18:49:08] PASS test-classic: the screen-on collection took 78 ms (under 2 s)
+[18:49:08] PASS test-classic: sensor snapshots at screen off, a maintenance window and screen on
+[18:49:08] PASS test-classic: no gap in the Doze record
+[18:49:08] PASS test-classic: a night report exists at the unlock
+[18:49:08] FAIL test-classic: the verdict line is Held with 0 own wakeups
+[18:49:08] PASS test-classic: the timeline shows deep idle and a maintenance window
+[18:49:08] PASS test-classic: compared with 0 earlier night(s)
+[18:49:08] PASS test-classic: the stock comparison is there
+[18:49:09] FAIL test-classic: the app is not among the wakers
+[18:49:09] test-classic: report has 5 app, 0 kernel, 0 sensor, 1 change and 5 action lines
+[18:49:09] PASS test-classic: the report lists the screen-off actions
+[18:49:09] PASS test-classic: released at screen on
+[18:49:09] == quick-proof
+[18:49:09] PASS quick proof: the battery is held unplugged before
+[18:49:10] PASS quick proof: ok
+[18:49:10] PASS quick proof: eight steps, all ok
+[18:49:10] PASS quick proof: deep idle confirmed
+[18:49:10] PASS quick proof: forced idle undone on the device
+[18:49:10] PASS quick proof: sensors normal on the device
+[18:49:10] PASS quick proof: the battery is given back to the system
+[18:49:10] PASS quick proof: the engine no longer marks the battery
+[18:49:10] PASS quick proof: the battery steps are logged
+[18:49:10] == export
+[18:49:10] PASS export all: manifest.json
+[18:49:10] PASS export all: sessions.json
+[18:49:10] PASS export all: actions.csv
+[18:49:10] PASS export all: events.csv
+[18:49:10] PASS export all: the profile files in use
+[18:49:10] PASS export all: the raw dumps
+[18:49:11] PASS export all: the ZIP is valid
+[18:49:11] PASS export session 1: one session with its raw dumps
+[18:49:11] == restore
+[18:49:11] PASS restore: the job is ok
+[18:49:11] PASS restore: no key differs from stock.json
+[18:49:11] PASS restore: the global string is as before the run
+[18:49:12] PASS restore: forced idle released
+[18:49:12] PASS restore: sensors normal
+[18:49:12] PASS restore: the allowlist is as before
+[18:49:12] == contract
+[18:49:24] contract: OK (18 tests) 
+[18:49:24] PASS worker contract tests pass as Shizuku
+[18:49:26] == dao
+[18:49:27] dao: OK (3 tests) 
+[18:49:27] PASS Room DAO tests pass
+[18:49:27] failures: 3
+[18:49:27] cleanup
+[18:49:29] after: device_idle_constants=null

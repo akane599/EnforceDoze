@@ -1,45 +1,43 @@
-[18:03:29] load 0.19 on 16 cores; busy processes: none; memory used 3,9Gi of 15Gi
-[18:03:29] starting ed-api37
-[18:03:44] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
-[18:03:49] baseline: wifi=on mobile_data=1 mobile_data_always_on=1 
-[18:03:52] PASS the engine starts
-[18:03:57] PASS adb runs as root
-[18:03:58] PASS the Shizuku server starts as root
-[18:03:58] PASS the server's process is root's
-[18:03:58] PASS the worker reports uid 0 (T3)
-[18:03:58] PASS an ordinary app may be suspended
-[18:03:58] PASS the clock and EnforceDoze are held back
-[18:03:58] PASS mobile data off is armed with the screen on
-[18:03:59] PASS at screen off mobile data goes off and reads back off
-[18:04:00] PASS when Wi-Fi goes, mobile data comes back on its own
-[18:04:00] PASS that write is logged with the network as its cause
-[18:05:06] PASS screen off again takes mobile data off
-[18:05:07] PASS a hold-off (charging) brings mobile data back
-[18:05:08] PASS the hold-off's end takes it off again
-[18:05:08] PASS screen on brings mobile data back
-[18:05:09] PASS a connected Wi-Fi stays on, with the reason
-[18:05:13] PASS Wi-Fi is on and not connected after forgetting the network
-[18:05:14] PASS at screen off an unconnected Wi-Fi goes off
-[18:05:15] PASS screen on turns Wi-Fi back on
-[18:05:15] PASS the Wi-Fi release reads back on once Wi-Fi has started
-[18:05:19] PASS the emulator's network is saved and connected again
-[18:05:21] PASS at screen off the chosen app is suspended
-[18:05:21] PASS the clock is never suspended
-[18:05:21] PASS screen on lifts the suspension
-[18:05:22] PASS suspended again at the next screen off
-[18:05:22] PASS Restore stock lifts it with the screen off
-[18:05:27] PASS mobile data off before the reboot
-[18:05:27] rebooting
-[18:05:50] PASS the engine starts at boot
-[18:05:50] PASS a held extra without root is reported
-[18:05:50] PASS and notified outside the app
-[18:05:54] PASS adb runs as root after the reboot
-[18:05:56] PASS the Shizuku server starts as root again
-[18:05:56] PASS with root back, mobile data comes back on
-[18:05:56] PASS nothing is stuck any more
-[18:05:56] PASS the notification is gone
-[18:05:56] PASS no crash
-[18:05:56] done: 0 failed
-[18:05:56] cleanup
-[18:05:57] after: wifi=on networks=0 mobile_data=1 mobile_data_always_on=1 
-[18:05:57] shutting down the emulator
+[18:57:33] using the suite's emulator (emulator-5554)
+[18:57:33] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[18:57:33] baseline: wifi=on mobile_data=1 mobile_data_always_on=1 
+[18:57:35] PASS the engine starts
+[18:57:39] PASS adb runs as root
+[18:57:40] PASS the Shizuku server starts as root
+[18:57:40] PASS the server's process is root's
+[18:57:40] PASS the worker reports uid 0 (T3)
+[18:57:40] PASS an ordinary app may be suspended
+[18:57:40] PASS the clock and EnforceDoze are held back
+[18:57:40] PASS mobile data off is armed with the screen on
+[18:57:42] PASS at screen off mobile data goes off and reads back off
+[18:57:43] PASS when Wi-Fi goes, mobile data comes back on its own
+[18:57:43] PASS that write is logged with the network as its cause
+[18:58:48] PASS screen off again takes mobile data off
+[18:58:49] PASS a hold-off (charging) brings mobile data back
+[18:58:51] PASS the hold-off's end takes it off again
+[18:58:51] PASS screen on brings mobile data back
+[18:58:52] PASS a connected Wi-Fi stays on, with the reason
+[18:58:55] PASS Wi-Fi is on and not connected after forgetting the network
+[18:58:56] PASS at screen off an unconnected Wi-Fi goes off
+[18:58:57] PASS screen on turns Wi-Fi back on
+[18:58:57] PASS the Wi-Fi release reads back on once Wi-Fi has started
+[18:59:01] PASS the emulator's network is saved and connected again
+[18:59:02] PASS at screen off the chosen app is suspended
+[18:59:02] PASS the clock is never suspended
+[18:59:02] PASS screen on lifts the suspension
+[18:59:03] PASS suspended again at the next screen off
+[18:59:04] PASS Restore stock lifts it with the screen off
+[18:59:08] PASS mobile data off before the reboot
+[18:59:08] rebooting
+[18:59:29] PASS the engine starts at boot
+[18:59:29] PASS a held extra without root is reported
+[18:59:30] PASS and notified outside the app
+[18:59:33] PASS adb runs as root after the reboot
+[18:59:34] PASS the Shizuku server starts as root again
+[18:59:35] PASS with root back, mobile data comes back on
+[18:59:36] PASS nothing is stuck any more
+[18:59:36] PASS the notification is gone
+[18:59:36] PASS no crash
+[18:59:36] done: 0 failed
+[18:59:36] cleanup
+[18:59:37] after: wifi=on networks=0 mobile_data=1 mobile_data_always_on=1 

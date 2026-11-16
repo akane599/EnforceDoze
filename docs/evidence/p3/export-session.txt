@@ -1,14 +1,14 @@
-path=/data/user/0/io.github.akane599.enforcedoze/cache/exports/enforcedoze-session-2.zip bytes=39936
+path=/data/user/0/io.github.akane599.enforcedoze/cache/exports/enforcedoze-session-1.zip bytes=53699
 entry manifest.json 304
-entry sessions.json 7775
-entry actions.csv 1499
-entry events.csv 164
+entry sessions.json 8179
+entry actions.csv 1498
+entry events.csv 310
 entry profiles/test-classic.json 522
-entry raw/1794128684571/alarm-off.gz 8577
-entry raw/1794128684571/alarm-on.gz 8273
-entry raw/1794128684571/deviceidle-off.gz 1081
-entry raw/1794128684571/deviceidle-on.gz 1078
-entry raw/1794128684571/eventlog.gz 8275
-entry raw/1794128684571/history.gz 2108
-entry raw/1794128684571/sensorservice-off.gz 3101
-entry raw/1794128684571/sensorservice-on.gz 2924
+entry raw/1794843847704/alarm-off.gz 8789
+entry raw/1794843847704/alarm-on.gz 8513
+entry raw/1794843847704/deviceidle-off.gz 1280
+entry raw/1794843847704/deviceidle-on.gz 1149
+entry raw/1794843847704/eventlog.gz 20134
+entry raw/1794843847704/history.gz 3785
+entry raw/1794843847704/sensorservice-off.gz 2799
+entry raw/1794843847704/sensorservice-on.gz 2770

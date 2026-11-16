@@ -1,7 +1,7 @@
 Starting: Intent { act=io.github.akane599.enforcedoze.action.OPEN_REPORT pkg=io.github.akane599.enforcedoze (has extras) }
 
 Exception occurred while executing 'start':
-java.lang.SecurityException: Permission Denial: starting Intent { act=io.github.akane599.enforcedoze.action.OPEN_REPORT flg=0x10000000 xflg=0x4 pkg=io.github.akane599.enforcedoze cmp=io.github.akane599.enforcedoze/.EvidenceReport (has extras) } from null (pid=3654, uid=2000) requires io.github.akane599.enforcedoze.permission.READ_EVIDENCE
+java.lang.SecurityException: Permission Denial: starting Intent { act=io.github.akane599.enforcedoze.action.OPEN_REPORT flg=0x10000000 xflg=0x4 pkg=io.github.akane599.enforcedoze cmp=io.github.akane599.enforcedoze/.EvidenceReport (has extras) } from null (pid=14315, uid=2000) requires io.github.akane599.enforcedoze.permission.READ_EVIDENCE
 	at com.android.server.wm.Session$$ExternalSyntheticBUOutline1.m(R8$$SyntheticClass:0)
 	at com.android.server.wm.ActivityTaskSupervisor.checkStartAnyActivityPermission(ActivityTaskSupervisor.java:1253)
 	at com.android.server.wm.ActivityStarter.executeRequest(ActivityStarter.java:1299)

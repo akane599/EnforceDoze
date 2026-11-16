@@ -1,18 +1,18 @@
 info: starter begin
 info: killing old process...
-info: apk path is /data/app/~~l5iwpisyHD90ClHRTdGhhA==/moe.shizuku.privileged.api-Re8iWcIdEe97xjCocgwLOg==/base.apk
+info: apk path is /data/app/~~BFWnotQxKU7LcSuFvreL8w==/moe.shizuku.privileged.api-x4WPhSfwePBHtJOOqKtJNA==/base.apk
 info: starting server...
-info: shizuku_server pid is 2952
+info: shizuku_server pid is 7542
 info: shizuku_starter exit with 0
 info: starter begin
 info: killing old process...
-info: apk path is /data/app/~~l5iwpisyHD90ClHRTdGhhA==/moe.shizuku.privileged.api-Re8iWcIdEe97xjCocgwLOg==/base.apk
+info: apk path is /data/app/~~BFWnotQxKU7LcSuFvreL8w==/moe.shizuku.privileged.api-x4WPhSfwePBHtJOOqKtJNA==/base.apk
 info: starting server...
-info: shizuku_server pid is 4500
+info: shizuku_server pid is 8338
 info: shizuku_starter exit with 0
 info: starter begin
 info: killing old process...
-info: apk path is /data/app/~~l5iwpisyHD90ClHRTdGhhA==/moe.shizuku.privileged.api-Re8iWcIdEe97xjCocgwLOg==/base.apk
+info: apk path is /data/app/~~BFWnotQxKU7LcSuFvreL8w==/moe.shizuku.privileged.api-x4WPhSfwePBHtJOOqKtJNA==/base.apk
 info: starting server...
-info: shizuku_server pid is 5095
+info: shizuku_server pid is 8979
 info: shizuku_starter exit with 0

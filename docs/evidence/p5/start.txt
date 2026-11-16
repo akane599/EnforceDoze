@@ -2,6 +2,6 @@ Starting: Intent { cmp=io.github.akane599.enforcedoze/.app.ui.MainActivity }
 Status: ok
 LaunchState: COLD
 Activity: io.github.akane599.enforcedoze/.app.ui.MainActivity
-TotalTime: 568
-WaitTime: 569
+TotalTime: 577
+WaitTime: 580
 Complete

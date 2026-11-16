@@ -1,13 +1,13 @@
       Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 }
-      caller=com.android.systemui 917:com.android.systemui/u0a189 pid=917 uid=10189 realCallingUid=10189
+      caller=com.android.systemui 919:com.android.systemui/u0a189 pid=919 uid=10189 realCallingUid=10189
       options=Bundle[{android:broadcast.deferralPolicy=2, android:broadcast.deliveryGroupPolicy=1}]
-      enqueueClockTime=2026-11-08 11:54:52.908 dispatchClockTime=1970-01-01 02:00:00.000
-      dispatchTime=-- (-4m39s325ms since enq) finishTime=-343ms (+4m39s826ms since disp)
+      enqueueClockTime=2026-11-16 18:52:47.347 dispatchClockTime=1970-01-01 02:00:00.000
+      dispatchTime=-- (-11m26s765ms since enq) finishTime=-1s337ms (+11m27s266ms since disp)
       nextReceiver=13
       terminalCount=13
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.android.stk/.UserPresentReceiver
-      SKIPPED terminal +4m39s325ms (-1) #11: (manifest)
+      SKIPPED terminal +11m26s765ms (-1) #11: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.auth.setup.devicesignals.LockScreenReceiver
@@ -15,7 +15,7 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.auth.setup.devicesignals.LockScreenReceiver
-      SKIPPED terminal +4m39s325ms (-1) #12: (manifest)
+      SKIPPED terminal +11m26s765ms (-1) #12: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.chimera.GmsIntentOperationService$PersistentTrustedReceiver
@@ -23,23 +23,23 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
-    Historical Broadcast #4:
-      BroadcastRecord{4a59ac8 Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }/u0/0x2051} to user 0
+    Historical Broadcast #5:
+      BroadcastRecord{7f84d83 Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }/u0/0x2051} to user 0
       Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }
         extras: Bundle[{cmd=status}]
-      caller=null null pid=4057 uid=2000 realCallingUid=2000
-      enqueueClockTime=2026-11-08 11:54:52.629 dispatchClockTime=2026-11-08 11:54:52.629
+      caller=null null pid=10335 uid=2000 realCallingUid=2000
+      enqueueClockTime=2026-11-16 18:52:47.060 dispatchClockTime=2026-11-16 18:52:47.060
 --
       Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 }
-      caller=com.android.systemui 917:com.android.systemui/u0a189 pid=917 uid=10189 realCallingUid=10189
+      caller=com.android.systemui 919:com.android.systemui/u0a189 pid=919 uid=10189 realCallingUid=10189
       options=Bundle[{android:broadcast.deferralPolicy=2, android:broadcast.deliveryGroupPolicy=1}]
-      enqueueClockTime=2026-11-08 11:52:26.481 dispatchClockTime=1970-01-01 02:00:00.000
-      dispatchTime=-- (-2m12s899ms since enq) finishTime=-2m26s771ms (+2m13s400ms since disp)
+      enqueueClockTime=2026-11-16 18:51:51.111 dispatchClockTime=1970-01-01 02:00:00.000
+      dispatchTime=-- (-10m30s528ms since enq) finishTime=-57s576ms (+10m31s29ms since disp)
       nextReceiver=13
       terminalCount=13
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.android.stk/.UserPresentReceiver
-      SKIPPED terminal +2m12s899ms (-1) #11: (manifest)
+      SKIPPED terminal +10m30s529ms (-1) #11: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.auth.setup.devicesignals.LockScreenReceiver
@@ -47,7 +47,7 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.auth.setup.devicesignals.LockScreenReceiver
-      SKIPPED terminal +2m12s899ms (-1) #12: (manifest)
+      SKIPPED terminal +10m30s529ms (-1) #12: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.chimera.GmsIntentOperationService$PersistentTrustedReceiver
@@ -55,23 +55,23 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
-    Historical Broadcast #22:
-      BroadcastRecord{6cd9752 Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }/u0/0x2051} to user 0
+    Historical Broadcast #21:
+      BroadcastRecord{a39db3c Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }/u0/0x2051} to user 0
       Intent { flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras) }
         extras: Bundle[{cmd=status}]
-      caller=null null pid=3863 uid=2000 realCallingUid=2000
-      enqueueClockTime=2026-11-08 11:52:26.075 dispatchClockTime=2026-11-08 11:52:26.075
+      caller=null null pid=10181 uid=2000 realCallingUid=2000
+      enqueueClockTime=2026-11-16 18:51:50.698 dispatchClockTime=2026-11-16 18:51:50.698
 --
       Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 }
-      caller=com.android.systemui 917:com.android.systemui/u0a189 pid=917 uid=10189 realCallingUid=10189
+      caller=com.android.systemui 919:com.android.systemui/u0a189 pid=919 uid=10189 realCallingUid=10189
       options=Bundle[{android:broadcast.deferralPolicy=2, android:broadcast.deliveryGroupPolicy=1}]
-      enqueueClockTime=2026-11-08 11:50:27.887 dispatchClockTime=1970-01-01 02:00:00.000
-      dispatchTime=-- (-14s304ms since enq) finishTime=-4m22s71ms (+18s112ms since disp)
-      nextReceiver=9
-      terminalCount=9
+      enqueueClockTime=2026-11-16 18:49:06.739 dispatchClockTime=1970-01-01 02:00:00.000
+      dispatchTime=-- (-7m46s156ms since enq) finishTime=-3m41s595ms (+7m47s26ms since disp)
+      nextReceiver=13
+      terminalCount=13
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.android.stk/.UserPresentReceiver
-      SKIPPED terminal +14s305ms (-1) #7: (manifest)
+      SKIPPED terminal +7m46s156ms (-1) #11: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.auth.setup.devicesignals.LockScreenReceiver
@@ -79,7 +79,7 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.auth.setup.devicesignals.LockScreenReceiver
-      SKIPPED terminal +14s305ms (-1) #8: (manifest)
+      SKIPPED terminal +7m46s156ms (-1) #12: (manifest)
         priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
         ActivityInfo:
           name=com.google.android.gms.chimera.GmsIntentOperationService$PersistentTrustedReceiver
@@ -87,33 +87,65 @@
           processName=com.google.android.gms.persistent
 --
         reason: skipped by policy at enqueue: Background execution not allowed: receiving Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4 } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
-    Historical Broadcast #215:
-      BroadcastRecord{6b149a6 android.intent.action.DROPBOX_ENTRY_ADDED/u-1/0x1081} to user -1
-      Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 xflg=0x4 (has extras) }
-        extras: Bundle[{tag=SYSTEM_AUDIT, time=1794127827602, android.os.extra.DROPPED_COUNT=0}]
-      caller=android 655:system/1000 pid=655 uid=1000 realCallingUid=1000
-      requiredPermissions=[android.permission.READ_DROPBOX_DATA]  appOp=-1
+    Historical Broadcast #207:
+      BroadcastRecord{99951a1 android.intent.action.SCREEN_ON/u-1/0x10c2} to user -1
+      Intent { act=android.intent.action.SCREEN_ON flg=0x50200010 }
+      caller=null null pid=652 uid=1000 realCallingUid=1000
+      options=Bundle[{android:broadcast.deferralPolicy=2, android:broadcast.deliveryGroupMatchingKey=android.intent.action.SCREEN_ON, android:broadcast.deliveryGroupMatchingNamespace=64b37cc0-4273-483b-a4fa-dbbacb4864f6, android:broadcast.deliveryGroupPolicy=1}]
+      enqueueClockTime=2026-11-16 18:49:06.740 dispatchClockTime=2026-11-16 18:49:06.742
 --
-    #3: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
-      -20765d8h54m52s908ms dispatch +20765d8h54m53s409ms finish
-      enq=2026-11-08 11:54:52.908 disp=1970-01-01 02:00:00.000 fin=2026-11-08 11:54:53.409
-    #4: flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras)
+    #4: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h52m47s347ms dispatch +20773d15h52m47s848ms finish
+      enq=2026-11-16 18:52:47.347 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:52:47.848
+    #5: flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras)
       0 dispatch +1ms finish
-      enq=2026-11-08 11:54:52.629 disp=2026-11-08 11:54:52.629 fin=2026-11-08 11:54:52.630
+      enq=2026-11-16 18:52:47.060 disp=2026-11-16 18:52:47.060 fin=2026-11-16 18:52:47.061
       extras: Bundle[{cmd=status}]
 --
-    #21: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
-      -20765d8h52m26s481ms dispatch +20765d8h52m26s983ms finish
-      enq=2026-11-08 11:52:26.481 disp=1970-01-01 02:00:00.000 fin=2026-11-08 11:52:26.983
-    #22: flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras)
+    #20: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h51m51s111ms dispatch +20773d15h51m51s611ms finish
+      enq=2026-11-16 18:51:51.111 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:51:51.611
+    #21: flg=0x400010 cmp=io.github.akane599.enforcedoze/.app.DebugCommandReceiver (has extras)
       0 dispatch +1ms finish
-      enq=2026-11-08 11:52:26.075 disp=2026-11-08 11:52:26.075 fin=2026-11-08 11:52:26.076
+      enq=2026-11-16 18:51:50.698 disp=2026-11-16 18:51:50.698 fin=2026-11-16 18:51:50.699
       extras: Bundle[{cmd=status}]
 --
-    #214: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
-      -20765d8h50m27s887ms dispatch +20765d8h50m31s695ms finish
-      enq=2026-11-08 11:50:27.887 disp=1970-01-01 02:00:00.000 fin=2026-11-08 11:50:31.695
-    #215: act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 xflg=0x4 (has extras)
-      -20765d8h50m27s644ms dispatch +20765d8h50m31s695ms finish
-      enq=2026-11-08 11:50:27.644 disp=1970-01-01 02:00:00.000 fin=2026-11-08 11:50:31.695
-      extras: Bundle[{tag=SYSTEM_AUDIT, time=1794127827602, android.os.extra.DROPPED_COUNT=0}]
+    #206: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h49m6s739ms dispatch +20773d15h49m7s609ms finish
+      enq=2026-11-16 18:49:06.739 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:49:07.609
+    #207: act=android.intent.action.SCREEN_ON flg=0x50200010
+      +2ms dispatch +867ms finish
+      enq=2026-11-16 18:49:06.740 disp=2026-11-16 18:49:06.742 fin=2026-11-16 18:49:07.609
+    #208: act=android.intent.action.TIME_TICK flg=0x50200010 xflg=0x4
+--
+    #304: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h43m36s753ms dispatch +20773d15h43m36s979ms finish
+      enq=2026-11-16 18:43:36.753 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:43:36.979
+    #305: act=android.intent.action.SCREEN_ON flg=0x50200010
+      0 dispatch +224ms finish
+      enq=2026-11-16 18:43:36.755 disp=2026-11-16 18:43:36.755 fin=2026-11-16 18:43:36.979
+    #306: act=android.intent.action.TIME_TICK flg=0x50200010 xflg=0x4
+--
+    #321: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h43m27s175ms dispatch +20773d15h43m27s615ms finish
+      enq=2026-11-16 18:43:27.175 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:43:27.615
+    #322: act=android.intent.action.SCREEN_ON flg=0x50200010
+      +4ms dispatch +437ms finish
+      enq=2026-11-16 18:43:27.174 disp=2026-11-16 18:43:27.178 fin=2026-11-16 18:43:27.615
+    #323: act=android.intent.action.TIME_TICK flg=0x50200010 xflg=0x4
+--
+    #342: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h43m24s257ms dispatch +20773d15h43m24s757ms finish
+      enq=2026-11-16 18:43:24.257 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:43:24.757
+    #343: act=com.google.android.comms.action.THEME_CHANGE flg=0x30 xflg=0x4 pkg=com.google.android.dialer (has extras)
+      +171ms dispatch +54ms finish
+      enq=2026-11-16 18:43:24.505 disp=2026-11-16 18:43:24.676 fin=2026-11-16 18:43:24.730
+      extras: Bundle[{STRIPPED=1}]
+--
+    #719: act=android.intent.action.USER_PRESENT flg=0x24200010 xflg=0x4
+      -20773d15h41m34s548ms dispatch +20773d15h41m35s740ms finish
+      enq=2026-11-16 18:41:34.548 disp=1970-01-01 02:00:00.000 fin=2026-11-16 18:41:35.740
+    #720: act=android.intent.action.SIM_STATE_CHANGED flg=0x15000010 xflg=0x4 (has extras)
+      +128ms dispatch +1s160ms finish
+      enq=2026-11-16 18:41:34.450 disp=2026-11-16 18:41:34.578 fin=2026-11-16 18:41:35.738
+      extras: Bundle[{android.telephony.extra.SUBSCRIPTION_INDEX=1, android.telephony.extra.SLOT_INDEX=0, phoneName=Phone, reason=null, rebroadcastOnUnlock=true, ss=LOADED, phone=0, subscription=1}]

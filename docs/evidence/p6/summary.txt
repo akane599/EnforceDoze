@@ -1,35 +1,33 @@
-[11:53:59] load 2.73 on 16 cores; busy processes: none; memory used 3,5Gi of 15Gi
-[11:53:59] starting ed-api37
-[11:54:15] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
-[11:54:17] PASS the signature permission reaches a client installed before EnforceDoze
-[11:54:21] PASS the engine starts
-[11:54:23] PASS the Shizuku server starts
-[11:54:23] PASS stock.json is captured
-[11:54:23] PASS previous.json holds the simulated Tasker setup
-[11:54:23] PASS the stock capture put the Tasker string back
-[11:54:24] PASS the client reads the provider (status, sessions, limit, refusals)
-[11:54:24] PASS the shell cannot read the provider
-[11:54:24] PASS the shell cannot open the report alias
-[11:54:25] PASS the signature permission reaches a client installed after EnforceDoze
-[11:54:25] PASS no upstream receiver answers (allowlist, enable, settings)
-[11:54:25] PASS with the API off, a call never reaches the app
-[11:54:25] PASS a token is made
-[11:54:25] PASS a bad token is rejected and logged
-[11:54:25] PASS APPLY_PROFILE with the token applies Everyday
-[11:54:25] PASS the engine runs Everyday
-[11:54:25] PASS a second change within 30 s is dropped
-[11:54:25] PASS SENSORS_OFF without on is rejected
-[11:54:25] PASS GET_STATUS replies
-[11:54:25] PASS turning the API off disables the receiver
-[11:54:25] PASS the found setup is the Tasker string
-[11:54:25] PASS Imported setup is saved
-[11:54:25] PASS the check watches while Everyday runs
-[11:54:29] PASS a foreign write fails the check
-[11:55:21] PASS a clean screen off and on completes the switch-over
-[11:55:21] PASS Return to my previous setup puts the Tasker string back
-[11:55:21] PASS EnforceDoze is hands off after the way back
-[11:55:21] PASS no crash
-[11:55:21] done: 0 failed
-[11:55:21] cleanup
-[11:55:21] after: sync=none device_idle_constants=null
-[11:55:21] shutting down the emulator
+[18:56:12] using the suite's emulator (emulator-5554)
+[18:56:12] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[18:56:13] PASS the signature permission reaches a client installed before EnforceDoze
+[18:56:15] PASS the engine starts
+[18:56:16] PASS the Shizuku server starts
+[18:56:16] PASS stock.json is captured
+[18:56:16] PASS previous.json holds the simulated Tasker setup
+[18:56:16] PASS the stock capture put the Tasker string back
+[18:56:17] PASS the client reads the provider (status, sessions, limit, refusals)
+[18:56:18] PASS the shell cannot read the provider
+[18:56:18] PASS the shell cannot open the report alias
+[18:56:18] PASS the signature permission reaches a client installed after EnforceDoze
+[18:56:18] PASS no upstream receiver answers (allowlist, enable, settings)
+[18:56:18] PASS with the API off, a call never reaches the app
+[18:56:18] PASS a token is made
+[18:56:18] PASS a bad token is rejected and logged
+[18:56:18] PASS APPLY_PROFILE with the token applies Everyday
+[18:56:18] PASS the engine runs Everyday
+[18:56:18] PASS a second change within 30 s is dropped
+[18:56:18] PASS SENSORS_OFF without on is rejected
+[18:56:18] PASS GET_STATUS replies
+[18:56:18] PASS turning the API off disables the receiver
+[18:56:18] PASS the found setup is the Tasker string
+[18:56:18] PASS Imported setup is saved
+[18:56:18] PASS the check watches while Everyday runs
+[18:56:23] PASS a foreign write fails the check
+[18:57:14] PASS a clean screen off and on completes the switch-over
+[18:57:14] PASS Return to my previous setup puts the Tasker string back
+[18:57:14] PASS EnforceDoze is hands off after the way back
+[18:57:14] PASS no crash
+[18:57:14] done: 0 failed
+[18:57:14] cleanup
+[18:57:14] after: sync=none device_idle_constants=null

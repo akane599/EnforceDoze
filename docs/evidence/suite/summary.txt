@@ -1,0 +1,9 @@
+Emulator suite on ed-api37 (emulator-5554), 2026-11-16T15:59:44Z
+p1         exit 0     60 s
+p2         exit 0     73 s
+p3         exit 1    351 s
+p4         exit 0    299 s
+p5         exit 0     83 s
+p6         exit 0     80 s
+p6-extras  exit 0    144 s
+total 1090 s (limit 1200 s); 1 phase(s) failed

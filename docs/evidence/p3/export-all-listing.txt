@@ -1,27 +1,18 @@
 Archive:  /home/akane/.cache/enforcedoze-p3/out/export-all.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-      300  2026-11-08 12:09   manifest.json
-    20316  2026-11-08 12:09   sessions.json
-     3846  2026-11-08 12:09   actions.csv
-      738  2026-11-08 12:09   events.csv
-      598  2026-11-08 12:09   profiles/test-everyday.json
-      522  2026-11-08 12:09   profiles/test-classic.json
-     8447  2026-11-08 12:09   raw/1794128382657/alarm-off.gz
-     8273  2026-11-08 12:09   raw/1794128382657/alarm-on.gz
-     1578  2026-11-08 12:09   raw/1794128382657/deviceidle-off.gz
-     1040  2026-11-08 12:09   raw/1794128382657/deviceidle-on.gz
-    26732  2026-11-08 12:09   raw/1794128382657/eventlog.gz
-     4139  2026-11-08 12:09   raw/1794128382657/history.gz
-     2497  2026-11-08 12:09   raw/1794128382657/sensorservice-off.gz
-     3193  2026-11-08 12:09   raw/1794128382657/sensorservice-on.gz
-     8577  2026-11-08 12:09   raw/1794128684571/alarm-off.gz
-     8273  2026-11-08 12:09   raw/1794128684571/alarm-on.gz
-     1081  2026-11-08 12:09   raw/1794128684571/deviceidle-off.gz
-     1078  2026-11-08 12:09   raw/1794128684571/deviceidle-on.gz
-     8275  2026-11-08 12:09   raw/1794128684571/eventlog.gz
-     2108  2026-11-08 12:09   raw/1794128684571/history.gz
-     3101  2026-11-08 12:09   raw/1794128684571/sensorservice-off.gz
-     2924  2026-11-08 12:09   raw/1794128684571/sensorservice-on.gz
+      300  2026-11-16 18:49   manifest.json
+     8179  2026-11-16 18:49   sessions.json
+     3048  2026-11-16 18:49   actions.csv
+      663  2026-11-16 18:49   events.csv
+      522  2026-11-16 18:49   profiles/test-classic.json
+     8789  2026-11-16 18:49   raw/1794843847704/alarm-off.gz
+     8513  2026-11-16 18:49   raw/1794843847704/alarm-on.gz
+     1280  2026-11-16 18:49   raw/1794843847704/deviceidle-off.gz
+     1149  2026-11-16 18:49   raw/1794843847704/deviceidle-on.gz
+    20134  2026-11-16 18:49   raw/1794843847704/eventlog.gz
+     3785  2026-11-16 18:49   raw/1794843847704/history.gz
+     2799  2026-11-16 18:49   raw/1794843847704/sensorservice-off.gz
+     2770  2026-11-16 18:49   raw/1794843847704/sensorservice-on.gz
 ---------                     -------
-   117636                     22 files
+    61931                     13 files

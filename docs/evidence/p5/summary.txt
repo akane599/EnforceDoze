@@ -1,16 +1,14 @@
-[11:52:09] load 0.14 on 16 cores; busy processes: none; memory used 3,5Gi of 15Gi
-[11:52:09] starting ed-api37
-[11:52:24] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
-[11:53:02] cold start timeToInitialDisplayMs median: 190
-[11:53:02] PASS cold start under 500 ms
-[11:53:05] PASS Shizuku server running
-[11:53:20] PASS DUMP granted through the worker
-[11:53:20] PASS WRITE_SECURE_SETTINGS granted through the worker
-[11:53:20] PASS usage access set through the worker
-[11:53:26] PASS both tiles are in Quick Settings
-[11:53:29] PASS sensors still on after the cancelled confirmation
-[11:53:29] PASS no crash
-[11:53:29] done: 0 failed
-[11:53:29] cleanup
-[11:53:30] after: sync=none device_idle_constants=null
-[11:53:30] shutting down the emulator
+[18:54:55] using the suite's emulator (emulator-5554)
+[18:54:55] booted google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.051.A3/16571990:userdebug/dev-keys
+[18:55:26] cold start timeToInitialDisplayMs median: 203
+[18:55:26] PASS cold start under 500 ms
+[18:55:29] PASS Shizuku server running
+[18:55:45] PASS DUMP granted through the worker
+[18:55:45] PASS WRITE_SECURE_SETTINGS granted through the worker
+[18:55:45] PASS usage access set through the worker
+[18:55:51] PASS both tiles are in Quick Settings
+[18:55:54] PASS sensors still on after the cancelled confirmation
+[18:55:54] PASS no crash
+[18:55:54] done: 0 failed
+[18:55:54] cleanup
+[18:55:55] after: sync=none device_idle_constants=null

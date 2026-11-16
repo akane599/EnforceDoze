@@ -1,23 +1,23 @@
-night id=2 session=2 unlockedAt=1794128984519 start=1794128684571 end=1794128984357
-verdict=HELD timeInDeepMs=299375 maintenance=2 drainPerHour=0.0 ownWakeups=0
-timeline IDLE 1794128684571 1794128744155
-timeline IDLE_MAINTENANCE 1794128744155 1794128774186
-timeline IDLE 1794128774186 1794128894205
-timeline IDLE_MAINTENANCE 1794128894205 1794128924535
-timeline IDLE 1794128924535 1794128983946
-timeline ACTIVE 1794128983946 1794128984357
-light 1794128983946 OVERRIDE->ACTIVE exit-force
-recent nights=1 drainPerHour=0.0 deepShare=0.7699451160646582
+night id=1 session=1 unlockedAt=1794844147884 start=1794843847704 end=1794844147609 sessions=1 screenOffMs=299905
+verdict=HELD timeInDeepMs=299493 maintenance=2 drainPerHour=0.0 ownWakeups=1
+session 1 1794843847704 1794844147609 HELD
+timeline IDLE 1794843847704 1794843907285
+timeline IDLE_MAINTENANCE 1794843907285 1794843937335
+timeline IDLE 1794843937335 1794844057335
+timeline IDLE_MAINTENANCE 1794844057335 1794844087705
+timeline IDLE 1794844087705 1794844147197
+timeline ACTIVE 1794844147197 1794844147609
+light 1794844147197 OVERRIDE->ACTIVE exit-force
+recent nights=0 drainPerHour=null deepShare=null
 stock nights=0 drainPerHour=null deepShare=null
-app uid=10217 self=false wakeups=3 jobs=0 wakelockMs=1510 com.google.android.gms
-app uid=1000 self=false wakeups=2 jobs=0 wakelockMs=60389 android
-app uid=-1 self=false wakeups=0 jobs=0 wakelockMs=753 
-app uid=10182 self=false wakeups=0 jobs=1 wakelockMs=0 
-sensor uid=10217 com.google.android.location.fused.PressureProvider Goldfish Pressure sensor periodUs=100000 at=[SCREEN_OFF]
-sensor uid=10217 com.google.android.location.fused.StepDetector Goldfish 3-axis Accelerometer periodUs=20000 at=[SCREEN_OFF]
-sensor uid=10217 com.google.android.location.collectionlib.SensorScanner$SensorEventListenerAdapter Goldfish 3-axis Accelerometer periodUs=20000 at=[SCREEN_OFF]
-action 1794128683417 CONSTANTS OK PROFILE_SWITCH
-action 1794128684457 SENSORS OK SCREEN_OFF
-action 1794128684457 FORCE_IDLE OK SCREEN_OFF
-action 1794128984353 FORCE_IDLE OK SCREEN_ON
-action 1794128984353 SENSORS OK SCREEN_ON
+app uid=10217 self=false wakeups=4 jobs=0 wakelockMs=29 com.google.android.gms
+app uid=1000 self=false wakeups=2 jobs=0 wakelockMs=60459 android
+app uid=-1 self=false wakeups=0 jobs=0 wakelockMs=871 
+app uid=10244 self=true wakeups=0 jobs=0 wakelockMs=204 
+app uid=10182 self=false wakeups=0 jobs=3 wakelockMs=0 
+holdOff 1794843846259 HOLD_OFF_ENDED CHARGING
+action 1794843846143 CONSTANTS OK STOCK_CAPTURE
+action 1794843847587 SENSORS OK SCREEN_OFF
+action 1794843847587 FORCE_IDLE OK SCREEN_OFF
+action 1794844147605 FORCE_IDLE OK SCREEN_ON
+action 1794844147605 SENSORS OK SCREEN_ON

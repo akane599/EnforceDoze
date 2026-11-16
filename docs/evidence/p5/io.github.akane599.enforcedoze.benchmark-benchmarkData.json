@@ -27,24 +27,24 @@
             "name": "coldStart",
             "params": {},
             "className": "io.github.akane599.enforcedoze.benchmark.StartupBenchmark",
-            "totalRunTimeNs": 30906527071,
+            "totalRunTimeNs": 29813800098,
             "metrics": {
                 "timeToInitialDisplayMs": {
-                    "minimum": 187.59354,
-                    "maximum": 206.804081,
-                    "median": 190.0219265,
-                    "coefficientOfVariation": 0.03840632393649091,
+                    "minimum": 161.714445,
+                    "maximum": 222.165991,
+                    "median": 203.32803,
+                    "coefficientOfVariation": 0.0893123324510489,
                     "runs": [
-                        202.435479,
-                        188.374181,
-                        190.387902,
-                        188.021481,
-                        194.680134,
-                        204.23842,
-                        189.655951,
-                        189.520541,
-                        187.59354,
-                        206.804081
+                        161.714445,
+                        179.773516,
+                        198.388687,
+                        212.737965,
+                        191.364892,
+                        196.370515,
+                        208.267373,
+                        222.165991,
+                        209.649603,
+                        208.477652
                     ]
                 }
             },
@@ -56,52 +56,52 @@
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 0",
-                    "filename": "StartupBenchmark_coldStart_iter000_2026-11-16-08-52-33.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter000_2026-11-16-15-54-58.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 1",
-                    "filename": "StartupBenchmark_coldStart_iter001_2026-11-16-08-52-36.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter001_2026-11-16-15-55-01.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 2",
-                    "filename": "StartupBenchmark_coldStart_iter002_2026-11-16-08-52-38.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter002_2026-11-16-15-55-04.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 3",
-                    "filename": "StartupBenchmark_coldStart_iter003_2026-11-16-08-52-42.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter003_2026-11-16-15-55-07.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 4",
-                    "filename": "StartupBenchmark_coldStart_iter004_2026-11-16-08-52-45.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter004_2026-11-16-15-55-10.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 5",
-                    "filename": "StartupBenchmark_coldStart_iter005_2026-11-16-08-52-48.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter005_2026-11-16-15-55-13.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 6",
-                    "filename": "StartupBenchmark_coldStart_iter006_2026-11-16-08-52-51.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter006_2026-11-16-15-55-16.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 7",
-                    "filename": "StartupBenchmark_coldStart_iter007_2026-11-16-08-52-54.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter007_2026-11-16-15-55-19.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 8",
-                    "filename": "StartupBenchmark_coldStart_iter008_2026-11-16-08-52-57.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter008_2026-11-16-15-55-22.perfetto-trace"
                 },
                 {
                     "type": "PerfettoTrace",
                     "label": "Trace Iteration 9",
-                    "filename": "StartupBenchmark_coldStart_iter009_2026-11-16-08-53-00.perfetto-trace"
+                    "filename": "StartupBenchmark_coldStart_iter009_2026-11-16-15-55-25.perfetto-trace"
                 }
             ]
         }

@@ -1,12 +1,14 @@
-verdict=HELD cause=null profile=test-classic id=2
-start=1794128684571 end=1794128984357 pluggedAtStart=false
+verdict=HELD cause=null profile=test-classic id=1
+start=1794843847704 end=1794844147609 pluggedAtStart=false
 expectedToDeepMs=0 timeToDeepMs=0 lateByMs=null
-deepShare=0.999 timeInDeepMs=299375 maintenance=2 motionResets=0
+deepShare=0.999 timeInDeepMs=299493 maintenance=2 motionResets=0
 battery=100->100 chargeUah=10000->10000 drainPerHour=0.0 drainMah=0.0
-ownWakeups=0 alarmsRead=true collectionMs=80
-eventLogFrom=1794128684571 historyFrom=1794128685191 mobileRadioMs=10216
-transitions=6 wakers=4 snapshots=[SCREEN_OFF, COPY, COPY, SCREEN_ON]
-waker uid=10217 self=false alarms=1 network=2 kernel=0 jobs=0 wakelockMs=1510 com.google.android.gms
-waker uid=1000 self=false alarms=2 network=0 kernel=0 jobs=0 wakelockMs=60389 android
-waker uid=-1 self=false alarms=0 network=0 kernel=0 jobs=0 wakelockMs=753 
-waker uid=10182 self=false alarms=0 network=0 kernel=0 jobs=1 wakelockMs=0
+ownWakeups=1 alarmsRead=true collectionMs=78
+eventLogFrom=1794843847704 historyFrom=1794843847790 mobileRadioMs=0
+transitions=6 wakers=5 snapshots=[SCREEN_OFF, COPY, COPY, SCREEN_ON]
+own WAKELOCK 1794843853544 1794843853748 idle NotificationManagerService:post:io.github.akane599.enforcedoze
+waker uid=10217 self=false alarms=1 network=3 kernel=0 jobs=0 wakelockMs=29 com.google.android.gms
+waker uid=1000 self=false alarms=2 network=0 kernel=0 jobs=0 wakelockMs=60459 android
+waker uid=-1 self=false alarms=0 network=0 kernel=0 jobs=0 wakelockMs=871 
+waker uid=10244 self=true alarms=0 network=0 kernel=0 jobs=0 wakelockMs=204 
+waker uid=10182 self=false alarms=0 network=0 kernel=0 jobs=3 wakelockMs=0
