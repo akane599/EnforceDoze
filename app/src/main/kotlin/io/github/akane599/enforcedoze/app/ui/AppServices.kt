@@ -147,6 +147,9 @@ internal class AppServices(val graph: EngineGraph) {
     val accessChanged: StateFlow<Int> = accessChanges.asStateFlow()
 
     init {
+        // The privilege state follows Shizuku for the whole process, engine running or not: on the first run the
+        // engine is off, and without this the tier stayed T0 and the grants below never came.
+        graph.controller.watch()
         // SPEC 4.1 T1: the durable grants are given once through the worker, as soon as Shizuku or Sui allows it.
         graph.scope.launch {
             graph.controller.state.map { it.shizuku is ShizukuStatus.Ready }.distinctUntilChanged().filter { it }.collect {

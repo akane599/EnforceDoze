@@ -112,7 +112,8 @@ class SensorsTileService : EdTileService() {
     private val local = LocalReader()
 
     override suspend fun show() {
-        if (graph.controller.state.value.tier < Tier.T2) {
+        // A fresh read: the tile may be the first thing to run in this process, with the engine off.
+        if (graph.controller.refresh().tier < Tier.T2) {
             draw(Tile.STATE_UNAVAILABLE, getString(R.string.tile_needs_worker))
             return
         }

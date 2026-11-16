@@ -169,6 +169,20 @@ class PrivilegeControllerTest {
     }
 
     @Test
+    fun `watch keeps the state current with the engine off`() = runTest {
+        val env = Env(this)
+        val watching = env.controller.watch()
+        assertThat(env.controller.state.value.shizuku).isEqualTo(ShizukuStatus.NotRunning)
+        // The owner starts Shizuku and allows EnforceDoze; nothing has called start().
+        env.shizuku.status = ShizukuStatus.Ready(2000, 13, sui = false)
+        env.shizuku.listener!!.invoke()
+        runCurrent()
+        assertThat(env.controller.state.value.shizuku).isEqualTo(ShizukuStatus.Ready(2000, 13, sui = false))
+        watching.close()
+        assertThat(env.shizuku.listener).isNull()
+    }
+
+    @Test
     fun `stop removes the listener and start again collects once`() = runTest {
         val env = Env(this, shizuku = ShizukuStatus.Ready(2000, 13, sui = false))
         env.controller.start()

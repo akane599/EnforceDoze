@@ -53,6 +53,17 @@ public class PrivilegeController internal constructor(
         refresh()
     }
 
+    /**
+     * Keeps [state] current while the engine is off, as on the first run or with the engine switched off: Shizuku's
+     * binder and permission changes refresh it, so the screens and tiles see the real tier and the durable grants can
+     * follow (SPEC 4.1 T1). [start] does the same for the engine and also tracks the worker session; both may run.
+     */
+    public fun watch(): AutoCloseable {
+        val handle = shizuku.observe { scope.launch { refresh() } }
+        refresh()
+        return handle
+    }
+
     /** Stops listening and unbinds the worker before returning, so a later [start] begins clean. */
     public suspend fun stop() {
         observation?.close()
