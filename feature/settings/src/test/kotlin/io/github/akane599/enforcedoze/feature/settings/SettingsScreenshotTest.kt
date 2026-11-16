@@ -5,7 +5,6 @@ import androidx.compose.ui.res.stringResource
 import io.github.akane599.enforcedoze.testing.screenshots.Primary
 import io.github.akane599.enforcedoze.testing.screenshots.ownerClock
 import io.github.akane599.enforcedoze.testing.screenshots.shoot
-import io.github.akane599.enforcedoze.ui.ActionOutcome
 import io.github.akane599.enforcedoze.ui.NoticeKind
 import io.github.akane599.enforcedoze.ui.StateNotice
 import org.junit.Before
@@ -25,7 +24,8 @@ class SettingsScreenshotTest {
         privilege = PrivilegeStatus(tier = 2, via = "Shizuku 13.6.0"),
         keepAwake = listOf(AppRef("org.example.maps", "Maps"), AppRef("org.example.music", "Music")),
         automation = true,
-        tasker = TaskerState.NOT_ALLOWED,
+        clients = listOf(AutomationClient("com.example.macro", "MacroDroid", 1_789_000_000_000L)),
+        taskerOffer = "net.dinglisch.android.taskerm",
         version = "0.1.0",
     )
 
@@ -46,15 +46,9 @@ class SettingsScreenshotTest {
             )
         }
 
-    @Test fun failed() = shoot(MODULE, "settings-tasker-failed", listOf(Primary)) {
-        SettingsScreen(
-            state,
-            NoSettings,
-            status = CommandStatus(
-                SettingsCommand.ALLOW_TASKER,
-                ActionOutcome.Failed("pm grant: Unknown permission io.github.akane599.enforcedoze.permission.CONTROL"),
-            ),
-        )
+    // The token is shown once, with a copy button; only its hash is kept (ADR 0033).
+    @Test fun token() = shoot(MODULE, "settings-token", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
+        SettingsScreen(state.copy(newToken = NewToken("Tasker", "3f9c0a7be41d26c58e0b71f4a9d3c2e6")), NoSettings)
     }
 
     @Test fun reset() = shoot(MODULE, "reset", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
@@ -86,7 +80,11 @@ private object NoSettings : SettingsActions {
     override fun reapplyOnDrift(on: Boolean) = Unit
     override fun wallpaperAccent(on: Boolean) = Unit
     override fun automation(on: Boolean) = Unit
-    override fun allowTasker() = Unit
+    override fun addClient() = Unit
+    override fun makeToken(packageName: String) = Unit
+    override fun removeClient(packageName: String) = Unit
+    override fun copyToken(token: String) = Unit
+    override fun tokenShown() = Unit
     override fun retention() = Unit
     override fun exportAll() = Unit
     override fun language() = Unit

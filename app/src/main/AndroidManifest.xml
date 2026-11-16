@@ -236,6 +236,23 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/export_paths" />
         </provider>
+            <!-- The automation API (SPEC 11.1): exported with no permission, each call checked by a client's token; disabled
+             until the owner turns the API on (ADR 0033). -->
+        <receiver
+            android:name="io.github.akane599.enforcedoze.app.automation.AutomationReceiver"
+            android:enabled="false"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="io.github.akane599.enforcedoze.action.APPLY_PROFILE" />
+                <action android:name="io.github.akane599.enforcedoze.action.APPLY_PLAN" />
+                <action android:name="io.github.akane599.enforcedoze.action.PAUSE" />
+                <action android:name="io.github.akane599.enforcedoze.action.RESUME" />
+                <action android:name="io.github.akane599.enforcedoze.action.RESTORE_STOCK" />
+                <action android:name="io.github.akane599.enforcedoze.action.SENSORS_OFF" />
+                <action android:name="io.github.akane599.enforcedoze.action.GET_STATUS" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

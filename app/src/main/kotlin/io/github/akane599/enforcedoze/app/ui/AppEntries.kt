@@ -124,6 +124,7 @@ internal fun appEntries(
     }
     entry<SensorsKey> { SensorsRoute(viewModel { SensorsViewModel(AppSensorsSource(services)) }, sensorsNavigation(navigator)) }
     entry<KeepAwakeKey> { KeepAwakePicker(services, navigator) }
+    entry<ClientPickerKey> { ClientPicker(services, navigator) }
     entry<LicenceKey> { LicenceScreen(onBack = navigator::back) }
     entry<OnboardingKey> { key ->
         val start = if (key.fromSettings) OnboardingStep.PRIVILEGE else OnboardingStep.WELCOME
@@ -210,6 +211,7 @@ private fun sensorsNavigation(navigator: Navigator) = object : SensorsNavigation
 private fun settingsNavigation(context: Context, navigator: Navigator, exports: ExportRequests) = object : SettingsNavigation {
     override fun privilege() = navigator.go(OnboardingKey(fromSettings = true))
     override fun addKeepAwake() = navigator.go(KeepAwakeKey)
+    override fun addClient() = navigator.go(ClientPickerKey)
     override fun exportAll() = exports.all()
 
     /** Android's per-app language page (API 33+). */
@@ -234,6 +236,26 @@ private fun KeepAwakePicker(services: AppServices, navigator: Navigator) {
         apps = apps,
         onPick = { app ->
             services.prefs.keepAwake = services.prefs.keepAwake + app.packageName
+            navigator.back()
+        },
+        onBack = navigator::back,
+    )
+}
+
+/** The app picker for a new automation client: the chosen app gets a token, shown once back in Settings (ADR 0033). */
+@Composable
+private fun ClientPicker(services: AppServices, navigator: Navigator) {
+    val apps = produceState(emptyList<PickApp>()) {
+        value = withContext(Dispatchers.IO) {
+            val clients = services.automation.clients.clients().map { it.packageName }
+            services.labels.apps(exclude = clients.toSet() + services.graph.app.packageName)
+        }
+    }.value
+    AppPickerScreen(
+        title = stringResource(SettingsR.string.settings_client_picker),
+        apps = apps,
+        onPick = { app ->
+            services.automation.issue(app.packageName)
             navigator.back()
         },
         onBack = navigator::back,

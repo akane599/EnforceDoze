@@ -40,6 +40,18 @@ public class SettingsViewModel(private val source: SettingsSource) : ViewModel()
         viewModelScope.launch { source.retention(days) }
     }
 
+    public fun makeToken(packageName: String) {
+        viewModelScope.launch { source.makeToken(packageName) }
+    }
+
+    public fun removeClient(packageName: String) {
+        viewModelScope.launch { source.removeClient(packageName) }
+    }
+
+    public fun tokenShown() {
+        source.tokenShown()
+    }
+
     public fun removeKeepAwake(app: AppRef) {
         viewModelScope.launch { source.removeKeepAwake(app.packageName) }
     }
@@ -51,7 +63,6 @@ public class SettingsViewModel(private val source: SettingsSource) : ViewModel()
             val outcome = try {
                 when (command) {
                     SettingsCommand.RESTORE_STOCK -> source.restoreStock()
-                    SettingsCommand.ALLOW_TASKER -> source.allowTasker()
                     SettingsCommand.FLAG_SYNC -> source.flagSync(flagSyncDisabled)
                     SettingsCommand.RESET -> source.reset()
                 }

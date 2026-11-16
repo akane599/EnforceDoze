@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -25,7 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.design.EdTopBar
+import io.github.akane599.enforcedoze.design.Formats
 import io.github.akane599.enforcedoze.design.Notice
+import io.github.akane599.enforcedoze.design.RawLine
 import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.SectionHeader
@@ -69,7 +72,7 @@ public fun SettingsScreen(state: SettingsState, actions: SettingsActions, modifi
             val open = stringResource(R.string.settings_open)
             Line(stringResource(R.string.settings_allowlist), stringResource(R.string.settings_allowlist_detail), open, actions::allowlist)
             Line(stringResource(R.string.settings_sensors), stringResource(R.string.settings_sensors_detail), open, actions::sensors)
-            Automation(state, actions, status)
+            Automation(state, actions, formats)
             SectionHeader(stringResource(R.string.settings_records))
             Line(
                 stringResource(R.string.settings_retention),
@@ -167,7 +170,7 @@ private fun HoldOffs(state: SettingsState, actions: SettingsActions) {
 }
 
 @Composable
-private fun Automation(state: SettingsState, actions: SettingsActions, status: CommandStatus?) {
+private fun Automation(state: SettingsState, actions: SettingsActions, formats: Formats) {
     SectionHeader(stringResource(R.string.settings_automation))
     SwitchRow(
         stringResource(R.string.settings_automation_api),
@@ -176,20 +179,60 @@ private fun Automation(state: SettingsState, actions: SettingsActions, status: C
         onChange = actions::automation,
     )
     if (!state.automation) return
-    when (state.tasker) {
-        TaskerState.NOT_INSTALLED -> Line(stringResource(R.string.settings_tasker), stringResource(R.string.settings_tasker_missing))
-
-        TaskerState.NOT_ALLOWED -> Line(
+    // Each client: its token's date, a new token (revokes the old one) and removal (ADR 0033).
+    state.clients.forEach { client -> ClientRow(client, actions, formats) }
+    state.taskerOffer?.let { tasker ->
+        Line(
             stringResource(R.string.settings_tasker),
-            stringResource(R.string.settings_tasker_not_allowed),
-            action = stringResource(R.string.settings_allow).takeIf { state.canWrite },
-            onAction = actions::allowTasker,
+            stringResource(R.string.settings_tasker_no_token),
+            action = stringResource(R.string.settings_make_token),
+            onAction = { actions.makeToken(tasker) },
         )
-
-        TaskerState.ALLOWED -> Line(stringResource(R.string.settings_tasker), stringResource(R.string.settings_tasker_allowed))
     }
-    // The outcome of "Allow" reads under the Tasker line it belongs to.
-    StatusLine(status, SettingsCommand.ALLOW_TASKER)
+    Line(
+        stringResource(R.string.settings_add_client),
+        stringResource(R.string.settings_add_client_detail),
+        action = stringResource(R.string.settings_add),
+        onAction = actions::addClient,
+    )
+    state.newToken?.let { TokenDialog(it, onCopy = { actions.copyToken(it.token) }, onDone = actions::tokenShown) }
+}
+
+@Composable
+private fun ClientRow(client: AutomationClient, actions: SettingsActions, formats: Formats) {
+    Column(Modifier.fillMaxWidth().padding(vertical = Space.s)) {
+        Column(Modifier.semantics(mergeDescendants = true) { }) {
+            Text(client.label, style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink)
+            Text(
+                stringResource(R.string.settings_client_made, formats.date(client.created)),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Ed.palette.quiet,
+            )
+        }
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
+            TextButton(onClick = { actions.makeToken(client.packageName) }) { Text(stringResource(R.string.settings_new_token)) }
+            TextButton(onClick = { actions.removeClient(client.packageName) }) { Text(stringResource(R.string.settings_remove)) }
+        }
+    }
+}
+
+/** The token, shown once: EnforceDoze keeps only its hash (ADR 0033). */
+@Composable
+private fun TokenDialog(token: NewToken, onCopy: () -> Unit, onDone: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDone,
+        containerColor = Ed.palette.raised,
+        title = { Text(stringResource(R.string.settings_token_title, token.label)) },
+        text = {
+            Column {
+                Text(token.token, style = RawLine, color = Ed.palette.ink)
+                Spacer(Modifier.height(Space.m))
+                Text(stringResource(R.string.settings_token_body), style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet)
+            }
+        },
+        confirmButton = { TextButton(onClick = onCopy) { Text(stringResource(R.string.settings_copy)) } },
+        dismissButton = { TextButton(onClick = onDone) { Text(stringResource(R.string.settings_token_done)) } },
+    )
 }
 
 /** Restore stock and Reset: apart from everything else, outlined, each behind a confirmation (ADR 0028). */
@@ -263,7 +306,6 @@ private fun StatusLine(status: CommandStatus?, command: SettingsCommand) {
 
 private val DONE_LINES = mapOf(
     SettingsCommand.RESTORE_STOCK to R.string.settings_done_restore,
-    SettingsCommand.ALLOW_TASKER to R.string.settings_done_tasker,
     SettingsCommand.FLAG_SYNC to R.string.settings_done_flag_sync,
     SettingsCommand.RESET to R.string.settings_done_reset,
 )

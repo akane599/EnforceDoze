@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import android.util.Log
 import android.content.Context
 import io.github.akane599.enforcedoze.app.EngineGraph
 import io.github.akane599.enforcedoze.app.EngineService
@@ -47,12 +48,22 @@ internal class EngineAccess(private val context: Context, private val graph: Eng
     }
 
     private suspend fun start(): EngineHost? {
+        val wasEnabled = graph.switch.enabled
         graph.switch.enabled = true
-        EngineService.start(context)
+        try {
+            EngineService.start(context)
+        } catch (refused: IllegalStateException) {
+            // From the background (an automation call) Android refuses a foreground service start unless the app is
+            // exempt from battery optimisation (ForegroundServiceStartNotAllowedException, API 31+): nothing started.
+            Log.w(TAG, "engine service not started", refused)
+            graph.switch.enabled = wasEnabled
+            return null
+        }
         return withTimeoutOrNull(START_TIMEOUT_MS) { graph.hosts.filterNotNull().first() }
     }
 
     private companion object {
         const val START_TIMEOUT_MS = 10_000L
+        const val TAG = "EngineAccess"
     }
 }

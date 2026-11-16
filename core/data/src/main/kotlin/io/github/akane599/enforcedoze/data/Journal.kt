@@ -186,6 +186,9 @@ public object JournalRows {
     public const val PROFILE_MISSING: String = "PROFILE_MISSING"
     public const val BATTERY: String = "BATTERY"
 
+    /** One automation call (SPEC 11.1, ADR 0033): `writer` is the client's package, `reason` the action and its result. */
+    public const val AUTOMATION: String = "AUTOMATION"
+
     public fun of(record: ActionRecord): ActionRow = ActionRow(
         time = record.time.toEpochMilli(),
         lever = record.lever.name,

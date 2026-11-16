@@ -9,7 +9,8 @@ import io.github.akane599.enforcedoze.feature.settings.AppRef
 import io.github.akane599.enforcedoze.feature.settings.PrivilegeStatus
 import io.github.akane599.enforcedoze.feature.settings.SettingsSource
 import io.github.akane599.enforcedoze.feature.settings.SettingsState
-import io.github.akane599.enforcedoze.feature.settings.TaskerState
+import io.github.akane599.enforcedoze.feature.settings.AutomationClient
+import io.github.akane599.enforcedoze.feature.settings.NewToken
 import io.github.akane599.enforcedoze.privilege.PrivilegeState
 import io.github.akane599.enforcedoze.privilege.WorkerSource
 import io.github.akane599.enforcedoze.privilege.probe.ProbeStatus
@@ -34,10 +35,14 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
         services.engine,
         services.prefs.changes,
         services.notices.notices,
-        combine(services.capabilities, syncReads) { report, _ -> report },
-    ) { privilege, _, _, notices, report -> Triple(privilege, notices, report) }
-        .mapLatest { (privilege, notices, report) ->
+        combine(services.capabilities, syncReads, services.automation.newToken) { report, _, token -> report to token },
+    ) { privilege, _, _, notices, (report, token) -> Triple(privilege, notices, report) to token }
+        .mapLatest { (shown, token) ->
+            val (privilege, notices, report) = shown
             val canWrite = services.notices.canWrite(privilege)
+            val clients = services.automation.clients.clients().map {
+                AutomationClient(it.packageName, services.labels.label(it.packageName) ?: it.packageName, it.created)
+            }
             SettingsState(
                 privilege = PrivilegeStatus(
                     tier = privilege.tier.ordinal,
@@ -48,7 +53,9 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
                 // The engine saves its state after every command, so the saved file holds the choice either way.
                 reapplyOnDrift = services.graph.store.load().reapplyOnDrift,
                 automation = services.prefs.automation,
-                tasker = if (services.labels.installed(TASKER)) TaskerState.NOT_ALLOWED else TaskerState.NOT_INSTALLED,
+                clients = clients,
+                taskerOffer = TASKER.takeIf { tasker -> clients.none { it.packageName == tasker } && services.labels.installed(tasker) },
+                newToken = token?.let { NewToken(services.labels.label(it.packageName) ?: it.packageName, it.token) },
                 retentionDays = services.prefs.retentionDays,
                 language = language(),
                 wallpaperAccent = services.prefs.wallpaperAccent,
@@ -66,9 +73,22 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
         services.prefs.touch()
     }
 
+    /** The receiver is enabled and disabled with the switch, so it cannot start the app while off (ADR 0033). */
     override suspend fun automation(on: Boolean) {
         services.prefs.automation = on
+        services.automation.syncReceiver(on)
     }
+
+    override suspend fun makeToken(packageName: String) {
+        services.automation.issue(packageName)
+    }
+
+    override suspend fun removeClient(packageName: String) {
+        services.automation.clients.remove(packageName)
+        services.prefs.touch()
+    }
+
+    override fun tokenShown() = services.automation.tokenShown()
 
     override suspend fun wallpaperAccent(on: Boolean) {
         services.prefs.wallpaperAccent = on
@@ -81,9 +101,6 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
     override suspend fun removeKeepAwake(packageName: String) {
         services.prefs.keepAwake = services.prefs.keepAwake - packageName
     }
-
-    /** The automation permission arrives with SPEC 11 (phase P6); until then there is nothing to grant. */
-    override suspend fun allowTasker(): ActionOutcome = ActionOutcome.Unavailable(app.getString(R.string.ui_not_in_build))
 
     /** The phone's mode, read through the worker; null when it cannot be read. */
     private suspend fun flagSyncMode(): String? =
@@ -126,6 +143,8 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
         graph.recorderFiles.pruneRaw(Long.MAX_VALUE)
         graph.recorderFiles.clearOpen()
         listOf(ENGINE_DIR, PROFILES_DIR).forEach { File(app.filesDir, it).deleteRecursively() }
+        services.automation.clients.clear()
+        services.automation.syncReceiver(on = false)
         services.prefs.clear()
         services.profilesChanged()
         return ActionOutcome.Done

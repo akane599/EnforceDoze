@@ -21,7 +21,17 @@ public interface SettingsActions {
 
     public fun wallpaperAccent(on: Boolean)
 
-    public fun allowTasker()
+    /** Picks another app to give a token. */
+    public fun addClient()
+
+    public fun makeToken(packageName: String)
+
+    public fun removeClient(packageName: String)
+
+    /** Copies a new token, marked sensitive so the keyboard's clipboard history hides it. */
+    public fun copyToken(token: String)
+
+    public fun tokenShown()
 
     public fun retention()
 
@@ -49,6 +59,9 @@ public interface SettingsNavigation {
 
     /** The app picker; the chosen app joins the keep-awake list. */
     public fun addKeepAwake()
+
+    /** The app picker; the chosen app gets an automation token (ADR 0033). */
+    public fun addClient()
 
     /** The system's document picker for an evidence export of everything kept (SPEC 8.7). */
     public fun exportAll()

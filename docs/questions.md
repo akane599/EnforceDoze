@@ -28,6 +28,9 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   that does not request the permission (AOSP lines in ADR 0033), and Tasker cannot request it.
   *Default:* the receiver checks a token per client, bound to a package; "Allow Tasker" becomes
   "Automation clients" (ADR 0033, with a second opinion). The Locale plugin goes to the backlog.
+- **Q12. The Tasker task XML in `docs/automation.md`.** It follows Tasker's export format (Send Intent,
+  action 877) but has not been imported on a phone: there is no Tasker on the emulator. *Default:* the
+  page says so and gives the plain Send Intent fields too; the import is checked in the P7 phone session.
 
 ## Answered
 

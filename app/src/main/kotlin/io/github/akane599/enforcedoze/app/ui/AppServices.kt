@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.app.automation.Automation
 import io.github.akane599.enforcedoze.ui.succeeded
 import io.github.akane599.enforcedoze.ui.LeverCheck
 import io.github.akane599.enforcedoze.ui.CheckState
@@ -42,6 +43,9 @@ internal class AppServices(val graph: EngineGraph) {
     val prefs: AppPrefs = graph.prefs
     val labels: Labels = Labels(graph.app)
     val access: EngineAccess = EngineAccess(graph.app, graph)
+
+    /** The automation API (SPEC 11.1, ADR 0033). */
+    val automation: Automation by lazy { Automation(this) }
     val notices: AppNotices = AppNotices(graph.app, graph, access, prefs, labels)
     val recommendations: Recommendations by lazy { Recommendations(this) }
     val dayZero: DayZeroReader by lazy { DayZeroReader(this) }

@@ -112,6 +112,7 @@ dependencies {
     implementation(libs.shizuku.api)
 
     testImplementation(libs.junit)
+    testImplementation(libs.truth)
 }
 
 // Dependency licence check (SPEC 12.5): only licences compatible with GPL-3.0 may ship in the APK.

@@ -65,8 +65,8 @@ Option 1, as the reviewer recommends.
   `PackageManager.setComponentEnabledSetting` whenever Settings › Automation API is off, so nothing
   starts the app then. Actions are `io.github.akane599.enforcedoze.action.<NAME>` for the seven SPEC
   11.1 names.
-- **Clients.** Settings › Automation lists the clients. "Add client" binds a new token to an
-  installed package the owner picks, with Tasker preselected when installed. Each client has a 128-bit
+- **Clients.** Settings › Automation lists the clients. When Tasker is installed and has no token,
+  it is offered with one tap; "Another app" binds a token to any installed package the owner picks. Each client has a 128-bit
   token from `SecureRandom`, shown once with a copy button (`EXTRA_IS_SENSITIVE`) and stored only as
   its SHA-256 hash in `noBackupFilesDir`. Hashes are compared with `MessageDigest.isEqual`. Removing a
   client or making a new token revokes the old one.

@@ -14,8 +14,13 @@ public data class PrivilegeStatus(val tier: Int, val via: String? = null, val mi
 @Immutable
 public data class AppRef(val packageName: String, val label: String)
 
-/** Tasker's standing with the automation API (SPEC 11.1). */
-public enum class TaskerState { NOT_INSTALLED, NOT_ALLOWED, ALLOWED }
+/** An app the automation API answers (ADR 0033): a token is bound to it, made at [created]. */
+@Immutable
+public data class AutomationClient(val packageName: String, val label: String, val created: Long)
+
+/** A token just made, shown once with a copy button. */
+@Immutable
+public data class NewToken(val label: String, val token: String)
 
 /** Everything Settings shows, mapped by the app from its preferences, the engine and the privilege session. */
 @Immutable
@@ -27,7 +32,11 @@ public data class SettingsState(
     val reapplyOnDrift: Boolean = true,
     /** The automation API receiver (SPEC 11.1), off until the owner turns it on. */
     val automation: Boolean = false,
-    val tasker: TaskerState = TaskerState.NOT_INSTALLED,
+    /** The apps with a token, in the order they were added. */
+    val clients: List<AutomationClient> = emptyList(),
+    /** Tasker's package when it is installed and has no token yet: offered with one tap. */
+    val taskerOffer: String? = null,
+    val newToken: NewToken? = null,
     /** Days of parsed records kept (SPEC 8.3): one of [RETENTION_CHOICES]. */
     val retentionDays: Int = DEFAULT_RETENTION,
     /** The app's own language as its name, or null when it follows the phone. */
@@ -50,7 +59,7 @@ public data class SettingsState(
 }
 
 /** A command Settings sends to the phone, named in its outcome line. */
-public enum class SettingsCommand { RESTORE_STOCK, ALLOW_TASKER, FLAG_SYNC, RESET }
+public enum class SettingsCommand { RESTORE_STOCK, FLAG_SYNC, RESET }
 
 /** What Settings needs from the app (ADR 0029). */
 public interface SettingsSource {
@@ -66,8 +75,12 @@ public interface SettingsSource {
 
     public suspend fun removeKeepAwake(packageName: String)
 
-    /** Grants Tasker the automation permission through the worker (`pm grant`, SPEC 11.1). */
-    public suspend fun allowTasker(): ActionOutcome
+    /** A new token for [packageName], replacing its old one (ADR 0033). */
+    public suspend fun makeToken(packageName: String)
+
+    public suspend fun removeClient(packageName: String)
+
+    public fun tokenShown()
 
     public suspend fun flagSync(disabled: Boolean): ActionOutcome
 
