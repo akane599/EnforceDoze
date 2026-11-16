@@ -37,7 +37,8 @@ import java.util.zip.ZipFile
  * `return-to-previous`, `pause`, `resume`, `reapply <true|false>`, `clear-guard <LEVER>`,
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
  * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`; for P6, `automation <on|off>`,
- * `automation-token <package>`, `import-setup`, `switch-check` and `switch-state`.
+ * `automation-token <package>`, `import-setup`, `switch-check` and `switch-state`; `privilege` (the state the screens
+ * see) and `grant-durable` (SPEC 4.1 T1 through the worker, then the state).
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -104,6 +105,8 @@ class DebugCommandReceiver : BroadcastReceiver() {
             "check started at ${graph.prefs.switchCheckSince}"
         },
         "switch-state" to { graph, _ -> describe(AppSwitchOverSource(graph.ui).state.first()) },
+        "privilege" to { graph, _ -> "seen=${graph.controller.state.value}\nnow=${graph.controller.refresh()}" },
+        "grant-durable" to { graph, _ -> "added=${graph.ui.grantDurable()}\nnow=${graph.controller.refresh()}" },
     )
 
     private val engineCommands: Map<String, suspend EngineGraph.(EngineHost, String?) -> String> = mapOf(

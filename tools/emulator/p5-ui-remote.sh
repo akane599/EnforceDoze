@@ -132,12 +132,16 @@ adb uninstall "$pkg" >/dev/null 2>&1
 # 2. Smoke run of the debug build under Shizuku: onboarding opens and the durable grants arrive (SPEC 4.1 T1).
 adb install -t "$dir/app.apk" >/dev/null || log "app install failed"
 if [[ -z $preexisting_shizuku ]]; then touch "$shizuku_marker"; adb install -r "$shizuku_apk" >/dev/null; fi
-start_server
-check "Shizuku server running" server_running
 adb shell pm grant "$pkg" moe.shizuku.manager.permission.API_V23
 adb shell pm grant "$pkg" android.permission.POST_NOTIFICATIONS
 adb logcat -c
 adb shell am start -W -n "$pkg/io.github.akane599.enforcedoze.app.ui.MainActivity" > "$out/start.txt"
+# The server hands its binder to running processes of apps that hold API_V23, so it starts after the app (ADR 0011);
+# the app then sees Shizuku arrive with the engine still off (first run).
+app_running() { [[ -n $(adb shell pidof "$pkg" | tr -d '\r') ]]; }
+until_true 20 app_running
+start_server
+check "Shizuku server running" server_running
 sleep 15
 adb exec-out screencap -p > "$out/onboarding.png"
 granted() { adb shell dumpsys package "$pkg" | grep -q "$1: granted=true"; }
@@ -150,7 +154,10 @@ check "usage access set through the worker" bash -c "'$A' shell appops get $pkg 
 tiles_added=1
 for t in $plan_tile $sensors_tile; do adb shell cmd statusbar add-tile "$t"; done
 adb shell cmd statusbar expand-settings
-sleep 4
+sleep 3
+# Added tiles go to the end, on the second page of Quick Settings: swipe the pager left.
+adb shell input swipe 900 1100 150 1100 300
+sleep 3
 adb exec-out screencap -p > "$out/tiles.png"
 adb shell cmd statusbar click-tile "$sensors_tile"
 sleep 3
