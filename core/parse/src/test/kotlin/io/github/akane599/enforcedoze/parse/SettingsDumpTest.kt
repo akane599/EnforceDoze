@@ -27,6 +27,19 @@ class SettingsDumpTest {
     """.trimIndent()
 
     @Test
+    fun `reads One UI rows, which end in isValuePreservedInRestore`() {
+        // Row shapes as a Galaxy S22 with One UI 8 prints them (API 36); the values are this test's own.
+        val oneUi = """
+            GLOBAL SETTINGS (user 0)
+            _id:1167 name:low_power_sticky pkg:android value:0 default:0 defaultSystemSet:true isValuePreservedInRestore:true
+            _id:1300 name:device_idle_constants pkg:com.android.shell value:inactive_to=180000,skip_sensing=true isValuePreservedInRestore:true
+        """.trimIndent()
+        assertThat(SettingsDump.findRow(oneUi, SettingsDump.Table.GLOBAL, "device_idle_constants")?.value)
+            .isEqualTo("inactive_to=180000,skip_sensing=true")
+        assertThat(SettingsDump.findRow(oneUi, SettingsDump.Table.GLOBAL, "low_power_sticky")?.value).isEqualTo("0")
+    }
+
+    @Test
     fun `finds the global row with its writer and value`() {
         val row = SettingsDump.findRow(dump, SettingsDump.Table.GLOBAL, "device_idle_constants")
         assertThat(row).isEqualTo(

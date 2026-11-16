@@ -4,8 +4,10 @@ package io.github.akane599.enforcedoze.parse
 /**
  * One row of a `dumpsys settings` table (`SettingsProvider.dumpSettingsLocked`, AOSP 17):
  * `_id:<id> name:<name>[ pkg:<package>] value:<value>[ default:<value> defaultSystemSet:<bool>][ tag:<tag>]
- * [ notPreservedInRestore]`. [packageName] is the package SettingsProvider recorded for the last write
- * (ADR 0014); [value] is null for `{null}`.
+ * [ notPreservedInRestore]`. One UI ends a row with ` isValuePreservedInRestore:<bool>` instead of the last
+ * field: 3 129 of 3 129 rows on a Galaxy S22 with One UI 8 (API 36, `BP2A.250605.031.A3`), 2 113 of them
+ * with no `default:` before it; the API 37 emulator prints none. [packageName] is the package SettingsProvider
+ * recorded for the last write (ADR 0014); [value] is null for `{null}`.
  */
 public data class SettingsRow(val id: String, val name: String, val packageName: String?, val value: String?, val raw: String)
 
@@ -16,7 +18,7 @@ public object SettingsDump {
 
     private val HEADER = Regex("""^(CONFIG|GLOBAL|SECURE|SYSTEM) SETTINGS \(user (\d+)\)$""")
     private val ROW = Regex("""^_id:(\S+) name:(\S+)(?: pkg:(\S+))? value:(.*)$""")
-    private val TAIL = Regex("""( default:.*| tag:.*| notPreservedInRestore)$""")
+    private val TAIL = Regex("""( default:.*| tag:.*| notPreservedInRestore| isValuePreservedInRestore:\S+)$""")
 
     /** What a lookup found: the row, a table without that row (the setting is not set), or no such table at all. */
     public sealed interface Lookup {
@@ -32,8 +34,8 @@ public object SettingsDump {
     /**
      * The row named [name] in [table] for [user], or null when the table or the row is absent (for example a
      * `Permission Denial` instead of a dump). A value is cut at the first ` default:`, ` tag:` or a trailing
-     * ` notPreservedInRestore`, so a foreign value containing those words is cut too; the [SettingsRow.raw] line
-     * keeps everything.
+     * ` notPreservedInRestore` or ` isValuePreservedInRestore:<bool>`, so a foreign value containing those words
+     * is cut too; the [SettingsRow.raw] line keeps everything.
      */
     public fun findRow(text: String, table: Table, name: String, user: Int = 0): SettingsRow? =
         (lookup(text, table, name, user) as? Lookup.Found)?.row

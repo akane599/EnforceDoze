@@ -299,3 +299,26 @@ Carried over to P5:
   - the reason line of a Partly night with no break and no late arrival;
   - `ReportSummary.sessionId` is the night's first session, and the route finds the night by it
     (`nightAround`).
+- Phone session, 2026-11-16, read-only, on the Galaxy S22 (SM-S901E, One UI 8, Android 16 / API 36,
+  `BP2A.250605.031.A3`). The S25 Ultra is in service, and the owner offered the S22. These results
+  are One UI evidence at best-effort level (ADR 0022); recheck the starred ones on the S25 (One UI 9).
+  Nothing was installed or written, and the S22's existing adb link was left as it was.
+  - `dumpsys settings`*:
+    - same tables and row grammar as AOSP; all 3 129 rows match the parser's row pattern;
+    - One UI ends every row with ` isValuePreservedInRestore:<bool>`, and 2 113 rows have no
+      `default:` before it;
+    - the parser now strips it. Otherwise lever A's read-back would have seen a changed value and
+      corrected it forever. The API 37 emulator prints none.
+  - `skip_sensing`*:
+    - listed in `dumpsys deviceidle` with `skip_sensing=false` and `skip_locating=true`;
+    - no global constants string is set on this phone;
+    - the event-log buffer held only ACTIVE and INACTIVE, so what the key does cannot be seen
+      without a write. It stays "effect unknown" (SPEC 6.2).
+  - `protect_device_config_flags`: on.
+    - Shell holds `WRITE_ALLOWLISTED_DEVICE_CONFIG` and not `WRITE_DEVICE_CONFIG`, as on the
+      emulators. `aflags` needs root there.
+    - ADR 0012's global-string path stands.
+  - Hotspot initial state:
+    - `WIFI_AP_STATE_CHANGED` is in neither sticky list, and `cmd wifi status` shows no soft-AP
+      state;
+    - the hold-off still starts as off until the first broadcast (unchanged).
