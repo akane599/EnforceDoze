@@ -13,6 +13,10 @@ out=$dir/out
 mkdir -p "$out"
 A=$HOME/Android/Sdk/platform-tools/adb
 adb() { "$A" "$@" </dev/null; }
+# Device safety: every adb call goes to the emulator, never to a phone that happens to be connected over adb.
+# The emulator already running, or the one this script starts on the first free console port.
+ANDROID_SERIAL=$("$A" devices </dev/null | awk '/^emulator-[0-9]+/ { print $1; exit }')
+export ANDROID_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
 pkg=io.github.akane599.enforcedoze
 receiver=$pkg/io.github.akane599.enforcedoze.app.DebugCommandReceiver
