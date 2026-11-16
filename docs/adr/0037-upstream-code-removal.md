@@ -73,3 +73,21 @@ counted them as covered by "T3" and onboarding.
    - the permissions are audited;
    - the forbidden-call and lint baselines shrink to what is left. A baseline diff may only lose lines.
 5. All of this lands before the P7 gate. `NOTICE` and the About credits are untouched throughout.
+
+## Outcome (2026-11-16)
+
+Every step is done:
+- **Step 2:** rows 12–14 (ADR 0038, emulator run at T3) and 35. Row 11 is dropped.
+- **Step 3:** the remaining classes and their resources are gone (1a80ce3).
+- **Step 4**, each in its own commit:
+  - `MyApplication` is in Kotlin;
+  - the platform theme, with no upstream libraries;
+  - upstream's leftover strings, drawables and locales are gone;
+  - R and BuildConfig are in the fork's package;
+  - the permission audit, with `tools/ci/permissions.sh` pinning the merged manifest.
+- **The baselines only lost lines:**
+  - the forbidden-call baseline is empty;
+  - the lint baseline keeps three launcher-icon entries.
+
+Jetifier is still on. Turning it off re-transforms every dependency, and the build server's shared
+Gradle volume has too little free space for that now. Nothing left needs it.

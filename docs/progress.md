@@ -425,3 +425,16 @@ Carried over to P5:
   - they come on only at screen off with no hold-off, on a fresh read, and go off at every screen on;
   - `ExtrasEngineTest` (15 cases), `NeverSuspendRulesTest`, worker and device tests, `settings-extras` goldens;
   - the emulator run at T3 is `tools/emulator/p6-extras.sh` (76d7363).
+- The engine review of the extras (ADR 0038 addendum) found six issues. All six are fixed, each with
+  a test (49b091a). The first emulator run also showed that `activeNetwork` is null for an app without
+  `INTERNET`, so the reader now uses the list of networks. The T3 run on `ed-api37` then passed 36 of
+  36 checks (`docs/evidence/p6-extras`).
+- ADR 0037 is complete (see its outcome). The app is Kotlin only: the platform theme, no upstream
+  libraries, only English and Turkish, and the fork's own package. `tools/ci/permissions.sh` pins the
+  14 merged permissions.
+- The build server: the shared Gradle volume filled up on 2026-11-16, and the build failed with "No
+  space left on device". Freed about 2.3 GB:
+  - Gradle 8.13, 8.14.2 and 9.7.1 caches and wrappers, which no project on the machine uses;
+  - build-cache entries past Gradle's own 7-day retention.
+
+  Free space was still only 1.4 GB.
