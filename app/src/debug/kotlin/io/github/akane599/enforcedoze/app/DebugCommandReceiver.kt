@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import io.github.akane599.enforcedoze.doze.android.neverSuspend
+import io.github.akane599.enforcedoze.doze.Extras
 import kotlinx.coroutines.flow.first
 import io.github.akane599.enforcedoze.feature.profiles.SwitchOverState
 import io.github.akane599.enforcedoze.app.ui.AppSwitchOverSource
@@ -38,7 +40,8 @@ import java.util.zip.ZipFile
  * `min-session <seconds|default>`, `last-session`, `night-threshold <seconds|default>`, `last-night`,
  * `quick-proof`, `export <session id|all>`, `events <count>`, `actions <count>`; for P6, `automation <on|off>`,
  * `automation-token <package>`, `import-setup`, `switch-check` and `switch-state`; `privilege` (the state the screens
- * see) and `grant-durable` (SPEC 4.1 T1 through the worker, then the state).
+ * see) and `grant-durable` (SPEC 4.1 T1 through the worker, then the state); for ADR 0038,
+ * `extras wifi=<on|off>,data=<on|off>,suspend=<pkg>[;<pkg>]` and `never-suspend <pkg>[;<pkg>]`.
  */
 class DebugCommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -107,6 +110,11 @@ class DebugCommandReceiver : BroadcastReceiver() {
         "switch-state" to { graph, _ -> describe(AppSwitchOverSource(graph.ui).state.first()) },
         "privilege" to { graph, _ -> "seen=${graph.controller.state.value}\nnow=${graph.controller.refresh()}" },
         "grant-durable" to { graph, _ -> "added=${graph.ui.grantDurable()}\nnow=${graph.controller.refresh()}" },
+        "never-suspend" to { graph, arg ->
+            val names = arg.orEmpty().split(';').filter { it.isNotBlank() }.toSet()
+            names.associateWith { neverSuspend(graph.app, it.let(::setOf), graph.prefs.keepAwake)[it]?.line ?: "allowed" }
+                .entries.joinToString("\n") { (name, reason) -> "$name: $reason" }
+        },
     )
 
     private val engineCommands: Map<String, suspend EngineGraph.(EngineHost, String?) -> String> = mapOf(
@@ -134,7 +142,19 @@ class DebugCommandReceiver : BroadcastReceiver() {
         "resume" to { host, _ -> after(host) { resume() } },
         "reapply" to { host, arg -> after(host) { setReapplyOnDrift(arg.toBoolean()) } },
         "clear-guard" to { host, arg -> after(host) { clearGuard(Lever.valueOf(arg.orEmpty())) } },
+        "extras" to { host, arg -> after(host) { setExtras(extras(arg)) } },
     )
+
+    /** `wifi=on,data=off,suspend=a.b;c.d`; anything left out is off. */
+    private fun extras(arg: String?): Extras {
+        val fields = arg.orEmpty().split(',').mapNotNull { it.split('=', limit = 2).takeIf { kv -> kv.size == 2 } }
+            .associate { (key, value) -> key.trim() to value.trim() }
+        return Extras(
+            wifiOff = fields["wifi"] == "on",
+            dataOff = fields["data"] == "on",
+            suspend = fields["suspend"].orEmpty().split(';').filter { it.isNotBlank() }.toSet(),
+        )
+    }
 
     private fun rows(arg: String?): Int = arg?.toIntOrNull() ?: DEFAULT_ROWS
 
@@ -176,6 +196,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
         appendLine("constantsWriter=${status.constantsWriter} previous=${status.previousCaptured} stock=${status.stockCaptured}")
         appendLine("forcedWithoutWorker=${status.forcedWithoutWorker} storeError=${status.storeError}")
         appendLine("batteryFrozen=${status.batteryFrozen}")
+        appendLine("extras=${status.extras} extrasStuck=${status.extrasStuck.sorted()}")
         status.plan?.let { plan ->
             val night = plan.plan.night?.let { "${it.profileId} ${it.start}-${it.end}" }
             appendLine("plan day=${plan.plan.dayProfileId} night=$night slot=${plan.slot} override=${plan.override}")
