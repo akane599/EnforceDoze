@@ -53,3 +53,10 @@ tasks.withType<Test>().configureEach {
     systemProperty("robolectric.graphicsMode", "NATIVE")
     systemProperty("enforcedoze.root", rootProject.layout.projectDirectory.asFile.absolutePath)
 }
+
+// PaletteTest reads DESIGN.md; without it as an input, a changed value would not rerun the test.
+tasks.withType<Test>().configureEach {
+    inputs.file(rootProject.layout.projectDirectory.file("DESIGN.md"))
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName("design")
+}
