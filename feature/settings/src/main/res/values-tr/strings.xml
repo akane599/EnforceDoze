@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_privilege">Yetki</string>
+    <string name="settings_check">Denetle</string>
+    <string name="settings_tier_via">%1$s · %2$s</string>
+    <string name="settings_hold_offs">Bekletmeler</string>
+    <string name="settings_hold_offs_detail">Bir arama çalarken ya da sürerken, ses çalarken, araç modu ya da Android Auto açıkken, hotspot açıkken, telefon şarjdayken ya da ekran kapanırken önde uyanık tutulan bir uygulama varken zorunlu uyku ve sensör kısıtlaması kalkar. Doze zamanlamaları kalır. Bekletmeler kapatılamaz: aramaları, alarmları, navigasyonu ve müziği çalışır tutarlar.</string>
+    <string name="settings_keep_awake">Uyanık tutulan uygulamalar</string>
+    <string name="settings_keep_awake_none">Yok. Ekran kapalıyken de çalışması gereken bir uygulama ekleyin; örneğin bir navigasyon uygulaması.</string>
+    <string name="settings_add">Ekle</string>
+    <string name="settings_remove">Kaldır</string>
+    <string name="settings_doze">Doze</string>
+    <string name="settings_reapply">Sapmada yeniden uygula</string>
+    <string name="settings_reapply_detail">Başka bir uygulama Doze zamanlamalarını değiştirdiğinde profilin değerlerini geri koy ve kimin değiştirdiğini kaydet. Kapalı: yalnızca kaydet.</string>
+    <string name="settings_automation">Otomasyon</string>
+    <string name="settings_automation_api">Otomasyon API</string>
+    <string name="settings_automation_detail">Tasker ve benzeri uygulamaların, izinle korunan yayınlar üzerinden profil uygulamasına, planı duraklatmasına ve durumu okumasına izin verir.</string>
+    <string name="settings_tasker">Tasker</string>
+    <string name="settings_tasker_missing">Yüklü değil.</string>
+    <string name="settings_tasker_not_allowed">Yüklü, henüz izin verilmedi. İzin ver ona izni tanır.</string>
+    <string name="settings_tasker_allowed">İzin verildi.</string>
+    <string name="settings_allow">İzin ver</string>
+    <string name="settings_records">Kayıtlar</string>
+    <string name="settings_retention">Kayıtları sakla</string>
+    <string name="settings_retention_detail">Daha eski oturumlar ve kayıtları silinir. Ham dökümler her durumda 7 gün saklanır.</string>
+    <string name="settings_export_all">Her şeyi dışa aktar</string>
+    <string name="settings_export_all_detail">Uygulamanın tuttuğu her oturum, gece ve işlem; bir hata raporu ya da kendi kayıtlarınız için.</string>
+    <string name="settings_export">Dışa aktar</string>
+    <string name="settings_change">Değiştir</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_language_system">Telefonun dili</string>
+    <string name="settings_language_detail">İngilizce ya da Türkçe; telefonun bu uygulamaya ait ayarlarından seçilir.</string>
+    <string name="settings_advanced">Gelişmiş</string>
+    <string name="settings_flag_sync">Sunucu bayrak eşitlemesini durdur</string>
+    <string name="settings_flag_sync_detail">Varsayılan olarak kapalı. Google hizmetleri bir profilin üzerine yazan Doze değerleri gönderebilir; sapmada yeniden uygula onları zaten geri koyar. Bu, telefondaki sunucudan gelen her ayarı, yalnızca Doze\'unkileri değil, siz kapatana dek durdurur.</string>
+    <string name="settings_flag_sync_title">Sunucu bayrak eşitlemesi durdurulsun mu?</string>
+    <string name="settings_flag_sync_body">Google\'ın sunucudan gönderdiği ayarlar, yalnızca Doze için değil, sistemin her parçası için, siz buradan kapatana dek durur. Google\'ın bu yolla gönderdiği düzeltmeler bu arada gelmez.</string>
+    <string name="settings_flag_sync_confirm">Eşitlemeyi durdur</string>
+    <string name="settings_undo_detail">Stok ayarlara dön, telefonun kendi Doze zamanlamalarını, sensör durumunu ve izin listesini geri koyar. Sıfırla ayrıca uygulamanın tuttuğu her şeyi siler.</string>
+    <string name="settings_restore_stock">Stok ayarlara dön</string>
+    <string name="settings_reset">Uygulamayı sıfırla</string>
+    <string name="settings_restore_title">Stok ayarlar geri yüklensin mi?</string>
+    <string name="settings_restore_body">Telefonun kendi Doze zamanlamaları, sensör durumu ve izin listesi geri gelir. Kayıtlar kalır.</string>
+    <string name="settings_reset_title">Uygulama sıfırlansın mı?</string>
+    <string name="settings_reset_body">Önce stok ayarları geri yükler, sonra uygulamanın tuttuğu her kaydı, özel profili ve ayarı siler. Bu geri alınamaz.</string>
+    <string name="settings_running">Çalışıyor…</string>
+    <string name="settings_failed">Gerçekleşmedi</string>
+    <string name="settings_done_restore">Stok ayarlar geri geldi.</string>
+    <string name="settings_done_tasker">Tasker\'a izin verildi.</string>
+    <string name="settings_done_flag_sync">Sunucu bayrak eşitlemesi ayarlandı.</string>
+    <string name="settings_done_reset">Uygulama sıfırlandı.</string>
+    <string name="settings_cancel">İptal</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_version">EnforceDoze %1$s</string>
+    <string name="settings_licence">GNU Genel Kamu Lisansı sürüm 3 ya da sonrası altında özgür yazılım: aynı koşullarla paylaşabilir ve değiştirebilirsiniz.</string>
+    <string name="settings_credit_enforcedoze">Martin Guillon (Akylas) ve katkıda bulunanların EnforceDoze uygulamasının bir çatalıdır.</string>
+    <string name="settings_credit_forcedoze">EnforceDoze, Suyash Srijan (theblixguy) ve katkıda bulunanların ForceDoze uygulamasından doğdu.</string>
+    <string name="settings_credit_translators">Üst projenin çevirileri Weblate üzerinden geldi; her çevirmen proje geçmişinde adıyla yer alır.</string>
+    <string name="settings_read_licence">Lisansı okuyun</string>
+    <plurals name="settings_days">
+        <item quantity="one">%1$d gün</item>
+        <item quantity="other">%1$d gün</item>
+    </plurals>
+    <plurals name="settings_missing_probes">
+        <item quantity="one">Bu telefonda %1$d yetenek eksik</item>
+        <item quantity="other">Bu telefonda %1$d yetenek eksik</item>
+    </plurals>
+    <string name="settings_open">Aç</string>
+    <string name="settings_allowlist">İzin listesi</string>
+    <string name="settings_allowlist_detail">Doze\'un derin uykuda ağı kullanmasına ve uyanık tutmasına izin verdiği uygulamalar.</string>
+    <string name="settings_sensors">Sensörler</string>
+    <string name="settings_sensors_detail">Son ekran kapanışında sensör tutan uygulamalar ve tüm sensörleri kapatan anahtar.</string>
+</resources>

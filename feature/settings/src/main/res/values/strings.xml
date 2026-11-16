@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_privilege">Privilege</string>
+    <string name="settings_check">Check</string>
+    <string name="settings_tier_via">%1$s · %2$s</string>
+    <string name="settings_hold_offs">Hold-offs</string>
+    <string name="settings_hold_offs_detail">Forced idle and sensor restriction lift while a call is ringing or active, audio plays, car mode or Android Auto is on, the hotspot is on, the phone charges, or a keep-awake app was in front at screen off. Doze timings stay. Hold-offs cannot be turned off: they keep calls, alarms, navigation and music working.</string>
+    <string name="settings_keep_awake">Keep-awake apps</string>
+    <string name="settings_keep_awake_none">None. Add an app that must keep working with the screen off, such as a navigation app.</string>
+    <string name="settings_add">Add</string>
+    <string name="settings_remove">Remove</string>
+    <string name="settings_doze">Doze</string>
+    <string name="settings_reapply">Re-apply on drift</string>
+    <string name="settings_reapply_detail">When another app changes the Doze timings, put the profile\'s values back and log who changed them. Off: only log it.</string>
+    <string name="settings_automation">Automation</string>
+    <string name="settings_automation_api">Automation API</string>
+    <string name="settings_automation_detail">Lets Tasker and similar apps apply profiles, pause the plan and read the status, through broadcasts guarded by a permission.</string>
+    <string name="settings_tasker">Tasker</string>
+    <string name="settings_tasker_missing">Not installed.</string>
+    <string name="settings_tasker_not_allowed">Installed, not allowed yet. Allow grants it the permission.</string>
+    <string name="settings_tasker_allowed">Allowed.</string>
+    <string name="settings_allow">Allow</string>
+    <string name="settings_records">Records</string>
+    <string name="settings_retention">Keep records for</string>
+    <string name="settings_retention_detail">Older sessions and their records are deleted. Raw dumps are kept for 7 days either way.</string>
+    <string name="settings_export_all">Export everything</string>
+    <string name="settings_export_all_detail">Every session, night and action the app keeps, for a bug report or your own records.</string>
+    <string name="settings_export">Export</string>
+    <string name="settings_change">Change</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">The phone\'s language</string>
+    <string name="settings_language_detail">English or Turkish, set in the phone\'s settings for this app.</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="settings_flag_sync">Stop server flag sync</string>
+    <string name="settings_flag_sync_detail">Off by default. Google services can push Doze values that overwrite a profile; re-apply on drift already puts them back. This stops every server-pushed setting on the phone, not only Doze\'s, until you turn it off.</string>
+    <string name="settings_flag_sync_title">Stop server flag sync?</string>
+    <string name="settings_flag_sync_body">Google\'s server-pushed settings stop for every part of the system, not only Doze, until you turn this off here. Fixes Google ships that way will not arrive meanwhile.</string>
+    <string name="settings_flag_sync_confirm">Stop sync</string>
+    <string name="settings_undo_detail">Restore stock puts back the phone\'s own Doze timings, sensor state and allowlist. Reset also deletes everything the app keeps.</string>
+    <string name="settings_restore_stock">Restore stock</string>
+    <string name="settings_reset">Reset the app</string>
+    <string name="settings_restore_title">Restore stock?</string>
+    <string name="settings_restore_body">The phone\'s own Doze timings, sensor state and allowlist come back. Records stay.</string>
+    <string name="settings_reset_title">Reset the app?</string>
+    <string name="settings_reset_body">Restores stock, then deletes every record, custom profile and setting the app keeps. This cannot be undone.</string>
+    <string name="settings_running">Working…</string>
+    <string name="settings_failed">Did not go through</string>
+    <string name="settings_done_restore">Stock settings are back.</string>
+    <string name="settings_done_tasker">Tasker is allowed.</string>
+    <string name="settings_done_flag_sync">Server flag sync is set.</string>
+    <string name="settings_done_reset">The app is reset.</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">EnforceDoze %1$s</string>
+    <string name="settings_licence">Free software under the GNU General Public License, version 3 or later: you may share and change it under the same terms.</string>
+    <string name="settings_credit_enforcedoze">A fork of EnforceDoze by Martin Guillon (Akylas) and contributors.</string>
+    <string name="settings_credit_forcedoze">EnforceDoze grew from ForceDoze by Suyash Srijan (theblixguy) and contributors.</string>
+    <string name="settings_credit_translators">Upstream translations came through Weblate; each translator is named in the project history.</string>
+    <string name="settings_read_licence">Read the licence</string>
+    <plurals name="settings_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="settings_missing_probes">
+        <item quantity="one">%1$d capability is missing on this phone</item>
+        <item quantity="other">%1$d capabilities are missing on this phone</item>
+    </plurals>
+    <string name="settings_open">Open</string>
+    <string name="settings_allowlist">Allowlist</string>
+    <string name="settings_allowlist_detail">Apps that Doze lets use the network and hold wake locks in deep idle.</string>
+    <string name="settings_sensors">Sensors</string>
+    <string name="settings_sensors_detail">Apps that held sensors at the last screen off, and the switch that turns all sensors off.</string>
+</resources>
