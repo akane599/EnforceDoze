@@ -33,10 +33,12 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   page says so and gives the plain Send Intent fields too; the import is checked in the P7 phone session.
 - **Q13. Allowlist calls from Tasker (parity row 8).** Upstream's `ADD_WHITELIST` and `REMOVE_WHITELIST`
   broadcasts were open to any app and pasted the package into a shell command, so they are gone
-  (ADR 0036). SPEC 11.1's action list has no allowlist action. *Default:* port them as two token-checked
-  automation actions, `ALLOWLIST_ADD` and `ALLOWLIST_REMOVE`, with a `package` extra that must be an
-  installed app. They share the 30 s limit and run the Allowlist screen's own command. Say "drop" and
-  the row is dropped instead: the Allowlist screen and the report's "Add to allowlist" cover it by hand.
+  (ADR 0036). SPEC 11.1's action list has no allowlist action. *Default, after a second opinion:* the
+  row is dropped. Unlike every other automation action, an allowlist change is not undone by Restore
+  stock, it clashes with Strict's trimmed list, and a leaked token would become lasting exemptions. The
+  Allowlist screen and the report's "Add to allowlist" cover it by hand. Say "port" and it is built as
+  two token-checked actions, under the conditions in ADR 0036, with a per-client switch that is off by
+  default.
 
 ## Answered
 

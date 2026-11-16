@@ -46,7 +46,41 @@ them.
 - Parity rows 8 (allowlist broadcasts), 30 (Tasker broadcasts) and 31 (re-enter Doze) no longer run
   upstream code.
   - Rows 30 and 31 have their new home: `PAUSE`, `RESUME` and `APPLY_PLAN` in the automation API.
-  - Row 8 has none yet. SPEC 11.1's action list has no allowlist action, so the decision is recorded
-    in `docs/questions.md` with its default.
+  - Row 8 is dropped; see below. Q13 lets the owner overrule this.
 - A phone that ran an earlier build of this fork keeps upstream's preferences file, but nothing reads
   it any more.
+
+## Row 8: allowlist calls, with a second opinion
+
+Porting row 8 would add allowlist actions to the automation API, a public API, so a fresh read-only
+reviewer weighed three options without a preferred answer:
+- A: two actions, `ALLOWLIST_ADD` and `ALLOWLIST_REMOVE`;
+- B: one action with `on`;
+- C: drop the row.
+
+**My first default was A**: the audit had marked the row "port", and SPEC 2.3 ports everything in 2.1.
+
+**The reviewer recommended C:**
+- SPEC 11.1 lists no allowlist action, so A departs from the spec, while a drop with a reason is what
+  SPEC 2.3 allows.
+- An action can be added after 1.0, but it can never be taken back.
+- It would be a new kind of power for a token. Every current action stays inside the engine's
+  guardrails, and Restore stock or Resume undoes it. An allowlist change does neither: Restore stock
+  puts back only what a trim captured.
+- It collides with lever D. While a trimmed profile holds the list, a call reads as drift, and the
+  put-back undoes it or brings back an app that was removed.
+- A leaked token would become lasting exemptions for any installed app, including one the client
+  controls. Exempt apps may also start foreground services from the background.
+
+The reviewer argued against B as well: `on` fits a switch, not a list. If the owner wants A anyway,
+the conditions are:
+- refuse EnforceDoze itself and the client's own package;
+- refuse system entries;
+- answer "unavailable" while lever D holds the list;
+- report from the read-back;
+- give each client its own switch, off by default.
+
+**Decision: C.** I agree. Row 8 is dropped, and the owner edits the allowlist by hand: the Allowlist
+screen, and "Add to allowlist" in the night report. The port, under the conditions above, is a
+`BACKLOG.md` item.
+

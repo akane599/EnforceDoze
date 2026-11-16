@@ -182,7 +182,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 5 | Disable when charging | service | port | Charging hold-off (5.5), always on | upstream |
 | 6 | Execution mode (root / Shizuku) | settings | port | Tiers T0–T3 (4) | upstream |
 | 7 | Doze allowlist screen | `WhitelistAppsActivity` | port | Lever D, Allowlist screen (5, 9.1) | upstream |
-| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | port, as token-checked actions (Q13) | Automation API (11.1, ADR 0033) | upstream; unregistered (ADR 0036): open to any app and a shell injection |
+| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | drop (ADR 0036, Q13): SPEC 11.1 has no allowlist action; unlike every other call, a change survives Restore stock and clashes with Strict's trimmed list; by hand on the Allowlist screen and the report | — | upstream; unregistered (ADR 0036): open to any app and a shell injection |
 | 9 | Motion sensing off, with an allowed package | service, `PackageChooserActivity` | port | Lever C restricted mode (5.4) | upstream |
 | 10 | All sensors off in Doze | `setAllSensorsState` | port | Lever C `allSensorsOff`, Strict, "Sensors off" tile (5.4, 9.2) | upstream |
 | 11 | Biometrics off in Doze | service | port (root tier) | T3 (1.2) | upstream |

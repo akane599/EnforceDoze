@@ -12,3 +12,8 @@ owner picks which items get built. One line each: what it is, and where the spec
 - **Tasker/Locale plugin for the automation API**: an edit activity that mints the client's token, so
   the host is named by `getCallingPackage()` and no token is copied by hand. ADR 0033 keeps the
   plain intent with a token per client; the plugin is the more accurate follow-up. SPEC 11.1.
+- **Allowlist actions in the automation API**: `ALLOWLIST_ADD` and `ALLOWLIST_REMOVE`, porting
+  upstream's broadcasts (parity row 8). Each client gets its own switch, off by default. The calls
+  refuse EnforceDoze and the client itself, refuse system entries, answer "unavailable" while lever D
+  holds the list, and report from the read-back. Dropped for v1 in ADR 0036; Q13 lets the owner ask
+  for it. SPEC 2.3, 11.1.
