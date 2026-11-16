@@ -171,8 +171,7 @@ so no runtime result came out of it; this audit ran on akane-linux.
 Decisions: **port**, **port (root tier)**, **drop** (with reason). Status: `upstream` until the new
 code with a test replaces it. Since ADR 0036 no upstream component is registered in the manifest, and
 since ADR 0037's last step no upstream class is left but `MyApplication`; upstream's code stays at the
-`upstream-baseline` tag. The one row still marked `upstream` is upstream's repository files, removed in
-P7. Features the spec lists in 2.1 follow SPEC 2.3's defaults; the others are decided
+`upstream-baseline` tag. No row is marked `upstream` any more. Features the spec lists in 2.1 follow SPEC 2.3's defaults; the others are decided
 here and listed in `docs/questions.md` Q4 so the owner can object.
 
 | # | Upstream feature | Where | Decision | New home | Status |
@@ -217,4 +216,4 @@ here and listed in `docs/questions.md` Q4 so the owner can object.
 | 38 | About, sponsor link, Custom Tabs | `AboutAppActivity`, `CustomTabs` | port About with GPL notice and credits; drop the in-app Custom Tabs browser (links open the default browser) | Settings → About (9.1, 12.1) | replaced (ADR 0037): Settings credits, `NOTICE` and licence assets; `LicenceAssetTest`, `SettingsScreenshotTest`. `CustomTabs` is removed; links open the default browser |
 | 39 | App shortcuts (Settings, Battery stats) | `res/xml/shortcuts.xml` | drop for v1: Home and the tile cover the entry points; revisit after P5 | — | dropped (ADR 0036): no longer registered; they targeted upstream's package and never resolved |
 | 40 | Upstream translations (Weblate) | `res/values-*` | drop: all copy is rewritten; English and Turkish only (9); translators stay credited in `NOTICE` | — | dropped (ADR 0037): only English and Turkish ship; the upstream locales are removed |
-| 41 | Upstream website, store metadata, release workflow | `docs/index.html`, `fastlane/`, `.github/workflows/release.yml` | drop: the fork ships through GitHub Releases (12.6); removed in P7 | — | upstream |
+| 41 | Upstream website, store metadata, release workflow | `docs/index.html`, `fastlane/`, `.github/workflows/release.yml` | drop: the fork ships through GitHub Releases (12.6); removed in P7 | — | removed (P7): `fastlane/`, the Gemfile, the Weblate config, `docs/index.html` and the release workflow; the fork ships through GitHub Releases |
