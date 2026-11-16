@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="allowlist_title">İzin listesi</string>
+    <string name="allowlist_add">Uygulama ekle</string>
+    <string name="allowlist_add_short">Ekle</string>
+    <string name="allowlist_intro">İzin listesindeki uygulamalar telefon derin uykudayken de ağı kullanabilir ve telefonu kısa süre uyanık tutabilir; böylece mesajları zamanında gelir. Her biri biraz pil harcar.</string>
+    <string name="allowlist_suggestions">Önerilenler</string>
+    <string name="allowlist_why_late">%1$s %2$s saatinde ondan bir şeyin geç geldiğini söylediniz.</string>
+    <string name="allowlist_why_alarm">Kullandığınız bir alarm uygulaması.</string>
+    <string name="allowlist_why_messaging">Sık kullandığınız bir mesajlaşma uygulaması.</string>
+    <string name="allowlist_yours">Sizinkiler</string>
+    <string name="allowlist_yours_none">Henüz yok. Mesajları beklememesi gereken uygulamaları ekleyin.</string>
+    <string name="allowlist_keep_detail">Strict listeyi Tut olarak işaretlenen uygulamalara indirir.</string>
+    <string name="allowlist_keep">Tut</string>
+    <string name="allowlist_kept">Strict\'te tutulur</string>
+    <string name="allowlist_not_kept">Strict\'te çıkarılır</string>
+    <string name="allowlist_remove">Kaldır</string>
+    <string name="allowlist_system">Sistemin koyduğu (%1$d)</string>
+    <string name="allowlist_system_detail">Telefonun kendi kayıtları. Onları yalnızca sistem değiştirir; stok ayarlara dönüş onlara dokunmaz.</string>
+    <string name="allowlist_except_idle">%1$s · derin uyku dışında</string>
+    <string name="allowlist_show">Göster</string>
+    <string name="allowlist_hide">Gizle</string>
+    <string name="allowlist_adding">%1$s ekleniyor…</string>
+    <string name="allowlist_removing">%1$s kaldırılıyor…</string>
+    <string name="allowlist_add_failed">%1$s eklenmedi</string>
+    <string name="allowlist_remove_failed">%1$s kaldırılmadı</string>
+</resources>

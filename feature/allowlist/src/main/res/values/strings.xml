@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="allowlist_title">Allowlist</string>
+    <string name="allowlist_add">Add an app</string>
+    <string name="allowlist_add_short">Add</string>
+    <string name="allowlist_intro">Apps on the allowlist may use the network and briefly keep the phone awake while it is in deep idle, so their messages arrive on time. Each one costs a little battery.</string>
+    <string name="allowlist_suggestions">Suggested</string>
+    <string name="allowlist_why_late">You said something from it arrived late on %1$s at %2$s.</string>
+    <string name="allowlist_why_alarm">An alarm app you use.</string>
+    <string name="allowlist_why_messaging">A messaging app you use often.</string>
+    <string name="allowlist_yours">Yours</string>
+    <string name="allowlist_yours_none">None yet. Add the apps whose messages must not wait.</string>
+    <string name="allowlist_keep_detail">Strict trims the list to the apps marked Keep.</string>
+    <string name="allowlist_keep">Keep</string>
+    <string name="allowlist_kept">kept in Strict</string>
+    <string name="allowlist_not_kept">dropped in Strict</string>
+    <string name="allowlist_remove">Remove</string>
+    <string name="allowlist_system">Set by the system (%1$d)</string>
+    <string name="allowlist_system_detail">The phone\'s own entries. Only the system changes them; Restore stock leaves them as they were.</string>
+    <string name="allowlist_except_idle">%1$s · except in deep idle</string>
+    <string name="allowlist_show">Show</string>
+    <string name="allowlist_hide">Hide</string>
+    <string name="allowlist_adding">Adding %1$s…</string>
+    <string name="allowlist_removing">Removing %1$s…</string>
+    <string name="allowlist_add_failed">%1$s was not added</string>
+    <string name="allowlist_remove_failed">%1$s was not removed</string>
+</resources>
