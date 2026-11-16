@@ -103,6 +103,20 @@ class WorkerCoreTest {
         ).inOrder()
     }
 
+    @Test fun flagSyncTakesOnlyTheThreeModes() {
+        core.setFlagSync("persistent")
+        core.setFlagSync("none")
+        core.getFlagSync()
+        assertThat(core.setFlagSync("forever").error).isNotNull()
+        assertThat(core.setFlagSync(null).error).isNotNull()
+        assertThat(core.setFlagSync("none; reboot").error).isNotNull()
+        assertThat(runner.ran).containsExactly(
+            listOf("device_config", "set_sync_disabled_for_tests", "persistent"),
+            listOf("device_config", "set_sync_disabled_for_tests", "none"),
+            listOf("device_config", "get_sync_disabled_for_tests"),
+        ).inOrder()
+    }
+
     @Test fun sensorPrivacyReportsStateAndFailures() {
         assertThat(core.getAllSensorsOff().stdout).isEqualTo("false")
         assertThat(core.setAllSensorsOff(true).stdout).isEqualTo("true")

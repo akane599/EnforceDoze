@@ -5,9 +5,9 @@ package io.github.akane599.enforcedoze.privilege.api
 public object WorkerContract {
     /**
      * Raised whenever the AIDL or the meaning of a method changes. 2: device_config writes removed (ADR 0012).
-     * 3: setBatteryUnplugged for the quick proof (SPEC 8.6).
+     * 3: setBatteryUnplugged for the quick proof (SPEC 8.6). 4: setFlagSync and getFlagSync (SPEC 5.6).
      */
-    public const val VERSION: Int = 3
+    public const val VERSION: Int = 4
 
     /** The UserService class, loaded by name in the worker process (Shizuku and Sui). */
     public const val WORKER_CLASS: String = "io.github.akane599.enforcedoze.privilege.worker.DozeWorker"
@@ -50,6 +50,13 @@ public object WorkerContract {
     public val SELF_APP_OPS: Set<String> = setOf("GET_USAGE_STATS", "SCHEDULE_EXACT_ALARM")
 
     public val APP_OP_MODES: Set<String> = setOf("allow", "ignore", "default")
+
+    /**
+     * `device_config set_sync_disabled_for_tests` modes (`DeviceConfigService.parseSyncDisabledMode`,
+     * android-17.0.0_r1). Shell may set them: it holds `READ_WRITE_SYNC_DISABLED_MODE_CONFIG`, which
+     * `SettingsProvider.setSyncDisabledModeConfig` accepts (`packages/Shell/AndroidManifest.xml`).
+     */
+    public val SYNC_DISABLED_MODES: Set<String> = setOf("none", "persistent", "until_reboot")
 
     /** The only `device_config` namespace the worker reads. */
     public const val DEVICE_IDLE_NAMESPACE: String = "device_idle"

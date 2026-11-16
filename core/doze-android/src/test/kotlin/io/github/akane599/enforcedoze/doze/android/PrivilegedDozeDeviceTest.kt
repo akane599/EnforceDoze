@@ -61,6 +61,10 @@ class PrivilegedDozeDeviceTest {
 
         override suspend fun deviceIdleConfig() = record("deviceIdleConfig()")
 
+        override suspend fun setFlagSync(mode: String) = record("setFlagSync($mode)")
+
+        override suspend fun flagSync() = record("flagSync()")
+
         override suspend fun readDeviceIdle() = read("readDeviceIdle")
 
         override suspend fun readSensorService() = read("readSensorService")

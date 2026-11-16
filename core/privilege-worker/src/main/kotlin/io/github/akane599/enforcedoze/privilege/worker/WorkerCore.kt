@@ -22,6 +22,7 @@ internal interface SensorPrivacyAccess {
  * flags are checked against each release's own help (the `help-` files of the API 37 emulator fixtures) and
  * SPEC 16.1.
  */
+@Suppress("TooManyFunctions") // One function per typed worker method (SPEC 4.3); splitting would scatter the contract.
 internal class WorkerCore(
     private val runner: CommandRunner,
     private val packages: PackageChecker,
@@ -79,6 +80,14 @@ internal class WorkerCore(
             CommandOutcome.rejected(argv, "not an allowed app op or mode")
         }
     }
+
+    /** Server flag sync for every namespace (SPEC 5.6 advanced switch, SPEC 16 appendix). */
+    fun setFlagSync(mode: String?): CommandOutcome {
+        val argv = listOf("device_config", "set_sync_disabled_for_tests", mode.orEmpty())
+        return if (mode in WorkerContract.SYNC_DISABLED_MODES) write(argv) else CommandOutcome.rejected(argv, "not a sync-disabled mode")
+    }
+
+    fun getFlagSync(): CommandOutcome = query(listOf("device_config", "get_sync_disabled_for_tests"))
 
     fun setAllSensorsOff(off: Boolean): CommandOutcome = hidden(SENSOR_PRIVACY_SET + off.toString()) {
         sensorPrivacy.setEnabled(off)

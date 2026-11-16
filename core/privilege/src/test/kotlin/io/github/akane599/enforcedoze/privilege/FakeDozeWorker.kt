@@ -76,6 +76,10 @@ open class FakeDozeWorker(private val workerUid: Int = 2000) : DozeWorkerApi {
 
     override suspend fun deviceIdleConfig(): CommandOutcome = ok()
 
+    override suspend fun setFlagSync(mode: String): CommandOutcome = ok()
+
+    override suspend fun flagSync(): CommandOutcome = ok()
+
     override suspend fun readDeviceIdle(): String = deviceIdle
 
     override suspend fun readSensorService(): String = sensorService(restriction)

@@ -60,6 +60,12 @@ interface IDozeWorker {
     /** dumpsys battery unplug, or dumpsys battery reset when false; for the quick proof only (SPEC 8.6). */
     CommandOutcome setBatteryUnplugged(boolean unplugged) = 24;
 
+    /** device_config set_sync_disabled_for_tests MODE: none, persistent or until_reboot (VERSION 4). */
+    CommandOutcome setFlagSync(String mode) = 25;
+
+    /** device_config get_sync_disabled_for_tests; stdout is none, persistent or until_reboot (VERSION 4). */
+    CommandOutcome getFlagSync() = 26;
+
     /** dumpsys deviceidle */
     void readDeviceIdle(in ParcelFileDescriptor pipe) = 30;
 

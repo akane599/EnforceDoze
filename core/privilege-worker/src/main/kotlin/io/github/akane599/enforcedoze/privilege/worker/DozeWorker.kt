@@ -22,6 +22,7 @@ import kotlin.system.exitProcess
  * constructor in their UserService process; [DozeRootService] hosts it for libsu. The context is this
  * app's package context, so [allowedUid] is the app's uid.
  */
+@Suppress("TooManyFunctions") // It implements IDozeWorker, one function per AIDL method (SPEC 4.3).
 public class DozeWorker internal constructor(
     private val core: WorkerCore,
     private val allowedUid: Int,
@@ -74,6 +75,10 @@ public class DozeWorker internal constructor(
     override fun getDeviceIdleSettings(): CommandOutcome = checked { core.getDeviceIdleSettings() }
 
     override fun listDeviceIdleConfig(): CommandOutcome = checked { core.listDeviceIdleConfig() }
+
+    override fun setFlagSync(mode: String?): CommandOutcome = checked { core.setFlagSync(mode) }
+
+    override fun getFlagSync(): CommandOutcome = checked { core.getFlagSync() }
 
     override fun readDeviceIdle(pipe: ParcelFileDescriptor?): Unit = stream(pipe) { core.readDeviceIdleArgv() }
 

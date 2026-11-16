@@ -218,6 +218,23 @@ class WorkerContractTest {
     }
 
     @Test
+    fun flagSyncSetReadBackAndPutBack() = worker { w ->
+        val read = w.flagSync()
+        assertOk(read)
+        val before = read.stdout.trim()
+        assertThat(before).isIn(WorkerContract.SYNC_DISABLED_MODES)
+        // until_reboot leaves nothing behind even if the restore below never runs.
+        val other = if (before == "until_reboot") "none" else "until_reboot"
+        try {
+            assertOk(w.setFlagSync(other))
+            assertThat(w.flagSync().stdout.trim()).isEqualTo(other)
+        } finally {
+            assertOk(w.setFlagSync(before))
+        }
+        assertThat(w.flagSync().stdout.trim()).isEqualTo(before)
+    }
+
+    @Test
     fun allowlistAddAndRemove() = worker { w ->
         try {
             assertOk(w.allowlist(self, add = true))

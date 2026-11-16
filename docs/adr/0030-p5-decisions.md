@@ -182,3 +182,9 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   - The notification permission is asked once, after onboarding.
   - Upstream's tile classes are unregistered and wait for the upstream code's removal (SPEC 12.1);
     their resources show as unused in lint until then.
+- **Server flag sync through two typed worker calls** (contract VERSION 4).
+  - The calls are `setFlagSync(mode)` and `getFlagSync()`, verified at android-17.0.0_r1. Shell
+    holds `READ_WRITE_SYNC_DISABLED_MODE_CONFIG`, which `setSyncDisabledModeConfig` accepts.
+  - The switch sets `persistent`, so the owner's choice survives a reboot, and is read back.
+  - The app remembers that it stopped sync. Restore stock (and so Reset) lets sync run again, so
+    the change stays undoable.

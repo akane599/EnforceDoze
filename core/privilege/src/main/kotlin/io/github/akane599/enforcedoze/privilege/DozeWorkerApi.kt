@@ -46,6 +46,12 @@ public interface DozeWorkerApi {
     /** `device_config list device_idle`, to tell server values from the global string. */
     public suspend fun deviceIdleConfig(): CommandOutcome
 
+    /** `device_config set_sync_disabled_for_tests`: `none`, `persistent` or `until_reboot` (SPEC 5.6). */
+    public suspend fun setFlagSync(mode: String): CommandOutcome
+
+    /** `device_config get_sync_disabled_for_tests`; stdout is the mode. */
+    public suspend fun flagSync(): CommandOutcome
+
     public suspend fun readDeviceIdle(): String
 
     public suspend fun readSensorService(): String
@@ -89,6 +95,10 @@ internal class BinderDozeWorkerApi(private val worker: IDozeWorker) : DozeWorker
     override suspend fun deviceIdleSettings(): CommandOutcome = io { worker.deviceIdleSettings }
 
     override suspend fun deviceIdleConfig(): CommandOutcome = io { worker.listDeviceIdleConfig() }
+
+    override suspend fun setFlagSync(mode: String): CommandOutcome = io { worker.setFlagSync(mode) }
+
+    override suspend fun flagSync(): CommandOutcome = io { worker.getFlagSync() }
 
     override suspend fun readDeviceIdle(): String = read { worker.readDeviceIdle(it) }
 
