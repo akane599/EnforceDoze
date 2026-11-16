@@ -19,3 +19,6 @@ app/release
 
 # Python bytecode from the fixture tools
 __pycache__/
+
+# Kotlin compiler session data
+.kotlin/
