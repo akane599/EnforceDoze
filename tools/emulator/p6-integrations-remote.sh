@@ -139,9 +139,12 @@ screen_on
 adb shell am start -W -n "$starter_activity" >/dev/null
 check "the engine starts" until_true 20 status_has '^started=true'
 check "the Shizuku server starts" start_server
-check "previous.json holds the simulated Tasker setup" until_true 20 status_has 'previous=true'
+# The stock capture saves previous.json first, then reads stock with the string deleted and puts it back.
 cmd capture-stock > "$out/capture-stock.txt"
 check "stock.json is captured" grep -q '^ok=true' "$out/capture-stock.txt"
+check "previous.json holds the simulated Tasker setup" until_true 10 status_has 'previous=true'
+constants_are_tasker() { [[ $(adb shell settings get global device_idle_constants | tr -d '\r') == "$tasker" ]]; }
+check "the stock capture put the Tasker string back" constants_are_tasker
 adb shell am instrument -w -r -e class io.github.akane599.enforcedoze.evidenceclient.EvidenceProviderTest \
   "$client_pkg/androidx.test.runner.AndroidJUnitRunner" > "$out/provider-instrument.txt" 2>&1
 check "the client reads the provider (status, sessions, limit, refusals)" grep -q '^OK (' "$out/provider-instrument.txt"
@@ -149,10 +152,15 @@ adb shell content query --uri "content://$pkg.evidence/status" > "$out/provider-
 check "the shell cannot read the provider" grep -qiE 'permission denial|SecurityException' "$out/provider-shell.txt"
 adb shell am start -W -a "$action.OPEN_REPORT" -p "$pkg" --el session_id 1 > "$out/report-alias-shell.txt" 2>&1
 check "the shell cannot open the report alias" grep -qiE 'permission|SecurityException' "$out/report-alias-shell.txt"
+# The usual order too: Coulomb installed while EnforceDoze is already there.
+adb uninstall "$client_pkg" >/dev/null 2>&1
+adb install -t "$dir/client.apk" >/dev/null || log "client reinstall failed"
+check "the signature permission reaches a client installed after EnforceDoze" client_granted
 
 # 2. The automation API (ADR 0033, 0034): off by default, then a token for the shell as the client.
 call GET_STATUS nothing
-check "with the API off, the receiver is disabled and logs nothing" bash -c "! '$A' shell am broadcast -n '$receiver' --es cmd events --es arg 60 </dev/null | grep -q AUTOMATION"
+no_automation_events() { ! events_have AUTOMATION; }
+check "with the API off, a call never reaches the app" no_automation_events
 cmd automation on > /dev/null
 token=$(cmd automation-token com.android.shell | sed -n 's/^token=//p' | tr -d '\r')
 check "a token is made" test ${#token} -eq 32
@@ -192,7 +200,6 @@ check "a clean screen off and on completes the switch-over" until_true 30 state_
 cmd switch-state > "$out/switch-complete.txt"
 # The way back: previous.json's string returns and EnforceDoze stops writing.
 cmd return-to-previous > "$out/switch-return.txt"
-constants_are_tasker() { [[ $(adb shell settings get global device_idle_constants | tr -d '\r') == "$tasker" ]]; }
 check "Return to my previous setup puts the Tasker string back" until_true 10 constants_are_tasker
 check "EnforceDoze is hands off after the way back" until_true 10 status_has 'mode=HANDS_OFF'
 

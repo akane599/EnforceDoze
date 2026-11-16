@@ -51,8 +51,9 @@ I agreed with all of it.
 - **Access.** Permission `io.github.akane599.enforcedoze.permission.READ_EVIDENCE`, protection level
   `signature`, set as the provider's `android:permission`, so it covers reading and writing.
   - Insert, update, delete and `call` are not supported.
-  - The provider also checks `getCallingPackage()`: Coulomb only. Debug builds also accept the app's
-    own instrumentation package, for the emulator test.
+  - The provider also checks `getCallingPackage()`: Coulomb only. Debug builds also accept
+    `io.github.akane599.enforcedoze.evidenceclient`, the stand-in for Coulomb in the emulator test
+    (ADR 0034).
 - **`content://io.github.akane599.enforcedoze.evidence/status`**: exactly one row.
 
   | Column | Type | Value |
