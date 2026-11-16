@@ -30,9 +30,13 @@
         tools:ignore="QueryAllPackagesPermission" />
     <!-- The Shizuku permission (API_V23) is declared by :core:privilege. -->
 
+    <!-- No backup and no device-to-device transfer (ADR 0039): stock.json and previous.json belong to this phone, and
+         restoring them on another would make Restore stock write this phone's values there; the automation tokens
+         stay with the phone they were made on. -->
     <application
         android:name="io.github.akane599.enforcedoze.app.EnforceDozeApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
