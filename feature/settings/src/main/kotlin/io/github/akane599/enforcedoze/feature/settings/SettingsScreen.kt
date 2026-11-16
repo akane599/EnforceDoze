@@ -243,7 +243,7 @@ private fun StatusLine(status: CommandStatus?, command: SettingsCommand) {
     when (val outcome = status.outcome) {
         null -> Text(stringResource(R.string.settings_running), style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet)
 
-        ActionOutcome.Done -> Text(
+        ActionOutcome.Done, is ActionOutcome.Applied -> Text(
             stringResource(DONE_LINES.getValue(command)),
             style = MaterialTheme.typography.bodyMedium,
             color = Ed.palette.quiet,

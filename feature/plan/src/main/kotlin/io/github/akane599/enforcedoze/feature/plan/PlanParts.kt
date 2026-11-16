@@ -27,6 +27,7 @@ import io.github.akane599.enforcedoze.profile.Plan
 import io.github.akane599.enforcedoze.recommend.Note
 import io.github.akane599.enforcedoze.recommend.Recommendation
 import io.github.akane599.enforcedoze.ui.ActionOutcome
+import io.github.akane599.enforcedoze.ui.LeverCheckIn
 
 /** Night has no fixed window: the owner switches it on from the tile or an automation (ADR 0032). */
 internal val Recommendation.byHand: Boolean get() = Note.NIGHT_BY_HAND in notes
@@ -95,6 +96,11 @@ internal fun OutcomeLine(applying: Boolean, outcome: ActionOutcome?) {
         }
 
         ActionOutcome.Done -> Unit
+
+        is ActionOutcome.Applied -> {
+            Spacer(Modifier.height(Space.m))
+            LeverCheckIn(outcome.checks)
+        }
 
         is ActionOutcome.Unavailable -> {
             Spacer(Modifier.height(Space.m))

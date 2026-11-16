@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.ui.succeeded
 import io.github.akane599.enforcedoze.feature.onboarding.OnboardingSource
 import io.github.akane599.enforcedoze.feature.onboarding.OnboardingState
 import io.github.akane599.enforcedoze.feature.onboarding.PrivilegeFinding
@@ -62,7 +63,7 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
     }
 
     override suspend fun apply(plan: Plan): ActionOutcome = services.applyPlan(plan).also { outcome ->
-        if (outcome == ActionOutcome.Done) applied.value = plan
+        if (outcome.succeeded) applied.value = plan
     }
 
     override suspend fun runProof() = services.runProof()

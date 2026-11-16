@@ -262,12 +262,22 @@ Recorded from `Motion` in `Theme.kt`:
 From the code: the 48 dp target is `Sizes.touch`; the reading column caps at `Space.column`
 (640 dp) on wide screens.
 
+## Options and transitions
+
+- **Wallpaper accent (SPEC 10.2):** Settings › Language and look › "Accent follows the wallpaper", off
+  by default. `EdTheme(wallpaperAccent = true)` takes the accent and on-accent from the wallpaper's
+  `primaryContainer`; ground, ink, the strip fills and the verdict colours stay as tabled above.
+- **Shared element (SPEC 10.3):** the verdict word moves from Home into the report. Screens mark it
+  with `Modifier.sharedElement(verdictKey(sessionId))`; the app provides the scopes
+  (`LocalSharedTransitionScope`, `LocalEntryAnimationScope`) around its navigation. Without them, as
+  in screenshot tests, nothing moves.
+
+- **Lever check-in (SPEC 10.3):** after an apply, each lever the profile uses arrives as a ruled row,
+  its state on the right and the value read back below in `RawLine`. Rows fade in one after another,
+  `Motion.SHORT_MS` each, scaled by the animator setting; with animations off they all show at once.
+
 ## Not in the code yet
 
-- **Wallpaper accent option (SPEC 10.2):** `EdTheme` has a `wallpaperAccent` parameter, but no
-  caller passes it and no setting exposes it, so the option is not reachable in the app.
-- **Shared-element transition from the Home verdict to the report (SPEC 10.3):** no shared-element
-  code exists.
-- **`Motion.SHORT_MS` and `Motion.MEDIUM_MS`:** defined, but nothing references them yet.
+- **`Motion.MEDIUM_MS`:** defined, but nothing references it yet.
 - **Usage for the `small`, `medium`, `large` and `extraLarge` shapes and `Space.xxl`:** defined;
   only the Material components that read the theme shapes use them, so no dedicated rule is recorded.

@@ -315,7 +315,6 @@ Carried over to P5:
     and a smoke run under Shizuku (grants, tiles, the sensors confirmation) on the API 37 emulator;
   - still open from the audit (P2):
     - two panes on a tablet exist only for Log/Report and Profiles;
-    - the report summary's figure grid sits close to "equal-weight tiles";
     - Log rows have no strip;
     - some feature screens still hold sizes that belong in `:core:design`.
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):

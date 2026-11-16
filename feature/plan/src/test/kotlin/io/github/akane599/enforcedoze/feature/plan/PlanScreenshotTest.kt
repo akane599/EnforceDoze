@@ -8,6 +8,8 @@ import io.github.akane599.enforcedoze.testing.screenshots.Primary
 import io.github.akane599.enforcedoze.testing.screenshots.ownerClock
 import io.github.akane599.enforcedoze.testing.screenshots.shoot
 import io.github.akane599.enforcedoze.ui.ActionOutcome
+import io.github.akane599.enforcedoze.ui.CheckState
+import io.github.akane599.enforcedoze.ui.LeverCheck
 import io.github.akane599.enforcedoze.ui.StateNotice
 import org.junit.Before
 import org.junit.Test
@@ -16,6 +18,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.LocalTime
+import io.github.akane599.enforcedoze.ui.R as UiR
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -38,6 +41,22 @@ class PlanScreenshotTest {
             outcome = ActionOutcome.Failed("device_idle_constants: read back idle_to=3600000, expected 900000"),
         )
     }
+
+    // SPEC 10.3: each lever checks in with what the phone read back; the screen is on, so the screen-off levers wait.
+    @Test fun planApplied() =
+        shoot(MODULE, "plan-applied", listOf(Primary, Primary.copy(dark = false, turkish = true, largeFont = true)), tall = true) {
+            val checks = listOf(
+                LeverCheck(
+                    stringResource(UiR.string.ui_lever_constants),
+                    CheckState.APPLIED,
+                    "inactive_to=180000,motion_inactive_to=0,idle_after_inactive_to=420000,light_after_inactive_to=60000",
+                ),
+                LeverCheck(stringResource(UiR.string.ui_lever_force_idle), CheckState.ARMED, null),
+                LeverCheck(stringResource(UiR.string.ui_lever_sensors), CheckState.ARMED, null),
+                LeverCheck(stringResource(UiR.string.ui_lever_allowlist), CheckState.APPLIED, "+org.example.chat +org.example.mail"),
+            )
+            PlanScreen(PlanFixtures.state, NoPlan, outcome = ActionOutcome.Applied(checks))
+        }
 
     @Test fun recommended() = shoot(MODULE, "recommended", tall = true) { RecommendedScreen(PlanFixtures.state, NoRecommended) }
 

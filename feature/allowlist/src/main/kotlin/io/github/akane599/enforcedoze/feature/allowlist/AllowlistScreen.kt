@@ -207,7 +207,7 @@ private fun StatusLine(status: ChangeStatus?) {
             modifier = Modifier.padding(top = Space.s),
         )
 
-        ActionOutcome.Done -> Unit
+        ActionOutcome.Done, is ActionOutcome.Applied -> Unit
 
         is ActionOutcome.Unavailable -> {
             Spacer(Modifier.height(Space.m))

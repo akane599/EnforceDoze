@@ -65,7 +65,7 @@ internal fun EnforceDozeApp(services: AppServices, opening: Route? = null, opene
     var pending by rememberSaveable { mutableStateOf<String?>(null) }
     val show: (ActionOutcome) -> Unit = { outcome ->
         val text = when (outcome) {
-            ActionOutcome.Done -> saved
+            ActionOutcome.Done, is ActionOutcome.Applied -> saved
             is ActionOutcome.Unavailable -> outcome.reason
             is ActionOutcome.Failed -> outcome.raw
         }

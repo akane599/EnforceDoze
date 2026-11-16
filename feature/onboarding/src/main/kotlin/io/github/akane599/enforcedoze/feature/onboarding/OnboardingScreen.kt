@@ -57,6 +57,7 @@ import io.github.akane599.enforcedoze.recommend.Confidence
 import io.github.akane599.enforcedoze.recommend.Note
 import io.github.akane599.enforcedoze.recommend.Urgency
 import io.github.akane599.enforcedoze.ui.ActionOutcome
+import io.github.akane599.enforcedoze.ui.LeverCheckIn
 import io.github.akane599.enforcedoze.ui.ProofCard
 import io.github.akane599.enforcedoze.ui.ProofStep
 import io.github.akane599.enforcedoze.ui.ProofStepKind
@@ -386,6 +387,8 @@ private fun PlanStep(state: OnboardingState, outcome: ActionOutcome?) {
             tone = Tone.CRITICAL,
             raw = true,
         )
+
+        is ActionOutcome.Applied -> LeverCheckIn(outcome.checks, Modifier.padding(top = Space.m))
 
         else -> Unit
     }

@@ -138,4 +138,13 @@
     <string name="ui_probe_one_ui">One UI sürümü</string>
     <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
     <string name="ui_probe_vendor">Üretici alanları</string>
+    <!-- Each lever as read back after an apply (SPEC 10.3). -->
+    <string name="ui_check_applied">Uygulandı</string>
+    <string name="ui_check_armed">Ekran kapanınca</string>
+    <string name="ui_check_held_off">Bekletmede</string>
+    <string name="ui_check_partly">Kısmen</string>
+    <string name="ui_check_not_writable">Yazılamıyor</string>
+    <string name="ui_check_waiting">Bekliyor</string>
+    <string name="ui_check_unknown">Okunamadı</string>
+    <string name="ui_check_guarded">Dokunulmadı</string>
 </resources>

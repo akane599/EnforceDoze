@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.ui.succeeded
+import io.github.akane599.enforcedoze.ui.LeverCheck
+import io.github.akane599.enforcedoze.ui.CheckState
+import io.github.akane599.enforcedoze.doze.LeverStatus
+import io.github.akane599.enforcedoze.doze.LeverState
+import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.app.EngineGraph
 import com.akylas.enforcedoze.R
 import io.github.akane599.enforcedoze.doze.HoldOff
@@ -106,11 +112,20 @@ internal class AppServices(val graph: EngineGraph) {
         val outcome = access.send(turnOn = true) { host ->
             host.engine.setPlan(plan, reason)
             if (host.status.value.mode == Mode.PAUSED) host.engine.resume()
-            ActionOutcome.Done
+            // The engine has written and read back by now: each lever checks in with what the phone shows.
+            ActionOutcome.Applied(checks(host.status.value.levers))
         }
-        if (outcome == ActionOutcome.Done) prefs.applied(plan, Instant.now())
+        if (outcome.succeeded) prefs.applied(plan, Instant.now())
         return outcome
     }
+
+    /** The levers the profile uses, in lever order, as the engine read them back (UNUSED ones are left out). */
+    private fun checks(levers: Map<Lever, LeverStatus>): List<LeverCheck> = levers.entries
+        .filter { it.value.state != LeverState.UNUSED }
+        .sortedBy { it.key }
+        .map { (lever, status) ->
+            LeverCheck(graph.app.getString(lever.label()), status.state.check(), status.seen?.toString() ?: status.reason)
+        }
 
     /**
      * "Follow Recommended automatically" (SPEC 9.1 Plan): when it is on and the recommendation differs from the plan
@@ -187,7 +202,7 @@ internal class AppServices(val graph: EngineGraph) {
             when (outcome) {
                 is ActionOutcome.Unavailable -> proofSteps.value = ProofMapping.failed(outcome.reason)
                 is ActionOutcome.Failed -> proofSteps.value = ProofMapping.failed(outcome.raw)
-                ActionOutcome.Done -> Unit
+                ActionOutcome.Done, is ActionOutcome.Applied -> Unit
             }
         }
     }
@@ -212,4 +227,15 @@ internal class AppServices(val graph: EngineGraph) {
 internal data class EngineView(val running: Boolean, val mode: Mode, val plan: PlanState?, val status: EngineStatus?) {
     /** Off, or paused by the owner: the phone runs stock (SPEC 9.1 "pause plan (back to Stock)"). */
     val paused: Boolean get() = !running || mode == Mode.PAUSED
+}
+
+private fun LeverState.check(): CheckState = when (this) {
+    LeverState.APPLIED -> CheckState.APPLIED
+    LeverState.ARMED -> CheckState.ARMED
+    LeverState.HELD_OFF -> CheckState.HELD_OFF
+    LeverState.PARTLY -> CheckState.PARTLY
+    LeverState.NOT_WRITABLE -> CheckState.NOT_WRITABLE
+    LeverState.WAITING -> CheckState.WAITING
+    LeverState.GUARDED -> CheckState.GUARDED
+    LeverState.UNKNOWN, LeverState.UNUSED -> CheckState.UNKNOWN
 }

@@ -52,6 +52,7 @@ import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.profile.Profile
 import io.github.akane599.enforcedoze.ui.ActionOutcome
+import io.github.akane599.enforcedoze.ui.LeverCheckIn
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.profileCost
@@ -168,6 +169,11 @@ private fun StatusLine(profile: Profile, status: ApplyStatus?) {
         }
 
         ActionOutcome.Done -> Unit
+
+        is ActionOutcome.Applied -> {
+            Spacer(Modifier.height(Space.m))
+            LeverCheckIn(outcome.checks)
+        }
 
         is ActionOutcome.Unavailable -> {
             Spacer(Modifier.height(Space.m))

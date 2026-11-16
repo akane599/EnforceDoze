@@ -138,4 +138,13 @@
     <string name="ui_probe_one_ui">One UI version</string>
     <string name="ui_probe_persistence">Doze timing kept after a restart</string>
     <string name="ui_probe_vendor">Manufacturer fields</string>
+    <!-- Each lever as read back after an apply (SPEC 10.3). -->
+    <string name="ui_check_applied">Applied</string>
+    <string name="ui_check_armed">Set for screen off</string>
+    <string name="ui_check_held_off">Held off</string>
+    <string name="ui_check_partly">Partly</string>
+    <string name="ui_check_not_writable">Cannot write</string>
+    <string name="ui_check_waiting">Waiting</string>
+    <string name="ui_check_unknown">Not read back</string>
+    <string name="ui_check_guarded">Left alone</string>
 </resources>

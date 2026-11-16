@@ -228,3 +228,9 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   working names; the UI already words each signal, so the letter column went (SPEC 10.4).
 - **Profile detail keeps constant keys in monospace.** `inactive_to` and the rest are raw tokens
   from the device's dump, which is what DESIGN.md keeps the monospace face for.
+- **SPEC 10.2 and 10.3 completed:**
+  - The wallpaper accent is a Settings switch, off by default.
+  - The Home verdict is a shared element into the report.
+  - An apply returns `ActionOutcome.Applied` with each lever as the engine read it back (`LeverCheckIn`
+    on Plan, Profile detail and onboarding). Screens that never apply read it as `Done`, and
+    `succeeded` covers both.

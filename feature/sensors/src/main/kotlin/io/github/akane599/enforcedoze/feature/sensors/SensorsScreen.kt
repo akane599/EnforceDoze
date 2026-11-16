@@ -153,7 +153,7 @@ private fun StatusLine(status: SwitchStatus?) {
     when (val outcome = status.outcome) {
         null -> Text(stringResource(R.string.sensors_switching), style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet)
 
-        ActionOutcome.Done -> Unit
+        ActionOutcome.Done, is ActionOutcome.Applied -> Unit
 
         is ActionOutcome.Unavailable -> {
             Spacer(Modifier.height(Space.s))
