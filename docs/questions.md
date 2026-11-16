@@ -31,6 +31,12 @@ Non-blocking questions for the owner. Each states the default in use, so work co
 - **Q12. The Tasker task XML in `docs/automation.md`.** It follows Tasker's export format (Send Intent,
   action 877) but has not been imported on a phone: there is no Tasker on the emulator. *Default:* the
   page says so and gives the plain Send Intent fields too; the import is checked in the P7 phone session.
+- **Q13. Allowlist calls from Tasker (parity row 8).** Upstream's `ADD_WHITELIST` and `REMOVE_WHITELIST`
+  broadcasts were open to any app and pasted the package into a shell command, so they are gone
+  (ADR 0036). SPEC 11.1's action list has no allowlist action. *Default:* port them as two token-checked
+  automation actions, `ALLOWLIST_ADD` and `ALLOWLIST_REMOVE`, with a `package` extra that must be an
+  installed app. They share the 30 s limit and run the Allowlist screen's own command. Say "drop" and
+  the row is dropped instead: the Allowlist screen and the report's "Add to allowlist" cover it by hand.
 
 ## Answered
 

@@ -169,7 +169,8 @@ so no runtime result came out of it; this audit ran on akane-linux.
 ## 6. Feature parity
 
 Decisions: **port**, **port (root tier)**, **drop** (with reason). Status: `upstream` until the new
-code with a test replaces it. Features the spec lists in 2.1 follow SPEC 2.3's defaults; the others
+code with a test replaces it. Since ADR 0036 no upstream component is registered in the manifest, so
+`upstream` means the class is still in the tree but nothing can start it. Features the spec lists in 2.1 follow SPEC 2.3's defaults; the others
 are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 
 | # | Upstream feature | Where | Decision | New home | Status |
@@ -181,7 +182,7 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 5 | Disable when charging | service | port | Charging hold-off (5.5), always on | upstream |
 | 6 | Execution mode (root / Shizuku) | settings | port | Tiers T0–T3 (4) | upstream |
 | 7 | Doze allowlist screen | `WhitelistAppsActivity` | port | Lever D, Allowlist screen (5, 9.1) | upstream |
-| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | port | Automation API with permission (11.1) | upstream |
+| 8 | Add / remove allowlist broadcasts | `Add/RemoveWhiteListReceiver` | port, as token-checked actions (Q13) | Automation API (11.1, ADR 0033) | upstream; unregistered (ADR 0036): open to any app and a shell injection |
 | 9 | Motion sensing off, with an allowed package | service, `PackageChooserActivity` | port | Lever C restricted mode (5.4) | upstream |
 | 10 | All sensors off in Doze | `setAllSensorsState` | port | Lever C `allSensorsOff`, Strict, "Sensors off" tile (5.4, 9.2) | upstream |
 | 11 | Biometrics off in Doze | service | port (root tier) | T3 (1.2) | upstream |
@@ -212,6 +213,6 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 36 | Start at boot and after update | `BootCompleteReceiver`, `AutoRestartOnUpdate` | port | Foreground service start (12.4) | upstream |
 | 37 | Re-enable Doze when disabled | `MainActivity` dialog | port | Capability probe and onboarding (4.4) | upstream |
 | 38 | About, sponsor link, Custom Tabs | `AboutAppActivity`, `CustomTabs` | port About with GPL notice and credits; drop the in-app Custom Tabs browser (links open the default browser) | Settings → About (9.1, 12.1) | upstream |
-| 39 | App shortcuts (Settings, Battery stats) | `res/xml/shortcuts.xml` | drop for v1: Home and the tile cover the entry points; revisit after P5 | — | upstream |
+| 39 | App shortcuts (Settings, Battery stats) | `res/xml/shortcuts.xml` | drop for v1: Home and the tile cover the entry points; revisit after P5 | — | dropped (ADR 0036): no longer registered; they targeted upstream's package and never resolved |
 | 40 | Upstream translations (Weblate) | `res/values-*` | drop: all copy is rewritten; English and Turkish only (9); translators stay credited in `NOTICE` | — | upstream |
 | 41 | Upstream website, store metadata, release workflow | `docs/index.html`, `fastlane/`, `.github/workflows/release.yml` | drop: the fork ships through GitHub Releases (12.6); removed in P7 | — | upstream |

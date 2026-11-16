@@ -64,74 +64,10 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
-        <!-- Upstream's screen: no entry point since the tiles were replaced; removed with the upstream code (SPEC 12.1). -->
-        <activity android:name="com.akylas.enforcedoze.MainActivity"
-            android:exported="false" />
-        <receiver android:name="com.akylas.enforcedoze.BootCompleteReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.akylas.enforcedoze.AutoRestartOnUpdate"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.EnableForceDozeService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.akylas.enforcedoze.ENABLE_FORCEDOZE" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.DisableForceDozeService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.akylas.enforcedoze.DISABLE_FORCEDOZE" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.AddWhiteListReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.akylas.enforcedoze.ADD_WHITELIST" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.RemoveWhiteListReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.akylas.enforcedoze.REMOVE_WHITELIST" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.SettingsChangeReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.akylas.enforcedoze.CHANGE_SETTING" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.akylas.enforcedoze.ReenterDoze"
-            android:enabled="true"
-            android:exported="true" />
-        <receiver
-            android:name="com.akylas.enforcedoze.CustomDozePeriodReceiver"
-            android:enabled="true"
-            android:exported="false" />
+        <!-- No upstream component is registered (ADR 0036). Upstream's exported receivers took commands from any app:
+             ADD/REMOVE_WHITELIST pasted an extra into a shell command run as this app, ENABLE_FORCEDOZE started a
+             second Doze manager, CHANGE_SETTING rewrote its settings. The classes stay until SPEC 12.1 deletes them. -->
         <!-- The engine (SPEC 12.4, ADR 0015). specialUse: no other type covers applying the owner's Doze
              profile at screen off and on; it reacts to broadcasts only and runs no work in between. -->
         <service
@@ -150,10 +86,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <service
-            android:name="com.akylas.enforcedoze.ForceDozeService"
-            android:enabled="true"
-            android:exported="false" android:foregroundServiceType="specialUse"/>
         <!-- SPEC 9.2, 11.2: the "Doze plan" and "Sensors off" tiles replace upstream's Doze and airplane tiles. -->
         <service
             android:name="io.github.akane599.enforcedoze.app.PlanTileService"
@@ -187,50 +119,6 @@
                 android:name="android.service.quicksettings.TOGGLEABLE_TILE"
                 android:value="true" />
         </service>
-        <service
-            android:name="com.akylas.enforcedoze.NotificationService"
-            android:exported="true"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
-        <activity
-            android:name="com.akylas.enforcedoze.DozeStatsActivity"
-            android:label="Doze battery stats (old)" />
-        <activity
-            android:name="com.akylas.enforcedoze.DozeBatteryStatsActivity"
-            android:label="Doze battery stats" />
-        <activity
-            android:name="com.akylas.enforcedoze.WhitelistAppsActivity"
-            android:label="Whitelist" />
-        <activity
-            android:name="com.akylas.enforcedoze.BlockNotificationsActivity"
-            android:label="Doze Notifications blocklist" />
-        <activity
-            android:name="com.akylas.enforcedoze.BlockAppsActivity"
-            android:label="Doze App blocklist" />
-        <activity
-            android:name="com.akylas.enforcedoze.SettingsActivity"
-            android:label="Settings" />
-        <activity
-            android:name="com.akylas.enforcedoze.LogActivity"
-            android:label="Debug log" />
-        <activity
-            android:name="com.akylas.enforcedoze.PackageChooserActivity"
-            android:label="Package chooser" />
-        <activity
-            android:name="com.akylas.enforcedoze.AboutAppActivity"
-            android:label="About" />
-        <activity
-            android:name="com.akylas.enforcedoze.TaskerBroadcastsActivity"
-            android:label="Tasker broadcasts" />
-        <activity
-            android:name="com.akylas.enforcedoze.DozeTunablesActivity"
-            android:label="Doze Tunables" />
-        <activity android:name="com.akylas.enforcedoze.RequestIgnoreBatteryActivity"
-            android:exported="false"
-            android:theme="@style/Transparent.NoTitleBar" />
         <!-- The Shizuku provider is declared by :core:privilege. -->
         <!-- Evidence exports (SPEC 8.7) go to the share sheet through this provider; nothing is uploaded. -->
         <provider
@@ -242,7 +130,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/export_paths" />
         </provider>
-            <provider
+        <provider
             android:name="io.github.akane599.enforcedoze.app.evidence.EvidenceProvider"
             android:authorities="io.github.akane599.enforcedoze.evidence"
             android:exported="true"
