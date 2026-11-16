@@ -54,6 +54,7 @@ fun shoot(module: String, name: String, variants: List<Variant> = Matrix, tall: 
             addOption(Settle)
         }
         val file = File(root, "$module/screenshots/$name/${v.name}.png")
+        collectGarbage()
         captureRoboImage(file, roborazziComposeOptions = options) { EdTheme { content() } }
         check(!file.exists() || !flat(file)) { "${file.path} came out as one flat colour: the capture missed the frame" }
     }
@@ -73,6 +74,23 @@ private object Settle : RoborazziComposeCaptureOption {
 }
 
 private const val SETTLE_MS = 1_000L
+
+/**
+ * Robolectric's hardware PixelCopy (ShadowPixelCopy and HardwareRenderingScreenshot, 4.17 and master) draws the
+ * window on HWUI's render thread with `syncAndDraw()` and reads the frame straight back, without waiting for it
+ * to be presented. Now and then that read came back empty, every pixel 0x00000000, although the window was
+ * composed and laid out: a second hardware render of the same window, made straight after, showed the screen.
+ * The miss depends on garbage-collection timing: it struck any screen, mostly after a dozen captures in one JVM,
+ * and collecting garbage and running finalizers before each capture removed it (0 flat in 120 captures of the
+ * empty log, against 26 in 260 without). It is a mitigation, not a guarantee, so the flat check in [shoot] stays.
+ */
+// The collection is the point here (see above); runFinalization is still the only way to drain pending finalizers.
+@Suppress("DEPRECATION", "ExplicitGarbageCollectionCall")
+private fun collectGarbage() {
+    System.gc()
+    System.runFinalization()
+    System.gc()
+}
 
 /** A capture that missed its frame is a single colour; every real screen has text on its ground. */
 private fun flat(file: File): Boolean {

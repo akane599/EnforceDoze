@@ -113,3 +113,9 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   - The two ADB commands are shown as raw lines.
 - **Shared parts moved down a layer.** The switch row is now in `:core:design`. The tier wording and
   the quick-proof card are in `:core:ui`, for Settings, Home and onboarding.
+- **`shoot` collects garbage before each capture.** Robolectric's hardware PixelCopy now and then read
+  an empty frame (every pixel transparent black) although the window was composed, on any screen and
+  mostly after a dozen captures in one JVM. The miss followed garbage-collection timing: 26 flat in 260
+  captures without the collection, none in 120 with it. It is a mitigation, so the flat check stays.
+  Software rendering (`robolectric.pixelCopyRenderMode=software`) would avoid the render thread, but
+  drops elevation shadows and every baseline would change; it stays the fallback.
