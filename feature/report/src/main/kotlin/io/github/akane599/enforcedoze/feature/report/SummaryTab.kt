@@ -125,7 +125,7 @@ internal fun ReportStrip(summary: ReportSummary, formats: Formats) {
     } else {
         stringResource(R.string.report_strip_summary_unjudged, formats.clock(summary.start), formats.clock(summary.end), breaks)
     } + stripWakes(summary.strip.wakes.size)
-    TimelineStrip(summary.strip, description, Modifier.fillMaxWidth().height(Sizes.stripLarge + 8.dp))
+    TimelineStrip(summary.strip, description, Modifier.fillMaxWidth().height(Sizes.stripLarge + Space.s))
     StripAxis(hourLabels(summary.start, summary.end, formats), summary.start, summary.end)
 }
 

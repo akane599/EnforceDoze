@@ -212,7 +212,7 @@ private fun LeverTable(profile: Profile, formats: Formats) {
     }
 }
 
-private val LETTER_WIDTH = 28.dp
+private val LETTER_WIDTH = Sizes.markColumn
 
 @Composable
 private fun ColumnScope.Timings(state: ProfilesState, profile: Profile, formats: Formats) {
@@ -249,7 +249,7 @@ private fun ColumnScope.Timings(state: ProfilesState, profile: Profile, formats:
     }
 }
 
-private val VALUE_WIDTH = 76.dp
+private val VALUE_WIDTH = Sizes.valueColumn
 
 @Composable
 private fun TimingRow(key: String, state: ProfilesState, profile: Profile, formats: Formats, wide: Boolean) {

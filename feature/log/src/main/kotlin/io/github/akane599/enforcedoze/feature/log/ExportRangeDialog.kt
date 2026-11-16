@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.akane599.enforcedoze.design.Ed
+import io.github.akane599.enforcedoze.design.Space
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -51,7 +52,7 @@ public fun ExportRangeDialog(first: LocalDate, last: LocalDate, onExport: (from:
     ) {
         DateRangePicker(
             state,
-            title = { Text(stringResource(R.string.log_export_title), modifier = Modifier.padding(start = 24.dp, top = 16.dp)) },
+            title = { Text(stringResource(R.string.log_export_title), modifier = Modifier.padding(start = Space.xl, top = Space.l)) },
             showModeToggle = true,
         )
     }

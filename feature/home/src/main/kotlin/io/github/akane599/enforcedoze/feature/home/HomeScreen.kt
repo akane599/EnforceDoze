@@ -254,7 +254,7 @@ private fun LastNight(night: NightSummary, formats: Formats) {
     } else {
         stringResource(R.string.home_strip_summary_unjudged, formats.clock(night.start), formats.clock(night.end), breaks)
     } + stripWakes(night.strip.wakes.size)
-    TimelineStrip(night.strip, summary, Modifier.fillMaxWidth().height(Sizes.stripSmall + 8.dp))
+    TimelineStrip(night.strip, summary, Modifier.fillMaxWidth().height(Sizes.stripSmall + Space.s))
     StripAxis(hourLabels(night.start, night.end, formats), night.start, night.end)
     Spacer(Modifier.height(Space.l))
     val unknown = stringResource(UiR.string.ui_unknown)

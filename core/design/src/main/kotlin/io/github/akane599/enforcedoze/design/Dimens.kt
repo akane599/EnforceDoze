@@ -31,6 +31,15 @@ public object Sizes {
     public val stripRow: Dp = 16.dp
     public val icon: Dp = 22.dp
 
+    /** A right-aligned value in a table: timings in the profile and switch-over tables, counts in the report. */
+    public val valueColumn: Dp = 76.dp
+
+    /** A clock time at the start of a report row (timeline, wakers). */
+    public val timeColumn: Dp = 56.dp
+
+    /** A narrow column: a lever letter, or the timeline's route line. */
+    public val markColumn: Dp = 28.dp
+
     /** A profile's lever mark (A–D), and the ink outline of a lever in use. */
     public val mark: Dp = 22.dp
     public val markStroke: Dp = 1.5.dp

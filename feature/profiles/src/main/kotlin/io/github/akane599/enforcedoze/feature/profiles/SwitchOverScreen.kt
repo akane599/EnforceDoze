@@ -45,6 +45,7 @@ import io.github.akane599.enforcedoze.design.RawLine
 import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.SectionHeader
+import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.rememberFormats
@@ -252,7 +253,7 @@ private fun CompareRow(key: String, profiles: List<Profile>, formats: Formats, w
     }
 }
 
-private val VALUE_WIDTH = 76.dp
+private val VALUE_WIDTH = Sizes.valueColumn
 
 /** The profile screens' order: the walk's timings first, in the order the phone passes them, then any other key. */
 private fun inWalkOrder(key: String): Int = Timings.indexOfFirst { it.first == key }.let { if (it < 0) Int.MAX_VALUE else it }

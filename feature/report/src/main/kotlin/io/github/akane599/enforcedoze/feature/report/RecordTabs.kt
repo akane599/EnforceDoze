@@ -29,6 +29,7 @@ import io.github.akane599.enforcedoze.design.Formats
 import io.github.akane599.enforcedoze.design.RawLine
 import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.SectionHeader
+import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.ui.title
 
@@ -84,7 +85,7 @@ internal fun ColumnScope.WakersTab(state: ReportState, formats: Formats) {
     }
 }
 
-private val NUMBER_WIDTH = 76.dp
+private val NUMBER_WIDTH = Sizes.valueColumn
 
 @Composable
 private fun AppRow(app: AppWaker, formats: Formats, wide: Boolean) {
@@ -248,7 +249,12 @@ private fun ColumnScope.EngineActions(actions: List<EngineAction>, formats: Form
 private fun TimedRow(time: String, content: @Composable ColumnScope.() -> Unit) {
     val scale = LocalDensity.current.fontScale
     Row(Modifier.fillMaxWidth().padding(vertical = Space.m).semantics(mergeDescendants = true) { }) {
-        Text(time, style = MaterialTheme.typography.titleMedium, color = Ed.palette.ink, modifier = Modifier.width(56.dp * scale))
+        Text(
+            time,
+            style = MaterialTheme.typography.titleMedium,
+            color = Ed.palette.ink,
+            modifier = Modifier.width(Sizes.timeColumn * scale),
+        )
         Column(Modifier.weight(1f), content = content)
     }
 }

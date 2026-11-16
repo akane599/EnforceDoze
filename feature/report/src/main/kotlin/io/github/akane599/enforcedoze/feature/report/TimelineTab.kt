@@ -37,6 +37,7 @@ import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.design.Formats
 import io.github.akane599.enforcedoze.design.Palette
 import io.github.akane599.enforcedoze.design.Rule
+import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.design.StripLegend
 import java.util.concurrent.TimeUnit
@@ -82,8 +83,8 @@ internal fun ColumnScope.TimelineTab(state: ReportState, formats: Formats) {
     }
 }
 
-private val TIME_WIDTH = 56.dp
-private val ROUTE_WIDTH = 28.dp
+private val TIME_WIDTH = Sizes.timeColumn
+private val ROUTE_WIDTH = Sizes.markColumn
 private val DUE_WIDTH = 52.dp
 private val LATE_WIDTH = 60.dp
 private val ROW_MIN = 44.dp
