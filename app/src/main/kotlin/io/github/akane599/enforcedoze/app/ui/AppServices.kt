@@ -136,9 +136,9 @@ internal class AppServices(val graph: EngineGraph) {
      * in force, the recommendation is applied. Called when the owner turns it on and whenever a session is recorded.
      */
     suspend fun followRecommendation() {
-        if (!prefs.followRecommended) return
-        val recommended = recommendations.current.first()?.plan ?: return
-        if (engine.first().plan?.plan != recommended) applyPlan(recommended, SwitchReason.RECOMMENDATION)
+        if (!prefs.followRecommended) return // nothing is read while following is off
+        planToFollow(prefs.followRecommended, recommendations.current.first()?.plan, engine.first().plan?.plan)
+            ?.let { applyPlan(it, SwitchReason.RECOMMENDATION) }
     }
 
     private val accessChanges = MutableStateFlow(0)
@@ -246,3 +246,10 @@ private fun LeverState.check(): CheckState = when (this) {
     LeverState.GUARDED -> CheckState.GUARDED
     LeverState.UNKNOWN, LeverState.UNUSED -> CheckState.UNKNOWN
 }
+
+/**
+ * The plan "Follow Recommended automatically" switches to (SPEC 7.5, 9.1 Plan): the recommendation, only while following
+ * is on and only when it differs from the plan in force. Every other plan switch is an owner's tap (SPEC 15).
+ */
+internal fun planToFollow(following: Boolean, recommended: Plan?, inForce: Plan?): Plan? =
+    recommended?.takeIf { following && it != inForce }

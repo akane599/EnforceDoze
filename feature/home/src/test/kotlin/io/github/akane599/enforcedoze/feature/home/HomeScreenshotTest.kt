@@ -71,7 +71,7 @@ class HomeScreenshotTest {
     }
 }
 
-private object NoActions : HomeActions {
+internal object NoActions : HomeActions {
     override fun changePlan() = Unit
     override fun pause() = Unit
     override fun resume() = Unit

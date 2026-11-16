@@ -73,7 +73,7 @@ class ReportScreenshotTest {
     }
 }
 
-private object NoActions : ReportActions {
+internal object NoActions : ReportActions {
     override fun back() = Unit
     override fun export() = Unit
     override fun late() = Unit
