@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="sensors_title">Sensörler</string>
+    <string name="sensors_now">Şimdi</string>
+    <string name="sensors_mode_normal">Normal</string>
+    <string name="sensors_mode_normal_detail">Her uygulama sensörlerini alır.</string>
+    <string name="sensors_mode_restricted">Kısıtlı</string>
+    <string name="sensors_mode_restricted_detail">Hareket ve diğer sensörler %1$s dışındaki her uygulama için kesik.</string>
+    <string name="sensors_mode_restricted_none">Hareket ve diğer sensörler her uygulama için kesik.</string>
+    <string name="sensors_mode_other_detail">Sensör hizmetinin kendi koyduğu bir mod.</string>
+    <string name="sensors_mode_unknown">Okunmadı</string>
+    <string name="sensors_mode_unknown_detail">Sensör hizmetini okumak için Shizuku, Sui ya da root gerekir.</string>
+    <string name="sensors_all_off">Tüm sensörler kapalı</string>
+    <string name="sensors_all_off_detail">Kapalı. Açıkken geliştirici kutucuğu gibi her uygulama için her sensör, kamera ve mikrofon durur.</string>
+    <string name="sensors_all_off_on">Açık: her uygulama için her sensör, kamera ve mikrofon durduruldu.</string>
+    <string name="sensors_all_off_unknown">Sensör gizliliği okunamadı.</string>
+    <string name="sensors_switching">Değiştiriliyor…</string>
+    <string name="sensors_switch_failed">Sensörler değişmedi</string>
+    <string name="sensors_side_effects">Kısıtlamanın bedeli</string>
+    <string name="sensors_effect_steps">Ekran kapalıyken telefon adım saymayı bırakır. Saat saymaya devam eder.</string>
+    <string name="sensors_effect_wake">Kaldırınca uyanma ve cep algılama durabilir.</string>
+    <string name="sensors_effect_calls">Aramalar onu hemen kaldırır: siz cevaplamadan yakınlık sensörü geri gelir.</string>
+    <string name="sensors_last_screen_off">Son ekran kapanışında</string>
+    <string name="sensors_open">Aç</string>
+    <string name="sensors_taken">%1$s, %2$s</string>
+    <string name="sensors_no_snapshot">Henüz anlık görüntü yok. Ekran her kapandığında bir tane alınır.</string>
+    <string name="sensors_no_holders">Hiçbir uygulama sensör tutmuyordu.</string>
+    <string name="sensors_rate">%1$s Hz</string>
+    <string name="sensors_confirm_title">Tüm sensörler kapatılsın mı?</string>
+    <string name="sensors_confirm_body">Siz buradan ya da kutucuktan açana dek her uygulama için her sensör, kamera ve mikrofon durur. Bu arada görüntülü aramalar ve kamera çalışmaz.</string>
+    <string name="sensors_confirm">Kapat</string>
+    <string name="sensors_cancel">İptal</string>
+</resources>

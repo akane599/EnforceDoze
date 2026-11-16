@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <string name="sensors_title">Sensors</string>
+    <string name="sensors_now">Now</string>
+    <string name="sensors_mode_normal">Normal</string>
+    <string name="sensors_mode_normal_detail">Every app gets its sensors.</string>
+    <string name="sensors_mode_restricted">Restricted</string>
+    <string name="sensors_mode_restricted_detail">Motion and other sensors are cut for every app except %1$s.</string>
+    <string name="sensors_mode_restricted_none">Motion and other sensors are cut for every app.</string>
+    <string name="sensors_mode_other_detail">A mode the sensor service set itself.</string>
+    <string name="sensors_mode_unknown">Not read</string>
+    <string name="sensors_mode_unknown_detail">Reading the sensor service needs Shizuku, Sui or root.</string>
+    <string name="sensors_all_off">All sensors off</string>
+    <string name="sensors_all_off_detail">Off. When on, every sensor, the camera and the microphone stop for every app, like the developer tile.</string>
+    <string name="sensors_all_off_on">On: every sensor, the camera and the microphone are stopped for every app.</string>
+    <string name="sensors_all_off_unknown">Sensor privacy could not be read.</string>
+    <string name="sensors_switching">Switching…</string>
+    <string name="sensors_switch_failed">Sensors did not switch</string>
+    <string name="sensors_side_effects">What restriction costs</string>
+    <string name="sensors_effect_steps">The phone stops counting steps while the screen is off. A watch still counts.</string>
+    <string name="sensors_effect_wake">Lift-to-wake and pocket detection may stop.</string>
+    <string name="sensors_effect_calls">Calls lift it at once: proximity is back before you answer.</string>
+    <string name="sensors_last_screen_off">At the last screen off</string>
+    <string name="sensors_open">Open</string>
+    <string name="sensors_taken">%1$s at %2$s</string>
+    <string name="sensors_no_snapshot">No snapshot yet. One is taken each time the screen goes off.</string>
+    <string name="sensors_no_holders">No app held a sensor.</string>
+    <string name="sensors_rate">%1$s Hz</string>
+    <string name="sensors_confirm_title">Turn all sensors off?</string>
+    <string name="sensors_confirm_body">Every sensor, the camera and the microphone stop for every app until you turn this off here or from the tile. Video calls and the camera will not work meanwhile.</string>
+    <string name="sensors_confirm">Turn off</string>
+    <string name="sensors_cancel">Cancel</string>
+</resources>
