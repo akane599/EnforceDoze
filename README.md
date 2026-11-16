@@ -1,91 +1,108 @@
-# EnforceDoze
-EnforceDoze is a fork of [ForceDoze](https://github.com/theblixguy/ForceDoze) which is not maintained anymore. Thanks to [@theblixguy](https://github.com/theblixguy) for all his work on this.
+# EnforceDoze A17 fork
 
-EnforceDoze allows you to forcefully enable Doze right after you turn off your screen, and on top of that, it also disables motion sensors so Doze stays active even if your device is not stationary while screen off. Doze will only deactivate periodically to execute maintenance jobs (like getting notifications, etc), otherwise it will remain active as long as your screen is off. This brings a lot more battery savings than standard Doze functionality, because even with screen off and Doze enabled, Doze is still periodically checking for movement, and disabling motion sensing improves battery life further.
+A Doze controller for Android 17. It proves from its own logs that Doze worked, ships tuned profiles,
+and recommends one from how the phone is used. It is built for One UI 9 on the Galaxy S25 Ultra and
+checked on the API 37 emulator. Android 14 to 16 (API 34–36) are best effort: anything that does not
+work there shows up as a capability with a reason (ADR 0022).
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/com.akylas.enforcedoze/)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
-     alt="Get it on IzzyOnDroid"
-     height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.akylas.enforcedoze)
+This is a GPL-3.0 fork of [EnforceDoze](https://github.com/Akylas/EnforceDoze) by Martin Guillon
+(Akylas, farfromrefug). EnforceDoze is itself a fork of [ForceDoze](https://github.com/theblixguy/ForceDoze)
+by Suyash Srijan (theblixguy). Both are credited in [`NOTICE`](NOTICE) and on the app's About screen.
+The fork keeps upstream's history up to the tag `upstream-baseline` (1.10.2), then rewrites the app in
+Kotlin, module by module.
 
-Or download the latest APK from the [Releases Section](https://github.com/farfromrefug/EnforceDoze/releases/latest).
+## What it does
 
-   
-<h2 align="center">Enjoying Enforcedoze?</h2>
-<p align="center">Please consider making a small donation to help fund the project. Developing an application, especially one that is open source and completely free, takes a lot of time and effort.
-<br>
-<br>
-<div align="center">
-<a href="https://github.com/sponsors/farfromrefug">:heart: Sponsor</a>
-</div>
-<hr>
+- **Profiles.** Each profile sets some of the levers:
+  - **A:** the Doze timings;
+  - **B:** forced deep idle at screen off;
+  - **C:** motion-sensor restriction;
+  - **D:** a trimmed allowlist.
 
-## Coverage:
- * LifeHacker: https://lifehacker.com/how-to-squeeze-more-battery-out-of-your-phone-with-andr-1791336715
- 
-# Features
-* Force Doze mode immediately after screen off or after a user specified delay
-* Add/remove apps or packages directly to system Doze whitelist
-* Disable motion sensors to prevent Doze from kicking in during movement
-* Disable Biometrics in doze mode to further improve battery life
-* Tasker support to turn on/off EnforceDoze and modify other features
-* Disable WiFi and mobile data completely during Doze
-* Enable Doze mode on devices where OEM has disabled it
-* No root mode so you can enjoy the core benefits without rooting your device
-* Free, no ads and open source
+  | Profile | Levers | For |
+  | --- | --- | --- |
+  | Stock | none | The baseline every report compares with |
+  | Everyday | A | Deep idle within about 10 minutes of a still, screen-off phone. The safe default |
+  | Pocket | A + C | A phone carried while moving: motion no longer resets the walk to deep idle |
+  | Night | A + C | The long unplugged stretch at night, with the longest gaps between maintenance windows |
+  | Classic | B + C | Upstream EnforceDoze's behaviour: deep idle the moment the screen turns off |
+  | Strict | A + B + C + D | Travel or a long day away from a charger. Never recommended automatically |
 
-Here is a table of features 
+  Custom profiles stay inside guardrails, and import and export as JSON.
+- **Plan and Recommended.** A day profile, plus an optional night profile in a window. Recommended
+  reads the phone's own history, from day zero, and suggests a plan. It shows its confidence, its
+  reasons with numbers, and the cost. It never switches plans without a tap unless automatic
+  following is turned on.
+- **Evidence.** Each screen-off session gets a verdict computed from the device's own records:
+  Held, Partly or Did not doze. Each night gets a report with the timeline, maintenance windows,
+  wakers and sensors. Missing data is drawn as a labelled gap, never as if it was seen. The quick
+  proof checks in a few seconds that deep idle can be reached, then undoes itself.
+- **Safety first.** Calls, audio, car mode, the hotspot, charging and chosen keep-awake apps lift
+  forced idle and the sensor restriction until they end. Every change can be undone:
+  - **Restore stock** puts back the phone's own values;
+  - **Return to my previous setup** puts back what was there before, for example a Tasker setup;
+  - drift by another app is detected, logged with the likely writer, and re-applied only within a
+    loop guard.
+- **Root-tier extras** (ADR 0038). With root, Wi-Fi off, mobile data off and app suspension can go on
+  at screen off. Each has its own safety rules: data goes off only while a working Wi-Fi network
+  carries the connection, and apps that ring for calls or keep alarms are never suspended.
+- **Automation.** Tasker and similar apps can apply profiles and plans, pause, resume, restore stock
+  and read the status. Each client sends its own token, and calls are rate-limited
+  ([`docs/automation.md`](docs/automation.md)).
+- **Coulomb.** The battery app Coulomb reads the evidence through a provider guarded by a signature
+  permission. Nothing else can read it.
 
-| Feature              | Non Root | Root    |
-|-------------------------------|-------|--------|
-| **Disable Wifi**              | Android  < 29    | ✅      |
-| **Disable Mobile data**             | ❌     | ✅      |
-| **Disable Biometrics**                   | ❌     | Depending on device      |
-| **Disable Sensors**               | Depending on device     | ✅      | 
-| **Disable All sensors**(equivalent to the dev tile)             | ❌     | ✅  |
-| **Ignore disable with hotspot** | ✅ | ✅ |
-| **Whitelist music app**                      | ✅     | ✅      |
+## Privilege
 
-## Permissions
+| Tier | Source | What it adds |
+| --- | --- | --- |
+| T0 | Nothing | Read-only: the screens, verdicts from what normal permissions show |
+| T1 | Grants given once through Shizuku or ADB | `DUMP`, `WRITE_SECURE_SETTINGS`, usage access: lever A and the full evidence |
+| T2 | The Shizuku or Sui worker as shell | Forced idle, sensor restriction, the allowlist, the quick proof |
+| T3 | Shizuku as root, or Sui | The root-tier extras |
 
-* `android.permission.QUERY_ALL_PACKAGES`: needed to select apps to doze
-* `android.permission.ACCESS_NETWORK_STATE`: used to detect hotspot state to not disable wifi/data if hostpot is enabled
-* `android.permission.READ_PHONE_STATE`: to check if mobile data need to be disabled on Doze if configured
-* `android.permission.ACCESS_WIFI_STATE`: to check if WiFi needs to be disabled on Doze if configured
-* `android.permission.CHANGE_WIFI_STATE`: to disable WiFi on Doze if configured
+The onboarding walks through it and explains each step. On Android 17 the app works with any Shizuku
+server that keeps Shizuku's protocol, and with Sui on rooted phones. ADB grants are the fallback when no
+worker is wanted (ADR 0011).
 
-[//]: # (# Download )
+## Install
 
-[//]: # (Play Store link: https://play.google.com/store/apps/details?id=com.akylas.enforcedoze&hl=en)
+Download `EnforceDoze.apk` from the fork's
+[Releases](https://github.com/akane599/EnforceDoze/releases/latest). The asset name stays the same
+from release to release, so Obtainium can track it. Release APKs are signed with the same key as
+Coulomb (ADR 0006). The app id is `io.github.akane599.enforcedoze`, so the fork installs next to
+upstream.
 
-## Android
-### Requirements for compiling source code and running the app:
+The app has no network permission. These are all the permissions it asks for, and CI checks the
+list (`tools/ci/permissions.txt`):
 
-* Android 6.0 (Marshmallow) SDK platform
-* Android smartphone running 6.0 (Marshmallow)
-* Android Studio
-* Root (can work with limited functionality in non-root mode)
+| Permission | Why |
+| --- | --- |
+| `RECEIVE_BOOT_COMPLETED` | Start the engine at boot and after its own update |
+| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SPECIAL_USE` | The engine watches the screen to apply the profile; it does no work in between |
+| `POST_NOTIFICATIONS` | The engine's notification, the night report, and the notice when an extra cannot be put back |
+| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | The onboarding asks for the exemption through the system dialog |
+| `QUERY_ALL_PACKAGES` | The allowlist, keep-awake and suspension pickers list every app |
+| `ACCESS_WIFI_STATE`, `ACCESS_NETWORK_STATE` | The hotspot hold-off, and the extras' Wi-Fi and data reads |
+| `DUMP`, `WRITE_SECURE_SETTINGS`, `READ_LOGS`, `PACKAGE_USAGE_STATS` | The T1 grants; never granted at install |
+| `moe.shizuku.manager.permission.API_V23` | Talking to Shizuku |
 
-# License
+## Build
 
-This code is licensed under GPL v3
+JDK 21, the Android SDK with platform 37, Gradle 9.9 (wrapper) and AGP 9.5.
 
-### Having issues, suggestions and feedback?
+```sh
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+./gradlew assembleDebug testDebugUnitTest lintDebug detekt ktlintCheck :app:licensee
+tools/ci/forbidden-calls.sh && tools/ci/module-graph.sh && tools/ci/permissions.sh
+tools/emulator/suite.sh        # the emulator suite on an API 37 AVD, under 20 minutes
+```
 
-You can,
-- [Create an issue here](https://github.com/farfromrefug/EnforceDoze/issues)
+[`SPEC.md`](SPEC.md) is the specification, and the decisions are in [`docs/adr/`](docs/adr/). For
+people coming from upstream, [`docs/parity.md`](docs/parity.md) says what happened to each feature.
+[`docs/acceptance.md`](docs/acceptance.md) links the evidence for the release checklist.
 
-### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/enforcedoze/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/enforcedoze/?utm_source=widget)
+## Licence
 
-[<img src="https://hosted.weblate.org/widgets/enforcedoze/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/enforcedoze/)
-
-The Translations are hosted by [Weblate.org](https://hosted.weblate.org/engage/enforcedoze/).
-
-
-<p align="center">
-  <a href="https://raw.githubusercontent.com/farfromrefug/sponsorkit/main/sponsors.svg">
-	<img src='https://raw.githubusercontent.com/farfromrefug/sponsorkit/main/sponsors.svg'/>
-  </a>
-</p>
+GPL-3.0-or-later ([`LICENSE.txt`](LICENSE.txt)). See [`NOTICE`](NOTICE) for the upstream copyrights
+and credits.

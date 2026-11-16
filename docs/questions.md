@@ -59,6 +59,16 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   - **The recommender does not tell nights with extras apart.** *Default:* left as is, since every
     profile gets the same help.
 
+- **Q16. Disk space on akane-linux for the emulator suite.**
+  - The emulator refuses to boot `ed-api37` unless the disk has as much free space as its 10 GB data
+    partition. On 2026-11-16 at 19:14, akane-linux had 9.2 GiB free (97% used).
+  - The first suite run at 18:41 still booted. The second run, which checks the P3 fix (ADR 0039), did
+    not.
+  - This project's own files there are only about 0.6 GB (`~/.cache/enforcedoze-*`). Deleting them
+    would not be enough, and everything else on that disk is the owner's.
+  - *Default:* the second run waits until about 1 GB more is free. Then it is one command:
+    `tools/emulator/suite.sh`. Publishing 1.0.0 waits for that green run too.
+
 ## Answered
 
 - **Q2. Name (SPEC 16.3 item 1).** *Answer 2026-11-16:* "EnforceDoze" stays (ADR 0032).

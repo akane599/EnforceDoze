@@ -75,6 +75,8 @@ tools/ci/forbidden-calls.sh && tools/ci/module-graph.sh && tools/ci/permissions.
 ./gradlew updateLintBaseline                           # only when deleting upstream code shrinks it
 tools/ci/forbidden-calls.sh --update                   # same rule for its baseline
 tools/fixtures/capture.sh [-s SERIAL] [--walk] fixtures   # on akane-linux; --walk is emulator-only
+tools/emulator/suite.sh                                # every phase's emulator run on one boot, < 20 min
+tools/release/build-release.sh                         # signed release APK; publishing is the owner's
 gh run list -R akane599/EnforceDoze --limit 5          # CI status
 ```
 
@@ -93,7 +95,9 @@ gh run list -R akane599/EnforceDoze --limit 5          # CI status
 | `config/detekt`, `.editorconfig`, `tools/ci/` | detekt overrides, ktlint style, CI scripts and the forbidden-call baseline |
 | `gradle/libs.versions.toml` | Version catalog; versions resolved from Maven metadata, never from memory |
 | `fixtures/` | Raw dumps per device and build for parser tests (`fixtures/README.md`) |
-| `tools/fixtures/`, `tools/emulator/` | Capture script; the phase gate runs on the emulator (`p1-privilege.sh`, `p2-engine.sh`) |
+| `tools/fixtures/`, `tools/emulator/` | Capture script; one script per phase (`p1-privilege.sh` … `p6-extras.sh`), `suite.sh` runs them all, `lib.sh` holds the akane-linux rules |
+| `tools/release/`, `docs/release.md` | Release build and signing; the release steps and the signer digest |
+| `docs/acceptance.md`, `docs/parity.md` | The SPEC 15 checklist with its evidence; upstream's features in this fork |
 | `docs/adr/` | Decisions (`0000-template.md`) |
 | `docs/upstream-audit.md` | SPEC 2 audit and the feature parity table (kept current) |
 | `docs/progress.md`, `docs/questions.md` | Phase log, open questions with defaults |

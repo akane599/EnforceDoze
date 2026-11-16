@@ -438,3 +438,35 @@ Carried over to P5:
   - build-cache entries past Gradle's own 7-day retention.
 
   Free space was still only 1.4 GB.
+
+## P7 Hardening and release — in progress
+
+Gate: the SPEC 15 checklist is green with evidence (`docs/acceptance.md`); the full emulator suite runs
+in under 20 minutes; the docs are written; a signed 1.0.0 is ready for the owner to publish.
+
+- The emulator suite (ADR 0039):
+  - `tools/emulator/suite.sh` boots `ed-api37` once and runs every phase's script against it;
+  - every script now follows the owner's akane-linux rules through `tools/emulator/lib.sh`: check the
+    load, never reuse a running emulator, shut down only its own;
+  - first run (2026-11-16): 1090 s in all, every phase green except P3's compressed night.
+- That P3 failure was real. The night counted one wakeup of the app's own: the system's held-back post
+  of the engine's foreground-service notification, 10 s after the engine started. It landed in deep
+  idle because the suite goes from setup to screen off at once. The notification now shows immediately
+  (`FOREGROUND_SERVICE_IMMEDIATE`). The same thing could happen after a reboot.
+- Checklist gaps closed with tests:
+  - `ContrastTest`, which found two misses in the light theme:
+    - Material's `errorContainer` was 4.4:1 for critical text. It is now `raised`.
+    - The onboarding's current-step mark was yellow on white, 1.3:1. It now has an ink ring.
+  - `StripWithoutColourTest`: the strip in lightness alone;
+  - `HomeStripSummaryTest` and `ReportStripSummaryTest`: the TalkBack summary;
+  - `FollowRecommendationTest`: no plan switch without a tap while following is off.
+- Docs: `README.md`, `docs/parity.md`, `CHANGELOG.md`, `docs/release.md` and `docs/acceptance.md`.
+  Upstream's repository files are removed (parity row 41).
+- Release: `tools/release/build-release.sh` builds the release unsigned and signs it with `apksigner`,
+  reading the password from its file. It checks the signer digest. The version is 1.0.0 (code 10000).
+  - Release builds no longer inherit debug signing from `defaultConfig`.
+  - The APK is built and verified, but not published: publishing is the owner's.
+- No backup or device transfer of the app's files (ADR 0039). Lint's backup and obsolete-folder
+  warnings are gone with it.
+- Blocked: the green rerun of the suite. akane-linux has 9.2 GiB free, and the AVD needs 10 GB to boot
+  (Q16).
