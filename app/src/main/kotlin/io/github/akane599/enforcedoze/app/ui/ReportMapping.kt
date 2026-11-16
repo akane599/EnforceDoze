@@ -186,6 +186,21 @@ internal object ReportMapping {
      * Not judged: the report never shows a verdict the row does not hold. (`:core:ui` and `:core:evidence` have no
      * mapping from the stored string, since only `:app` sees the rows.)
      */
+    /**
+     * A log row's strip: the report's fills from the session rows and their transitions, over the row's own span. A
+     * night also shows its wake-ups; wakers and sensor snapshots are not needed for the strip.
+     */
+    fun logStrip(
+        sessions: List<SessionRow>,
+        transitions: Map<Long, List<TransitionRow>>,
+        start: Long,
+        end: Long,
+        night: Boolean,
+    ): StripModel {
+        val tracks = sessions.sortedBy { it.start }.map { Track(SessionRecord(it, transitions[it.id].orEmpty(), emptyList(), emptyList())) }
+        return strip(tracks, if (night) StoredNights.wakes(tracks.map { it.row }) else emptyList(), start, end)
+    }
+
     fun verdict(stored: String?): VerdictWord = when (stored) {
         EvidenceRows.HELD -> VerdictWord.HELD
         EvidenceRows.PARTLY -> VerdictWord.PARTLY

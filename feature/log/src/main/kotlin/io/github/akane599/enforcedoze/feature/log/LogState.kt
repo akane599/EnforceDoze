@@ -2,6 +2,7 @@
 package io.github.akane599.enforcedoze.feature.log
 
 import androidx.compose.runtime.Immutable
+import io.github.akane599.enforcedoze.design.StripModel
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.VerdictWord
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,8 @@ public data class LogEntry(
     val profileId: String?,
     val night: Boolean = false,
     val sessions: Int = 1,
+    /** The session's or night's shape, as in its report; null when nothing was recorded to draw. */
+    val strip: StripModel? = null,
 )
 
 /** Everything the log shows, mapped by the app from the evidence log, newest first. */

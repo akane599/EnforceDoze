@@ -114,6 +114,8 @@ public data class SessionRecord(
     val snapshots: List<SensorSnapshotRow>,
 )
 
+// A Room DAO is one function per query; splitting it would split one table's access across classes.
+@Suppress("TooManyFunctions")
 @Dao
 public abstract class SessionDao {
     @Insert
@@ -201,6 +203,13 @@ public abstract class SessionDao {
 
     @Query("SELECT * FROM night WHERE id = :id")
     public abstract suspend fun night(id: Long): NightRow?
+
+    /** The transitions of every session that overlaps [fromMillis]..[toMillis], in one query: the log's strips. */
+    @Query(
+        "SELECT transition.* FROM transition JOIN session ON transition.sessionId = session.id " +
+            "WHERE session.`end` >= :fromMillis AND session.start <= :toMillis ORDER BY transition.time, transition.id",
+    )
+    public abstract suspend fun transitionsBetween(fromMillis: Long, toMillis: Long): List<TransitionRow>
 
     /** Sessions that overlap [fromMillis]..[toMillis], oldest first: an export's range (SPEC 8.7). */
     @Query("SELECT * FROM session WHERE `end` >= :fromMillis AND start <= :toMillis ORDER BY start, id")

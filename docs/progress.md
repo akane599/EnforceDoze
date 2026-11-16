@@ -315,8 +315,8 @@ Carried over to P5:
     and a smoke run under Shizuku (grants, tiles, the sensors confirmation) on the API 37 emulator;
   - still open from the audit (P2):
     - two panes on a tablet exist only for Log/Report and Profiles;
-    - Log rows have no strip;
-    - some feature screens still hold sizes that belong in `:core:design`.
+    - some feature screens still hold sizes that belong in `:core:design`;
+  - Log rows now carry their session's or night's strip, from one query of transitions (ADR 0028);
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):
   - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
   - night rows with their own figures;

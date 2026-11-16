@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +53,7 @@ import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
+import io.github.akane599.enforcedoze.design.TimelineStrip
 import io.github.akane599.enforcedoze.design.color
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.ui.StateNotice
@@ -174,6 +176,19 @@ private fun LogLine(entry: LogEntry, state: LogState, formats: Formats, onClick:
                 color = entry.verdict.tone.color(),
                 textAlign = TextAlign.End,
                 modifier = Modifier.padding(start = Space.m),
+            )
+        }
+        // The shape of the session at a glance (ADR 0028); the words above and below already say it, so it is not spoken.
+        entry.strip?.takeIf { it.segments.isNotEmpty() }?.let { strip ->
+            TimelineStrip(
+                strip,
+                description = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = Space.xs)
+                    .height(Sizes.stripRow + Space.xs)
+                    .clearAndSetSemantics { },
+                animate = false,
             )
         }
         Row(verticalAlignment = Alignment.Top) {

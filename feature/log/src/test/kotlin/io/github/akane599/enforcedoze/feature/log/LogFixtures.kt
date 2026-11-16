@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.feature.log
 
+import io.github.akane599.enforcedoze.design.DozeFill
+import io.github.akane599.enforcedoze.design.StripModel
+import io.github.akane599.enforcedoze.design.StripSegment
 import io.github.akane599.enforcedoze.ui.NoticeKind
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.VerdictWord
@@ -22,7 +25,48 @@ object LogFixtures {
         profile: String? = "everyday",
         plugged: Boolean = false,
         sessions: Int = 1,
-    ) = LogEntry(id++, start, start + minutes * 60_000, verdict, drain, plugged, profile, night = sessions > 1 || minutes >= 240, sessions)
+    ) = LogEntry(
+        id++,
+        start,
+        start + minutes * 60_000,
+        verdict,
+        drain,
+        plugged,
+        profile,
+        night = sessions > 1 || minutes >= 240,
+        sessions,
+        strip = strip(start, minutes, verdict, plugged),
+    )
+
+    /** An illustrative shape per verdict: awake, then light, then deep with maintenance windows; a charger run stays awake. */
+    private fun strip(start: Long, minutes: Long, verdict: VerdictWord, plugged: Boolean): StripModel {
+        val end = start + minutes * 60_000
+        fun at(share: Double) = start + (minutes * 60_000 * share).toLong()
+        val segments = when {
+            plugged || verdict == VerdictWord.DID_NOT_DOZE -> listOf(StripSegment(DozeFill.ACTIVE, start, end))
+
+            verdict == VerdictWord.NOT_JUDGED -> listOf(
+                StripSegment(DozeFill.ACTIVE, start, at(0.6)),
+                StripSegment(DozeFill.LIGHT, at(0.6), end),
+            )
+
+            verdict == VerdictWord.PARTLY -> listOf(
+                StripSegment(DozeFill.ACTIVE, start, at(0.12)),
+                StripSegment(DozeFill.LIGHT, at(0.12), at(0.35)),
+                StripSegment(DozeFill.DEEP, at(0.35), at(0.58)),
+                StripSegment(DozeFill.ACTIVE, at(0.58), at(0.66)),
+                StripSegment(DozeFill.LIGHT, at(0.66), end),
+            )
+
+            else -> listOf(
+                StripSegment(DozeFill.ACTIVE, start, at(0.06)),
+                StripSegment(DozeFill.LIGHT, at(0.06), at(0.14)),
+                StripSegment(DozeFill.DEEP, at(0.14), end),
+            )
+        }
+        val windows = if (verdict == VerdictWord.HELD && minutes >= 120) listOf(at(0.4), at(0.7)) else emptyList()
+        return StripModel(start, end, segments, maintenance = windows)
+    }
 
     val state = LogState(
         entries = listOf(

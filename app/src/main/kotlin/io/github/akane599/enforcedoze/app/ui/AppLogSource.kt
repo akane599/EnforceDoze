@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.data.TransitionRow
 import io.github.akane599.enforcedoze.data.NightReports
 import io.github.akane599.enforcedoze.data.NightRow
 import io.github.akane599.enforcedoze.data.SessionRow
@@ -29,14 +30,19 @@ internal class AppLogSource(private val services: AppServices) : LogSource {
             val from = now - Duration.ofDays(days.toLong()).toMillis()
             val sessions = services.graph.sessions.sessionsBetween(from, now)
             val nights = services.graph.sessions.nightsBetween(from, now)
-            LogState(entries(sessions, nights), names, days, notices)
+            val transitions = services.graph.sessions.transitionsBetween(from, now).groupBy { it.sessionId }
+            LogState(entries(sessions, nights, transitions), names, days, notices)
         }
 
     override fun seen(noticeId: String) = services.prefs.seen(noticeId)
 
     companion object {
         /** Newest first. A session inside a stored night is listed only through that night's row. */
-        fun entries(sessions: List<SessionRow>, nights: List<NightRow>): List<LogEntry> {
+        fun entries(
+            sessions: List<SessionRow>,
+            nights: List<NightRow>,
+            transitions: Map<Long, List<TransitionRow>> = emptyMap(),
+        ): List<LogEntry> {
             val nightRows = nights.map { night ->
                 val inside = sessions.filter { it.start >= night.start && it.end <= night.end }
                 LogEntry(
@@ -50,6 +56,7 @@ internal class AppLogSource(private val services: AppServices) : LogSource {
                     profileId = night.profileId,
                     night = true,
                     sessions = night.sessionCount,
+                    strip = ReportMapping.logStrip(inside, transitions, night.start, night.end, night = true),
                 )
             }
             val single = sessions.filter { session -> nights.none { session.start >= it.start && session.end <= it.end } }.map {
@@ -61,6 +68,7 @@ internal class AppLogSource(private val services: AppServices) : LogSource {
                     drainPerHour = it.drainPerHour,
                     plugged = !StoredNights.unplugged(it),
                     profileId = it.profileId,
+                    strip = ReportMapping.logStrip(listOf(it), transitions, it.start, it.end, night = false),
                 )
             }
             return (nightRows + single).sortedByDescending { it.start }
