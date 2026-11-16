@@ -15,6 +15,9 @@
     <string name="home_until_resumed">sürdürene dek</string>
     <string name="home_until_always">geçiş yok</string>
     <string name="home_paused_note">Duraklatıldı: Doze stok ayarlarla çalışıyor.</string>
+    <string name="home_board_not_applied">Uygulanmıyor: erişim olmadan EnforceDoze Doze\'u değiştiremez; telefon mevcut ayarlarını korur.</string>
+    <string name="home_board_partly">Kısmen uygulanıyor: bazı ayarlar yazılamadı. Aşağıdaki uyarı hangileri olduğunu söylüyor.</string>
+    <string name="home_proof_needs_access">Hızlı kanıt için Shizuku, Sui ya da root erişimi gerekir.</string>
 
     <string name="home_last_night">Dün gece</string>
     <string name="home_last_session">Son oturum</string>

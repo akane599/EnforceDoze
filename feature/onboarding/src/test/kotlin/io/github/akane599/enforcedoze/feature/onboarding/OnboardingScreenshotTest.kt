@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.feature.onboarding
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import io.github.akane599.enforcedoze.profile.NightSlot
 import io.github.akane599.enforcedoze.profile.Plan
 import io.github.akane599.enforcedoze.recommend.Confidence
@@ -25,6 +27,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.Duration
 import java.time.LocalTime
+import io.github.akane599.enforcedoze.ui.R as UiR
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -43,20 +46,26 @@ class OnboardingScreenshotTest {
         signals = Signals(Duration.ofHours(40), Duration.ofDays(5), 8.75, 0.6, unknown, unknown, unknown, emptyList(), 5, unknown, unknown),
     )
 
-    private val shell = OnboardingState(
+    /** Probe names as the app words them (`:core:ui`); details as the device printed them. */
+    @Composable
+    private fun shell() = OnboardingState(
         privilege = PrivilegeFinding(ServerKind.SHIZUKU, "13.7.0", running = true, allowed = true),
         tier = 2,
         probes = listOf(
-            ProbeLine("Doze timings readable", ProbeWord.OK, "device_idle_constants: 23 keys"),
-            ProbeLine("Force deep idle", ProbeWord.OK, "cmd deviceidle force-idle deep: Now forced in to deep idle mode"),
-            ProbeLine("Sensor restriction", ProbeWord.OK, "Mode : RESTRICTED : io.github.akane599.enforcedoze"),
-            ProbeLine("skip_sensing", ProbeWord.MISSING, "not listed by dumpsys deviceidle on this build"),
+            ProbeLine(stringResource(UiR.string.ui_probe_keys), ProbeWord.OK, "device_idle_constants: 23 keys"),
+            ProbeLine(
+                stringResource(UiR.string.ui_probe_force),
+                ProbeWord.OK,
+                "cmd deviceidle force-idle deep: Now forced in to deep idle mode",
+            ),
+            ProbeLine(stringResource(UiR.string.ui_probe_restrict), ProbeWord.OK, "Mode : RESTRICTED : io.github.akane599.enforcedoze"),
+            ProbeLine(stringResource(UiR.string.ui_probe_vendor), ProbeWord.MISSING, "no manufacturer fields in dumpsys deviceidle"),
         ),
         recommendation = recommendation,
         profileNames = mapOf("everyday" to "Everyday", "night" to "Night"),
     )
 
-    @Test fun welcome() = shoot(MODULE, "welcome") { OnboardingScreen(shell, OnboardingStep.WELCOME, NoOnboarding) }
+    @Test fun welcome() = shoot(MODULE, "welcome") { OnboardingScreen(shell(), OnboardingStep.WELCOME, NoOnboarding) }
 
     @Test fun privilegeNone() = shoot(MODULE, "privilege-none", tall = true) {
         OnboardingScreen(OnboardingState(PrivilegeFinding()), OnboardingStep.PRIVILEGE, NoOnboarding)
@@ -71,24 +80,24 @@ class OnboardingScreenshotTest {
     }
 
     @Test fun privilegeAllowed() = shoot(MODULE, "privilege-allowed", listOf(Primary)) {
-        OnboardingScreen(shell, OnboardingStep.PRIVILEGE, NoOnboarding)
+        OnboardingScreen(shell(), OnboardingStep.PRIVILEGE, NoOnboarding)
     }
 
-    @Test fun capabilities() = shoot(MODULE, "capabilities") { OnboardingScreen(shell, OnboardingStep.CAPABILITIES, NoOnboarding) }
+    @Test fun capabilities() = shoot(MODULE, "capabilities") { OnboardingScreen(shell(), OnboardingStep.CAPABILITIES, NoOnboarding) }
 
     @Test fun urgency() = shoot(MODULE, "urgency", listOf(Primary, Primary.copy(dark = false, turkish = true, largeFont = true))) {
-        OnboardingScreen(shell.copy(urgency = Urgency.IT_CAN_WAIT), OnboardingStep.URGENCY, NoOnboarding)
+        OnboardingScreen(shell().copy(urgency = Urgency.IT_CAN_WAIT), OnboardingStep.URGENCY, NoOnboarding)
     }
 
-    @Test fun plan() = shoot(MODULE, "plan") { OnboardingScreen(shell, OnboardingStep.PLAN, NoOnboarding) }
+    @Test fun plan() = shoot(MODULE, "plan") { OnboardingScreen(shell(), OnboardingStep.PLAN, NoOnboarding) }
 
     @Test fun planReadOnly() = shoot(MODULE, "plan-read-only", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
-        OnboardingScreen(shell.copy(tier = 0), OnboardingStep.PLAN, NoOnboarding)
+        OnboardingScreen(shell().copy(tier = 0), OnboardingStep.PLAN, NoOnboarding)
     }
 
     @Test fun planFailed() = shoot(MODULE, "plan-failed", listOf(Primary)) {
         OnboardingScreen(
-            shell,
+            shell(),
             OnboardingStep.PLAN,
             NoOnboarding,
             status = OnboardingStatus(applyOutcome = ActionOutcome.Failed("settings put global device_idle_constants: exit 255")),
@@ -97,7 +106,7 @@ class OnboardingScreenshotTest {
 
     @Test fun proofRunning() = shoot(MODULE, "proof-running", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
         OnboardingScreen(
-            shell.copy(
+            shell().copy(
                 proof = listOf(
                     ProofStep(ProofStepKind.CONSTANTS, ProofStepStatus.OK, "inactive_to=+30s read back"),
                     ProofStep(ProofStepKind.FORCE_IDLE, ProofStepStatus.RUNNING),
@@ -112,7 +121,7 @@ class OnboardingScreenshotTest {
 
     @Test fun proofDone() = shoot(MODULE, "proof-done") {
         OnboardingScreen(
-            shell.copy(
+            shell().copy(
                 proof = listOf(
                     ProofStep(ProofStepKind.CONSTANTS, ProofStepStatus.OK, "inactive_to=+30s read back"),
                     ProofStep(ProofStepKind.FORCE_IDLE, ProofStepStatus.OK, "cmd deviceidle get deep: IDLE"),

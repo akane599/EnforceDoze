@@ -7,7 +7,6 @@
     <string name="engine_notification_title">Applying your Doze profile</string>
     <string name="ui_engine_off">The engine is off. Turn the plan on from Home first.</string>
     <string name="ui_engine_did_not_start">The engine did not start within 10 seconds. Open Settings and check the privilege.</string>
-    <string name="ui_error_store">The engine\'s state could not be saved</string>
     <string name="ui_not_in_build">Not in this build yet.</string>
     <string name="ui_via_shizuku">Shizuku</string>
     <string name="ui_via_sui">Sui</string>
@@ -28,17 +27,6 @@
     <string name="ui_report_gone">This report is gone: retention or a reset removed it.</string>
     <string name="ui_pick_session">Choose a session to see its report.</string>
     <string name="ui_pick_profile">Choose a profile to see its levers and timings.</string>
-    <string name="ui_probe_read">Reading Doze state</string>
-    <string name="ui_probe_keys">Doze timing keys</string>
-    <string name="ui_probe_write">Writing Doze timing</string>
-    <string name="ui_probe_force">Forced deep idle</string>
-    <string name="ui_probe_restrict">Sensor restriction</string>
-    <string name="ui_probe_privacy">All-sensors-off switch</string>
-    <string name="ui_probe_events">Doze event log</string>
-    <string name="ui_probe_history">Battery history</string>
-    <string name="ui_probe_one_ui">One UI version</string>
-    <string name="ui_probe_persistence">Doze timing kept after a restart</string>
-    <string name="ui_probe_vendor">Manufacturer fields</string>
     <string name="engine_line">%1$s profile in force</string>
     <string name="engine_line_paused">Plan paused: the phone runs Stock</string>
     <string name="report_channel_name">Night reports</string>

@@ -125,4 +125,17 @@
     <string name="ui_tier_1">Reads Doze and sensor state itself. Applying needs Shizuku, Sui or root.</string>
     <string name="ui_tier_2">A worker runs as the shell user and applies every lever.</string>
     <string name="ui_tier_3">A worker runs as root and applies every lever.</string>
+    <!-- Capability probe names (SPEC 4.4) and engine errors, shared by onboarding, Home and Settings. -->
+    <string name="ui_error_store">The engine\'s state could not be saved</string>
+    <string name="ui_probe_read">Reading Doze state</string>
+    <string name="ui_probe_keys">Doze timing keys</string>
+    <string name="ui_probe_write">Writing Doze timing</string>
+    <string name="ui_probe_force">Forced deep idle</string>
+    <string name="ui_probe_restrict">Sensor restriction</string>
+    <string name="ui_probe_privacy">All-sensors-off switch</string>
+    <string name="ui_probe_events">Doze event log</string>
+    <string name="ui_probe_history">Battery history</string>
+    <string name="ui_probe_one_ui">One UI version</string>
+    <string name="ui_probe_persistence">Doze timing kept after a restart</string>
+    <string name="ui_probe_vendor">Manufacturer fields</string>
 </resources>

@@ -274,7 +274,8 @@ private fun Capabilities(state: OnboardingState, checking: Boolean) {
                     modifier = Modifier.padding(start = Space.m),
                 )
             }
-            Quiet(probe.detail)
+            // The detail is the device's own output (SPEC 9.3), so it is set as a raw line.
+            Text(probe.detail, style = RawLine, color = Ed.palette.quiet, modifier = Modifier.padding(top = Space.xs))
         }
         Rule()
     }

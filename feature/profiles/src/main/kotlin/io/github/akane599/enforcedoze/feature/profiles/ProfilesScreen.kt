@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import io.github.akane599.enforcedoze.design.Ed
 import io.github.akane599.enforcedoze.design.EdTopBar
@@ -47,6 +48,7 @@ import io.github.akane599.enforcedoze.design.Notice
 import io.github.akane599.enforcedoze.design.Rule
 import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.SectionHeader
+import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.design.Tag
 import io.github.akane599.enforcedoze.design.Tone
@@ -177,29 +179,30 @@ internal fun LeverMarks(profile: Profile) {
     } else {
         stringResource(R.string.profiles_levers_spoken, on.joinToString(", "))
     }
-    val box = MARK * LocalDensity.current.fontScale.coerceAtMost(MAX_MARK_SCALE)
+    val box = Sizes.mark * LocalDensity.current.fontScale.coerceAtMost(MAX_MARK_SCALE)
     Row(horizontalArrangement = Arrangement.spacedBy(Space.xs), modifier = Modifier.clearAndSetSemantics { contentDescription = spoken }) {
         lines.forEach { line ->
             val shape = MaterialTheme.shapes.extraSmall
+            // On: boxed in ink. Off: struck through in quiet ink, unboxed, so the state reads without colour and
+            // the letter keeps text contrast (DESIGN.md, SPEC 10.2).
             Box(
                 Modifier
                     .size(box)
-                    .border(BorderStroke(if (line.on) 1.5.dp else Space.hair, if (line.on) palette.ink else palette.hairline), shape),
+                    .then(if (line.on) Modifier.border(BorderStroke(Sizes.markStroke, palette.ink), shape) else Modifier),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     line.letter,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (line.on) palette.ink else palette.hairline,
+                    color = if (line.on) palette.ink else palette.quiet,
                     fontWeight = if (line.on) FontWeight.SemiBold else FontWeight.Normal,
+                    textDecoration = if (line.on) null else TextDecoration.LineThrough,
                     textAlign = TextAlign.Center,
                 )
             }
         }
     }
 }
-
-private val MARK = 22.dp
 
 /** The marks grow with the font up to 1.5×, then stay that size so a row keeps room for the name. */
 private const val MAX_MARK_SCALE = 1.5f

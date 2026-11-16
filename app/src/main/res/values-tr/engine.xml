@@ -6,7 +6,6 @@
     <string name="engine_notification_title">Doze profiliniz uygulanıyor</string>
     <string name="ui_engine_off">Motor kapalı. Önce Ana sayfadan planı açın.</string>
     <string name="ui_engine_did_not_start">Motor 10 saniye içinde başlamadı. Ayarlar\'dan yetkiyi denetleyin.</string>
-    <string name="ui_error_store">Motorun durumu kaydedilemedi</string>
     <string name="ui_not_in_build">Bu sürümde henüz yok.</string>
     <string name="ui_via_shizuku">Shizuku</string>
     <string name="ui_via_sui">Sui</string>
@@ -27,17 +26,6 @@
     <string name="ui_report_gone">Bu rapor artık yok: saklama süresi ya da sıfırlama kaldırdı.</string>
     <string name="ui_pick_session">Raporunu görmek için bir oturum seçin.</string>
     <string name="ui_pick_profile">Kollarını ve zamanlamalarını görmek için bir profil seçin.</string>
-    <string name="ui_probe_read">Doze durumunu okuma</string>
-    <string name="ui_probe_keys">Doze zamanlaması anahtarları</string>
-    <string name="ui_probe_write">Doze zamanlamasını yazma</string>
-    <string name="ui_probe_force">Zorunlu derin uyku</string>
-    <string name="ui_probe_restrict">Sensör kısıtlaması</string>
-    <string name="ui_probe_privacy">Tüm sensörler kapalı anahtarı</string>
-    <string name="ui_probe_events">Doze olay günlüğü</string>
-    <string name="ui_probe_history">Pil geçmişi</string>
-    <string name="ui_probe_one_ui">One UI sürümü</string>
-    <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
-    <string name="ui_probe_vendor">Üretici alanları</string>
     <string name="engine_line">%1$s profili uygulanıyor</string>
     <string name="engine_line_paused">Plan duraklatıldı: telefon Stok ayarlarla çalışıyor</string>
     <string name="report_channel_name">Gece raporları</string>

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.feature.home
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import io.github.akane599.enforcedoze.design.DozeFill
 import io.github.akane599.enforcedoze.design.StripBreak
 import io.github.akane599.enforcedoze.design.StripModel
@@ -23,6 +25,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.LocalDateTime
 import java.time.ZoneId
+import io.github.akane599.enforcedoze.ui.R as UiR
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -53,7 +56,7 @@ class HomeScreenshotTest {
     @Test fun readOnly() = shoot(MODULE, "read-only", listOf(Primary)) { HomeScreen(HomeFixtures.readOnly, NoActions) }
 
     @Test fun trouble() = shoot(MODULE, "trouble", listOf(Primary, Primary.copy(turkish = true)), tall = true) {
-        HomeScreen(HomeFixtures.trouble, NoActions)
+        HomeScreen(HomeFixtures.trouble(), NoActions)
     }
 
     @Test fun paused() = shoot(MODULE, "paused", listOf(Primary.copy(dark = false))) { HomeScreen(HomeFixtures.paused, NoActions) }
@@ -146,7 +149,9 @@ internal object HomeFixtures {
         notices = listOf(StateNotice("ro", NoticeKind.READ_ONLY)),
     )
 
-    val trouble = HomeState(
+    /** Worded as the app words them (AppNotices): lever names and the store error from `:core:ui`. */
+    @Composable
+    fun trouble() = HomeState(
         plan = board,
         night = night.copy(
             verdict = VerdictWord.PARTLY,
@@ -161,14 +166,18 @@ internal object HomeFixtures {
             ),
         ),
         notices = listOf(
-            StateNotice("lost", NoticeKind.PRIVILEGE_LOST, subject = "sensor restriction, forced idle"),
-            StateNotice("partly", NoticeKind.PARTLY_APPLIED, subject = "light_idle_to"),
+            StateNotice(
+                "lost",
+                NoticeKind.PRIVILEGE_LOST,
+                subject = listOf(UiR.string.ui_lever_force_idle, UiR.string.ui_lever_sensors).map { stringResource(it) }.joinToString(),
+            ),
+            StateNotice("partly", NoticeKind.PARTLY_APPLIED, subject = stringResource(UiR.string.ui_lever_constants)),
             StateNotice("tasker", NoticeKind.ANOTHER_MANAGER, subject = "Tasker", time = at(7, 22, 14), seen = true),
             StateNotice(
                 "err",
                 NoticeKind.ERROR,
-                subject = "Could not read the alarm dump",
-                raw = "  RTC_WAKEUP #3: Alarm{4f2a1c0 type 0 origWhen -1 ???}",
+                subject = stringResource(UiR.string.ui_error_store),
+                raw = "java.io.IOException: write failed: ENOSPC (No space left on device)",
             ),
         ),
     )

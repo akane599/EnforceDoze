@@ -15,6 +15,9 @@
     <string name="home_until_resumed">you resume</string>
     <string name="home_until_always">no switch</string>
     <string name="home_paused_note">Paused: Doze runs on stock settings.</string>
+    <string name="home_board_not_applied">Not applied: without access EnforceDoze cannot change Doze, so the phone keeps its current settings.</string>
+    <string name="home_board_partly">Partly applied: some settings could not be written. The warning below names them.</string>
+    <string name="home_proof_needs_access">Quick proof needs Shizuku, Sui or root access.</string>
 
     <string name="home_last_night">Last night</string>
     <string name="home_last_session">Last session</string>

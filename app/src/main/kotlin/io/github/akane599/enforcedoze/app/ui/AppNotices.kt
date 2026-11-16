@@ -62,7 +62,7 @@ internal class AppNotices(
                     add(StateNotice("another-${drift.time}", NoticeKind.ANOTHER_MANAGER, labels.label(writer) ?: writer, time = drift.time))
                 }
             status?.storeError?.let { raw ->
-                add(StateNotice("store-error", NoticeKind.ERROR, context.getString(R.string.ui_error_store), raw = raw))
+                add(StateNotice("store-error", NoticeKind.ERROR, context.getString(UiR.string.ui_error_store), raw = raw))
             }
         }.map { it.copy(seen = it.id in seen) }
 

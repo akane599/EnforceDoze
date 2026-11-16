@@ -30,6 +30,10 @@ public object Sizes {
     public val stripLarge: Dp = 40.dp
     public val stripRow: Dp = 16.dp
     public val icon: Dp = 22.dp
+
+    /** A profile's lever mark (A–D), and the ink outline of a lever in use. */
+    public val mark: Dp = 22.dp
+    public val markStroke: Dp = 1.5.dp
 }
 
 /** Printed matter has small radii: boards and notices are cut sheets, not pills. Controls stay Material. */

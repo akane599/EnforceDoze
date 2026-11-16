@@ -125,4 +125,17 @@
     <string name="ui_tier_1">Doze ve sensör durumunu kendisi okur. Uygulamak için Shizuku, Sui ya da root gerekir.</string>
     <string name="ui_tier_2">Kabuk kullanıcısı olarak çalışan bir işçi her kolu uygular.</string>
     <string name="ui_tier_3">Root olarak çalışan bir işçi her kolu uygular.</string>
+    <!-- Capability probe names (SPEC 4.4) and engine errors, shared by onboarding, Home and Settings. -->
+    <string name="ui_error_store">Motorun durumu kaydedilemedi</string>
+    <string name="ui_probe_read">Doze durumunu okuma</string>
+    <string name="ui_probe_keys">Doze zamanlaması anahtarları</string>
+    <string name="ui_probe_write">Doze zamanlamasını yazma</string>
+    <string name="ui_probe_force">Zorunlu derin uyku</string>
+    <string name="ui_probe_restrict">Sensör kısıtlaması</string>
+    <string name="ui_probe_privacy">Tüm sensörler kapalı anahtarı</string>
+    <string name="ui_probe_events">Doze olay günlüğü</string>
+    <string name="ui_probe_history">Pil geçmişi</string>
+    <string name="ui_probe_one_ui">One UI sürümü</string>
+    <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
+    <string name="ui_probe_vendor">Üretici alanları</string>
 </resources>

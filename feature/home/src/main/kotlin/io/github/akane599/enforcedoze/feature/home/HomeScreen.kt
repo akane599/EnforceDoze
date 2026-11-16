@@ -50,6 +50,7 @@ import io.github.akane599.enforcedoze.design.Verdict
 import io.github.akane599.enforcedoze.design.hourLabels
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.evidence.Cause
+import io.github.akane599.enforcedoze.ui.NoticeKind
 import io.github.akane599.enforcedoze.ui.ProofCard
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.VerdictWord
@@ -59,7 +60,10 @@ import io.github.akane599.enforcedoze.ui.tone
 import io.github.akane599.enforcedoze.ui.word
 import io.github.akane599.enforcedoze.ui.R as UiR
 
-/** Home (SPEC 9.1): the plan board, last night, the two actions, then the warnings. */
+/**
+ * Home (SPEC 9.1): the plan board and, straight under it, the warnings that qualify it (SPEC 9.3); then last
+ * night and the two actions.
+ */
 @Composable
 public fun HomeScreen(state: HomeState, actions: HomeActions, modifier: Modifier = Modifier) {
     val formats = rememberFormats()
@@ -75,8 +79,13 @@ public fun HomeScreen(state: HomeState, actions: HomeActions, modifier: Modifier
                 action = stringResource(R.string.home_plan_change).takeIf { state.plan.canWrite },
                 onAction = actions::changePlan,
             )
-            DepartureBoard(state.plan, formats)
+            DepartureBoard(state.plan, applied(state), formats)
             if (state.plan.canWrite) PauseRow(state.plan.paused, actions)
+            if (state.notices.isNotEmpty()) Spacer(Modifier.height(Space.m))
+            state.notices.forEach { notice ->
+                StateNoticeCard(notice, formats, onAction = { actions.notice(notice) }, onSeen = { actions.seen(notice) })
+                Spacer(Modifier.height(Space.m))
+            }
             val night = state.night
             if (night == null) EmptyNight() else LastNight(night, formats)
             Spacer(Modifier.height(Space.xl))
@@ -88,23 +97,43 @@ public fun HomeScreen(state: HomeState, actions: HomeActions, modifier: Modifier
                     Text(stringResource(if (state.proofRunning) R.string.home_proof_running else R.string.home_quick_proof))
                 }
             }
+            if (!state.plan.canWrite) {
+                Text(
+                    stringResource(R.string.home_proof_needs_access),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Ed.palette.quiet,
+                    modifier = Modifier.padding(top = Space.s),
+                )
+            }
             state.proof?.let { steps ->
                 SectionHeader(stringResource(R.string.home_proof_result))
                 ProofCard(steps)
-            }
-            if (state.notices.isNotEmpty()) Spacer(Modifier.height(Space.xl))
-            state.notices.forEach { notice ->
-                StateNoticeCard(notice, formats, onAction = { actions.notice(notice) }, onSeen = { actions.seen(notice) })
-                Spacer(Modifier.height(Space.m))
             }
             Spacer(Modifier.height(Space.xl))
         }
     }
 }
 
-/** The plan as a departure board: From, Profile, Until; the running slot marked "now" in the accent. */
+/** How much of the plan is in force: the board must not claim a plan runs when it cannot be written (SPEC 9.3). */
+private enum class Applied { FULL, PARTLY, NONE }
+
+private fun applied(state: HomeState): Applied = when {
+    state.plan.paused -> Applied.FULL
+
+    // Privilege lost mid-session: the levers still writable stay applied (ADR 0015).
+    state.notices.any { it.kind == NoticeKind.PRIVILEGE_LOST || it.kind == NoticeKind.PARTLY_APPLIED } -> Applied.PARTLY
+
+    !state.plan.canWrite -> Applied.NONE
+
+    else -> Applied.FULL
+}
+
+/**
+ * The plan as a departure board: From, Profile, Until; the running slot marked "now" in the accent. A plan not
+ * in force keeps its rows, with "now" unaccented and the reason under them.
+ */
 @Composable
-private fun DepartureBoard(plan: PlanBoard, formats: Formats) {
+private fun DepartureBoard(plan: PlanBoard, applied: Applied, formats: Formats) {
     val palette = Ed.palette
     Column(
         Modifier
@@ -124,15 +153,21 @@ private fun DepartureBoard(plan: PlanBoard, formats: Formats) {
                 }
                 plan.rows.forEachIndexed { i, row ->
                     if (wide || i > 0) Rule()
-                    BoardLine(row, formats, wide)
+                    BoardLine(row, formats, wide, current = applied != Applied.NONE)
                 }
             }
         }
-        if (plan.paused) {
+        val note = when {
+            plan.paused -> R.string.home_paused_note
+            applied == Applied.PARTLY -> R.string.home_board_partly
+            applied == Applied.NONE -> R.string.home_board_not_applied
+            else -> null
+        }
+        note?.let {
             Text(
-                stringResource(R.string.home_paused_note),
+                stringResource(it),
                 style = MaterialTheme.typography.bodyMedium,
-                color = palette.quiet,
+                color = if (plan.paused) palette.quiet else palette.ink,
                 modifier = Modifier.padding(top = Space.s),
             )
         }
@@ -142,11 +177,11 @@ private fun DepartureBoard(plan: PlanBoard, formats: Formats) {
 private val FROM_WIDTH = 72.dp
 
 @Composable
-private fun BoardLine(row: BoardRow, formats: Formats, wide: Boolean) {
+private fun BoardLine(row: BoardRow, formats: Formats, wide: Boolean, current: Boolean) {
     val palette = Ed.palette
     val from: @Composable () -> Unit = {
         if (row.from == null) {
-            Tag(stringResource(R.string.home_now))
+            Tag(stringResource(R.string.home_now), accent = current)
         } else {
             Text(formats.clock(row.from), style = MaterialTheme.typography.titleLarge, color = palette.ink)
         }

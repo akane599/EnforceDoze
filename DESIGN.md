@@ -141,6 +141,8 @@ Defined in `Dimens.kt` as `Space` and `Sizes`.
 | `Sizes.stripLarge` | 40 | Full-width strip (report) |
 | `Sizes.stripRow` | 16 | Base height of a row in a stacked comparison (plus 4 dp) |
 | `Sizes.icon` | 22 | Icons in notices |
+| `Sizes.mark` | 22 | A profile's lever mark (A–D); grows with the font up to 1.5× |
+| `Sizes.markStroke` | 1.5 | Ink outline of a lever in use; a lever not in use is struck through in `quiet`, unboxed |
 
 Spacing rhythm: tight inside a group, generous between groups, more space above a heading than below
 it. Every screen is one scrolling column (`ScreenColumn`) with the 16 dp gutter, centred and capped

@@ -9,7 +9,7 @@ import io.github.akane599.enforcedoze.feature.onboarding.ProbeWord
 import io.github.akane599.enforcedoze.feature.onboarding.ServerKind
 import io.github.akane599.enforcedoze.privilege.PrivilegeState
 import io.github.akane599.enforcedoze.privilege.ShizukuStatus
-import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.ui.R as UiR
 import io.github.akane599.enforcedoze.privilege.probe.CapabilityProber
 import io.github.akane599.enforcedoze.privilege.probe.CapabilityReport
 import io.github.akane599.enforcedoze.privilege.probe.ProbeResult
@@ -86,17 +86,17 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
         }
 
         private val PROBE_TITLES = mapOf(
-            CapabilityProber.READ to R.string.ui_probe_read,
-            CapabilityProber.KEYS to R.string.ui_probe_keys,
-            CapabilityProber.VENDOR to R.string.ui_probe_vendor,
-            CapabilityProber.WRITE to R.string.ui_probe_write,
-            CapabilityProber.FORCE to R.string.ui_probe_force,
-            CapabilityProber.RESTRICT to R.string.ui_probe_restrict,
-            CapabilityProber.PRIVACY to R.string.ui_probe_privacy,
-            CapabilityProber.EVENTS to R.string.ui_probe_events,
-            CapabilityProber.HISTORY to R.string.ui_probe_history,
-            CapabilityProber.ONE_UI to R.string.ui_probe_one_ui,
-            CapabilityProber.PERSISTENCE to R.string.ui_probe_persistence,
+            CapabilityProber.READ to UiR.string.ui_probe_read,
+            CapabilityProber.KEYS to UiR.string.ui_probe_keys,
+            CapabilityProber.VENDOR to UiR.string.ui_probe_vendor,
+            CapabilityProber.WRITE to UiR.string.ui_probe_write,
+            CapabilityProber.FORCE to UiR.string.ui_probe_force,
+            CapabilityProber.RESTRICT to UiR.string.ui_probe_restrict,
+            CapabilityProber.PRIVACY to UiR.string.ui_probe_privacy,
+            CapabilityProber.EVENTS to UiR.string.ui_probe_events,
+            CapabilityProber.HISTORY to UiR.string.ui_probe_history,
+            CapabilityProber.ONE_UI to UiR.string.ui_probe_one_ui,
+            CapabilityProber.PERSISTENCE to UiR.string.ui_probe_persistence,
         )
 
         fun lines(report: CapabilityReport, title: (ProbeResult) -> String = { it.title }): List<ProbeLine> = report.results.map {

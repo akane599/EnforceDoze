@@ -22,6 +22,12 @@ private const val LARGE_FONT = 2f
 /** Secondary states that run past the first viewport are shot whole. */
 private const val TALL_HEIGHT = 1500
 
+/**
+ * At font scale 2.0 a screen runs about twice as long; the capture is twice as tall so what would scroll is
+ * still in the picture and can be checked for clipping (the P5 audit found Home's actions cut off at 832 dp).
+ */
+private const val LARGE_FONT_LENGTH = 2
+
 /** The owner's clock: Istanbul time on a 24-hour clock, so every run renders the same text. */
 fun ownerClock(twentyFour: Boolean = true) {
     java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Europe/Istanbul"))
@@ -42,11 +48,12 @@ fun shoot(module: String, name: String, variants: List<Variant> = Matrix, tall: 
     android.provider.Settings.Global.putFloat(resolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
     variants.forEach { v ->
         val options = RoborazziComposeOptions {
-            val height = when {
+            val base = when {
                 tall -> TALL_HEIGHT
                 v.tablet -> TABLET_HEIGHT
                 else -> PHONE_HEIGHT
             }
+            val height = if (v.largeFont) base * LARGE_FONT_LENGTH else base
             size(widthDp = if (v.tablet) TABLET_WIDTH else PHONE_WIDTH, heightDp = height)
             uiMode(if (v.dark) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO)
             locale(if (v.turkish) "tr" else "en")
