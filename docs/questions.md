@@ -24,6 +24,11 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   shared caches beyond Gradle's own old daemon logs. Say if older Gradle caches (8.14, 9.0.0, 9.7.1) or
   `build-cache-1` may go.
 
+- **Q11. The Tasker grant in SPEC 11.1 cannot work.** `pm grant` silently grants nothing to a package
+  that does not request the permission (AOSP lines in ADR 0033), and Tasker cannot request it.
+  *Default:* the receiver checks a token per client, bound to a package; "Allow Tasker" becomes
+  "Automation clients" (ADR 0033, with a second opinion). The Locale plugin goes to the backlog.
+
 ## Answered
 
 - **Q2. Name (SPEC 16.3 item 1).** *Answer 2026-11-16:* "EnforceDoze" stays (ADR 0032).
