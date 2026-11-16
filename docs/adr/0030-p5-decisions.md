@@ -78,3 +78,38 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
 - **Profile detail on a narrow screen folds the stock and profile columns into one line** ("Stock:
   30 min · Night: 2 min"). From 360 dp × font scale it is a table. A key the profile leaves alone
   reads "unchanged", and an unknown stock value is left out rather than shown as a dash.
+- **Plan changes go to the engine at once**, as a profile's slot buttons do. There is no Save step,
+  so the plan on screen is always the one running. An edge that would empty the night window cannot
+  be confirmed in the time picker.
+- **Recommended shows the three strongest reasons** (SPEC 7.4: two or three). Every signal sits in
+  a table under them, with its number or the reason it has none.
+  - "Choose something else" records the decline (7.4: remembered, no nagging), then opens Profiles.
+  - A night offered by hand (ADR 0032) reads "By hand" in the night row, and the why card no longer
+    repeats the note.
+- **The log shows a joined night as one row** that opens the night report, under the day it began.
+  - Filters stay in the view model and are not saved.
+  - "Export a range" picks whole days and hands plain dates to the app, which turns them into its
+    own zone's times.
+- **Hold-offs are listed, not switchable.** They keep calls, alarms, navigation and music working
+  (SPEC 1.2 item 4), so Settings explains them and only the keep-awake apps can change.
+  - Turning server flag sync off asks first; turning it back on does not.
+  - Restore stock and Reset sit apart at the end, outlined, each behind a confirmation. Reset's
+    confirm is in the critical colour.
+  - Turkish says "Stok ayarlara dön" for Restore stock.
+- **The allowlist shows the system's own entries behind Show**, read-only: only the system changes
+  them, and Restore stock leaves them alone.
+  - A "keep" mark is the app's own record; it writes nothing to the phone.
+  - The intro says allowlisted apps may use the network and hold wake locks in deep idle. It does
+    not mention alarms, because their ordinary alarms still wait.
+- **One app picker** (`AppPickerScreen` in `:core:ui`) serves the allowlist and the keep-awake list:
+  search, with system apps behind a toggle.
+- **Sensors names no exempt app when the allow package is the app's own.** ADR 0004 passes it as a
+  stand-in that holds no sensors, so the screen says motion is cut for every app. Turning all
+  sensors off asks first and says that the camera and microphone stop too.
+- **Onboarding keeps its step in `SavedStateHandle`**, so the owner returns to the step they left.
+  The six steps are stops on a route line.
+  - With no worker, the privilege step lists ADR 0011's ways in its order. The forks are named with
+    the month they were checked, and none is endorsed.
+  - The two ADB commands are shown as raw lines.
+- **Shared parts moved down a layer.** The switch row is now in `:core:design`. The tier wording and
+  the quick-proof card are in `:core:ui`, for Settings, Home and onboarding.
