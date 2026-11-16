@@ -51,6 +51,7 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
                 tasker = if (services.labels.installed(TASKER)) TaskerState.NOT_ALLOWED else TaskerState.NOT_INSTALLED,
                 retentionDays = services.prefs.retentionDays,
                 language = language(),
+                wallpaperAccent = services.prefs.wallpaperAccent,
                 flagSyncDisabled = canWrite && flagSyncMode()?.let { it != SYNC_ON } == true,
                 version = app.packageManager.getPackageInfo(app.packageName, 0).versionName.orEmpty(),
                 canWrite = canWrite,
@@ -67,6 +68,10 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
 
     override suspend fun automation(on: Boolean) {
         services.prefs.automation = on
+    }
+
+    override suspend fun wallpaperAccent(on: Boolean) {
+        services.prefs.wallpaperAccent = on
     }
 
     override suspend fun retention(days: Int) {

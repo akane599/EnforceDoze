@@ -24,6 +24,10 @@ public class SettingsViewModel(private val source: SettingsSource) : ViewModel()
     private val statusState = MutableStateFlow<CommandStatus?>(null)
     public val status: StateFlow<CommandStatus?> = statusState.asStateFlow()
 
+    public fun wallpaperAccent(on: Boolean) {
+        viewModelScope.launch { source.wallpaperAccent(on) }
+    }
+
     public fun reapplyOnDrift(on: Boolean) {
         viewModelScope.launch { source.reapplyOnDrift(on) }
     }

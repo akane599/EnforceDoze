@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import io.github.akane599.enforcedoze.design.LocalSharedTransitionScope
+import io.github.akane599.enforcedoze.design.LocalEntryAnimationScope
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.NavEntryDecorator
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -112,18 +119,35 @@ internal fun EnforceDozeApp(services: AppServices, opening: Route? = null, opene
         containerColor = Ed.palette.ground,
     ) {
         Box(Modifier.fillMaxSize()) {
-            NavDisplay(
-                backStack = backStack,
-                onBack = navigator::back,
-                entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator(), rememberViewModelStoreNavEntryDecorator()),
-                // Two panes from the medium width class up (SPEC 9): Log beside its report, Profiles beside a profile.
-                sceneStrategies = listOf(rememberListDetailSceneStrategy()),
-                entryProvider = appEntries(services, navigator, exports),
-            )
+            // SPEC 10.3: the Home verdict moves into the report; each entry gets its animated scope for that.
+            SharedTransitionLayout(Modifier.fillMaxSize()) {
+                CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+                    NavDisplay(
+                        backStack = backStack,
+                        onBack = navigator::back,
+                        entryDecorators = listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator(),
+                            remember { animatedScopeDecorator() },
+                        ),
+                        // Two panes from the medium width class up (SPEC 9): Log beside its report, Profiles beside a profile.
+                        sceneStrategies = listOf(rememberListDetailSceneStrategy()),
+                        sharedTransitionScope = this,
+                        entryProvider = appEntries(services, navigator, exports),
+                    )
+                }
+            }
             SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter))
         }
     }
 }
+
+/** Gives each entry the animated scope NavDisplay runs it in, for shared elements in feature screens. */
+private fun animatedScopeDecorator(): NavEntryDecorator<NavKey> = NavEntryDecorator(
+    decorate = { entry ->
+        CompositionLocalProvider(LocalEntryAnimationScope provides LocalNavAnimatedContentScope.current) { entry.Content() }
+    },
+)
 
 private val TABS = listOf(
     Triple(HomeKey, Icons.Outlined.Home, R.string.ui_tab_home),

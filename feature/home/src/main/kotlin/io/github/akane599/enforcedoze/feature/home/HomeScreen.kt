@@ -49,6 +49,7 @@ import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.Verdict
 import io.github.akane599.enforcedoze.design.hourLabels
 import io.github.akane599.enforcedoze.design.rememberFormats
+import io.github.akane599.enforcedoze.design.verdictKey
 import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.ui.NoticeKind
 import io.github.akane599.enforcedoze.ui.ProofCard
@@ -236,7 +237,7 @@ private fun LastNight(night: NightSummary, formats: Formats) {
         stringResource(if (night.night) R.string.home_last_night else R.string.home_last_session),
         detail = stringResource(UiR.string.ui_span, formats.clock(night.start), formats.clock(night.end)),
     )
-    Verdict(night.verdict.word(), reason(night, formats), night.verdict.tone, settle = night.fresh)
+    Verdict(night.verdict.word(), reason(night, formats), night.verdict.tone, settle = night.fresh, sharedKey = verdictKey(night.sessionId))
     Spacer(Modifier.height(Space.l))
     val inDeep = night.timeInDeep
     val windowCount = night.maintenanceWindows

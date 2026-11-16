@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,6 +22,7 @@ import io.github.akane599.enforcedoze.app.PlanTileService
 import io.github.akane599.enforcedoze.app.SensorsTileService
 import io.github.akane599.enforcedoze.design.EdTheme
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /** The Compose app, the launcher activity (ADR 0029). Notifications and the tiles' long press open a screen in it. */
@@ -46,7 +48,9 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val open by opening.collectAsState()
-            EdTheme { EnforceDozeApp(services, open) { opening.value = null } }
+            val wallpaperAccent by remember { services.prefs.changes.map { services.prefs.wallpaperAccent } }
+                .collectAsState(initial = services.prefs.wallpaperAccent)
+            EdTheme(wallpaperAccent = wallpaperAccent) { EnforceDozeApp(services, open) { opening.value = null } }
         }
     }
 

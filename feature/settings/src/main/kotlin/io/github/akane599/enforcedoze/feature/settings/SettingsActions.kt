@@ -19,6 +19,8 @@ public interface SettingsActions {
 
     public fun automation(on: Boolean)
 
+    public fun wallpaperAccent(on: Boolean)
+
     public fun allowTasker()
 
     public fun retention()

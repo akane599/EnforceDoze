@@ -29,6 +29,8 @@ public fun SettingsRoute(viewModel: SettingsViewModel, navigation: SettingsNavig
         override fun addKeepAwake() = navigation.addKeepAwake()
         override fun removeKeepAwake(app: AppRef) = viewModel.removeKeepAwake(app)
         override fun reapplyOnDrift(on: Boolean) = viewModel.reapplyOnDrift(on)
+
+        override fun wallpaperAccent(on: Boolean) = viewModel.wallpaperAccent(on)
         override fun automation(on: Boolean) = viewModel.automation(on)
         override fun allowTasker() = viewModel.run(SettingsCommand.ALLOW_TASKER)
         override fun retention() = run { dialog = SettingsDialog.RETENTION }

@@ -40,7 +40,15 @@ fun ownerClock(twentyFour: Boolean = true) {
  * `<root>/<module>/screenshots/<name>/<variant>.png`. The theme follows the variant's night mode, so
  * [content] reads it like the app does. Run `recordRoborazziDebug` to write, `verifyRoborazziDebug` in CI.
  */
-fun shoot(module: String, name: String, variants: List<Variant> = Matrix, tall: Boolean = false, content: @Composable () -> Unit) {
+fun shoot(
+    module: String,
+    name: String,
+    variants: List<Variant> = Matrix,
+    tall: Boolean = false,
+    /** The screen's whole length in dp at font scale 1.0, for a screen longer than [TALL_HEIGHT]. */
+    length: Int? = null,
+    content: @Composable () -> Unit,
+) {
     val root = File(System.getProperty("enforcedoze.root") ?: ".")
     // Compose scales every animation by the system animator scale; at 0 each one lands on its end in the
     // first frame, so a scrolling tab row or a fading notice is shot where it settles, on every run.
@@ -49,6 +57,7 @@ fun shoot(module: String, name: String, variants: List<Variant> = Matrix, tall: 
     variants.forEach { v ->
         val options = RoborazziComposeOptions {
             val base = when {
+                length != null -> length
                 tall -> TALL_HEIGHT
                 v.tablet -> TABLET_HEIGHT
                 else -> PHONE_HEIGHT

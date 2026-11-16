@@ -42,6 +42,7 @@ import io.github.akane599.enforcedoze.design.TimelineStrip
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.design.Verdict
 import io.github.akane599.enforcedoze.design.hourLabels
+import io.github.akane599.enforcedoze.design.verdictKey
 import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.VerdictWord
@@ -57,7 +58,7 @@ import io.github.akane599.enforcedoze.ui.R as UiR
 @Composable
 internal fun ColumnScope.SummaryTab(state: ReportState, formats: Formats, actions: ReportActions, showWakers: () -> Unit) {
     val summary = state.summary
-    Verdict(summary.verdict.word(), verdictLine(summary, formats), summary.verdict.tone)
+    Verdict(summary.verdict.word(), verdictLine(summary, formats), summary.verdict.tone, sharedKey = verdictKey(summary.sessionId))
     Spacer(Modifier.height(Space.xl))
     ReportStrip(summary, formats)
     Spacer(Modifier.height(Space.l))

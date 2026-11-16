@@ -29,20 +29,22 @@ class SettingsScreenshotTest {
         version = "0.1.0",
     )
 
-    @Test fun settings() = shoot(MODULE, "settings", tall = true) { SettingsScreen(state, NoSettings) }
+    // Settings is the longest screen; shot whole, so the language, look and advanced sections are in the picture.
+    @Test fun settings() = shoot(MODULE, "settings", length = SETTINGS_LENGTH) { SettingsScreen(state, NoSettings) }
 
-    @Test fun readOnly() = shoot(MODULE, "settings-read-only", listOf(Primary, Primary.copy(dark = false, turkish = true)), tall = true) {
-        SettingsScreen(
-            state.copy(
-                privilege = PrivilegeStatus(tier = 0, missingProbes = 4),
-                keepAwake = emptyList(),
-                automation = false,
-                canWrite = false,
-                notices = listOf(StateNotice("ro", NoticeKind.READ_ONLY)),
-            ),
-            NoSettings,
-        )
-    }
+    @Test fun readOnly() =
+        shoot(MODULE, "settings-read-only", listOf(Primary, Primary.copy(dark = false, turkish = true)), length = SETTINGS_LENGTH) {
+            SettingsScreen(
+                state.copy(
+                    privilege = PrivilegeStatus(tier = 0, missingProbes = 4),
+                    keepAwake = emptyList(),
+                    automation = false,
+                    canWrite = false,
+                    notices = listOf(StateNotice("ro", NoticeKind.READ_ONLY)),
+                ),
+                NoSettings,
+            )
+        }
 
     @Test fun failed() = shoot(MODULE, "settings-tasker-failed", listOf(Primary)) {
         SettingsScreen(
@@ -82,6 +84,7 @@ private object NoSettings : SettingsActions {
     override fun addKeepAwake() = Unit
     override fun removeKeepAwake(app: AppRef) = Unit
     override fun reapplyOnDrift(on: Boolean) = Unit
+    override fun wallpaperAccent(on: Boolean) = Unit
     override fun automation(on: Boolean) = Unit
     override fun allowTasker() = Unit
     override fun retention() = Unit
@@ -96,3 +99,5 @@ private object NoSettings : SettingsActions {
     override fun notice(notice: StateNotice) = Unit
     override fun seen(notice: StateNotice) = Unit
 }
+
+private const val SETTINGS_LENGTH = 2520

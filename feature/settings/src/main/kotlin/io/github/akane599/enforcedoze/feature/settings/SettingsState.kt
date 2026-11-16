@@ -32,6 +32,8 @@ public data class SettingsState(
     val retentionDays: Int = DEFAULT_RETENTION,
     /** The app's own language as its name, or null when it follows the phone. */
     val language: String? = null,
+    /** SPEC 10.2: the accent may follow the wallpaper; verdict and strip colours never do. Off by default. */
+    val wallpaperAccent: Boolean = false,
     /** Server flag sync disabled for every namespace (SPEC 5.6): advanced, off by default, never set automatically. */
     val flagSyncDisabled: Boolean = false,
     val version: String,
@@ -57,6 +59,8 @@ public interface SettingsSource {
     public suspend fun reapplyOnDrift(on: Boolean)
 
     public suspend fun automation(on: Boolean)
+
+    public suspend fun wallpaperAccent(on: Boolean)
 
     public suspend fun retention(days: Int)
 

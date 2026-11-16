@@ -29,9 +29,11 @@
     <string name="settings_export_all_detail">Uygulamanın tuttuğu her oturum, gece ve işlem; bir hata raporu ya da kendi kayıtlarınız için.</string>
     <string name="settings_export">Dışa aktar</string>
     <string name="settings_change">Değiştir</string>
-    <string name="settings_language">Dil</string>
     <string name="settings_language_system">Telefonun dili</string>
     <string name="settings_language_detail">İngilizce ya da Türkçe; telefonun bu uygulamaya ait ayarlarından seçilir.</string>
+    <string name="settings_language_look">Dil ve görünüm</string>
+    <string name="settings_wallpaper_accent">Vurgu rengi duvar kâğıdını izlesin</string>
+    <string name="settings_wallpaper_accent_detail">Yalnızca vurgu rengi değişir; karar ve zaman çizelgesi renkleri her gece aynı okunsun diye sabit kalır.</string>
     <string name="settings_advanced">Gelişmiş</string>
     <string name="settings_flag_sync">Sunucu bayrak eşitlemesini durdur</string>
     <string name="settings_flag_sync_detail">Varsayılan olarak kapalı. Google hizmetleri bir profilin üzerine yazan Doze değerleri gönderebilir; sapmada yeniden uygula onları zaten geri koyar. Bu, telefondaki sunucudan gelen her ayarı, yalnızca Doze\'unkileri değil, siz kapatana dek durdurur.</string>

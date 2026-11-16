@@ -29,9 +29,11 @@
     <string name="settings_export_all_detail">Every session, night and action the app keeps, for a bug report or your own records.</string>
     <string name="settings_export">Export</string>
     <string name="settings_change">Change</string>
-    <string name="settings_language">Language</string>
     <string name="settings_language_system">The phone\'s language</string>
     <string name="settings_language_detail">English or Turkish, set in the phone\'s settings for this app.</string>
+    <string name="settings_language_look">Language and look</string>
+    <string name="settings_wallpaper_accent">Accent follows the wallpaper</string>
+    <string name="settings_wallpaper_accent_detail">Only the accent changes; verdict and timeline colours stay fixed so they read the same every night.</string>
     <string name="settings_advanced">Advanced</string>
     <string name="settings_flag_sync">Stop server flag sync</string>
     <string name="settings_flag_sync_detail">Off by default. Google services can push Doze values that overwrite a profile; re-apply on drift already puts them back. This stops every server-pushed setting on the phone, not only Doze\'s, until you turn it off.</string>

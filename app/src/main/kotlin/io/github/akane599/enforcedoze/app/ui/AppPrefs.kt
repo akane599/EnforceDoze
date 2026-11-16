@@ -59,6 +59,11 @@ internal class AppPrefs(context: Context) {
         get() = prefs.getBoolean(AUTOMATION, false)
         set(value) = prefs.edit { putBoolean(AUTOMATION, value) }
 
+    /** SPEC 10.2: the accent follows the wallpaper; off by default. */
+    var wallpaperAccent: Boolean
+        get() = prefs.getBoolean(WALLPAPER_ACCENT, false)
+        set(value) = prefs.edit { putBoolean(WALLPAPER_ACCENT, value) }
+
     /** "Follow Recommended automatically" (SPEC 9.1 Plan). */
     var followRecommended: Boolean
         get() = prefs.getBoolean(FOLLOW, false)
@@ -135,6 +140,7 @@ internal class AppPrefs(context: Context) {
         private const val URGENCY = "urgency"
         private const val RETENTION = "retention_days"
         private const val AUTOMATION = "automation"
+        private const val WALLPAPER_ACCENT = "wallpaper-accent"
         private const val FOLLOW = "follow_recommended"
         private const val KEEP_AWAKE = "keep_awake"
         private const val SEEN = "seen_notices"

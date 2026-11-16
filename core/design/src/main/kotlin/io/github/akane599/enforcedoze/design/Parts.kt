@@ -124,6 +124,8 @@ public fun Verdict(
     modifier: Modifier = Modifier,
     large: Boolean = true,
     settle: Boolean = false,
+    /** The same key on two screens moves the verdict word between them (SPEC 10.3). */
+    sharedKey: Any? = null,
 ) {
     val offset = remember { Animatable(if (settle) SETTLE_FROM_DP else 0f) }
     LaunchedEffect(settle) { if (settle) offset.animateTo(0f, tween(Motion.VERDICT_SETTLE_MS, easing = Motion.Settle)) }
@@ -133,7 +135,7 @@ public fun Verdict(
             word,
             style = if (large) MaterialTheme.typography.displayMedium else MaterialTheme.typography.displaySmall,
             color = tone.color(),
-            modifier = Modifier.graphicsLayer { translationY = with(density) { offset.value.dp.toPx() } },
+            modifier = Modifier.sharedElement(sharedKey).graphicsLayer { translationY = with(density) { offset.value.dp.toPx() } },
         )
         Text(reason, style = MaterialTheme.typography.titleMedium, color = Ed.palette.ink)
     }

@@ -83,12 +83,18 @@ public fun SettingsScreen(state: SettingsState, actions: SettingsActions, modifi
                 action = stringResource(R.string.settings_export),
                 onAction = actions::exportAll,
             )
-            SectionHeader(stringResource(R.string.settings_language))
+            SectionHeader(stringResource(R.string.settings_language_look))
             Line(
                 state.language ?: stringResource(R.string.settings_language_system),
                 stringResource(R.string.settings_language_detail),
                 action = stringResource(R.string.settings_change),
                 onAction = actions::language,
+            )
+            SwitchRow(
+                stringResource(R.string.settings_wallpaper_accent),
+                stringResource(R.string.settings_wallpaper_accent_detail),
+                checked = state.wallpaperAccent,
+                onChange = actions::wallpaperAccent,
             )
             SectionHeader(stringResource(R.string.settings_advanced))
             SwitchRow(
