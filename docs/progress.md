@@ -355,3 +355,23 @@ Carried over to P5:
     - `WIFI_AP_STATE_CHANGED` is in neither sticky list, and `cmd wifi status` shows no soft-AP
       state;
     - the hold-off still starts as off until the first broadcast (unchanged).
+
+## P6 Integrations (in progress)
+
+- Automation API (SPEC 11.1, ADR 0033, 0034): a token per client instead of a permission, kept as a
+  SHA-256; the receiver is disabled while the switch is off; one state change per 30 s across all
+  clients; every call is an `AUTOMATION` journal event. A fresh security review found no way in without
+  a token; its three points are fixed. `docs/automation.md` is the public contract.
+- Switch-over (SPEC 11.4): `previous.json` against `stock.json` shows what the old setup set; the import
+  makes a custom profile through the usual guardrails; the check passes after one screen off and on with
+  no foreign write while EnforceDoze holds the string; the way back is "Return to my previous setup".
+  Upstream EnforceDoze, ForceDoze and Battery Guru are found by app id ("Two Doze managers").
+- Evidence provider for Coulomb (SPEC 11.3, ADR 0035): `status` and `sessions`, signature permission
+  plus a caller check, an `OPEN_REPORT` alias for the report link. A fresh second opinion shaped the
+  contract and found two `GET_STATUS` bugs (raw session instead of the night; a made-up deep share of
+  0), fixed through one shared last-result function.
+- Log rows show their session's strip.
+- Gate: the JVM tests pass (automation, switch-over, provider contract). The emulator run
+  (`tools/emulator/p6-integrations.sh`: provider from another app and from the shell, both install
+  orders' grant, automation token and limit, switch-over against a simulated Tasker) waits for
+  akane-linux to be free, like the P5 run.
