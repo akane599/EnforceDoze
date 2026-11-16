@@ -303,9 +303,9 @@ Carried over to P5:
   - the flag sync worker calls (contract VERSION 4) still need their emulator contract test run;
   - an app waker's wakeup count includes alarm wakeups only when both alarm dumps were read
     (ADR 0019); the report's own-wakeups figure already says "unknown" then, the per-app rows do not;
-  - the upstream Java screens and services are still in the APK (unregistered tiles included);
-  - the automation API and the Tasker grant belong to P6 (SPEC 11); Settings answers "not in this
-    build yet" for both.
+  - the upstream Java screens and services are still in the APK, but since ADR 0036 none of them is
+    registered;
+  - the automation API came in P6 (ADR 0033).
 - Design pass (2026-11-16):
   - `DESIGN.md` records the shipped tokens, and `PaletteTest` checks its colour table against the theme;
   - critique and audit by a fresh reviewer found no P0 and five P1s, all fixed (ADR 0030), plus most
@@ -313,9 +313,8 @@ Carried over to P5:
   - `impeccable detect` reads web files only: it reports zero on this Compose app without testing it;
   - a cold-start macrobenchmark (`:testing:benchmark`) and `tools/emulator/p5-ui.sh`, which runs it
     and a smoke run under Shizuku (grants, tiles, the sensors confirmation) on the API 37 emulator;
-  - still open from the audit (P2):
-    - two panes on a tablet exist only for Log/Report and Profiles;
-    - some feature screens still hold sizes that belong in `:core:design`;
+  - still open from the audit (P2): two panes on a tablet exist only for Log/Report and Profiles. The
+    shared table columns moved to `:core:design` (`Sizes.valueColumn`, `timeColumn`, `markColumn`);
   - Log rows now carry their session's or night's strip, from one query of transitions (ADR 0028);
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):
   - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
@@ -328,6 +327,18 @@ Carried over to P5:
   - no fixed Night window when the starts spread over more than 3 h. Night is offered by hand
     instead.
 - The emulator gate scripts pin adb to the emulator, since the owner's S22 can be connected over adb.
+- Emulator run, 2026-11-16 (`tools/emulator/p5-ui.sh`, API 37), passed with nothing failing:
+  - the release build's cold start has a median `timeToInitialDisplayMs` of about 200 ms over 10 runs,
+    against a limit of 500 ms;
+  - DUMP, WRITE_SECURE_SETTINGS and usage access arrive through the worker on the first run;
+  - both tiles are in Quick Settings, and the sensors tile asks before it acts;
+  - nothing crashed.
+- That run found a real bug. The privilege controller followed Shizuku only while the engine ran, so
+  on the first run the tier stayed T0 and the grants never came. `PrivilegeController.watch()` now
+  follows Shizuku for the whole process.
+- The smoke run also needed the order of ADR 0011: start the Shizuku server after the app.
+- The emulator scripts no longer reuse an emulator that is already running, even `ed-api37`. Another
+  session or the owner may be using it.
 - For the `:app` mapper:
   - the reason line of a Partly night with no break and no late arrival;
   - `ReportSummary.sessionId` is the night's first session, and the route finds the night by it
@@ -371,6 +382,12 @@ Carried over to P5:
   contract and found two `GET_STATUS` bugs (raw session instead of the night; a made-up deep share of
   0), fixed through one shared last-result function.
 - Log rows show their session's strip.
+- Security, 2026-11-16 (ADR 0036): upstream's receivers were still registered and exported without a
+  permission. `ADD_WHITELIST` pasted its extra into a shell command run as this app, which holds the
+  durable grants. All 24 upstream components left the manifest, and `ManifestSafetyTest` guards what
+  stays exported. Parity row 8 (allowlist calls) is dropped after a second opinion (Q13).
+- The evidence provider's security review found that `OPEN_REPORT` could be sent to `MainActivity`
+  directly, skipping the alias's permission. Fixed: the route is taken only through the alias.
 - Gate: the JVM tests pass (automation, switch-over, provider contract). The emulator run
   (`tools/emulator/p6-integrations.sh`: provider from another app and from the shell, both install
   orders' grant, automation token and limit, switch-over against a simulated Tasker) waits for
