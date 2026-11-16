@@ -57,6 +57,7 @@ internal fun ColumnScope.TimelineTab(state: ReportState, formats: Formats) {
             DozeFill.DEEP to stringResource(R.string.report_legend_deep),
             DozeFill.MISSING to stringResource(R.string.report_legend_missing),
         ),
+        wake = stringResource(R.string.report_legend_wake).takeIf { state.summary.strip.wakes.isNotEmpty() },
     )
     Spacer(Modifier.height(Space.xl))
     BoxWithConstraints {
@@ -211,6 +212,12 @@ private fun DrawScope.drawMarker(event: StopEvent, palette: Palette, at: Offset)
     when (event) {
         StopEvent.ScreenOff, StopEvent.ScreenOn, StopEvent.Light -> drawCircle(palette.ink, 5.dp.toPx(), at)
 
+        // Hollow: the screen came on and went off again, so the night goes on past it.
+        is StopEvent.Wake -> {
+            drawCircle(palette.ground, 6.dp.toPx(), at)
+            drawCircle(palette.ink, 5.dp.toPx(), at, style = Stroke(2.dp.toPx()))
+        }
+
         is StopEvent.Deep -> {
             drawCircle(palette.deep, 7.dp.toPx(), at)
             drawCircle(palette.ground, 3.dp.toPx(), at)
@@ -259,6 +266,8 @@ private fun eventText(event: StopEvent, formats: Formats): String = when (event)
     is StopEvent.Gap -> stringResource(R.string.report_stop_gap, formats.clock(event.until))
 
     is StopEvent.Filled -> stringResource(R.string.report_stop_filled, formats.clock(event.until))
+
+    is StopEvent.Wake -> stringResource(R.string.report_stop_wake, formats.duration(event.lasted))
 }
 
 @Composable

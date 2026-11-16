@@ -14,6 +14,7 @@ import android.util.Log
 import io.github.akane599.enforcedoze.data.EvidenceRows
 import io.github.akane599.enforcedoze.data.JournalDao
 import io.github.akane599.enforcedoze.data.NightReports
+import io.github.akane599.enforcedoze.data.StoredNights
 import io.github.akane599.enforcedoze.data.OpenSession
 import io.github.akane599.enforcedoze.data.PendingSnapshot
 import io.github.akane599.enforcedoze.data.RecorderFiles
@@ -279,13 +280,22 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         if (!keyguard.isKeyguardLocked) unlocked(now)
     }
 
-    /** SPEC 8.5: each unplugged session of at least the night threshold, not yet reported, becomes a night now. */
+    /**
+     * SPEC 8.5, ADR 0031: the sessions of the last day, grouped into nights. A night not yet reported is written
+     * now; one a later session joined after a short wake-up grows in place, keeping its id.
+     */
     private suspend fun unlocked(time: Long) {
-        val threshold = DebugHooks.nightThreshold(context)
-        for (session in sessions.unreportedNights(time - NIGHT_LOOKBACK.toMillis(), threshold.toMillis())) {
-            val recent = sessions.nightSessions(session.start, null, NightReports.RECENT)
-            val stock = sessions.nightSessions(session.start, BuiltInProfiles.STOCK.id, NightReports.RECENT)
-            sessions.insertNight(NightReports.night(session, time, recent, stock))
+        val stored = sessions.sessionsBetween(time - NIGHT_LOOKBACK.toMillis(), time)
+        for (night in StoredNights.nights(stored, ZoneId.systemDefault(), DebugHooks.nightRule(context))) {
+            val first = night.first()
+            val known = sessions.nightsBetween(first.start, night.last().end)
+            val same = known.firstOrNull { it.sessionId == first.id }
+            // A night already there for part of this run started before the lookback: leave it as it is.
+            if (known.any { it.sessionId != first.id } || same?.sessionCount == night.size) continue
+            val recent = sessions.nightsBefore(first.start, null, NightReports.RECENT)
+            val stock = sessions.nightsBefore(first.start, BuiltInProfiles.STOCK.id, NightReports.RECENT)
+            val row = NightReports.night(night, time, recent, stock)
+            if (same == null) sessions.insertNight(row) else sessions.updateNight(row.copy(id = same.id))
         }
     }
 

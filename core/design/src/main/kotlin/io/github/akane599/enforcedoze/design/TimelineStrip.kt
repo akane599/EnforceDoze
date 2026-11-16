@@ -33,10 +33,15 @@ public data class StripSegment(val fill: DozeFill, val start: Long, val end: Lon
 @Immutable
 public data class StripBreak(val at: Long, val label: String)
 
+/** A short screen-on moment between two sessions of one night (ADR 0031). */
+@Immutable
+public data class StripWake(val start: Long, val end: Long)
+
 /**
- * One session on the strip, times in epoch milliseconds. Segments may leave holes: a hole is time the
- * session did not cover (before screen off, after screen on) and stays blank; time the session covered but
- * the record lost is a [DozeFill.MISSING] segment and is hatched.
+ * One session or one night on the strip, times in epoch milliseconds. Segments may leave holes: a hole is time
+ * the record did not cover (before screen off, after screen on) and stays blank; time it covered but lost is a
+ * [DozeFill.MISSING] segment and is hatched. A night of several sessions lists the screen-on moments between
+ * them as [wakes], which the strip marks (ADR 0031).
  */
 @Immutable
 public data class StripModel(
@@ -45,6 +50,7 @@ public data class StripModel(
     val segments: List<StripSegment>,
     val maintenance: List<Long> = emptyList(),
     val breaks: List<StripBreak> = emptyList(),
+    val wakes: List<StripWake> = emptyList(),
 ) {
     /** The same session moved by [millis], to lay nights from different dates on one clock axis. */
     public fun shiftedBy(millis: Long): StripModel = StripModel(
@@ -53,13 +59,16 @@ public data class StripModel(
         segments.map { it.copy(start = it.start + millis, end = it.end + millis) },
         maintenance.map { it + millis },
         breaks.map { it.copy(at = it.at + millis) },
+        wakes.map { StripWake(it.start + millis, it.end + millis) },
     )
 }
 
 /**
  * The signature element: one band per session. Active is dotted, light idle pinstriped, deep idle solid,
  * missing data hatched; maintenance windows are thin ticks that overhang the band, breaks are notches cut
- * through it. A 1 dp gap of ground separates segments so neighbouring fills never touch.
+ * through it, and a short wake-up inside a night is a slot of ground under an ink cap, at least 3 dp wide so a
+ * two-minute wake-up still shows on an eight-hour band. A 1 dp gap of ground separates segments so
+ * neighbouring fills never touch.
  *
  * [axisStart]..[axisEnd] is the span the width stands for (the session's own by default; a shared clock
  * window when strips are stacked). The band draws itself once on first view unless the system turned
@@ -101,6 +110,7 @@ public fun TimelineStrip(
                 val right = (x(segment.end) - gap).coerceAtLeast(left + 1f)
                 drawFill(segment.fill, palette, Offset(left, top), Box2(right - left, band))
             }
+            model.wakes.forEach { wake -> drawWake(palette, x(wake.start), x(wake.end), top, band) }
             // Ticks are ink where they overhang and ground inside the band, so they read on every fill.
             model.maintenance.forEach { t ->
                 val px = x(t)
@@ -118,6 +128,20 @@ public fun TimelineStrip(
         }
     }
 }
+
+/** A wake-up's mark: the slot cleared to ground, capped in ink across the overhang above the band. */
+public fun DrawScope.drawWake(palette: Palette, left: Float, right: Float, top: Float, band: Float) {
+    val min = WAKE_MIN.toPx()
+    val middle = (left + right) / 2
+    val from = minOf(left, middle - min / 2)
+    val width = maxOf(right - left, min)
+    drawRect(palette.ground, Offset(from, top), Box2(width, band))
+    val cap = WAKE_CAP.toPx()
+    drawRect(palette.ink, Offset(from, top - cap), Box2(width, cap))
+}
+
+private val WAKE_MIN = 3.dp
+private val WAKE_CAP = 2.dp
 
 /** One state's fill and pattern; used by the strip and by its legend. */
 public fun DrawScope.drawFill(fill: DozeFill, palette: Palette, at: Offset, size: Box2) {

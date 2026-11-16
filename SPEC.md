@@ -339,7 +339,7 @@ The first recommendation appears during onboarding, from history the phone alrea
 | **S** screen-off pattern | Screen-off hours per day; share of screen-off time in long sessions (≥ 30 min) vs short ones (< 15 min) | UsageStats `SCREEN_NON_INTERACTIVE` / `SCREEN_INTERACTIVE` pairs; `GET_USAGE_STATS` granted through the worker |
 | **D** stock deep-idle share | Share of long, unplugged screen-off time spent in deep idle under stock settings | `dumpsys batterystats --history` Doze states; the app's own transition log once available |
 | **M** motion breaks | Long unplugged sessions where deep idle was never reached, or was reset by motion | Event-log `device_idle` reasons; fallback: long sessions with no deep idle in `batterystats` |
-| **N** nights | Unplugged screen-off sessions of ≥ 4 h starting between 21:00 and 03:00 | Same as S, joined with plug state from `batterystats` |
+| **N** nights | Joined nights (ADR 0031): unplugged screen-off sessions, each starting less than 10 min after the one before, the first between 21:00 and 03:00, with ≥ 4 h of screen off in all | Same as S, joined with plug state from `batterystats` |
 | **R** stock idle drain | Battery percent per hour during long unplugged screen-off sessions | `batterystats` level steps; later the app's own charge-counter readings |
 | **Q** message urgency | The owner's answer to one onboarding question: "When a message arrives while the phone is locked, how soon do you need to see it?" Right away / Within the hour / It can wait (default: Within the hour) | Onboarding, changeable in Settings |
 
@@ -357,7 +357,7 @@ The first recommendation appears during onboarding, from history the phone alrea
 
 Every threshold is a named constant in `RecommendationPolicy.kt` with its unit and a comment saying why; each has a unit test, and changing one needs an ADR. The numbers above are starting points, not facts about all phones.
 
-Definitions (ADR 0026): a daytime session is any session that is not an N night; the short share counts unplugged time only; an available night is one in which an N session could start and still fit inside the history; rule 1 counts screen-off time from any source. D and R count only sessions run under stock settings, and M counts only sessions with the sensors free that outlast the expected walk to deep idle by 2 minutes. When no stock time exists, D and R are shown as not measured and rule 4 is skipped. S counts screen-off time inside the history, sessions clipped to it; M and N count sessions that began inside it; D and R use stock sessions of any age. While Pocket runs, its own sensor restriction hides M, so Pocket stays until M can be measured again.
+Definitions (ADR 0026, 0031): a daytime session is any session that is not part of an N night; a charger, or a battery level that rose during a screen-on gap, ends a night; the short share counts unplugged time only; an available night is one in which an N night could start and still fit inside the history; rule 1 counts screen-off time from any source. D and R count only sessions run under stock settings, and M counts only sessions with the sensors free that outlast the expected walk to deep idle by 2 minutes. When no stock time exists, D and R are shown as not measured and rule 4 is skipped. S counts screen-off time inside the history, sessions clipped to it; M counts sessions and N counts nights that began inside it; D and R use stock sessions of any age. While Pocket runs, its own sensor restriction hides M, so Pocket stays until M can be measured again.
 
 &#91;embedded content: Recommended decision path · 5 questions, 6 plan pieces\]
 
@@ -442,10 +442,10 @@ Numbers shown with the verdict: time to deep idle; share of time in deep, light 
 
 ### 8.5 Night report
 
-Generated at the first unlock after an unplugged session of ≥ 4 h, and kept in the log.
+Generated at the first unlock once a night has ≥ 4 h of unplugged screen off, and kept in the log. A night is the joined night of 7.2 (ADR 0031): sessions joined across screen-on gaps under 10 min, the first starting between 21:00 and 03:00. A later session that joins it extends the same report.
 
 1. **Verdict line.** Example: "Doze held: 6 h 40 min in deep idle, 7 maintenance windows, 0.21 %/h."
-2. **Timeline strip.** Screen off → light → deep, maintenance windows as ticks, breaks marked with their reason, gaps labelled.
+2. **Timeline strip.** Screen off → light → deep, maintenance windows as ticks, breaks marked with their reason, gaps labelled, and the short wake-ups between a night's sessions marked.
 3. **Compared with.** Stock baseline (from history before the app, or Stock nights) and the last 7 nights: drain %/h and deep-idle share.
 4. **Wakers.** Top apps by wakeups and wakelock time, kernel wakeup reasons, apps that held sensors.
 5. **What changed Doze.** Hold-offs, drift corrections, other managers.
@@ -644,7 +644,7 @@ No test phase waits for days. Doze is a timer machine, so tests shrink the timer
 
 1. `dumpsys battery unplug`.
 2. Apply a test profile: `inactive_to` 30 s, `idle_after_inactive_to` 30 s, `sensing_to` 10 s, `locating_to` 5 s, `idle_to` 60 s, `max_idle_to` 120 s.
-3. Set the night-report threshold to 4 minutes (an injectable test config, never in release).
+3. Set the night-report threshold to 4 minutes (an injectable test config, never in release); the join gap scales with it and the clock window is off (ADR 0031).
 4. Screen off with `input keyevent KEYCODE_SLEEP`; wait 5 minutes; screen on with `KEYCODE_WAKEUP`. On a device without a motion sensor (`mUseMotionSensor=true mMotionSensor=null`, as on the emulators) the system schedules no alarm before IDLE, so the script steps `cmd deviceidle step deep` at the profile's walk timers until IDLE and leaves everything after IDLE to the system (ADR 0016).
 5. Assert: transitions in the expected order with timings within tolerance, at least 2 maintenance windows, verdict Held, a night report exists, and the app's own wakeups are 0.
 6. Always finish with `dumpsys battery reset` and Restore stock, in a `finally`.

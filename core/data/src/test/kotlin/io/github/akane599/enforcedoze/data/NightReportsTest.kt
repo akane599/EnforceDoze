@@ -3,8 +3,11 @@ package io.github.akane599.enforcedoze.data
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import io.github.akane599.enforcedoze.profile.Nights
 import org.junit.Test
 import java.time.Duration
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class NightReportsTest {
     private val hour = 3_600_000L
@@ -29,20 +32,45 @@ class NightReportsTest {
         drainPerHour = drain,
     )
 
-    @Test fun aNightIsFourUnpluggedHours() {
-        val threshold = NightReports.THRESHOLD
-        assertThat(NightReports.qualifies(session(hours = 4), threshold)).isTrue()
-        assertThat(NightReports.qualifies(session(hours = 3), threshold)).isFalse()
-        assertThat(NightReports.qualifies(session().copy(chargedMillis = 60_000), threshold)).isFalse()
-        assertThat(NightReports.qualifies(session().copy(pluggedAtStart = true), threshold)).isFalse()
-        assertThat(NightReports.qualifies(session(hours = 3), Duration.ofHours(2))).isTrue()
+    private val zone = ZoneId.of("Europe/Istanbul")
+
+    /** 23:00 on 1 November 2026 in Istanbul (UTC+3), plus [minutes]. */
+    private fun at(minutes: Long) = ZonedDateTime.of(2026, 11, 1, 23, 0, 0, 0, zone).toInstant().toEpochMilli() + minutes * 60_000
+
+    private fun part(id: Long, from: Long, to: Long, batteryStart: Int? = null, batteryEnd: Int? = null) = session().copy(
+        id = id,
+        start = at(from),
+        end = at(to),
+        batteryStart = batteryStart,
+        batteryEnd = batteryEnd,
+    )
+
+    @Test fun aNightIsFourHoursOfUnpluggedScreenOff() {
+        assertThat(StoredNights.nights(listOf(part(1, 0, 240)), zone)).hasSize(1)
+        assertThat(StoredNights.nights(listOf(part(1, 0, 239)), zone)).isEmpty()
+        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(chargedMillis = 60_000)), zone)).isEmpty()
+        assertThat(StoredNights.nights(listOf(part(1, 0, 480).copy(pluggedAtStart = true)), zone)).isEmpty()
+        assertWithMessage("the compressed night of the debug build").that(
+            StoredNights.nights(listOf(part(1, 0, 5)), zone, Nights.Rule.compressed(Duration.ofMinutes(4))),
+        ).hasSize(1)
+    }
+
+    @Test fun shortWakeUpsJoinOneNightAndAChargeBetweenEndsIt() {
+        val first = part(1, 0, 180, batteryStart = 80, batteryEnd = 78)
+        val second = part(2, 185, 480, batteryStart = 78, batteryEnd = 74)
+        assertWithMessage("3 h + 4 h 55 min of screen off, 5 min awake between").that(StoredNights.nights(listOf(second, first), zone))
+            .containsExactly(listOf(first, second))
+        assertThat(StoredNights.wakes(listOf(first, second))).containsExactly(Span(at(180), at(185)))
+        val charged = second.copy(batteryStart = 85)
+        assertWithMessage("the battery rose while the screen was on").that(StoredNights.nights(listOf(first, charged), zone))
+            .containsExactly(listOf(charged))
     }
 
     @Test fun theComparisonAveragesWhatEachNightHas() {
         val nights = listOf(
-            session(deepHours = 6.0, drain = 0.2),
-            session(deepHours = 4.0, drain = null),
-            session(verdict = null, deepHours = 0.0, drain = 0.6),
+            NightReports.night(listOf(session(deepHours = 6.0, drain = 0.2)), 0, emptyList(), emptyList()),
+            NightReports.night(listOf(session(deepHours = 4.0, drain = null)), 0, emptyList(), emptyList()),
+            NightReports.night(listOf(session(verdict = null, deepHours = 0.0, drain = 0.6)), 0, emptyList(), emptyList()),
         )
         val comparison = NightReports.compare(nights)
         assertThat(comparison.nights).isEqualTo(3)
@@ -51,9 +79,72 @@ class NightReportsTest {
         assertThat(NightReports.compare(emptyList())).isEqualTo(Comparison(0, null, null))
     }
 
-    @Test fun theNightKeepsItsComparison() {
-        val night = NightReports.night(session(), unlockedAt = 9 * hour, recent = listOf(session(drain = 0.3)), stock = emptyList())
-        assertThat(night).isEqualTo(NightRow(0, 7, 9 * hour, 1, 0.3, 0.75, 0, null, null))
+    @Test fun theNightKeepsItsFiguresAndItsComparison() {
+        val earlier = NightReports.night(listOf(session(drain = 0.3)), 0, emptyList(), emptyList())
+        val night = NightReports.night(listOf(session()), unlockedAt = 9 * hour, recent = listOf(earlier), stock = emptyList())
+        assertThat(night).isEqualTo(
+            NightRow(
+                sessionId = 7,
+                start = 0,
+                end = 8 * hour,
+                sessionCount = 1,
+                screenOffMillis = 8 * hour,
+                drainPerHour = 0.25,
+                deepShare = 0.75,
+                profileId = "everyday",
+                unlockedAt = 9 * hour,
+                recentNights = 1,
+                recentDrainPerHour = 0.3,
+                recentDeepShare = 0.75,
+                stockNights = 0,
+                stockDrainPerHour = null,
+                stockDeepShare = null,
+            ),
+        )
+    }
+
+    @Test fun aJoinedNightCountsItsSessionsNotTheWakeUps() {
+        val first = part(1, 0, 120).copy(drainPerHour = 0.6, timeInDeepMillis = hour)
+        val second = part(2, 125, 485).copy(drainPerHour = 0.2, timeInDeepMillis = 5 * hour, profileId = "stock")
+        val night = NightReports.night(listOf(first, second), 0, emptyList(), emptyList())
+        assertThat(night.start).isEqualTo(first.start)
+        assertThat(night.end).isEqualTo(second.end)
+        assertThat(night.sessionCount).isEqualTo(2)
+        assertThat(night.screenOffMillis).isEqualTo(8 * hour)
+        assertWithMessage("weighted by length: (0.6 × 2 + 0.2 × 6) / 8").that(night.drainPerHour).isWithin(1e-9).of(0.3)
+        assertThat(night.deepShare).isWithin(1e-9).of(0.75)
+        assertWithMessage("two profiles: no baseline for either").that(night.profileId).isNull()
+    }
+
+    @Test fun theNightsVerdictJoinsItsSessions() {
+        fun verdict(vararg verdicts: String?) = NightReports.verdict(verdicts.map { session(verdict = it) }).first
+        assertThat(verdict(EvidenceRows.HELD, EvidenceRows.HELD)).isEqualTo(EvidenceRows.HELD)
+        assertWithMessage("an unjudged part does not count").that(verdict(EvidenceRows.HELD, null)).isEqualTo(EvidenceRows.HELD)
+        assertThat(verdict(EvidenceRows.HELD, EvidenceRows.PARTLY)).isEqualTo(EvidenceRows.PARTLY)
+        assertThat(verdict(EvidenceRows.HELD, EvidenceRows.DID_NOT_DOZE)).isEqualTo(EvidenceRows.PARTLY)
+        assertThat(verdict(EvidenceRows.DID_NOT_DOZE, EvidenceRows.DID_NOT_DOZE)).isEqualTo(EvidenceRows.DID_NOT_DOZE)
+        assertThat(verdict(null, null)).isNull()
+        val undozed = listOf(
+            session(hours = 2, verdict = EvidenceRows.DID_NOT_DOZE).copy(cause = "MOTION"),
+            session(hours = 5, verdict = EvidenceRows.DID_NOT_DOZE).copy(cause = "HOLD_OFF"),
+        )
+        assertWithMessage("the longest part's cause").that(NightReports.verdict(undozed).second).isEqualTo("HOLD_OFF")
+    }
+
+    @Test fun aJoinedNightSumsItsWakersOncePerApp() {
+        val merged = NightWakers.merge(
+            listOf(
+                listOf(WakerRow(uid = 10_050, name = "com.x", alarmWakeups = 1, alarms = "1 1 sync\n0 2 tick")),
+                listOf(
+                    WakerRow(uid = 10_060, name = "com.y", alarmWakeups = 2),
+                    WakerRow(uid = 10_050, name = "com.x", alarmWakeups = 2, wakelockMillis = 5, alarms = "2 2 sync"),
+                ),
+            ),
+        )
+        assertThat(merged.map { it.name to it.alarmWakeups }).containsExactly("com.x" to 3, "com.y" to 2).inOrder()
+        assertThat(merged.first().alarms).isEqualTo("3 3 sync\n0 2 tick")
+        val one = listOf(WakerRow(uid = 1, name = "a"), WakerRow(uid = 2, name = "b", alarmWakeups = 9))
+        assertWithMessage("one session keeps the recorder's order").that(NightWakers.merge(listOf(one))).isEqualTo(one)
     }
 
     private val row = session().copy(
@@ -153,9 +244,12 @@ class NightReportsTest {
     )
 
     @Test fun theReportHasEveryPart() {
-        val night = NightReports.night(row, 9 * hour, emptyList(), emptyList())
-        val report = NightReports.report(night, record, events, actions)
+        val night = NightReports.night(listOf(row), 9 * hour, emptyList(), emptyList())
+        val report = NightReports.report(night, listOf(record), events, actions)
 
+        assertThat(report.verdict).isEqualTo(EvidenceRows.HELD)
+        assertThat(report.timeInDeepMillis).isEqualTo(6 * hour)
+        assertThat(report.wakes).isEmpty()
         assertThat(report.timeline.map { it.state }).containsExactly("INACTIVE", "IDLE", "IDLE_MAINTENANCE").inOrder()
         assertThat(report.light.map { it.time }).containsExactly(2L)
         assertThat(report.breaks).containsExactly("5000000 ACTIVE motion MOTION")
@@ -182,5 +276,17 @@ class NightReportsTest {
         assertThat(report.drift.single().writer).isEqualTo("com.other")
         assertWithMessage("the engine's screen-off write logged just before the recorder's start belongs to the night")
             .that(report.actions.map { it.time }).containsExactly(-114L, 5L).inOrder()
+    }
+
+    @Test fun aJoinedNightsReportCoversEverySession() {
+        val second = row.copy(id = 8, start = 8 * hour + 300_000, end = 10 * hour, timeline = "IDLE 29100000 36000000", breaks = "")
+        val night = NightReports.night(listOf(row, second), 10 * hour, emptyList(), emptyList())
+        val report = NightReports.report(night, listOf(record.copy(session = second, transitions = emptyList()), record), events, actions)
+        assertThat(report.sessions.map { it.id }).containsExactly(7L, 8L).inOrder()
+        assertThat(report.wakes).containsExactly(Span(8 * hour, 8 * hour + 300_000))
+        assertThat(report.timeline.map { it.state }).containsExactly("INACTIVE", "IDLE", "IDLE_MAINTENANCE", "IDLE").inOrder()
+        assertWithMessage("the screen-on release at 09:00 is inside the joined night").that(report.actions.map { it.time })
+            .containsExactly(-114L, 5L, 9 * hour).inOrder()
+        assertThat(report.apps.single().alarmWakeups).isEqualTo(6)
     }
 }

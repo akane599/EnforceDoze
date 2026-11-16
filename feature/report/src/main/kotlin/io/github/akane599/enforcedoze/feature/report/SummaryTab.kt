@@ -45,6 +45,7 @@ import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.VerdictWord
 import io.github.akane599.enforcedoze.ui.sentence
+import io.github.akane599.enforcedoze.ui.stripWakes
 import io.github.akane599.enforcedoze.ui.tone
 import io.github.akane599.enforcedoze.ui.word
 import java.util.concurrent.TimeUnit
@@ -108,7 +109,7 @@ internal fun ReportStrip(summary: ReportSummary, formats: Formats) {
         formats.duration(summary.timeInDeep),
         pluralStringResource(UiR.plurals.ui_maintenance_count, summary.maintenanceWindows, summary.maintenanceWindows),
         pluralStringResource(UiR.plurals.ui_break_count, summary.strip.breaks.size, summary.strip.breaks.size),
-    )
+    ) + stripWakes(summary.strip.wakes.size)
     TimelineStrip(summary.strip, description, Modifier.fillMaxWidth().height(Sizes.stripLarge + 8.dp))
     StripAxis(hourLabels(summary.start, summary.end, formats), summary.start, summary.end)
 }

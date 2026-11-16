@@ -71,6 +71,20 @@ class FeedbackLoopTest {
     }
 
     @Test
+    fun `a night split by a short wake-up is judged whole, its drain over its screen-off time (ADR 0031)`() {
+        // Each night: 23:00-04:00 and 04:05-09:00, 5 h + 4 h 55 min of screen off, 9.1 % in all: 0.92 %/h against 1 %/h.
+        val split = (7 until 10).flatMap { day ->
+            listOf(session(day, "23:00", 300).copy(batteryDrop = 5.0), session(day + 1, "04:05", 295).copy(batteryDrop = 4.1))
+        }
+        val tuned = split.map { it.copy(provenance = Provenance.TUNED) }
+        val stock = (0 until 7).map { session(it, "23:00", 600).copy(timeInDeep = 300.min, batteryDrop = 10.0) }
+        val history = history(10, stock + tuned, Feedback(listOf(AppliedPlan(Plan("everyday", night), at(7, "12:00")))))
+        val low = steps(history).single().reason as Reason.LowGain
+        assertThat(low.nights).isEqualTo(3)
+        assertThat(low.gain).isWithin(1e-9).of(1 - 9.1 / (595.0 / 60))
+    }
+
+    @Test
     fun `a plan with nothing gentler below it never steps`() {
         assertThat(step(onPlan(Plan("everyday"), nights(3, 10.0)))).isNull()
         assertThat(step(onPlan(Plan("stock"), nights(3, 10.0)))).isNull()

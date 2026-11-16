@@ -22,6 +22,10 @@
         <item quantity="one">%d break</item>
         <item quantity="other">%d breaks</item>
     </plurals>
+    <plurals name="ui_wake_count">
+        <item quantity="one">Screen on briefly once in between.</item>
+        <item quantity="other">Screen on briefly %d times in between.</item>
+    </plurals>
     <string name="ui_notice_read_only">Read-only</string>
     <string name="ui_notice_read_only_body">No Shizuku, Sui or root access, so EnforceDoze shows evidence but cannot change Doze.</string>
     <string name="ui_notice_read_only_action">Grant access</string>

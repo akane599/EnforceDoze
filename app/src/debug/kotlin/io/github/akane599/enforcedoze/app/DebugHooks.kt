@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import io.github.akane599.enforcedoze.data.NightReports
 import io.github.akane599.enforcedoze.evidence.Verdicts
 import io.github.akane599.enforcedoze.profile.BuiltInProfiles
+import io.github.akane599.enforcedoze.profile.Nights
 import io.github.akane599.enforcedoze.profile.Profile
 import java.time.Duration
 
@@ -58,6 +59,12 @@ internal object DebugHooks {
     }
 
     fun setNightThreshold(context: Context, seconds: Long?) = set(context, NIGHT_SECONDS, seconds)
+
+    /** The night rule (ADR 0031); a shortened threshold scales the join gap with it and drops the clock window. */
+    fun nightRule(context: Context): Nights.Rule {
+        val threshold = nightThreshold(context)
+        return if (threshold == NightReports.THRESHOLD) Nights.Rule() else Nights.Rule.compressed(threshold)
+    }
 
     private fun set(context: Context, key: String, seconds: Long?) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit {

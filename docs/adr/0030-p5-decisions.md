@@ -72,6 +72,9 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
 - **A custom profile no slot uses can be deleted**; Delete is disabled while a slot uses it.
   SPEC 9.1 lists clone and edit; deleting is the undo of a clone (SPEC 0.2: every change undoable).
   Leaving the editor with unsaved changes asks first.
+- **The strip's key wraps onto a second line** (`FlowRow`) when it does not fit. At font 2.0 the
+  Row squeezed the last entry until "No record" broke one letter per line; two Timeline goldens
+  held that and were re-recorded.
 - **Profile detail on a narrow screen folds the stock and profile columns into one line** ("Stock:
   30 min · Night: 2 min"). From 360 dp × font scale it is a table. A key the profile leaves alone
   reads "unchanged", and an unknown stock value is left out rather than shown as a dash.

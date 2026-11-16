@@ -26,7 +26,7 @@ public data class ExportManifest(
     val missingProfiles: List<String> = emptyList(),
 )
 
-/** One session in `sessions.json`: the record, and its night report row when it was a night. */
+/** One session in `sessions.json`: the record, and the night report row of the night it belongs to (ADR 0031). */
 @Serializable
 public data class SessionExport(
     val session: SessionRow,
@@ -67,9 +67,9 @@ public object EvidenceExport {
     }
 
     public fun write(out: OutputStream, content: ExportContent) {
-        val nights = content.nights.associateBy { it.sessionId }
-        val sessions = content.sessions.map {
-            SessionExport(it.session, it.transitions, it.wakers, it.snapshots, nights[it.session.id])
+        val sessions = content.sessions.map { record ->
+            val night = content.nights.firstOrNull { record.session.start >= it.start && record.session.end <= it.end }
+            SessionExport(record.session, record.transitions, record.wakers, record.snapshots, night)
         }
         ZipOutputStream(out).use { zip ->
             zip.text(MANIFEST, json.encodeToString(ExportManifest.serializer(), content.manifest))

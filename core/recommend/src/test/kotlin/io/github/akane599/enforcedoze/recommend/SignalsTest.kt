@@ -8,22 +8,45 @@ import java.time.Duration
 class SignalsTest {
     private fun signals(days: Int, sessions: List<ScreenOffSession>) = Signals.from(history(days, sessions))
 
+    private fun isNight(vararg sessions: ScreenOffSession) = Signals.nightRuns(sessions.toList(), ZONE).isNotEmpty()
+
     @Test
-    fun `a night starts from 21_00 until 03_00, lasts 4 h and is unplugged`() {
-        assertThat(Signals.isNight(session(1, "21:00", 240), ZONE)).isTrue()
-        assertThat(Signals.isNight(session(1, "20:59", 240), ZONE)).isFalse()
-        assertThat(Signals.isNight(session(1, "02:59", 240), ZONE)).isTrue()
-        assertThat(Signals.isNight(session(1, "03:00", 240), ZONE)).isFalse()
-        assertThat(Signals.isNight(session(1, "23:00", 239), ZONE)).isFalse()
-        assertThat(Signals.isNight(session(1, "23:00", 240).copy(plugged = true), ZONE)).isFalse()
+    fun `a night starts from 21_00 until 03_00, has 4 h of screen off and is unplugged`() {
+        assertThat(isNight(session(1, "21:00", 240))).isTrue()
+        assertThat(isNight(session(1, "20:59", 240))).isFalse()
+        assertThat(isNight(session(1, "02:59", 240))).isTrue()
+        assertThat(isNight(session(1, "03:00", 240))).isFalse()
+        assertThat(isNight(session(1, "23:00", 239))).isFalse()
+        assertThat(isNight(session(1, "23:00", 240).copy(plugged = true))).isFalse()
         // Plug state the sources did not record is not unplugged: Doze does not run on the charger.
-        assertThat(Signals.isNight(session(1, "23:00", 240).copy(plugged = null), ZONE)).isFalse()
+        assertThat(isNight(session(1, "23:00", 240).copy(plugged = null))).isFalse()
     }
 
     @Test
-    fun `one night per evening, the longest session, and 01_00 belongs to the evening before`() {
-        val s = signals(3, listOf(session(0, "22:00", 250), session(1, "01:00", 300), session(1, "23:30", 420)))
-        assertThat(s.nights.map { it.start.toInstant() }).containsExactly(at(1, "01:00"), at(1, "23:30")).inOrder()
+    fun `sessions joined by wake-ups under 10 min are one night, 4 h counted without the wake-ups (ADR 0031)`() {
+        // 23:00-01:30, a 9 min wake-up, 01:39-03:09: 4 h of screen off in two sessions.
+        assertThat(isNight(session(0, "23:00", 150), session(1, "01:39", 90))).isTrue()
+        // The same night one minute short: 3 h 59 min of screen off, although 4 h 8 min passed.
+        assertThat(isNight(session(0, "23:00", 150), session(1, "01:39", 89))).isFalse()
+        // A 10 min gap splits it, and neither half is 4 h.
+        assertThat(isNight(session(0, "23:00", 150), session(1, "01:40", 90))).isFalse()
+        // A charger in between splits it too.
+        val charging = session(1, "01:32", 5).copy(plugged = true)
+        assertThat(isNight(session(0, "23:00", 150), charging, session(1, "01:39", 90))).isFalse()
+    }
+
+    @Test
+    fun `a joined night spans its first start to its last end and its sessions are not daytime`() {
+        val s = signals(2, listOf(session(0, "23:30", 200), session(1, "02:55", 60), session(1, "04:00", 180)))
+        assertThat(s.nights.map { it.start.toInstant() to it.end.toInstant() }).containsExactly(at(0, "23:30") to at(1, "07:00"))
+        // The 02:55 and 04:00 sessions start outside the window but belong to the night, so nothing is daytime.
+        assertThat(s.shortDaytimeShare).isEqualTo(Measured.Unknown(Unmeasured.NO_SESSIONS))
+    }
+
+    @Test
+    fun `one night per evening, the one with most screen off, and 01_00 belongs to the evening before`() {
+        val s = signals(3, listOf(session(0, "21:00", 245), session(1, "01:30", 300), session(1, "23:30", 420)))
+        assertThat(s.nights.map { it.start.toInstant() }).containsExactly(at(1, "01:30"), at(1, "23:30")).inOrder()
     }
 
     @Test

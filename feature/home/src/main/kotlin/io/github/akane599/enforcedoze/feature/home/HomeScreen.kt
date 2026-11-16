@@ -53,6 +53,7 @@ import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
 import io.github.akane599.enforcedoze.ui.VerdictWord
 import io.github.akane599.enforcedoze.ui.sentence
+import io.github.akane599.enforcedoze.ui.stripWakes
 import io.github.akane599.enforcedoze.ui.tone
 import io.github.akane599.enforcedoze.ui.word
 import io.github.akane599.enforcedoze.ui.R as UiR
@@ -204,7 +205,7 @@ private fun LastNight(night: NightSummary, formats: Formats) {
         formats.duration(night.timeInDeep),
         pluralStringResource(UiR.plurals.ui_maintenance_count, night.maintenanceWindows, night.maintenanceWindows),
         pluralStringResource(UiR.plurals.ui_break_count, night.strip.breaks.size, night.strip.breaks.size),
-    )
+    ) + stripWakes(night.strip.wakes.size)
     TimelineStrip(night.strip, summary, Modifier.fillMaxWidth().height(Sizes.stripSmall + 8.dp))
     StripAxis(hourLabels(night.start, night.end, formats), night.start, night.end)
     Spacer(Modifier.height(Space.l))

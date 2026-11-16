@@ -22,6 +22,10 @@
         <item quantity="one">%d bölünme</item>
         <item quantity="other">%d bölünme</item>
     </plurals>
+    <plurals name="ui_wake_count">
+        <item quantity="one">Arada ekran bir kez kısa süre açıldı.</item>
+        <item quantity="other">Arada ekran %d kez kısa süre açıldı.</item>
+    </plurals>
     <string name="ui_notice_read_only">Salt okunur</string>
     <string name="ui_notice_read_only_body">Shizuku, Sui ya da root erişimi yok; EnforceDoze kanıtları gösterir ama Doze\'u değiştiremez.</string>
     <string name="ui_notice_read_only_action">Erişim ver</string>

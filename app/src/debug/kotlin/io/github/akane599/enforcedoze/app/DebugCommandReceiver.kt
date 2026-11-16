@@ -131,9 +131,9 @@ class DebugCommandReceiver : BroadcastReceiver() {
 
     private suspend fun lastNight(graph: EngineGraph): NightReport? {
         val night = graph.sessions.latestNights(1).firstOrNull() ?: return null
-        val record = graph.sessions.recordOf(night.sessionId) ?: return null
-        val since = NightReports.from(record.session)
-        return NightReports.report(night, record, graph.journal.eventsSince(since), graph.journal.actionsSince(since))
+        val records = graph.sessions.recordsOf(night).takeIf { it.isNotEmpty() } ?: return null
+        val since = NightReports.from(night)
+        return NightReports.report(night, records, graph.journal.eventsSince(since), graph.journal.actionsSince(since))
     }
 
     /** Runs an engine command, then reports the status it left. */
@@ -204,12 +204,17 @@ class DebugCommandReceiver : BroadcastReceiver() {
 
     /** Every part of the night report (SPEC 8.5), one line per item, for the P3 gate. */
     private fun describe(report: NightReport): String = buildString {
-        val row = report.session
-        appendLine("night id=${report.night.id} session=${row.id} unlockedAt=${report.night.unlockedAt} start=${row.start} end=${row.end}")
+        val night = report.night
         appendLine(
-            "verdict=${row.verdict} timeInDeepMs=${row.timeInDeepMillis} maintenance=${row.maintenanceWindows} " +
-                "drainPerHour=${row.drainPerHour} ownWakeups=${row.ownWakeups}",
+            "night id=${night.id} session=${night.sessionId} unlockedAt=${night.unlockedAt} start=${night.start} end=${night.end} " +
+                "sessions=${night.sessionCount} screenOffMs=${night.screenOffMillis}",
         )
+        appendLine(
+            "verdict=${report.verdict} timeInDeepMs=${report.timeInDeepMillis} maintenance=${report.maintenanceWindows} " +
+                "drainPerHour=${night.drainPerHour} ownWakeups=${report.ownWakeups}",
+        )
+        report.sessions.forEach { appendLine("session ${it.id} ${it.start} ${it.end} ${it.verdict}") }
+        report.wakes.forEach { appendLine("wake ${it.start} ${it.end}") }
         report.timeline.forEach { appendLine("timeline ${it.state} ${it.start} ${it.end}") }
         report.light.forEach { appendLine("light ${it.time} ${it.fromState}->${it.toState} ${it.reason}") }
         report.breaks.forEach { appendLine("break $it") }

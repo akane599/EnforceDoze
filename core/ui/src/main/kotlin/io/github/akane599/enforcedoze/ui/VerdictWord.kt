@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import io.github.akane599.enforcedoze.design.Tone
 import io.github.akane599.enforcedoze.evidence.Cause
@@ -41,3 +42,10 @@ public fun Cause.sentence(): Int = when (this) {
     Cause.ANOTHER_MANAGER -> R.string.ui_cause_another
     Cause.UNKNOWN -> R.string.ui_cause_unknown
 }
+
+/**
+ * What a night's strip description adds for its short wake-ups (ADR 0031): a sentence after a space, or
+ * nothing for a night the owner slept through.
+ */
+@Composable
+public fun stripWakes(count: Int): String = if (count == 0) "" else " " + pluralStringResource(R.plurals.ui_wake_count, count, count)

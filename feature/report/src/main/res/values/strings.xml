@@ -57,6 +57,7 @@
     <string name="report_legend_light">Light idle</string>
     <string name="report_legend_deep">Deep idle</string>
     <string name="report_legend_missing">No record</string>
+    <string name="report_legend_wake">Screen on</string>
     <string name="report_col_time">Time</string>
     <string name="report_col_event">Event</string>
     <string name="report_col_due">Due</string>
@@ -71,6 +72,7 @@
     <string name="report_stop_maintenance">Maintenance window</string>
     <string name="report_stop_maintenance_for">Maintenance window, %1$s</string>
     <string name="report_stop_gap">No record until %1$s</string>
+    <string name="report_stop_wake">Screen on for %1$s</string>
     <string name="report_stop_filled">From battery history until %1$s</string>
     <string name="report_break_motion">Break: motion</string>
     <string name="report_break_hold_off">Break: hold-off %1$s</string>

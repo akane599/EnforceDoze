@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7c82b48039eb1b89f40272c02b09b0b5",
+    "identityHash": "9c7022ad70ca4af95cbabda5292df6e6",
     "entities": [
       {
         "tableName": "action",
@@ -677,7 +677,7 @@
       },
       {
         "tableName": "night",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `unlockedAt` INTEGER NOT NULL, `recentNights` INTEGER NOT NULL, `recentDrainPerHour` REAL, `recentDeepShare` REAL, `stockNights` INTEGER NOT NULL, `stockDrainPerHour` REAL, `stockDeepShare` REAL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `sessionCount` INTEGER NOT NULL, `screenOffMillis` INTEGER NOT NULL, `drainPerHour` REAL, `deepShare` REAL, `profileId` TEXT, `unlockedAt` INTEGER NOT NULL, `recentNights` INTEGER NOT NULL, `recentDrainPerHour` REAL, `recentDeepShare` REAL, `stockNights` INTEGER NOT NULL, `stockDrainPerHour` REAL, `stockDeepShare` REAL, FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -690,6 +690,45 @@
             "columnName": "sessionId",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionCount",
+            "columnName": "sessionCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenOffMillis",
+            "columnName": "screenOffMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "drainPerHour",
+            "columnName": "drainPerHour",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "deepShare",
+            "columnName": "deepShare",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "unlockedAt",
@@ -754,6 +793,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_night_unlockedAt` ON `${TABLE_NAME}` (`unlockedAt`)"
+          },
+          {
+            "name": "index_night_start",
+            "unique": false,
+            "columnNames": [
+              "start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_night_start` ON `${TABLE_NAME}` (`start`)"
           }
         ],
         "foreignKeys": [
@@ -773,7 +821,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c82b48039eb1b89f40272c02b09b0b5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c7022ad70ca4af95cbabda5292df6e6')"
     ]
   }
 }

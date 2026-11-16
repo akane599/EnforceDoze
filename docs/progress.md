@@ -287,3 +287,15 @@ Carried over to P5:
 - Deleting the profile in use, or re-tapping the active profile, needs a UI rule: the engine ends a
   missing override only at the next start, and a tap on the active profile becomes an override.
 - P3 carry-overs still stand.
+
+## P5 UI and design (in progress)
+
+- Committed: Home, the night report and Profiles with their screenshot sets (ADR 0028–0030).
+- Joined nights (ADR 0031, owner's rule of 2026-11-08):
+  - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
+  - night rows with their own figures;
+  - the report's wake-up marks.
+- For the `:app` mapper:
+  - the reason line of a Partly night with no break and no late arrival;
+  - `ReportSummary.sessionId` is the night's first session, and the route finds the night by it
+    (`nightAround`).

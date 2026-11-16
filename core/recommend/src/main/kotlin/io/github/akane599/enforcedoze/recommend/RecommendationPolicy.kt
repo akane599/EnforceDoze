@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.recommend
 
 import io.github.akane599.enforcedoze.profile.BuiltInProfiles
 import io.github.akane599.enforcedoze.profile.NightSlot
+import io.github.akane599.enforcedoze.profile.Nights
 import io.github.akane599.enforcedoze.profile.Plan
 import java.time.Duration
 import java.time.LocalTime
@@ -34,14 +35,20 @@ public object RecommendationPolicy {
     /** Rule 2, share of daytime screen-off time in short sessions: short sessions dominate, so forcing idle pays. */
     public const val CLASSIC_SHORT_SHARE: Double = 0.60
 
-    /** Signal N, hours: a night session is at least this long, enough for the Night profile's long gaps to pay. */
-    public val NIGHT_LENGTH: Duration = Duration.ofHours(4)
+    /**
+     * Signal N, hours of screen-off time summed over the night's sessions: enough for the Night profile's long gaps
+     * to pay. The night rule itself is shared with the night report, so these four are `Nights`' values (ADR 0031).
+     */
+    public val NIGHT_LENGTH: Duration = Nights.MIN_SCREEN_OFF
 
-    /** Signal N, local time: a night session starts at or after this... */
-    public val NIGHT_STARTS_FROM: LocalTime = LocalTime.of(21, 0)
+    /** Signal N, local time: a night's first session starts at or after this... */
+    public val NIGHT_STARTS_FROM: LocalTime = Nights.STARTS_FROM
 
     /** ...and before this, the next morning. */
-    public val NIGHT_STARTS_UNTIL: LocalTime = LocalTime.of(3, 0)
+    public val NIGHT_STARTS_UNTIL: LocalTime = Nights.STARTS_UNTIL
+
+    /** Signal N, minutes: a screen-on gap shorter than this keeps the sessions on either side one night. */
+    public val NIGHT_JOIN_GAP: Duration = Nights.JOIN_GAP
 
     /** Rule 3, nights: N must hold this often (or on every available night when fewer), so one late night is not a habit. */
     public const val NIGHTS_NEEDED: Int = 3

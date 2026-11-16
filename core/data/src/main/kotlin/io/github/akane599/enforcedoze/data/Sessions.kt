@@ -9,6 +9,7 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import kotlinx.serialization.Serializable
 
 /** A Doze change inside a session (SPEC 8.1 "Doze transition"). */
@@ -151,29 +152,37 @@ public abstract class SessionDao {
     @Insert
     public abstract suspend fun insertNight(row: NightRow): Long
 
-    /** Sessions that ended at or after [sinceMillis], lasted at least [minMillis], had no charger and have no night yet (SPEC 8.5). */
-    @Query(
-        "SELECT * FROM session WHERE `end` >= :sinceMillis AND `end` - start >= :minMillis AND chargedMillis = 0 " +
-            "AND pluggedAtStart = 0 AND id NOT IN (SELECT sessionId FROM night) ORDER BY start",
-    )
-    public abstract suspend fun unreportedNights(sinceMillis: Long, minMillis: Long): List<SessionRow>
+    /** A night that a later session joined (ADR 0031): the same row, its range and figures grown. */
+    @Update
+    public abstract suspend fun updateNight(row: NightRow)
 
-    /** The sessions of the nights that started before [beforeMillis], newest first; [profileId] null for any profile. */
+    /**
+     * The nights that started before [beforeMillis], newest first; with [profileId], only nights whose every
+     * session ran that profile (SPEC 8.5 comparison).
+     */
     @Query(
-        "SELECT session.* FROM session JOIN night ON night.sessionId = session.id WHERE session.start < :beforeMillis " +
-            "AND (:profileId IS NULL OR session.profileId = :profileId) ORDER BY session.start DESC LIMIT :limit",
+        "SELECT * FROM night WHERE start < :beforeMillis AND (:profileId IS NULL OR profileId = :profileId) " +
+            "ORDER BY start DESC LIMIT :limit",
     )
-    public abstract suspend fun nightSessions(beforeMillis: Long, profileId: String?, limit: Int): List<SessionRow>
+    public abstract suspend fun nightsBefore(beforeMillis: Long, profileId: String?, limit: Int): List<NightRow>
 
     @Query("SELECT * FROM night ORDER BY unlockedAt DESC, id DESC LIMIT :limit")
     public abstract suspend fun latestNights(limit: Int): List<NightRow>
 
+    /** Nights that overlap [fromMillis]..[toMillis], oldest first. */
+    @Query("SELECT * FROM night WHERE `end` >= :fromMillis AND start <= :toMillis ORDER BY start, id")
+    public abstract suspend fun nightsBetween(fromMillis: Long, toMillis: Long): List<NightRow>
+
+    /** The night a session belongs to, by time: its first session or one joined after a short wake-up. */
+    @Query("SELECT * FROM night WHERE start <= :start AND `end` >= :end ORDER BY start DESC LIMIT 1")
+    public abstract suspend fun nightAround(start: Long, end: Long): NightRow?
+
+    @Query("SELECT * FROM night WHERE id = :id")
+    public abstract suspend fun night(id: Long): NightRow?
+
     /** Sessions that overlap [fromMillis]..[toMillis], oldest first: an export's range (SPEC 8.7). */
     @Query("SELECT * FROM session WHERE `end` >= :fromMillis AND start <= :toMillis ORDER BY start, id")
     public abstract suspend fun sessionsBetween(fromMillis: Long, toMillis: Long): List<SessionRow>
-
-    @Query("SELECT * FROM night WHERE sessionId IN (:sessionIds) ORDER BY unlockedAt, id")
-    public abstract suspend fun nightsOf(sessionIds: List<Long>): List<NightRow>
 
     @Query("SELECT * FROM session WHERE id = :id")
     public abstract suspend fun session(id: Long): SessionRow?
@@ -184,6 +193,12 @@ public abstract class SessionDao {
         val session = session(id) ?: return null
         return SessionRecord(session, transitions(id), wakers(id), snapshots(id))
     }
+
+    /** The sessions of [night] with their rows, in start order. */
+    @Transaction
+    public open suspend fun recordsOf(night: NightRow): List<SessionRecord> =
+        sessionsBetween(night.start, night.end).filter { it.start >= night.start && it.end <= night.end }
+            .mapNotNull { recordOf(it.id) }
 
     /** Retention (SPEC 8.3) by the session's end; its child rows go with it. */
     @Query("DELETE FROM session WHERE `end` < :beforeMillis")

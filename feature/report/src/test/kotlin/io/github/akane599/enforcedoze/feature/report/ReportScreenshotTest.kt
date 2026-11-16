@@ -58,6 +58,14 @@ class ReportScreenshotTest {
         ReportScreen(ReportFixtures.didNotDoze, NoActions, initialTab = ReportTab.TIMELINE)
     }
 
+    @Test fun joined() = shoot(MODULE, "joined-night", listOf(Primary, Primary.copy(dark = false, turkish = true)), tall = true) {
+        ReportScreen(ReportFixtures.joined, NoActions)
+    }
+
+    @Test fun joinedTimeline() = shoot(MODULE, "joined-night-timeline", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
+        ReportScreen(ReportFixtures.joined, NoActions, initialTab = ReportTab.TIMELINE)
+    }
+
     @Test fun shortSession() = shoot(MODULE, "short-session", listOf(Primary)) { ReportScreen(ReportFixtures.shortSession, NoActions) }
 
     private companion object {

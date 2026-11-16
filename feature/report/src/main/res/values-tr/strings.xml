@@ -57,6 +57,7 @@
     <string name="report_legend_light">Hafif uyku</string>
     <string name="report_legend_deep">Derin uyku</string>
     <string name="report_legend_missing">Kayıt yok</string>
+    <string name="report_legend_wake">Ekran açık</string>
     <string name="report_col_time">Saat</string>
     <string name="report_col_event">Olay</string>
     <string name="report_col_due">Beklenen</string>
@@ -71,6 +72,7 @@
     <string name="report_stop_maintenance">Bakım penceresi</string>
     <string name="report_stop_maintenance_for">Bakım penceresi, %1$s</string>
     <string name="report_stop_gap">%1$s saatine dek kayıt yok</string>
+    <string name="report_stop_wake">Ekran %1$s açık kaldı</string>
     <string name="report_stop_filled">%1$s saatine dek pil geçmişinden</string>
     <string name="report_break_motion">Bölünme: hareket</string>
     <string name="report_break_hold_off">Bölünme: %1$s ertelemesi</string>

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
@@ -147,19 +150,37 @@ public fun StackedStrips(
 
 /** The strip's key: one swatch per state with its pattern, for the report's Timeline tab. */
 @Composable
-public fun StripLegend(entries: List<Pair<DozeFill, String>>, modifier: Modifier = Modifier) {
+public fun StripLegend(entries: List<Pair<DozeFill, String>>, modifier: Modifier = Modifier, wake: String? = null) {
     val palette = Ed.palette
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(Space.l), verticalAlignment = Alignment.CenterVertically) {
+    FlowRow(
+        modifier,
+        horizontalArrangement = Arrangement.spacedBy(Space.l),
+        verticalArrangement = Arrangement.spacedBy(Space.xs),
+        itemVerticalAlignment = Alignment.CenterVertically,
+    ) {
         entries.forEach { (fill, label) ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Canvas(Modifier.width(18.dp).height(12.dp)) { drawFill(fill, palette, Offset.Zero, size) }
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = palette.quiet,
-                    modifier = Modifier.padding(start = Space.xs),
-                )
+            LegendEntry(label) { drawFill(fill, palette, Offset.Zero, size) }
+        }
+        // The wake-up mark on a deep-idle swatch, as it sits in a night (ADR 0031).
+        wake?.let {
+            LegendEntry(it) {
+                val cap = 2.dp.toPx()
+                drawFill(DozeFill.DEEP, palette, Offset(0f, cap), Size(size.width, size.height - cap))
+                drawWake(palette, size.width / 2, size.width / 2, cap, size.height - cap)
             }
         }
+    }
+}
+
+@Composable
+private fun LegendEntry(label: String, swatch: DrawScope.() -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Canvas(Modifier.width(18.dp).height(12.dp), onDraw = swatch)
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = Ed.palette.quiet,
+            modifier = Modifier.padding(start = Space.xs),
+        )
     }
 }

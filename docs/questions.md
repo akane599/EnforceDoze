@@ -22,6 +22,16 @@ Non-blocking questions for the owner. Each states the default in use, so work co
   C seismograph drum (stacked nights). *Default:* A, with C's stacked nights for comparisons
   (ADR 0028). Say "B" or "C" and the tokens change in `:core:design`.
 
+- **Q8. Joined nights (ADR 0031).** The owner's rule is in place. Three choices around it use
+  these defaults:
+  - The 21:00–03:00 window now applies to the night report too, to the first session only. A long
+    screen-off stretch at noon gets a session report, not a night report.
+  - A battery level that rose during a screen-on gap ends the night, as a charger does.
+  - The report is written at the first unlock once the night has 4 h, and later sessions that join
+    extend it in place.
+
+  Say if any should differ.
+
 ## Answered
 
 - **Q1. The earlier fork work and the default branch.** *Answer 2026-11-08:* delete every other

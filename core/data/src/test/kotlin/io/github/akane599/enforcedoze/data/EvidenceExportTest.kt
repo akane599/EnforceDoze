@@ -49,8 +49,10 @@ class EvidenceExportTest {
         raw.resolve("eventlog.gz").writeBytes(byteArrayOf(31, -117, 8))
         raw.resolve("alarm-off.gz").writeBytes(byteArrayOf(1))
         val night = NightRow(
-            id = 1, sessionId = 3, unlockedAt = session.end + 1, recentNights = 0, recentDrainPerHour = null,
-            recentDeepShare = null, stockNights = 0, stockDrainPerHour = null, stockDeepShare = null,
+            id = 1, sessionId = 3, start = session.start, end = session.end, sessionCount = 1,
+            screenOffMillis = session.end - session.start, drainPerHour = null, deepShare = null, profileId = null,
+            unlockedAt = session.end + 1, recentNights = 0, recentDrainPerHour = null, recentDeepShare = null,
+            stockNights = 0, stockDrainPerHour = null, stockDeepShare = null,
         )
         val content = ExportContent(
             manifest = ExportManifest("2026-11-08T22:00:00Z", "2.0.0-debug", "Google sdk_gphone64 x86_64", 37, "a", "b"),

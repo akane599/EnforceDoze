@@ -57,16 +57,20 @@ public object FeedbackLoop {
         return applied.mapIndexedNotNull { i, plan ->
             if (gentler(plan.plan) == plan.plan) return@mapIndexedNotNull null
             val until = applied.getOrNull(i + 1)?.since ?: history.to
-            val nights = history.sessions
-                .filter { it.start >= maxOf(plan.since, from) && it.start < until && it.batteryDrop != null }
-                .filter { Signals.isNight(it, history.zone) }
-                .groupBy { Signals.nightOf(it.start.atZone(history.zone)) }
-                .map { (_, same) -> same.maxBy { it.duration } }
+            // Whole nights only (ADR 0031): every session of the night inside the plan's time and with its battery drop.
+            val runs = Signals.nightRuns(history.sessions, history.zone)
+                .filter { run ->
+                    run.first().start >= maxOf(plan.since, from) && run.first().start < until &&
+                        run.all { it.batteryDrop != null }
+                }
+            val nights = Signals.perNight(runs, history.zone)
             if (nights.size < LOW_GAIN_NIGHTS) return@mapIndexedNotNull null
-            val drain = nights.sumOf { it.batteryDrop!! } / hours(nights.fold(Duration.ZERO) { sum, s -> sum + s.duration })
+            val drain =
+                nights.sumOf { run -> run.sumOf { it.batteryDrop!! } } /
+                    hours(nights.flatten().fold(Duration.ZERO) { sum, session -> sum + session.duration })
             // Saved under LOW_GAIN: drain above the allowed drain, with the tolerance so exactly 10% is not a step.
             if (!exceeds(drain, baseline * (1 - LOW_GAIN))) return@mapIndexedNotNull null
-            Step(Reason.LowGain(1 - drain / baseline, nights.size), gentler(plan.plan)) to nights.maxOf { it.start }
+            Step(Reason.LowGain(1 - drain / baseline, nights.size), gentler(plan.plan)) to nights.maxOf { it.first().start }
         }
     }
 }

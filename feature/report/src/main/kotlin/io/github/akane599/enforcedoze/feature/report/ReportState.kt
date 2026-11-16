@@ -36,7 +36,7 @@ public data class ReportSummary(
     val sessionId: Long,
     val start: Long,
     val end: Long,
-    /** A night report rather than a session report: at least 4 h unplugged (SPEC 8.5). */
+    /** A night report rather than a session report: at least 4 h of unplugged screen off (SPEC 8.5, ADR 0031). */
     val night: Boolean,
     val profile: String?,
     val verdict: VerdictWord,
@@ -78,6 +78,9 @@ public sealed interface StopEvent {
 
     /** The battery history filled the record from here to [until] (ADR 0018). */
     public data class Filled(val until: Long) : StopEvent
+
+    /** The owner woke the screen for [lasted] and the night went on: a short wake-up between its sessions (ADR 0031). */
+    public data class Wake(val lasted: Long) : StopEvent
 
     public data object ScreenOn : StopEvent
 }

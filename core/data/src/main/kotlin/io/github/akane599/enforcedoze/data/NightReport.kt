@@ -5,13 +5,15 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.github.akane599.enforcedoze.profile.Nights
 import kotlinx.serialization.Serializable
 import java.time.Duration
 
 /**
- * A night (SPEC 8.5): the first unlock after an unplugged session of at least [NightReports.THRESHOLD].
- * The report itself is built from the session's rows; this row keeps when it was generated and the
- * comparison as it stood then, so later nights do not change it.
+ * A night (SPEC 8.5, ADR 0031): unplugged screen-off sessions joined across screen-on gaps shorter than 10
+ * minutes, the first starting in the night window, with at least [NightReports.THRESHOLD] of screen off in
+ * all. The report is built from the sessions' rows; this row keeps the night's own figures, which later
+ * nights compare against, and the comparison as it stood when it was generated.
  */
 @Entity(
     tableName = "night",
@@ -23,13 +25,27 @@ import java.time.Duration
             onDelete = ForeignKey.CASCADE,
         ),
     ],
-    indices = [Index("sessionId", unique = true), Index("unlockedAt")],
+    indices = [Index("sessionId", unique = true), Index("unlockedAt"), Index("start")],
 )
 @Serializable
 public data class NightRow(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    /** The night's first session; retention removes the night with it. */
     val sessionId: Long,
-    /** The unlock that generated the report. */
+    /** The first session's screen off and the last session's screen on. */
+    val start: Long,
+    val end: Long,
+    /** More than one when the owner woke the screen briefly in the night. */
+    val sessionCount: Int,
+    /** Screen-off time over the sessions, the wake-ups between them left out: what the threshold counts. */
+    val screenOffMillis: Long,
+    /** The sessions' drain weighted by their length; null when no session had a figure. */
+    val drainPerHour: Double?,
+    /** Deep idle over the judged sessions' time; null when none was judged, since a gap hides part of it. */
+    val deepShare: Double?,
+    /** The profile every session ran; null when they ran different ones, so the night is no baseline for either. */
+    val profileId: String?,
+    /** The unlock that generated the report, or the latest one that extended the night. */
     val unlockedAt: Long,
     /** The last 7 nights before this one. */
     val recentNights: Int,
@@ -62,14 +78,22 @@ public data class Comparison(val nights: Int, val drainPerHour: Double?, val dee
 /** Everything the night report shows (SPEC 8.5 items 1–5; item 6 is the screen's buttons). */
 public data class NightReport(
     val night: NightRow,
-    /** 1. The verdict line's figures: verdict, time in deep idle, maintenance windows, drain. */
-    val session: SessionRow,
-    /** 2. The timeline strip: deep stretches, light changes, breaks, gaps and history-filled stretches. */
+    /** The night's sessions in start order; more than one when short wake-ups split it (ADR 0031). */
+    val sessions: List<SessionRow>,
+    /** 1. The verdict line: the sessions' verdicts joined ([NightReports.verdict]) and their summed figures. */
+    val verdict: String?,
+    val cause: String?,
+    val timeInDeepMillis: Long,
+    val maintenanceWindows: Int,
+    /** The app's own wakeups over the sessions; null when any session's count is unknown (ADR 0019), never a guessed 0. */
+    val ownWakeups: Int?,
+    /** 2. The timeline strip: deep stretches, light changes, breaks, gaps, history-filled stretches and the wake-ups. */
     val timeline: List<TimelineSpan>,
     val light: List<TransitionRow>,
     val breaks: List<String>,
     val gaps: List<Span>,
     val historyFilled: List<Span>,
+    val wakes: List<Span>,
     /** 3. Compared with the last 7 nights and with Stock nights. */
     val recent: Comparison,
     val stock: Comparison,
@@ -85,8 +109,8 @@ public data class NightReport(
 
 /** Pure parts of the night report, tested on the JVM. */
 public object NightReports {
-    /** SPEC 8.5: a session this long, unplugged throughout, is a night. Shortened only by the debug build. */
-    public val THRESHOLD: Duration = Duration.ofHours(4)
+    /** SPEC 8.5: this much screen off makes a night. Shortened only by the debug build's compressed night. */
+    public val THRESHOLD: Duration = Nights.MIN_SCREEN_OFF
 
     /** How many earlier nights the comparison takes (SPEC 8.5). */
     public const val RECENT: Int = 7
@@ -97,26 +121,40 @@ public object NightReports {
      */
     private val SCREEN_SLACK: Duration = Duration.ofSeconds(5)
 
-    /** Where the report's hold-offs, drift and actions start: read the journal from here for [report]. */
+    /** Where a session's hold-offs, drift and actions start: read the journal from here. */
     public fun from(session: SessionRow): Long = session.start - SCREEN_SLACK.toMillis()
 
-    public fun qualifies(session: SessionRow, threshold: Duration): Boolean =
-        session.chargedMillis == 0L && !session.pluggedAtStart && session.end - session.start >= threshold.toMillis()
+    /** Where a night's hold-offs, drift and actions start: read the journal from here for [report]. */
+    public fun from(night: NightRow): Long = night.start - SCREEN_SLACK.toMillis()
 
-    /** Drain from every night that has a figure; deep share only from judged nights, since a gap hides part of it. */
-    public fun compare(nights: List<SessionRow>): Comparison = Comparison(
+    /** Mean drain and deep share over [nights], each from the nights that have it. */
+    public fun compare(nights: List<NightRow>): Comparison = Comparison(
         nights = nights.size,
         drainPerHour = nights.mapNotNull { it.drainPerHour }.takeIf { it.isNotEmpty() }?.average(),
-        deepShare = nights.filter { it.verdict != null && it.end > it.start }
-            .map { it.timeInDeepMillis.toDouble() / (it.end - it.start) }
-            .takeIf { it.isNotEmpty() }?.average(),
+        deepShare = nights.mapNotNull { it.deepShare }.takeIf { it.isNotEmpty() }?.average(),
     )
 
-    public fun night(session: SessionRow, unlockedAt: Long, recent: List<SessionRow>, stock: List<SessionRow>): NightRow {
+    /**
+     * The row for the night made of [sessions] (start order), compared with [recent] earlier nights and [stock]
+     * ones. Called again with the same first session when a later session joins: the caller keeps the row's id.
+     */
+    public fun night(sessions: List<SessionRow>, unlockedAt: Long, recent: List<NightRow>, stock: List<NightRow>): NightRow {
+        require(sessions.isNotEmpty()) { "a night has a session" }
         val before = compare(recent)
         val baseline = compare(stock)
+        val timed = sessions.filter { it.drainPerHour != null && it.end > it.start }
+        val judged = sessions.filter { it.verdict != null && it.end > it.start }
         return NightRow(
-            sessionId = session.id,
+            sessionId = sessions.first().id,
+            start = sessions.first().start,
+            end = sessions.last().end,
+            sessionCount = sessions.size,
+            screenOffMillis = sessions.sumOf { it.end - it.start },
+            drainPerHour = timed.takeIf { it.isNotEmpty() }
+                ?.let { list -> list.sumOf { (it.drainPerHour ?: 0.0) * (it.end - it.start) } / list.sumOf { it.end - it.start } },
+            deepShare = judged.takeIf { it.isNotEmpty() }
+                ?.let { list -> list.sumOf { it.timeInDeepMillis }.toDouble() / list.sumOf { it.end - it.start } },
+            profileId = sessions.map { it.profileId }.distinct().singleOrNull(),
             unlockedAt = unlockedAt,
             recentNights = before.nights,
             recentDrainPerHour = before.drainPerHour,
@@ -127,25 +165,49 @@ public object NightReports {
         )
     }
 
-    public fun report(night: NightRow, record: SessionRecord, events: List<EventRow>, actions: List<ActionRow>): NightReport {
-        val session = record.session
-        val inSession = from(session)..session.end
+    /**
+     * One verdict for the night's sessions: Held when every judged session held, Did not doze when none dozed,
+     * Partly otherwise; null when no session was judged. The cause is the longest undozed session's.
+     */
+    public fun verdict(sessions: List<SessionRow>): Pair<String?, String?> {
+        val judged = sessions.mapNotNull { it.verdict }
+        val verdict = when {
+            judged.isEmpty() -> null
+            judged.all { it == EvidenceRows.HELD } -> EvidenceRows.HELD
+            judged.all { it == EvidenceRows.DID_NOT_DOZE } -> EvidenceRows.DID_NOT_DOZE
+            else -> EvidenceRows.PARTLY
+        }
+        val cause = sessions.filter { it.verdict == EvidenceRows.DID_NOT_DOZE }.maxByOrNull { it.end - it.start }?.cause
+        return verdict to cause.takeIf { verdict == EvidenceRows.DID_NOT_DOZE }
+    }
+
+    /** The report of [night] from its sessions' [records] in start order, with the journal read from [from]. */
+    public fun report(night: NightRow, records: List<SessionRecord>, events: List<EventRow>, actions: List<ActionRow>): NightReport {
+        val sessions = records.map { it.session }.sortedBy { it.start }
+        val inNight = from(night)..night.end
+        val (verdict, cause) = verdict(sessions)
         return NightReport(
             night = night,
-            session = session,
-            timeline = session.timeline.lines().mapNotNull(::timelineSpan),
-            light = record.transitions.filter { !it.deep },
-            breaks = session.breaks.lines().filter { it.isNotBlank() },
-            gaps = spans(session.gaps),
-            historyFilled = spans(session.historyFilled),
+            sessions = sessions,
+            verdict = verdict,
+            cause = cause,
+            timeInDeepMillis = sessions.sumOf { it.timeInDeepMillis },
+            maintenanceWindows = sessions.sumOf { it.maintenanceWindows },
+            ownWakeups = sessions.map { it.ownWakeups }.takeIf { counts -> counts.all { it != null } }?.sumOf { it ?: 0 },
+            timeline = sessions.flatMap { session -> session.timeline.lines().mapNotNull(::timelineSpan) },
+            light = records.flatMap { it.transitions }.filter { !it.deep }.sortedBy { it.time },
+            breaks = sessions.flatMap { session -> session.breaks.lines().filter { it.isNotBlank() } },
+            gaps = sessions.flatMap { spans(it.gaps) },
+            historyFilled = sessions.flatMap { spans(it.historyFilled) },
+            wakes = StoredNights.wakes(sessions),
             recent = Comparison(night.recentNights, night.recentDrainPerHour, night.recentDeepShare),
             stock = Comparison(night.stockNights, night.stockDrainPerHour, night.stockDeepShare),
-            apps = record.wakers.filter { it.uid != null },
-            kernel = record.wakers.filter { it.uid == null },
-            sensors = sensorHolders(record.snapshots),
-            holdOffs = events.filter { it.time in inSession && it.holdOff != null },
-            drift = events.filter { it.time in inSession && it.kind == JournalRows.DRIFT },
-            actions = actions.filter { it.time in inSession },
+            apps = NightWakers.merge(records.map { record -> record.wakers.filter { it.uid != null } }),
+            kernel = NightWakers.merge(records.map { record -> record.wakers.filter { it.uid == null } }),
+            sensors = sensorHolders(records.flatMap { it.snapshots }),
+            holdOffs = events.filter { it.time in inNight && it.holdOff != null },
+            drift = events.filter { it.time in inNight && it.kind == JournalRows.DRIFT },
+            actions = actions.filter { it.time in inNight },
         )
     }
 
@@ -183,4 +245,49 @@ public object NightReports {
     private const val CONNECTION_FIELDS = 4
     private const val PERIOD = 3
     private const val TIMELINE_FIELDS = 3
+}
+
+/** A night's wakers over its sessions. */
+public object NightWakers {
+    /**
+     * The wakers of a night: one session's as stored, or each app and kernel reason once with its counts summed
+     * over the sessions, ranked as the recorder ranks them (most wakeups, then most wakelock time).
+     */
+    public fun merge(perSession: List<List<WakerRow>>): List<WakerRow> {
+        if (perSession.size <= 1) return perSession.firstOrNull().orEmpty()
+        val merged = perSession.flatten().groupBy { it.uid to it.name }.values.map { rows -> rows.reduce(::sum) }
+        return merged.sortedWith(
+            compareByDescending<WakerRow> { it.alarmWakeups + it.networkWakeups + it.kernelWakeups }
+                .thenByDescending { it.wakelockMillis }
+                .thenBy { it.uid ?: Int.MAX_VALUE }
+                .thenBy { it.name },
+        )
+    }
+
+    private fun sum(a: WakerRow, b: WakerRow) = a.copy(
+        self = a.self || b.self,
+        alarmWakeups = a.alarmWakeups + b.alarmWakeups,
+        networkWakeups = a.networkWakeups + b.networkWakeups,
+        kernelWakeups = a.kernelWakeups + b.kernelWakeups,
+        jobs = a.jobs + b.jobs,
+        jobMillis = a.jobMillis + b.jobMillis,
+        syncs = a.syncs + b.syncs,
+        syncMillis = a.syncMillis + b.syncMillis,
+        wakelockMillis = a.wakelockMillis + b.wakelockMillis,
+        longWakelocks = a.longWakelocks + b.longWakelocks,
+        longWakelockMillis = a.longWakelockMillis + b.longWakelockMillis,
+        alarms = sumAlarms(a.alarms, b.alarms),
+    )
+
+    /** Alarm lines (`wakeups alarms tag`) of two sessions, each tag once with its counts summed, in first-seen order. */
+    private fun sumAlarms(a: String, b: String): String {
+        val tags = LinkedHashMap<String, Pair<Int, Int>>()
+        (a.lines() + b.lines()).map { it.split(' ', limit = ALARM_FIELDS) }.filter { it.size == ALARM_FIELDS }.forEach { (w, n, tag) ->
+            val was = tags[tag] ?: (0 to 0)
+            tags[tag] = (was.first + (w.toIntOrNull() ?: 0)) to (was.second + (n.toIntOrNull() ?: 0))
+        }
+        return tags.entries.joinToString("\n") { (tag, counts) -> "${counts.first} ${counts.second} $tag" }
+    }
+
+    private const val ALARM_FIELDS = 3
 }

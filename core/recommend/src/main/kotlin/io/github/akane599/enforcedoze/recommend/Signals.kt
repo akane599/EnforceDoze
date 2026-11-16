@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.recommend
 
+import io.github.akane599.enforcedoze.profile.Nights
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.DEEP_MARGIN
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.LONG_SESSION
+import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_JOIN_GAP
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_LENGTH
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_STARTS_FROM
 import io.github.akane599.enforcedoze.recommend.RecommendationPolicy.NIGHT_STARTS_UNTIL
@@ -60,7 +62,7 @@ public data class Signals(
     val neverDeep: Measured<Share>,
     /** M: motion resets per hour of long unplugged daytime screen-off with the sensors free. */
     val motionResetsPerHour: Measured<Double>,
-    /** N: the qualifying nights, one per night, oldest first. */
+    /** N: the qualifying nights, one per night, oldest first; each from its first session's start to its last one's end. */
     val nights: List<Night>,
     /** N: nights the history could hold a qualifying session in. */
     val availableNights: Int,
@@ -78,7 +80,10 @@ public data class Signals(
             val clip: (ScreenOffSession) -> Duration = { Duration.between(maxOf(it.start, history.from), minOf(it.end, history.to)) }
             // M and N take the sessions that began inside it, so a night is never counted that was not available.
             val started = overlapping.filter { it.start >= history.from }
-            val daytime = overlapping.filterNot { isNight(it, zone) }
+            // A night joins its sessions across short wake-ups (ADR 0031); every session of a night is night time.
+            val runs = nightRuns(overlapping, zone)
+            val night = runs.flatten().toHashSet()
+            val daytime = overlapping.filterNot { it in night }
             val screenOff = total(overlapping, clip)
             val days = history.span.toMillis().toDouble() / Duration.ofDays(1).toMillis()
             val stock = history.sessions.filter { it.provenance == Provenance.STOCK }
@@ -88,9 +93,11 @@ public data class Signals(
                 screenOffHoursPerDay = if (days == 0.0) 0.0 else hours(screenOff) / days,
                 longShare = ratio(total(overlapping.filter { it.duration >= LONG_SESSION }, clip), screenOff),
                 shortDaytimeShare = shortShare(daytime, clip),
-                neverDeep = neverDeep(started.filterNot { isNight(it, zone) }),
-                motionResetsPerHour = motionResets(started.filterNot { isNight(it, zone) }),
-                nights = nights(started.filter { isNight(it, zone) }, zone),
+                neverDeep = neverDeep(started.filterNot { it in night }),
+                motionResetsPerHour = motionResets(started.filterNot { it in night }),
+                nights = perNight(runs.filter { it.first().start >= history.from }, zone).map {
+                    Night(it.first().start.atZone(zone), it.last().end.atZone(zone))
+                },
                 availableNights = availableNights(history),
                 deepShare = stock(history.sessions, stock, {
                     it.timeInDeep != null
@@ -101,11 +108,19 @@ public data class Signals(
             )
         }
 
-        /** SPEC 7.2 N: unplugged, at least [NIGHT_LENGTH], starting between [NIGHT_STARTS_FROM] and [NIGHT_STARTS_UNTIL]. */
-        internal fun isNight(session: ScreenOffSession, zone: ZoneId): Boolean {
-            val start = session.start.atZone(zone).toLocalTime()
-            return session.unplugged && session.duration >= NIGHT_LENGTH && (start >= NIGHT_STARTS_FROM || start < NIGHT_STARTS_UNTIL)
-        }
+        /**
+         * SPEC 7.2 N with ADR 0031: runs of unplugged sessions joined across screen-on gaps under [NIGHT_JOIN_GAP], the
+         * first starting between [NIGHT_STARTS_FROM] and [NIGHT_STARTS_UNTIL], with [NIGHT_LENGTH] of screen-off in all.
+         * [sessions] must hold every session of the span, plugged ones too: one between two unplugged ones ends a run.
+         */
+        internal fun nightRuns(sessions: List<ScreenOffSession>, zone: ZoneId): List<List<ScreenOffSession>> =
+            Nights.find(sessions, zone, Nights.Rule(NIGHT_LENGTH, NIGHT_JOIN_GAP)) { Nights.Stretch(it.start, it.end, it.unplugged) }
+
+        /** One run per night, the one with the most screen-off time; 01:00 on the 10th is the night of the 9th. */
+        internal fun perNight(runs: List<List<ScreenOffSession>>, zone: ZoneId): List<List<ScreenOffSession>> = runs
+            .groupBy { nightOf(it.first().start.atZone(zone)) }
+            .map { (_, same) -> same.maxBy { total(it) } }
+            .sortedBy { it.first().start }
 
         private fun shortShare(daytime: List<ScreenOffSession>, clip: (ScreenOffSession) -> Duration): Measured<Double> {
             val unplugged = daytime.filter { it.unplugged }
@@ -166,12 +181,7 @@ public data class Signals(
             return Measured.Known(value(known), known.size)
         }
 
-        /** The night a start belongs to is the date its evening began: 01:00 on the 10th is the night of the 9th. */
-        private fun nights(sessions: List<ScreenOffSession>, zone: ZoneId): List<Night> = sessions
-            .groupBy { nightOf(it.start.atZone(zone)) }
-            .map { (_, same) -> same.maxBy { it.duration }.let { Night(it.start.atZone(zone), it.end.atZone(zone)) } }
-            .sortedBy { it.start }
-
+        /** The night a start belongs to is the date its evening began. */
         internal fun nightOf(time: ZonedDateTime): LocalDate =
             if (time.toLocalTime() < NIGHT_STARTS_UNTIL) time.toLocalDate().minusDays(1) else time.toLocalDate()
 

@@ -5,6 +5,7 @@ import io.github.akane599.enforcedoze.design.DozeFill
 import io.github.akane599.enforcedoze.design.StripBreak
 import io.github.akane599.enforcedoze.design.StripModel
 import io.github.akane599.enforcedoze.design.StripSegment
+import io.github.akane599.enforcedoze.design.StripWake
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.evidence.Cause
 import io.github.akane599.enforcedoze.ui.NoticeKind
@@ -252,6 +253,51 @@ internal object ReportFixtures {
         ),
         notices = listOf(StateNotice("shell", NoticeKind.ANOTHER_MANAGER, subject = "com.android.shell", time = at(8, 0, 52))),
     )
+
+    /**
+     * The same night with two short wake-ups (ADR 0031): the owner looked at the phone at 03:12 for 4 minutes
+     * and at 05:02 for 2, and each time it went back to deep idle.
+     */
+    val joined = run {
+        val wakes = listOf(StripWake(at(8, 3, 12), at(8, 3, 16)), StripWake(at(8, 5, 2), at(8, 5, 4)))
+        val strip = StripModel(
+            start = off,
+            end = on,
+            segments = listOf(
+                StripSegment(DozeFill.ACTIVE, off, at(8, 0, 5)),
+                StripSegment(DozeFill.LIGHT, at(8, 0, 5), at(8, 0, 24)),
+                StripSegment(DozeFill.DEEP, at(8, 0, 24), at(8, 3, 12)),
+                StripSegment(DozeFill.ACTIVE, at(8, 3, 16), at(8, 3, 20)),
+                StripSegment(DozeFill.LIGHT, at(8, 3, 20), at(8, 3, 31)),
+                StripSegment(DozeFill.DEEP, at(8, 3, 31), at(8, 5, 2)),
+                StripSegment(DozeFill.ACTIVE, at(8, 5, 4), at(8, 5, 9)),
+                StripSegment(DozeFill.LIGHT, at(8, 5, 9), at(8, 5, 18)),
+                StripSegment(DozeFill.DEEP, at(8, 5, 18), on),
+            ),
+            maintenance = listOf(at(8, 1, 12), at(8, 2, 21), at(8, 4, 20), at(8, 6, 10)),
+            wakes = wakes,
+        )
+        held.copy(
+            summary = summary.copy(strip = strip, timeInDeep = 359 * MIN, motionResets = 0, deepShare = 0.83, lightShare = 0.07),
+            timetable = listOf(
+                Stop(off, StopEvent.ScreenOff),
+                Stop(at(8, 0, 5), StopEvent.Light),
+                Stop(at(8, 0, 24), StopEvent.Deep(), due = at(8, 0, 23), late = MIN),
+                Stop(at(8, 1, 12), StopEvent.Maintenance(lasted = 52_000)),
+                Stop(at(8, 2, 21), StopEvent.Maintenance(lasted = 38_000)),
+                Stop(at(8, 3, 12), StopEvent.Wake(lasted = 4 * MIN)),
+                Stop(at(8, 3, 20), StopEvent.Light),
+                Stop(at(8, 3, 31), StopEvent.Deep(again = true)),
+                Stop(at(8, 4, 20), StopEvent.Maintenance(lasted = 44_000)),
+                Stop(at(8, 5, 2), StopEvent.Wake(lasted = 2 * MIN)),
+                Stop(at(8, 5, 9), StopEvent.Light),
+                Stop(at(8, 5, 18), StopEvent.Deep(again = true)),
+                Stop(at(8, 6, 10), StopEvent.Maintenance(lasted = 47_000)),
+                Stop(on, StopEvent.ScreenOn),
+            ),
+            compared = compared.copy(nights = listOf(ComparedNight(off, strip, VerdictWord.HELD, 0.40)) + compared.nights.drop(1)),
+        )
+    }
 
     /** A short daytime session: no comparison, not judged because of a gap (ADR 0020). */
     val shortSession = held.copy(

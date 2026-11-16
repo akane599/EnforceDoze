@@ -26,6 +26,13 @@ internal class EvidenceExporter(private val graph: EngineGraph) {
         return export(listOf(row), NightReports.from(row), row.end, "session-$id")
     }
 
+    /** A night's ZIP: every session of it, with the logs from the first screen-off writes on (ADR 0031). */
+    suspend fun night(id: Long): File? {
+        val night = graph.sessions.night(id) ?: return null
+        val rows = graph.sessions.recordsOf(night).map { it.session }
+        return export(rows, NightReports.from(night), night.end, "night-$id")
+    }
+
     /** Every session that overlaps [fromMillis]..[toMillis], with the logs of that range. */
     suspend fun range(fromMillis: Long, toMillis: Long): File =
         export(graph.sessions.sessionsBetween(fromMillis, toMillis), fromMillis, toMillis, "$fromMillis-$toMillis")
@@ -42,7 +49,7 @@ internal class EvidenceExporter(private val graph: EngineGraph) {
     private suspend fun export(rows: List<SessionRow>, fromMillis: Long, toMillis: Long, name: String): File {
         val sessions = graph.sessions
         val records = rows.mapNotNull { sessions.recordOf(it.id) }
-        val nights = sessions.nightsOf(rows.map { it.id })
+        val nights = if (rows.isEmpty()) emptyList() else sessions.nightsBetween(rows.first().start, rows.last().end)
         val actions = graph.journal.actionsSince(fromMillis).filter { it.time <= toMillis }
         val events = graph.journal.eventsSince(fromMillis).filter { it.time <= toMillis }
         val starts = rows.map { it.start.toString() }.toSet()

@@ -115,14 +115,14 @@ class JournalDaoTest {
     }
 
     @Test
-    fun nightsAreFoundOnceAndComparedWithEarlierOnes() = runTest {
+    fun nightsAreStoredGrownAndComparedWithEarlierOnes() = runTest {
         val dao = db.sessions()
         val hour = 3_600_000L
         val start = time.toEpochMilli()
-        fun night(day: Long, hours: Long, profileId: String = "everyday", chargedMillis: Long = 0) = SessionRecord(
+        fun session(from: Long, hours: Long, profileId: String = "everyday") = SessionRecord(
             session = SessionRow(
-                start = start + day * 24 * hour,
-                end = start + day * 24 * hour + hours * hour,
+                start = start + from,
+                end = start + from + hours * hour,
                 profileId = profileId,
                 pluggedAtStart = false,
                 verdict = "HELD",
@@ -135,56 +135,45 @@ class JournalDaoTest {
                 motionResets = 0,
                 breaks = "",
                 note = null,
-                chargedMillis = chargedMillis,
             ),
             transitions = emptyList(),
             wakers = emptyList(),
             snapshots = emptyList(),
         )
-        val stock = dao.record(night(0, 8, profileId = "stock"))
-        val everyday = dao.record(night(1, 8))
-        dao.record(night(2, 3))
-        dao.record(night(3, 8, chargedMillis = 60_000))
-        val unreported = dao.unreportedNights(sinceMillis = 0, minMillis = 4 * hour)
-        assertThat(unreported.map { it.id }).containsExactly(stock, everyday).inOrder()
+        val stock = dao.record(session(0, 8, profileId = "stock"))
+        val first = dao.record(session(24 * hour, 5))
+        val second = dao.record(session(29 * hour + 300_000, 3))
+        val rows = dao.sessionsBetween(start, start + 40 * hour)
+        val stockNight = NightReports.night(rows.filter { it.id == stock }, start + 9 * hour, emptyList(), emptyList())
+        dao.insertNight(stockNight)
+        assertThat(dao.nightsBefore(start + 24 * hour, "stock", 7).map { it.sessionId }).containsExactly(stock)
 
-        dao.insertNight(
-            NightRow(
-                sessionId = stock,
-                unlockedAt = start + 9 * hour,
-                recentNights = 0,
-                recentDrainPerHour = null,
-                recentDeepShare = null,
-                stockNights = 0,
-                stockDrainPerHour = null,
-                stockDeepShare = null,
-            ),
+        // Written at the first unlock with the first session, then grown when the second joined after a wake-up.
+        val recent = dao.nightsBefore(start + 24 * hour, null, 7)
+        val id = dao.insertNight(NightReports.night(rows.filter { it.id == first }, start + 29 * hour, recent, recent))
+        dao.updateNight(
+            NightReports.night(
+                rows.filter {
+                    it.id == first || it.id == second
+                },
+                start + 33 * hour,
+                recent,
+                recent,
+            ).copy(id = id),
         )
-        dao.insertNight(
-            NightRow(
-                sessionId = everyday,
-                unlockedAt = start + 33 * hour,
-                recentNights = 1,
-                recentDrainPerHour = null,
-                recentDeepShare = null,
-                stockNights = 1,
-                stockDrainPerHour = null,
-                stockDeepShare = null,
-            ),
-        )
-        assertThat(dao.unreportedNights(sinceMillis = 0, minMillis = 4 * hour)).isEmpty()
-        assertThat(
-            dao.nightSessions(beforeMillis = Long.MAX_VALUE, profileId = null, limit = 7).map {
-                it.id
-            },
-        ).containsExactly(everyday, stock).inOrder()
-        assertThat(dao.nightSessions(beforeMillis = Long.MAX_VALUE, profileId = "stock", limit = 7).map { it.id }).containsExactly(stock)
-        assertThat(dao.latestNights(1).single().sessionId).isEqualTo(everyday)
-        assertThat(dao.recordOf(everyday)?.session?.id).isEqualTo(everyday)
+        val night = dao.night(id) ?: error("no night $id")
+        assertThat(night.sessionCount).isEqualTo(2)
+        assertThat(night.end).isEqualTo(start + 32 * hour + 300_000)
+        assertThat(night.recentNights).isEqualTo(1)
+        assertThat(dao.recordsOf(night).map { it.session.id }).containsExactly(first, second).inOrder()
+        assertThat(dao.nightAround(start + 29 * hour + 300_000, start + 32 * hour + 300_000)?.id).isEqualTo(id)
+        assertThat(dao.nightsBetween(start + 30 * hour, start + 31 * hour).map { it.id }).containsExactly(id)
+        assertThat(dao.nightsBefore(Long.MAX_VALUE, null, 7).map { it.sessionId }).containsExactly(first, stock).inOrder()
+        assertThat(dao.latestNights(1).single().id).isEqualTo(id)
         assertThat(dao.recordOf(-1)).isNull()
 
-        // Retention removes the night with its session.
+        // Retention removes the night with its first session.
         dao.deleteSessionsBefore(start + 9 * hour)
-        assertThat(dao.latestNights(10).map { it.sessionId }).containsExactly(everyday)
+        assertThat(dao.latestNights(10).map { it.sessionId }).containsExactly(first)
     }
 }
