@@ -189,3 +189,9 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   - The app remembers that it stopped sync. Restore stock (and so Reset) lets sync run again, so
     the change stays undoable.
 - **Alarm and messaging suggestions use public calls only**: the next alarm clock's creator, the default SMS app, and social and communication apps by last week's foreground time (usage access), three at most.
+- **`impeccable detect` reads web files only.**
+  - On a scratch HTML page with gradient text it reported 3 findings. On the same pattern in Compose
+    Kotlin, and on every Kotlin and resource directory of the app, it reported nothing: it reads
+    nothing there. Its "zero findings" at the P5 gate is therefore met without testing anything.
+  - The design checks that do apply are the critique and audit passes over the screenshot set, and
+    the P0 and P1 findings fixed. This is recorded so the gate is not read as more than it is.
