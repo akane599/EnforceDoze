@@ -47,6 +47,7 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
 
     override suspend fun recheck() {
         services.graph.controller.refresh()
+        services.grantDurable()
         services.probe()
     }
 

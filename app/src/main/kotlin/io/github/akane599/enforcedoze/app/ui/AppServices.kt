@@ -8,6 +8,8 @@ import io.github.akane599.enforcedoze.doze.EngineStatus
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PlanState
 import io.github.akane599.enforcedoze.doze.SwitchReason
+import io.github.akane599.enforcedoze.privilege.Grant
+import io.github.akane599.enforcedoze.privilege.ShizukuStatus
 import io.github.akane599.enforcedoze.privilege.probe.CapabilityReport
 import io.github.akane599.enforcedoze.profile.BuiltInProfiles
 import io.github.akane599.enforcedoze.profile.Plan
@@ -20,6 +22,8 @@ import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -34,6 +38,7 @@ internal class AppServices(val graph: EngineGraph) {
     val access: EngineAccess = EngineAccess(graph.app, graph)
     val notices: AppNotices = AppNotices(graph.app, graph, access, prefs, labels)
     val recommendations: Recommendations by lazy { Recommendations(this) }
+    val dayZero: DayZeroReader by lazy { DayZeroReader(this) }
     val exports: Exports by lazy { Exports(graph) }
 
     /** Session and night reports from the evidence log (SPEC 8.4, 8.5), with app, profile and hold-off names. */
@@ -117,6 +122,43 @@ internal class AppServices(val graph: EngineGraph) {
         if (engine.first().plan?.plan != recommended) applyPlan(recommended, SwitchReason.RECOMMENDATION)
     }
 
+    private val accessChanges = MutableStateFlow(0)
+
+    /** Bumped when the worker becomes ready or a durable grant is added, so day-zero history is read again. */
+    val accessChanged: StateFlow<Int> = accessChanges.asStateFlow()
+
+    init {
+        // SPEC 4.1 T1: the durable grants are given once through the worker, as soon as Shizuku or Sui allows it.
+        graph.scope.launch {
+            graph.controller.state.map { it.shizuku is ShizukuStatus.Ready }.distinctUntilChanged().filter { it }.collect {
+                grantDurable()
+                dayZero.forget()
+                accessChanges.value++
+            }
+        }
+    }
+
+    /**
+     * Grants `DUMP`, `WRITE_SECURE_SETTINGS` (lever A, ADR 0012) and usage access through the worker when one is missing
+     * (SPEC 4.1 T1); true when one was added. `READ_LOGS` stays with the worker, which reads the events buffer anyway.
+     */
+    suspend fun grantDurable(): Boolean {
+        val have = graph.controller.refresh().grants
+        val permissions = DURABLE_PERMISSIONS.filterKeys { it !in have }.values
+        val usage = Grant.USAGE_STATS !in have
+        if (permissions.isEmpty() && !usage) return false
+        graph.controller.withWorker { api ->
+            permissions.forEach { api.grantSelf(it) }
+            if (usage) api.setSelfAppOp(USAGE_OP, ALLOW)
+        }
+        val added = graph.controller.refresh().grants != have
+        if (added) {
+            dayZero.forget()
+            accessChanges.value++
+        }
+        return added
+    }
+
     private val lastProbe = MutableStateFlow<CapabilityReport?>(null)
 
     /** The last capability check (SPEC 4.4) in this process; null until one ran. */
@@ -152,6 +194,18 @@ internal class AppServices(val graph: EngineGraph) {
 
     /** Whether the tier can write the levers (T2 and up, SPEC 4.1). */
     val canWrite: Flow<Boolean> = graph.controller.state.map(notices::canWrite)
+
+    private companion object {
+        /** The permissions of T1 (SPEC 4.1), each in `WorkerContract.SELF_PERMISSIONS`. */
+        val DURABLE_PERMISSIONS = mapOf(
+            Grant.DUMP to "android.permission.DUMP",
+            Grant.WRITE_SECURE_SETTINGS to "android.permission.WRITE_SECURE_SETTINGS",
+        )
+
+        /** In `WorkerContract.SELF_APP_OPS` and `APP_OP_MODES`. */
+        const val USAGE_OP = "GET_USAGE_STATS"
+        const val ALLOW = "allow"
+    }
 }
 
 /** What the screens need of the engine, whether or not it runs. */

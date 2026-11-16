@@ -22,13 +22,13 @@ internal class AppPlanSource(private val services: AppServices) : PlanSource {
         combine(services.canWrite, services.prefs.changes) { canWrite, _ -> canWrite },
         services.notices.notices,
     ) { view, profiles, recommendation, canWrite, notices ->
-        val range = services.recommendations.range()
+        val range = services.recommendations.range.value
         PlanState(
             plan = view.plan?.plan ?: Plan(BuiltInProfiles.STOCK.id),
             profiles = profiles,
             recommendation = recommendation,
-            historyFrom = recommendation?.let { range.from.toEpochMilli() },
-            historyTo = recommendation?.let { range.to.toEpochMilli() },
+            historyFrom = range?.takeIf { recommendation != null }?.from?.toEpochMilli(),
+            historyTo = range?.takeIf { recommendation != null }?.to?.toEpochMilli(),
             urgency = services.prefs.urgency,
             follow = services.prefs.followRecommended,
             canWrite = canWrite,
