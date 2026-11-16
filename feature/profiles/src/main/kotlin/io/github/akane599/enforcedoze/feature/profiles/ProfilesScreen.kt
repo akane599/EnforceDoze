@@ -54,6 +54,7 @@ import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.profile.Profile
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
+import io.github.akane599.enforcedoze.ui.profileShortCost
 
 /**
  * The profiles (SPEC 9.1) as a timetable of services: each row names a profile, marks the slot it runs in and
@@ -132,7 +133,7 @@ private fun ProfileRow(profile: Profile, state: ProfilesState, formats: Formats,
                     Text(profile.name, style = MaterialTheme.typography.titleLarge, color = palette.ink)
                     ProfileTags(profile, state, formats)
                 }
-                Text(shortCost(profile, formats), style = MaterialTheme.typography.bodyMedium, color = palette.quiet)
+                Text(profileShortCost(profile, formats), style = MaterialTheme.typography.bodyMedium, color = palette.quiet)
                 if (!wide) {
                     Spacer(Modifier.height(Space.s))
                     LeverMarks(profile)

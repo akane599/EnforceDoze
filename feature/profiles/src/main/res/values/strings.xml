@@ -14,33 +14,7 @@
     <string name="profiles_levers_none">No levers: logging only</string>
     <string name="profiles_export">Export</string>
 
-    <string name="profiles_purpose_stock">The baseline. Proves what the phone does on its own, and is the comparison in every report.</string>
-    <string name="profiles_purpose_everyday">Deep idle within about 10 minutes of a still, screen-off phone instead of an hour. The safe default.</string>
-    <string name="profiles_purpose_pocket">For a phone carried while moving: on a commute or a walk. Motion no longer starts the wait over, so deep idle holds in a pocket.</string>
-    <string name="profiles_purpose_night">For the long unplugged, screen-off stretch in the night window. The longest gaps between maintenance windows.</string>
-    <string name="profiles_purpose_classic">Upstream EnforceDoze\'s behaviour, kept for parity: deep idle the moment the screen turns off.</string>
-    <string name="profiles_purpose_strict">For travel, low battery or a long day away from a charger. Never recommended automatically.</string>
-    <string name="profiles_purpose_custom">Your own profile, saved on this phone.</string>
 
-    <string name="profiles_cost_stock">Nothing.</string>
-    <string name="profiles_cost_everyday">Nothing visible: once idle, messages behave as on stock, they just get there sooner.</string>
-    <string name="profiles_cost_pocket">Step counting on the phone pauses while the screen is off; lift-to-wake and pocket detection may stop.</string>
-    <string name="profiles_cost_night">Normal-priority messages can wait up to 2 hours early in the night, longer later. Alarm clocks and high-priority messages are not delayed.</string>
-    <string name="profiles_cost_classic">Normal-priority messages are delayed from the first minute of screen off.</string>
-    <string name="profiles_cost_strict">The longest message delays: only allowlisted apps and high-priority messages get through promptly.</string>
-    <string name="profiles_short_stock">Nothing: logging only.</string>
-    <string name="profiles_short_everyday">Nothing visible.</string>
-    <string name="profiles_short_pocket">Step counting pauses while the screen is off.</string>
-    <string name="profiles_short_night">Messages can wait up to 2 h early in the night.</string>
-    <string name="profiles_short_classic">Messages wait from the first minute of screen off.</string>
-    <string name="profiles_short_strict">The longest message delays.</string>
-    <string name="profiles_cost_force">Normal-priority messages are delayed from the first minute of screen off.</string>
-    <string name="profiles_cost_force_after">Normal-priority messages are delayed from %1$s after screen off.</string>
-    <string name="profiles_cost_trimmed">Only apps marked keep get through promptly.</string>
-    <string name="profiles_cost_windows">Normal-priority messages can wait up to %1$s in a deep-idle window.</string>
-    <string name="profiles_cost_windows_from">Normal-priority messages can wait %1$s in the first deep-idle window, longer later.</string>
-    <string name="profiles_cost_sensors">Step counting pauses while the screen is off.</string>
-    <string name="profiles_cost_all_sensors_off">Every sensor is off while the screen is off, so step counting, lift-to-wake and rotation stop.</string>
 
     <string name="profiles_what_for">What it is for</string>
     <string name="profiles_what_costs">What it costs</string>

@@ -14,33 +14,7 @@
     <string name="profiles_levers_none">Kol yok: yalnızca kayıt</string>
     <string name="profiles_export">Dışa aktar</string>
 
-    <string name="profiles_purpose_stock">Başlangıç noktası. Telefonun kendi başına ne yaptığını gösterir; her rapor bununla karşılaştırır.</string>
-    <string name="profiles_purpose_everyday">Hareketsiz, ekranı kapalı telefon bir saat yerine yaklaşık 10 dakikada derin uykuya geçer. Güvenli varsayılan.</string>
-    <string name="profiles_purpose_pocket">Hareket hâlinde taşınan telefon için: yolda ya da yürürken. Hareket bekleyişi baştan başlatmaz, derin uyku cepte de sürer.</string>
-    <string name="profiles_purpose_night">Gece penceresindeki uzun, şarjsız ve ekranı kapalı süre için. Bakım pencereleri arası en uzun aralıklar.</string>
-    <string name="profiles_purpose_classic">EnforceDoze\'un özgün davranışı, eşdeğerlik için korunur: ekran kapanır kapanmaz derin uyku.</string>
-    <string name="profiles_purpose_strict">Yolculuk, düşük pil ya da şarj aletinden uzak uzun bir gün için. Hiçbir zaman kendiliğinden önerilmez.</string>
-    <string name="profiles_purpose_custom">Bu telefonda kayıtlı kendi profilin.</string>
 
-    <string name="profiles_cost_stock">Hiçbir şey.</string>
-    <string name="profiles_cost_everyday">Görünür bir bedeli yok: uykuya geçince mesajlar stoktaki gibi davranır, yalnızca uykuya daha erken geçilir.</string>
-    <string name="profiles_cost_pocket">Ekran kapalıyken telefondaki adım sayımı durur; kaldırınca uyanma ve cep algılama çalışmayabilir.</string>
-    <string name="profiles_cost_night">Normal öncelikli mesajlar gecenin başında 2 saate kadar, ilerleyen saatlerde daha uzun bekleyebilir. Alarmlar ve yüksek öncelikli mesajlar gecikmez.</string>
-    <string name="profiles_cost_classic">Normal öncelikli mesajlar ekran kapandıktan sonraki ilk dakikadan itibaren gecikir.</string>
-    <string name="profiles_cost_strict">En uzun mesaj gecikmeleri: yalnızca izin listesindeki uygulamalar ve yüksek öncelikli mesajlar hemen ulaşır.</string>
-    <string name="profiles_short_stock">Hiçbir şey: yalnızca kayıt.</string>
-    <string name="profiles_short_everyday">Görünür bir bedeli yok.</string>
-    <string name="profiles_short_pocket">Ekran kapalıyken adım sayımı durur.</string>
-    <string name="profiles_short_night">Mesajlar gecenin başında 2 saate kadar bekleyebilir.</string>
-    <string name="profiles_short_classic">Mesajlar ekran kapanınca ilk dakikadan gecikir.</string>
-    <string name="profiles_short_strict">En uzun mesaj gecikmeleri.</string>
-    <string name="profiles_cost_force">Normal öncelikli mesajlar ekran kapandıktan sonraki ilk dakikadan itibaren gecikir.</string>
-    <string name="profiles_cost_force_after">Normal öncelikli mesajlar ekran kapandıktan %1$s sonra gecikmeye başlar.</string>
-    <string name="profiles_cost_trimmed">Yalnızca “tut” işaretli uygulamalar hemen ulaşır.</string>
-    <string name="profiles_cost_windows">Normal öncelikli mesajlar bir derin uyku penceresinde %1$s kadar bekleyebilir.</string>
-    <string name="profiles_cost_windows_from">Normal öncelikli mesajlar ilk derin uyku penceresinde %1$s, sonrakilerde daha uzun bekleyebilir.</string>
-    <string name="profiles_cost_sensors">Ekran kapalıyken adım sayımı durur.</string>
-    <string name="profiles_cost_all_sensors_off">Ekran kapalıyken tüm sensörler kapanır; adım sayımı, kaldırınca uyanma ve döndürme durur.</string>
 
     <string name="profiles_what_for">Ne için</string>
     <string name="profiles_what_costs">Bedeli</string>

@@ -50,6 +50,8 @@ import io.github.akane599.enforcedoze.profile.Profile
 import io.github.akane599.enforcedoze.ui.ActionOutcome
 import io.github.akane599.enforcedoze.ui.StateNotice
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
+import io.github.akane599.enforcedoze.ui.profileCost
+import io.github.akane599.enforcedoze.ui.profilePurpose
 
 /** What the detail does on the owner's taps. [back] is null when the detail sits beside the list. */
 public interface ProfileDetailActions {
@@ -102,7 +104,7 @@ public fun ProfileDetailScreen(
                 ProfileTags(profile, state, formats, showCustom = true)
             }
             Spacer(Modifier.height(Space.m))
-            Text(purpose(profile), style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink)
+            Text(profilePurpose(profile), style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink)
             Spacer(Modifier.height(Space.l))
             SlotButtons(state, profile, actions)
             StatusLine(profile, status)
@@ -117,7 +119,7 @@ public fun ProfileDetailScreen(
             SectionHeader(stringResource(R.string.profiles_what_costs))
             // Each cost is its own sentence with air between, so four derived lines do not read as one paragraph.
             Column(verticalArrangement = Arrangement.spacedBy(Space.s)) {
-                costLines(profile, formats).forEach { Text(it, style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink) }
+                profileCost(profile, formats).forEach { Text(it, style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink) }
             }
             SectionHeader(stringResource(R.string.profiles_levers))
             LeverTable(profile, formats)

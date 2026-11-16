@@ -13,4 +13,6 @@ dependencies {
     api(project(":core:design"))
     api(project(":core:evidence"))
     api(project(":core:doze"))
+    api(project(":core:profile"))
+    api(project(":core:recommend"))
 }
