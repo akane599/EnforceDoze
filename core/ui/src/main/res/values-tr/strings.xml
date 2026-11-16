@@ -105,4 +105,24 @@
     <string name="ui_unmeasured_no_stock">Henüz stok ayarlarla geçen süre yok</string>
     <string name="ui_unmeasured_not_recorded">Kaydedilmedi</string>
     <string name="ui_unmeasured_sensors_restricted">Sensörler kısıtlıydı</string>
+    <!-- The app picker, shared by the allowlist and the keep-awake list. -->
+    <string name="ui_picker_search">Uygulama ara</string>
+    <string name="ui_picker_system">Sistem uygulamaları</string>
+    <string name="ui_picker_none">Uyan uygulama yok.</string>
+    <!-- The quick proof's result card (SPEC 8.6), shared by Home and onboarding. -->
+    <string name="ui_proof_constants">Profilin zamanlamalarını uygula ve geri oku</string>
+    <string name="ui_proof_force_idle">Yazılımla şarjdan çıkar ve derin uykuya zorla</string>
+    <string name="ui_proof_sensors">Sensörleri kısıtla ve modu geri oku</string>
+    <string name="ui_proof_undo">Hepsini geri al</string>
+    <string name="ui_proof_waiting">Bekliyor</string>
+    <string name="ui_proof_running">Çalışıyor</string>
+    <string name="ui_proof_ok">Tamam</string>
+    <string name="ui_proof_failed">Başarısız</string>
+    <string name="ui_proof_skipped">Atlandı</string>
+    <!-- Privilege tiers (SPEC 4.1), shared by Settings and onboarding. -->
+    <string name="ui_tier">Kademe T%1$d</string>
+    <string name="ui_tier_0">Salt okunur: yalnızca normal izinler. Hiçbir şey uygulanamaz.</string>
+    <string name="ui_tier_1">Doze ve sensör durumunu kendisi okur. Uygulamak için Shizuku, Sui ya da root gerekir.</string>
+    <string name="ui_tier_2">Kabuk kullanıcısı olarak çalışan bir işçi her kolu uygular.</string>
+    <string name="ui_tier_3">Root olarak çalışan bir işçi her kolu uygular.</string>
 </resources>

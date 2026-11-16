@@ -38,6 +38,7 @@ import io.github.akane599.enforcedoze.design.ScreenColumn
 import io.github.akane599.enforcedoze.design.SectionHeader
 import io.github.akane599.enforcedoze.design.Sizes
 import io.github.akane599.enforcedoze.design.Space
+import io.github.akane599.enforcedoze.design.SwitchRow
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.profile.NightSlot
 import io.github.akane599.enforcedoze.ui.ActionOutcome
@@ -95,7 +96,7 @@ public fun PlanScreen(
                 PlanTimetable(recommendation.plan, state, formats, byHand = recommendation.byHand)
             }
             Spacer(Modifier.height(Space.l))
-            SwitchLine(
+            SwitchRow(
                 stringResource(R.string.plan_follow),
                 stringResource(R.string.plan_follow_detail),
                 checked = state.follow,
@@ -111,7 +112,7 @@ public fun PlanScreen(
 private fun NightSection(state: PlanState, formats: Formats, editable: Boolean, actions: PlanActions) {
     val night = state.plan.night
     // The section's heading carries the switch: "Night", then "Night profile", then the profile Night read as one word three times.
-    SwitchLine(
+    SwitchRow(
         stringResource(R.string.plan_slot_night),
         stringResource(if (night == null) R.string.plan_night_off_detail else R.string.plan_night_on_detail),
         checked = night != null,
@@ -170,38 +171,5 @@ private fun Edge(label: String, time: String, editable: Boolean, modifier: Modif
             color = if (editable) Ed.palette.ink else Ed.palette.quiet,
             textAlign = TextAlign.Start,
         )
-    }
-}
-
-/** A switch with its title and a quiet line; as a section's [heading] the title takes the heading's size and spacing. */
-@Composable
-private fun SwitchLine(
-    title: String,
-    detail: String,
-    checked: Boolean,
-    enabled: Boolean,
-    onChange: (Boolean) -> Unit,
-    heading: Boolean = false,
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(top = if (heading) Space.xl else 0.dp)
-            .heightIn(min = Sizes.touch)
-            .toggleable(checked, enabled = enabled, role = Role.Switch, onValueChange = onChange)
-            .padding(vertical = Space.s),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                title,
-                style = if (heading) MaterialTheme.typography.titleLarge else MaterialTheme.typography.bodyLarge,
-                color = if (enabled || heading) Ed.palette.ink else Ed.palette.quiet,
-                modifier = if (heading) Modifier.semantics { heading() } else Modifier,
-            )
-            Text(detail, style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet)
-        }
-        Spacer(Modifier.width(Space.m))
-        Switch(checked = checked, onCheckedChange = null, enabled = enabled, modifier = Modifier.align(Alignment.CenterVertically))
     }
 }

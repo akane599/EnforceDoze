@@ -105,4 +105,24 @@
     <string name="ui_unmeasured_no_stock">No time under stock settings yet</string>
     <string name="ui_unmeasured_not_recorded">Not recorded</string>
     <string name="ui_unmeasured_sensors_restricted">Sensors were restricted</string>
+    <!-- The app picker, shared by the allowlist and the keep-awake list. -->
+    <string name="ui_picker_search">Search apps</string>
+    <string name="ui_picker_system">System apps</string>
+    <string name="ui_picker_none">No app matches.</string>
+    <!-- The quick proof's result card (SPEC 8.6), shared by Home and onboarding. -->
+    <string name="ui_proof_constants">Apply the profile\'s timings and read them back</string>
+    <string name="ui_proof_force_idle">Unplug in software and force deep idle</string>
+    <string name="ui_proof_sensors">Restrict sensors and read the mode back</string>
+    <string name="ui_proof_undo">Undo everything</string>
+    <string name="ui_proof_waiting">Waiting</string>
+    <string name="ui_proof_running">Running</string>
+    <string name="ui_proof_ok">OK</string>
+    <string name="ui_proof_failed">Failed</string>
+    <string name="ui_proof_skipped">Skipped</string>
+    <!-- Privilege tiers (SPEC 4.1), shared by Settings and onboarding. -->
+    <string name="ui_tier">Tier T%1$d</string>
+    <string name="ui_tier_0">Read-only: normal permissions only. Nothing can be applied.</string>
+    <string name="ui_tier_1">Reads Doze and sensor state itself. Applying needs Shizuku, Sui or root.</string>
+    <string name="ui_tier_2">A worker runs as the shell user and applies every lever.</string>
+    <string name="ui_tier_3">A worker runs as root and applies every lever.</string>
 </resources>
