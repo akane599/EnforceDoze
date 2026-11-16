@@ -31,6 +31,19 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
     /** `dumpsys battery unplug` froze the state; `reset` gives it back. */
     var batteryUnplugged = false
 
+    /** The radios (ADR 0038): Wi-Fi on but not connected, data on, by default. */
+    var wifi = true
+    var wifiConnected = false
+    var wifiValidated = false
+    var data = true
+    var airplane = false
+    var canReadRadios = true
+
+    /** Suspended apps, whoever suspended them, and the never-suspend list's answers. */
+    var suspended: Set<String> = emptySet()
+    var blocked: Map<String, String> = emptyMap()
+    var canReadSuspension = true
+
     var canReadConstants = true
     var canReadDeviceIdle = true
 
@@ -95,6 +108,20 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
                 is DeviceWrite.Allowlist -> allowlist = if (write.add) allowlist + write.packageName else allowlist - write.packageName
 
                 is DeviceWrite.Battery -> batteryUnplugged = write.unplugged
+
+                is DeviceWrite.Wifi -> {
+                    wifi = write.enabled
+                    if (!write.enabled) {
+                        wifiConnected = false
+                        wifiValidated = false
+                    }
+                }
+
+                is DeviceWrite.MobileData -> data = write.enabled
+
+                is DeviceWrite.Suspend ->
+                    suspended =
+                        if (write.suspended) suspended + write.packages else suspended - write.packages.toSet()
             }
             return DeviceResult.Ok(Unit)
         }
@@ -116,6 +143,13 @@ internal class FakeDevice(var constants: ConstantsValue = ConstantsValue.Absent,
         override suspend fun readSensors(): DeviceResult<SensorReading> = read("sensors", true) { SensorReading(sensors, privacy) }
 
         override suspend fun readAllowlist(): DeviceResult<Set<String>> = read("allowlist", true) { allowlist }
+
+        override suspend fun readRadios(): DeviceResult<RadioReading> = read("radios", canReadRadios) {
+            RadioReading(wifi, wifiConnected, wifiValidated, data, airplane)
+        }
+
+        override suspend fun readSuspension(packages: Set<String>): DeviceResult<SuspensionReading> =
+            read("suspension", canReadSuspension) { SuspensionReading(suspended intersect packages, blocked.filterKeys { it in packages }) }
 
         /** Forced idle steps straight to IDLE, as `force-idle deep` does; otherwise the screen-on state. */
         override suspend fun readDeepState(): DeviceResult<String> = read("deepState", true) { if (forced) "IDLE" else "ACTIVE" }

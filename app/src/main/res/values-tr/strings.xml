@@ -142,4 +142,8 @@
     <string name="disable_bluetooth_setting_title">Ekran kapanınca Bluetooth\'u devre dışı bırak</string>
     <string name="disable_bluetooth_setting_summary">Cihaz Doze modundayken Bluetooth\'u kapat</string>
     <string name="disable_gps_setting_title">Ekran kapanınca GPS\'i devre dışı bırak</string>
+    <string name="extras_stuck_title">EnforceDoze bir ayarı geri alamıyor</string>
+    <string name="extras_stuck_wifi">Wi-Fi hâlâ kapalı: Hızlı Ayarlar\'dan açın.</string>
+    <string name="extras_stuck_data">Mobil veri hâlâ kapalı: Hızlı Ayarlar\'dan açın.</string>
+    <string name="extras_stuck_apps">Bazı uygulamalar hâlâ askıda: Ayarlar › Uygulamalar\'dan açın ya da EnforceDoze\'a yeniden root verin.</string>
 </resources>

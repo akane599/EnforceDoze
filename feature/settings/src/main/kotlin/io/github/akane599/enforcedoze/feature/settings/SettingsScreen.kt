@@ -35,6 +35,7 @@ import io.github.akane599.enforcedoze.design.SectionHeader
 import io.github.akane599.enforcedoze.design.Space
 import io.github.akane599.enforcedoze.design.SwitchRow
 import io.github.akane599.enforcedoze.design.Tone
+import io.github.akane599.enforcedoze.design.color
 import io.github.akane599.enforcedoze.design.rememberFormats
 import io.github.akane599.enforcedoze.ui.ActionOutcome
 import io.github.akane599.enforcedoze.ui.StateNoticeCard
@@ -73,6 +74,7 @@ public fun SettingsScreen(state: SettingsState, actions: SettingsActions, modifi
             Line(stringResource(R.string.settings_allowlist), stringResource(R.string.settings_allowlist_detail), open, actions::allowlist)
             Line(stringResource(R.string.settings_sensors), stringResource(R.string.settings_sensors_detail), open, actions::sensors)
             Line(stringResource(R.string.settings_switch), stringResource(R.string.settings_switch_detail), open, actions::switchOver)
+            state.extras?.let { Extras(it, actions) }
             Automation(state, actions, formats)
             SectionHeader(stringResource(R.string.settings_records))
             Line(
@@ -169,6 +171,60 @@ private fun HoldOffs(state: SettingsState, actions: SettingsActions) {
         Rule()
     }
 }
+
+/**
+ * The root-tier extras (ADR 0038): each goes off at screen off and comes back at screen on and with every hold-off.
+ * Below T3 a choice still shows, so it can be turned off, but nothing new can be turned on.
+ */
+@Composable
+private fun Extras(extras: ExtrasState, actions: SettingsActions) {
+    SectionHeader(stringResource(R.string.settings_extras))
+    Text(
+        stringResource(if (extras.available) R.string.settings_extras_detail else R.string.settings_extras_needs_root),
+        style = MaterialTheme.typography.bodyLarge,
+        color = Ed.palette.ink,
+    )
+    SwitchRow(
+        stringResource(R.string.settings_extras_wifi),
+        stringResource(R.string.settings_extras_wifi_detail),
+        checked = extras.wifiOff,
+        onChange = actions::wifiOff,
+        enabled = extras.available || extras.wifiOff,
+    )
+    SwitchRow(
+        stringResource(R.string.settings_extras_data),
+        stringResource(R.string.settings_extras_data_detail),
+        checked = extras.dataOff,
+        onChange = actions::dataOff,
+        enabled = extras.available || extras.dataOff,
+    )
+    SectionHeader(
+        stringResource(R.string.settings_extras_suspend),
+        action = stringResource(R.string.settings_add).takeIf { extras.available && extras.suspend.size < MAX_SUSPEND },
+        onAction = actions::addSuspend,
+    )
+    Text(stringResource(R.string.settings_extras_suspend_detail), style = MaterialTheme.typography.bodyMedium, color = Ed.palette.quiet)
+    if (extras.suspend.isEmpty()) return
+    Spacer(Modifier.height(Space.s))
+    Rule()
+    extras.suspend.forEach { chosen ->
+        Row(Modifier.fillMaxWidth().padding(vertical = Space.xs), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f).semantics(mergeDescendants = true) { }) {
+                Text(chosen.app.label, style = MaterialTheme.typography.bodyLarge, color = Ed.palette.ink)
+                Text(
+                    chosen.heldBack?.let { stringResource(R.string.settings_extras_held_back, it) } ?: chosen.app.packageName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (chosen.heldBack != null) Tone.WARNING.color(neutral = Ed.palette.quiet) else Ed.palette.quiet,
+                )
+            }
+            TextButton(onClick = { actions.removeSuspend(chosen.app) }) { Text(stringResource(R.string.settings_remove)) }
+        }
+        Rule()
+    }
+}
+
+/** The worker takes at most 32 packages a call (ADR 0038); the list stays within one. */
+private const val MAX_SUSPEND = 32
 
 @Composable
 private fun Automation(state: SettingsState, actions: SettingsActions, formats: Formats) {

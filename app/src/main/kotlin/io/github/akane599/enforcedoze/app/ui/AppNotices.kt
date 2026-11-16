@@ -42,7 +42,8 @@ internal class AppNotices(
         buildList {
             val levers = status?.levers.orEmpty()
             val lost = levers.filterValues { it.state == LeverState.NOT_WRITABLE }.keys +
-                if (status?.forcedWithoutWorker == true) setOf(Lever.FORCE_IDLE) else emptySet()
+                (if (status?.forcedWithoutWorker == true) setOf(Lever.FORCE_IDLE) else emptySet()) +
+                status?.extrasStuck.orEmpty()
             when {
                 // The plan wants levers the tier can no longer write: the rest stays applied (SPEC 9.3, ADR 0015).
                 lost.isNotEmpty() -> add(StateNotice("lost-${lost.sorted().joinToString()}", NoticeKind.PRIVILEGE_LOST, names(lost)))
@@ -90,4 +91,7 @@ internal fun Lever.label(): Int = when (this) {
     Lever.SENSORS -> UiR.string.ui_lever_sensors
     Lever.SENSOR_PRIVACY -> UiR.string.ui_lever_sensor_privacy
     Lever.ALLOWLIST -> UiR.string.ui_lever_allowlist
+    Lever.WIFI -> UiR.string.ui_lever_wifi
+    Lever.MOBILE_DATA -> UiR.string.ui_lever_mobile_data
+    Lever.APP_SUSPENSION -> UiR.string.ui_lever_app_suspension
 }

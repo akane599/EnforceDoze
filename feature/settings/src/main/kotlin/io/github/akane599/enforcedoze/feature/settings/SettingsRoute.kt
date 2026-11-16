@@ -35,6 +35,10 @@ public fun SettingsRoute(viewModel: SettingsViewModel, navigation: SettingsNavig
         override fun privilege() = navigation.privilege()
         override fun addKeepAwake() = navigation.addKeepAwake()
         override fun removeKeepAwake(app: AppRef) = viewModel.removeKeepAwake(app)
+        override fun wifiOff(on: Boolean) = viewModel.wifiOff(on)
+        override fun dataOff(on: Boolean) = viewModel.dataOff(on)
+        override fun addSuspend() = navigation.addSuspend()
+        override fun removeSuspend(app: AppRef) = viewModel.removeSuspend(app)
         override fun reapplyOnDrift(on: Boolean) = viewModel.reapplyOnDrift(on)
 
         override fun wallpaperAccent(on: Boolean) = viewModel.wallpaperAccent(on)

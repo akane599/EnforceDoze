@@ -16,6 +16,34 @@ internal class Observer(private val device: DozeDevice, private val calls: Devic
         if (Lever.FORCE_IDLE in levers || (Lever.CONSTANTS in levers && !exact)) readDeviceIdle()
         if (Lever.SENSORS in levers || Lever.SENSOR_PRIVACY in levers) readSensors()
         if (Lever.ALLOWLIST in levers) readAllowlist()
+        // The extras are read only when chosen or still held, so an owner who never uses them pays nothing.
+        if (needed(Lever.WIFI, levers) || needed(Lever.MOBILE_DATA, levers)) readRadios()
+        if (needed(Lever.APP_SUSPENSION, levers)) readSuspension()
+    }
+
+    private fun needed(lever: Lever, levers: Set<Lever>): Boolean =
+        lever in levers && (book.persisted.extras.uses(lever) || book.written[lever] != null)
+
+    private suspend fun readRadios() {
+        val reading = (calls.run(null) { device.readRadios() } as? DeviceResult.Ok)?.value
+        book.radios = reading
+        if (reading == null) {
+            book.seen.remove(Lever.WIFI)
+            book.seen.remove(Lever.MOBILE_DATA)
+            return
+        }
+        book.seen[Lever.WIFI] = Setting.Wifi(reading.wifiEnabled)
+        book.seen[Lever.MOBILE_DATA] = Setting.MobileData(reading.dataEnabled)
+    }
+
+    /** The chosen apps and any the engine still holds; the lever reads as the suspended ones among them. */
+    private suspend fun readSuspension() {
+        val held = (book.written[Lever.APP_SUSPENSION] as? Setting.Suspension)?.packages.orEmpty()
+        val asked = book.persisted.extras.suspend + held
+        val reading = (calls.run(null) { device.readSuspension(asked) } as? DeviceResult.Ok)?.value
+        book.suspension = reading
+        reading?.let { book.seen[Lever.APP_SUSPENSION] = Setting.Suspension(it.suspended intersect asked) }
+            ?: book.seen.remove(Lever.APP_SUSPENSION)
     }
 
     suspend fun readConstants(): Boolean {

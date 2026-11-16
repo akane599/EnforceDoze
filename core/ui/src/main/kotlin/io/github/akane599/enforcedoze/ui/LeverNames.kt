@@ -14,5 +14,8 @@ public fun Lever.title(): String = stringResource(
         Lever.SENSORS -> R.string.ui_lever_sensors
         Lever.SENSOR_PRIVACY -> R.string.ui_lever_sensor_privacy
         Lever.ALLOWLIST -> R.string.ui_lever_allowlist
+        Lever.WIFI -> R.string.ui_lever_wifi
+        Lever.MOBILE_DATA -> R.string.ui_lever_mobile_data
+        Lever.APP_SUSPENSION -> R.string.ui_lever_app_suspension
     },
 )

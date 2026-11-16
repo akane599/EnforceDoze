@@ -83,4 +83,15 @@
     <string name="settings_sensors_detail">Son ekran kapanışında sensör tutan uygulamalar ve tüm sensörleri kapatan anahtar.</string>
     <string name="settings_switch">Başka bir kurulumdan geçiş</string>
     <string name="settings_switch_detail">Tasker\'ın ya da başka bir uygulamanın EnforceDoze\'dan önce ayarladıkları: profil olarak saklayın, kapalı olduğunu denetleyin ya da ona geri dönün.</string>
+    <string name="settings_extras">Kök ekstraları</string>
+    <string name="settings_extras_detail">Her biri ekran kapanınca kapanır, ekran açılınca ve bir arama, müzik, araç modu, erişim noktası, uyanık tutulan bir uygulama ya da şarj Doze\'u beklettiğinde geri gelir. Kazanç küçüktür: önce profilleri deneyin.</string>
+    <string name="settings_extras_needs_root">Bunlar root ister (T3 kademesi). Hâlâ açık olan, sonraki ekran açılışında geri alınır; buradan kapatın.</string>
+    <string name="settings_extras_wifi">Doze\'da Wi-Fi kapalı</string>
+    <string name="settings_extras_wifi_detail">Yalnızca Wi-Fi açık ama bağlı değilken; böylece Wi-Fi arama hiç kesilmez. Taramadan tasarruf eder.</string>
+    <string name="settings_extras_data">Doze\'da mobil veri kapalı</string>
+    <string name="settings_extras_data_detail">Yalnızca bağlantıyı çalışan bir Wi-Fi ağı taşırken; ağ gidince hemen geri açılır. Android veri kapalıyken VoLTE aramalarını sürdürür; bu telefonun operatörü henüz denetlenmedi.</string>
+    <string name="settings_extras_suspend">Doze\'da askıya al</string>
+    <string name="settings_extras_suspend_detail">Seçilen uygulamalar ekran açılana kadar duraklatılır. Arama için çalan, alarm tutan, yazı yazan ya da ekranı okuyan uygulamalar ve telefonun kendi uygulamaları asla askıya alınmaz.</string>
+    <string name="settings_extras_held_back">Bekletildi: %1$s</string>
+    <string name="settings_suspend_picker">Doze\'da askıya al</string>
 </resources>

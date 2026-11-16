@@ -44,6 +44,9 @@ internal class EngineCore(
     /** The profile id last logged as missing, so each screen event does not log it again. */
     private var missing: String? = null
 
+    /** Extras someone else changed while the screen was off: left alone until the next screen off (ADR 0038). */
+    private var letGo: Set<Lever> = emptySet()
+
     private val mode: Mode get() = book.persisted.mode
 
     /** Restart rule (SPEC 12.4): load the book, read everything, log what drifted while stopped, then reconcile. */
@@ -112,13 +115,37 @@ internal class EngineCore(
             // On without the keyguard is unlocked as well, whether USER_PRESENT came first, comes later or not at all.
             movePlan(if (on && !lockedNow) PlanSchedule.unlocked(awake, localTime()) else awake, SwitchReason.SCHEDULE)
         }
+        letGo = emptySet()
         if (!started) return
         if (on) {
             reconcile(Cause.SCREEN_ON)
             return
         }
-        reconcile(Cause.SCREEN_OFF)
+        val extras = readExtras(Lever.EXTRAS)
+        reconcile(Cause.SCREEN_OFF, corrections(drifts(extras, whileStopped = false)))
         checkConstantsDrift()
+    }
+
+    /** The extras in [levers] that are chosen or held, read fresh: each one goes on only after a read (ADR 0038). */
+    private suspend fun readExtras(levers: Set<Lever>): Set<Lever> {
+        val needed = levers.filter { book.persisted.extras.uses(it) || book.written[it] != null }.toSet()
+        if (needed.isNotEmpty()) observer.read(needed)
+        return needed
+    }
+
+    /** The owner chose the extras in Settings (ADR 0038); what changed applies at the next screen off. */
+    suspend fun setExtras(extras: Extras) {
+        book.persisted = book.persisted.copy(extras = extras)
+        if (!started) return
+        val changed = readExtras(Lever.EXTRAS)
+        reconcile(Cause.OWNER, corrections(drifts(changed, whileStopped = false)))
+    }
+
+    /** The connection changed (ADR 0038): mobile data comes back when the Wi-Fi network goes. */
+    suspend fun radiosChanged() {
+        if (!started) return
+        val radios = readExtras(setOf(Lever.WIFI, Lever.MOBILE_DATA))
+        if (radios.isNotEmpty()) reconcile(Cause.NETWORK, corrections(drifts(radios, whileStopped = false)))
     }
 
     /**
@@ -215,7 +242,7 @@ internal class EngineCore(
         capturePrevious()
         // A string the engine did not write and could not save in previous.json is never deleted: that could not be undone.
         val keepString = previous == null && book.written[Lever.CONSTANTS] == null
-        val targets = Targets.restoreStock(book.persisted.ownerAllowlist).let { if (keepString) it - Lever.CONSTANTS else it }
+        val targets = Targets.restoreStock(book.persisted.ownerAllowlist, book.written).let { if (keepString) it - Lever.CONSTANTS else it }
         val job = oneShot(targets, Cause.RESTORE_STOCK)
         val snapshot = stock
         val differences = snapshot?.let {
@@ -401,6 +428,8 @@ internal class EngineCore(
             storeError = storeError,
             batteryFrozen = book.persisted.proofStartedAt != null,
             plan = book.persisted.plan,
+            extrasStuck = Lever.EXTRAS.filter { book.written[it] != null && !writable.extras }.toSet(),
+            extras = book.persisted.extras,
         )
     }
 
@@ -418,6 +447,10 @@ internal class EngineCore(
             allowlistKeep = book.persisted.allowlistKeep,
             ownerAllowlist = book.persisted.ownerAllowlist,
             written = book.written,
+            extras = book.persisted.extras,
+            radios = book.radios,
+            suspension = book.suspension,
+            letGo = letGo,
         ),
     )
 
@@ -502,6 +535,11 @@ internal class EngineCore(
      * engine still wants what it wrote, and never a third time within an hour: that trips the guard.
      */
     private suspend fun corrections(drifted: List<Lever>): Set<Lever> {
+        // An extra someone else changed is theirs: never re-applied, not held, left alone until the next screen off.
+        drifted.filter { it.extra }.forEach { lever ->
+            book.forgetWritten(lever)
+            letGo = letGo + lever
+        }
         if (drifted.isEmpty() || !book.persisted.reapplyOnDrift) return emptySet()
         val wanted = targets().wanted
         val now = clock.now()
@@ -591,21 +629,20 @@ internal class EngineCore(
         val check = book.constantsCheck.takeIf { lever == Lever.CONSTANTS }
         return when {
             lever in book.persisted.guarded -> base.copy(state = LeverState.GUARDED)
-
-            wanted == null -> targets.waiting[lever]?.let { base.copy(state = LeverState.WAITING, reason = it) }
-                ?: base.copy(state = restingState(lever, targets).takeUnless { it == LeverState.APPLIED } ?: LeverState.UNUSED)
-
+            wanted == null -> unwantedStatus(lever, targets, base)
             !writable.can(lever) -> base.copy(state = LeverState.NOT_WRITABLE)
-
             seen != null && seen != wanted -> base.copy(state = LeverState.PARTLY, reason = "expected $wanted, reads $seen")
-
             !check.isNullOrEmpty() -> base.copy(state = LeverState.PARTLY, reason = check.joinToString("; "))
-
             seen == null && check == null -> base.copy(state = LeverState.UNKNOWN)
-
             else -> base.copy(state = restingState(lever, targets))
         }
     }
+
+    /** A lever with nothing to write now: waiting for something, an extra that stays off for a reason, or at rest. */
+    private fun unwantedStatus(lever: Lever, targets: TargetSet, base: LeverStatus): LeverStatus =
+        targets.waiting[lever]?.let { base.copy(state = LeverState.WAITING, reason = it) }
+            ?: targets.idle[lever]?.let { base.copy(state = LeverState.UNUSED, reason = it) }
+            ?: base.copy(state = restingState(lever, targets).takeUnless { it == LeverState.APPLIED } ?: LeverState.UNUSED)
 
     /** The state of a lever that reads back as wanted: armed or held off when the profile uses it later. */
     private fun restingState(lever: Lever, targets: TargetSet): LeverState = when (lever) {

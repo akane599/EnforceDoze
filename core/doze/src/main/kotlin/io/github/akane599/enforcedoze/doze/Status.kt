@@ -76,7 +76,14 @@ public data class EngineStatus(
     val batteryFrozen: Boolean = false,
     /** The plan, its slot and any profile applied outside it (SPEC 6.5, 11.1 `GET_STATUS`). */
     val plan: PlanState? = null,
+    /** Extras the engine holds (a radio off, apps suspended) that the current tier cannot put back (ADR 0038). */
+    val extrasStuck: Set<Lever> = emptySet(),
+    /** The owner's root-tier extras (ADR 0038). */
+    val extras: Extras = Extras(),
 ) {
+    /** The engine holds Wi-Fi or mobile data off, so the connection is watched until it puts them back. */
+    val radiosHeld: Boolean get() = levers[Lever.WIFI]?.written != null || levers[Lever.MOBILE_DATA]?.written != null
+
     /** "Partly applied" on the home screen (SPEC 5.6 step 2). */
     val partlyApplied: Boolean get() = missingKeys.isNotEmpty() || levers.values.any { it.state in PARTLY_STATES }
 

@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.data
 
 import io.github.akane599.enforcedoze.doze.ConstantsValue
 import io.github.akane599.enforcedoze.doze.EngineStore
+import io.github.akane599.enforcedoze.doze.Extras
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
@@ -127,6 +128,9 @@ internal data class SettingFile(
         Lever.SENSORS -> Setting.Sensors(sensorValue(requireNotNull(sensors) { "sensors without a mode" }, allowPackage))
         Lever.SENSOR_PRIVACY -> Setting.SensorPrivacy(requireNotNull(on) { "sensor privacy without a value" })
         Lever.ALLOWLIST -> Setting.Allowlist(packages.orEmpty().toSet())
+        Lever.WIFI -> Setting.Wifi(requireNotNull(on) { "Wi-Fi without a value" })
+        Lever.MOBILE_DATA -> Setting.MobileData(requireNotNull(on) { "mobile data without a value" })
+        Lever.APP_SUSPENSION -> Setting.Suspension(packages.orEmpty().toSet())
     }
 
     companion object {
@@ -144,6 +148,12 @@ internal data class SettingFile(
             is Setting.SensorPrivacy -> SettingFile(setting.lever.name, on = setting.on)
 
             is Setting.Allowlist -> SettingFile(setting.lever.name, packages = setting.packages.sorted())
+
+            is Setting.Wifi -> SettingFile(setting.lever.name, on = setting.enabled)
+
+            is Setting.MobileData -> SettingFile(setting.lever.name, on = setting.enabled)
+
+            is Setting.Suspension -> SettingFile(setting.lever.name, packages = setting.packages.sorted())
         }
     }
 }
@@ -180,6 +190,8 @@ internal data class StateFile(
     val proofStartedAt: String? = null,
     /** The plan and its slot (SPEC 6.5). */
     val plan: PlanFile? = null,
+    /** The root-tier extras (ADR 0038); absent while none is chosen. */
+    val extras: ExtrasFile? = null,
 ) {
     fun toState(): PersistedState = PersistedState(
         mode = Mode.valueOf(mode),
@@ -192,6 +204,7 @@ internal data class StateFile(
         allowlistKeep = allowlistKeep?.toSet(),
         proofStartedAt = proofStartedAt?.let(Instant::parse),
         plan = plan?.toState(),
+        extras = extras?.toExtras() ?: Extras(),
     )
 
     companion object {
@@ -206,7 +219,18 @@ internal data class StateFile(
             allowlistKeep = state.allowlistKeep?.sorted(),
             proofStartedAt = state.proofStartedAt?.toString(),
             plan = state.plan?.let(PlanFile::of),
+            extras = state.extras.takeIf { it != Extras() }?.let(ExtrasFile::of),
         )
+    }
+}
+
+/** The root-tier extras in `state.json` (ADR 0038). */
+@Serializable
+internal data class ExtrasFile(val wifiOff: Boolean = false, val dataOff: Boolean = false, val suspend: List<String> = emptyList()) {
+    fun toExtras(): Extras = Extras(wifiOff, dataOff, suspend.toSet())
+
+    companion object {
+        fun of(extras: Extras): ExtrasFile = ExtrasFile(extras.wifiOff, extras.dataOff, extras.suspend.sorted())
     }
 }
 

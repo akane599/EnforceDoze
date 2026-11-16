@@ -38,7 +38,10 @@ internal class Executor(
         if (plan.isEmpty()) return emptyList()
         val before = book.written
         val engages = if (writeAhead) plan.filterNot { isRelease(it) } else emptyList()
-        engages.forEach { book.wrote(it) }
+        // A smaller suspension is booked with what it lifts, so an unsuspend that fails is tried again (ADR 0038).
+        engages.forEach {
+            book.wrote(if (it is Setting.Suspension) Setting.Suspension(it.packages + held(before[Lever.APP_SUSPENSION])) else it)
+        }
         val saved = engages.isEmpty() || persist()
         val attempts = plan.associateWith { setting ->
             if (!saved && setting in engages) {
@@ -80,15 +83,31 @@ internal class Executor(
         is Setting.Sensors -> setting.value == SensorValue.Normal
         is Setting.SensorPrivacy -> !setting.on
         is Setting.Allowlist -> setting.packages == book.persisted.ownerAllowlist
+        is Setting.Wifi, is Setting.MobileData, is Setting.Suspension -> setting.releasesExtra
     }
 
     private suspend fun write(setting: Setting): List<Attempt> {
-        val writes = writesFor(setting) ?: return listOf(Attempt(setting, ALLOWLIST, null, DeviceResult.Failed(UNREADABLE_ALLOWLIST)))
+        val writes = writesFor(setting) ?: return listOf(unreadable(setting))
         return writes.map { write -> Attempt(setting, write.label, write, calls.run(setting.lever) { device.write(write) }) }
     }
 
+    private fun unreadable(setting: Setting): Attempt = if (setting is Setting.Suspension) {
+        Attempt(setting, SUSPEND, null, DeviceResult.Failed(UNREADABLE_SUSPENSION))
+    } else {
+        Attempt(setting, ALLOWLIST, null, DeviceResult.Failed(UNREADABLE_ALLOWLIST))
+    }
+
+    private fun held(setting: Setting?): Set<String> = (setting as? Setting.Suspension)?.packages.orEmpty()
+
     /** Books [setting] or puts back what was booked [before], after the read-back (see the class comment). */
     private fun settleBooking(setting: Setting, attempts: List<Attempt>, before: Setting?) {
+        if (setting is Setting.Suspension) {
+            // The engine holds what it asked for or held before and that reads as suspended; unread, it keeps all of it.
+            val asked = setting.packages + held(before)
+            val seen = (book.seen[Lever.APP_SUSPENSION] as? Setting.Suspension)?.packages
+            book.wrote(Setting.Suspension(seen?.let { asked intersect it } ?: asked))
+            return
+        }
         val seen = book.seen[setting.lever]
         val keep = when {
             seen == setting -> true
@@ -119,10 +138,33 @@ internal class Executor(
             (current - setting.packages).sorted().map { DeviceWrite.Allowlist(it, add = false) } +
                 (setting.packages - current).sorted().map { DeviceWrite.Allowlist(it, add = true) }
         }
+
+        is Setting.Wifi -> listOf(DeviceWrite.Wifi(setting.enabled))
+
+        is Setting.MobileData -> listOf(DeviceWrite.MobileData(setting.enabled))
+
+        is Setting.Suspension -> suspensionWrites(setting)
+    }
+
+    /**
+     * Suspends what is wanted and not suspended yet, and unsuspends only what the engine holds (ADR 0038). With the
+     * apps unread, a release still unsuspends everything held: that is harmless for an app that is not suspended.
+     */
+    private fun suspensionWrites(setting: Setting.Suspension): List<DeviceWrite>? {
+        val held = held(book.written[Lever.APP_SUSPENSION])
+        val current = (book.seen[Lever.APP_SUSPENSION] as? Setting.Suspension)?.packages
+            ?: if (setting.packages.isEmpty()) held else return null
+        val lift = ((current intersect held) - setting.packages).sorted()
+        val add = (setting.packages - current).sorted()
+        return listOfNotNull(
+            lift.takeIf { it.isNotEmpty() }?.let { DeviceWrite.Suspend(it, suspended = false) },
+            add.takeIf { it.isNotEmpty() }?.let { DeviceWrite.Suspend(it, suspended = true) },
+        )
     }
 
     private fun expected(attempt: Attempt): String = when (val write = attempt.write) {
         is DeviceWrite.Allowlist -> "${write.packageName} ${if (write.add) "on" else "off"} the allowlist"
+        is DeviceWrite.Suspend -> "${write.packages.joinToString(",")} ${if (write.suspended) "suspended" else "not suspended"}"
         else -> attempt.setting.toString()
     }
 
@@ -136,12 +178,16 @@ internal class Executor(
     }
 
     private fun verify(attempt: Attempt, seen: Setting?, detail: String): Triple<Outcome, String?, String> {
-        val write = attempt.write
-        if (write is DeviceWrite.Allowlist) {
-            val packages = (seen as? Setting.Allowlist)?.packages ?: return Triple(Outcome.UNVERIFIED, null, detail)
-            val on = write.packageName in packages
-            val outcome = if (on == write.add) Outcome.OK else Outcome.MISMATCH
-            return Triple(outcome, "${write.packageName} ${if (on) "on" else "off"} the allowlist", detail)
+        when (val write = attempt.write) {
+            is DeviceWrite.Allowlist -> return verifyPackages(listOf(write.packageName), write.add, seen, detail) { on ->
+                if (on) "on the allowlist" else "off the allowlist"
+            }
+
+            is DeviceWrite.Suspend -> return verifyPackages(write.packages, write.suspended, seen, detail) { on ->
+                if (on) "suspended" else "not suspended"
+            }
+
+            else -> Unit
         }
         val check = book.constantsCheck.takeIf { attempt.setting.lever == Lever.CONSTANTS }
         return when {
@@ -152,10 +198,29 @@ internal class Executor(
         }
     }
 
+    /** A write that moves [packages] in or out of a set (the allowlist, the suspended apps), judged per package. */
+    private fun verifyPackages(
+        packages: List<String>,
+        wantedIn: Boolean,
+        seen: Setting?,
+        detail: String,
+        word: (Boolean) -> String,
+    ): Triple<Outcome, String?, String> {
+        val shown = when (seen) {
+            is Setting.Allowlist -> seen.packages
+            is Setting.Suspension -> seen.packages
+            else -> return Triple(Outcome.UNVERIFIED, null, detail)
+        }
+        val outcome = if (packages.all { (it in shown) == wantedIn }) Outcome.OK else Outcome.MISMATCH
+        return Triple(outcome, packages.joinToString(",") { "$it ${word(it in shown)}" }, detail)
+    }
+
     private companion object {
         const val ALLOWLIST = "cmd deviceidle whitelist"
         const val NOTHING = "nothing written"
         const val UNREADABLE_ALLOWLIST = "the allowlist could not be read, so it was not changed"
+        const val SUSPEND = "pm suspend"
+        const val UNREADABLE_SUSPENSION = "the chosen apps could not be read, so none was suspended"
         const val UNSAVED = "the engine's state could not be saved, so nothing was turned on"
     }
 }

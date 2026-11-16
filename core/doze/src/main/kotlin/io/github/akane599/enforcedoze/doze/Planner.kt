@@ -22,8 +22,28 @@ public object Planner {
      */
     public fun order(wanted: Map<Lever, Setting>): List<Lever> = if (wanted[Lever.FORCE_IDLE] == Setting.FORCED) ENGAGE else RELEASE
 
-    private val ENGAGE = listOf(Lever.SENSORS, Lever.SENSOR_PRIVACY, Lever.FORCE_IDLE, Lever.CONSTANTS, Lever.ALLOWLIST)
-    private val RELEASE = listOf(Lever.FORCE_IDLE, Lever.SENSORS, Lever.SENSOR_PRIVACY, Lever.CONSTANTS, Lever.ALLOWLIST)
+    // The extras come after forced idle when engaging and right after it when releasing: at screen on the radios and
+    // the suspended apps come back before anything that is not time-critical (ADR 0038).
+    private val ENGAGE = listOf(
+        Lever.SENSORS,
+        Lever.SENSOR_PRIVACY,
+        Lever.FORCE_IDLE,
+        Lever.APP_SUSPENSION,
+        Lever.MOBILE_DATA,
+        Lever.WIFI,
+        Lever.CONSTANTS,
+        Lever.ALLOWLIST,
+    )
+    private val RELEASE = listOf(
+        Lever.FORCE_IDLE,
+        Lever.WIFI,
+        Lever.MOBILE_DATA,
+        Lever.APP_SUSPENSION,
+        Lever.SENSORS,
+        Lever.SENSOR_PRIVACY,
+        Lever.CONSTANTS,
+        Lever.ALLOWLIST,
+    )
 }
 
 /** SPEC 5.7: after two drift corrections of one lever within an hour, the engine stops re-applying it and asks. */

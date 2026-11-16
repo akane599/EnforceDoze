@@ -24,9 +24,20 @@ internal class Book(var persisted: PersistedState) {
     /** What the effective values showed against lever A's last write: null unchecked, empty when they match. */
     var constantsCheck: List<String>? = null
 
+    /** The radios as last read (ADR 0038). */
+    var radios: RadioReading? = null
+
+    /** The chosen apps as last read, with the never-suspend list's answers (ADR 0038). */
+    var suspension: SuspensionReading? = null
+
     val written: Map<Lever, Setting> get() = persisted.written
 
+    /** An extra put back is not booked: from then on the owner's changes to it are theirs, not drift (ADR 0038). */
     fun wrote(setting: Setting) {
+        if (setting.releasesExtra) {
+            forgetWritten(setting.lever)
+            return
+        }
         persisted = persisted.copy(written = persisted.written + (setting.lever to setting))
     }
 

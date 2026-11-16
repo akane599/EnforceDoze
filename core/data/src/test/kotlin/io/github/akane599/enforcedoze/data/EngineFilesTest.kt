@@ -3,6 +3,7 @@ package io.github.akane599.enforcedoze.data
 
 import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.doze.ConstantsValue
+import io.github.akane599.enforcedoze.doze.Extras
 import io.github.akane599.enforcedoze.doze.Lever
 import io.github.akane599.enforcedoze.doze.Mode
 import io.github.akane599.enforcedoze.doze.PersistedState
@@ -48,6 +49,9 @@ class EngineFilesTest {
                 Lever.SENSORS to Setting.Sensors(SensorValue.Restricted("io.github.akane599.enforcedoze")),
                 Lever.SENSOR_PRIVACY to Setting.PRIVACY_OFF,
                 Lever.ALLOWLIST to Setting.Allowlist(setOf("b", "a")),
+                Lever.WIFI to Setting.WIFI_OFF,
+                Lever.MOBILE_DATA to Setting.DATA_OFF,
+                Lever.APP_SUSPENSION to Setting.Suspension(setOf("org.example.feed")),
             ),
             corrections = mapOf(Lever.CONSTANTS to listOf(time, time.plusSeconds(1800))),
             guarded = setOf(Lever.FORCE_IDLE),
@@ -60,6 +64,7 @@ class EngineFilesTest {
                 PlanSlot.NIGHT,
                 override = "pocket",
             ),
+            extras = Extras(wifiOff = true, dataOff = true, suspend = setOf("org.example.feed")),
         )
         val files = files()
         files.save(state)

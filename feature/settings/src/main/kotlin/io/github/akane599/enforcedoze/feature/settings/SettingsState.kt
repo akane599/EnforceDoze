@@ -14,6 +14,19 @@ public data class PrivilegeStatus(val tier: Int, val via: String? = null, val mi
 @Immutable
 public data class AppRef(val packageName: String, val label: String)
 
+/** An app chosen for suspension during Doze, and why the never-suspend list holds it back now, if it does (ADR 0038). */
+@Immutable
+public data class SuspendApp(val app: AppRef, val heldBack: String? = null)
+
+/** The root-tier extras (ADR 0038): shown at T3, or while one is still chosen; [available] only at T3. */
+@Immutable
+public data class ExtrasState(
+    val available: Boolean,
+    val wifiOff: Boolean = false,
+    val dataOff: Boolean = false,
+    val suspend: List<SuspendApp> = emptyList(),
+)
+
 /** An app the automation API answers (ADR 0033): a token is bound to it, made at [created]. */
 @Immutable
 public data class AutomationClient(val packageName: String, val label: String, val created: Long)
@@ -30,6 +43,8 @@ public data class SettingsState(
     val keepAwake: List<AppRef> = emptyList(),
     /** Re-apply a profile's constants when another writer changed them (SPEC 5.6), on by default. */
     val reapplyOnDrift: Boolean = true,
+    /** Null hides the section: below T3 with nothing chosen. */
+    val extras: ExtrasState? = null,
     /** The automation API receiver (SPEC 11.1), off until the owner turns it on. */
     val automation: Boolean = false,
     /** The apps with a token, in the order they were added. */
@@ -74,6 +89,13 @@ public interface SettingsSource {
     public suspend fun retention(days: Int)
 
     public suspend fun removeKeepAwake(packageName: String)
+
+    /** The root-tier extras (ADR 0038). */
+    public suspend fun wifiOff(on: Boolean)
+
+    public suspend fun dataOff(on: Boolean)
+
+    public suspend fun removeSuspend(packageName: String)
 
     /** A new token for [packageName], replacing its old one (ADR 0033). */
     public suspend fun makeToken(packageName: String)

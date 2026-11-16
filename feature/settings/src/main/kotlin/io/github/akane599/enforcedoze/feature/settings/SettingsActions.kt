@@ -4,12 +4,21 @@ package io.github.akane599.enforcedoze.feature.settings
 import io.github.akane599.enforcedoze.ui.StateNotice
 
 /** What Settings does on the owner's taps; the route opens the confirmations and pickers. */
+@Suppress("TooManyFunctions") // One function per control on the screen.
 public interface SettingsActions {
     public fun privilege()
 
     public fun addKeepAwake()
 
     public fun removeKeepAwake(app: AppRef)
+
+    public fun wifiOff(on: Boolean)
+
+    public fun dataOff(on: Boolean)
+
+    public fun addSuspend()
+
+    public fun removeSuspend(app: AppRef)
 
     public fun reapplyOnDrift(on: Boolean)
 
@@ -61,6 +70,9 @@ public interface SettingsNavigation {
 
     /** The app picker; the chosen app joins the keep-awake list. */
     public fun addKeepAwake()
+
+    /** The app picker; the chosen app is suspended during Doze (ADR 0038). */
+    public fun addSuspend()
 
     /** The app picker; the chosen app gets an automation token (ADR 0033). */
     public fun addClient()

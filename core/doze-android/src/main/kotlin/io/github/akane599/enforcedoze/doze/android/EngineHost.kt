@@ -62,6 +62,8 @@ public class EngineHost internal constructor(
     private var observer: ContentObserver? = null
     private var privilege: Job? = null
     private var plan: Job? = null
+    private var radios: Job? = null
+    private val network = NetworkWatch(context) { scope.launch(start = CoroutineStart.UNDISPATCHED) { engine.radiosChanged() } }
 
     public val status: StateFlow<EngineStatus> get() = engine.status
 
@@ -87,6 +89,12 @@ public class EngineHost internal constructor(
         plan = scope.launch(Dispatchers.Main.immediate) {
             engine.status.map { it.plan?.plan?.night }.distinctUntilChanged().collect(nightAlarm::request)
         }
+        // The Wi-Fi network is watched only while a radio extra is chosen or held (ADR 0038).
+        radios = scope.launch(Dispatchers.Main.immediate) {
+            engine.status.map { status -> status.extras.wifiOff || status.extras.dataOff || status.radiosHeld }
+                .distinctUntilChanged()
+                .collect { watch -> if (watch) network.start() else network.stop() }
+        }
     }
 
     /** Unregisters everything; the engine stops with its scope. Main thread. */
@@ -95,6 +103,9 @@ public class EngineHost internal constructor(
         privilege = null
         plan?.cancel()
         plan = null
+        radios?.cancel()
+        radios = null
+        network.stop()
         nightAlarm.cancel()
         screenReceiver?.let(context::unregisterReceiver)
         screenReceiver = null
@@ -215,6 +226,7 @@ public class EngineHost internal constructor(
                 writer = ConstantsWriter.create(app),
                 shell = ProcessLocalShell(),
                 grants = { controller.state.value.grants },
+                extras = AndroidExtrasReader(app, keepAwakeApps),
             )
             val engine = DozeEngine(device, store, journal, EngineClock { Instant.now() }, app.packageName, scope, catalog = catalog)
             val sources = listOf(

@@ -52,6 +52,18 @@ public class SettingsViewModel(private val source: SettingsSource) : ViewModel()
         source.tokenShown()
     }
 
+    public fun wifiOff(on: Boolean) {
+        viewModelScope.launch { source.wifiOff(on) }
+    }
+
+    public fun dataOff(on: Boolean) {
+        viewModelScope.launch { source.dataOff(on) }
+    }
+
+    public fun removeSuspend(app: AppRef) {
+        viewModelScope.launch { source.removeSuspend(app.packageName) }
+    }
+
     public fun removeKeepAwake(app: AppRef) {
         viewModelScope.launch { source.removeKeepAwake(app.packageName) }
     }

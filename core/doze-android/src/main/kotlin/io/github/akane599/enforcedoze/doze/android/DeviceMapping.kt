@@ -14,6 +14,7 @@ import io.github.akane599.enforcedoze.parse.SensorServiceDump
 import io.github.akane599.enforcedoze.parse.SettingsDump
 import io.github.akane599.enforcedoze.privilege.Grant
 import io.github.akane599.enforcedoze.privilege.PrivilegeState
+import io.github.akane599.enforcedoze.privilege.Tier
 import io.github.akane599.enforcedoze.privilege.WorkerResult
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 
@@ -28,7 +29,8 @@ internal object DeviceMapping {
     /**
      * What the tier lets the engine write (SPEC 4.1, ADR 0004, 0012): the string with
      * `WRITE_SECURE_SETTINGS`; sensor restriction with `DUMP` (`dumpsys sensorservice restrict|enable`
-     * checks only `DUMP`) or a worker; everything else only through a worker.
+     * checks only `DUMP`) or a worker; everything else only through a worker, and the extras only through a root
+     * worker (ADR 0038).
      */
     fun writable(state: PrivilegeState): Writable {
         val worker = state.workerSource != null
@@ -38,6 +40,7 @@ internal object DeviceMapping {
             sensors = worker || Grant.DUMP in state.grants,
             sensorPrivacy = worker,
             allowlist = worker,
+            extras = worker && state.tier == Tier.T3,
         )
     }
 

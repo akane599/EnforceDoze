@@ -225,4 +225,8 @@
     <string name="sponsor_settings_summary">EnforceDoze is free &amp; open-source — consider sponsoring</string>
 
     <string name="licenses_text">Material Dialogs\nhttps://github.com/afollestad/material-dialogs\nAidan Michael Follestad — MIT License\n\nlibsuperuser\nhttps://github.com/Chainfire/libsuperuser\nChainfire — Apache License 2.0\n\nNanotasks\nhttps://github.com/fabiendevos/nanotasks\nFabien Devos — Apache License 2.0\n\nProcessPhoenix\nhttps://github.com/JakeWharton/ProcessPhoenix\nJake Wharton — Apache License 2.0\n\nSimpleCustomTabs\nhttps://github.com/eliseomartelli/SimpleCustomTabs\nEliseo Martelli — MIT License</string>
+    <string name="extras_stuck_title">EnforceDoze cannot put a setting back</string>
+    <string name="extras_stuck_wifi">Wi-Fi is still off: turn it on in Quick Settings.</string>
+    <string name="extras_stuck_data">Mobile data is still off: turn it on in Quick Settings.</string>
+    <string name="extras_stuck_apps">Some apps are still suspended: open them from Settings › Apps, or give EnforceDoze root again.</string>
 </resources>

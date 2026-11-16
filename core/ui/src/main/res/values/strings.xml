@@ -49,6 +49,9 @@
     <string name="ui_lever_sensors">Sensor restriction</string>
     <string name="ui_lever_sensor_privacy">All sensors off</string>
     <string name="ui_lever_allowlist">Allowlist</string>
+    <string name="ui_lever_wifi">Wi-Fi off</string>
+    <string name="ui_lever_mobile_data">Mobile data off</string>
+    <string name="ui_lever_app_suspension">Apps suspended</string>
     <!-- What each profile is for and what it costs (SPEC 6.1); shared by Profiles, Plan and Recommended. -->
     <string name="ui_profile_purpose_stock">The baseline. Proves what the phone does on its own, and is the comparison in every report.</string>
     <string name="ui_profile_purpose_everyday">Deep idle within about 10 minutes of a still, screen-off phone instead of an hour. The safe default.</string>
@@ -150,4 +153,16 @@
     <string name="ui_check_waiting">Waiting</string>
     <string name="ui_check_unknown">Not read back</string>
     <string name="ui_check_guarded">Left alone</string>
+    <string name="ui_never_suspend_not_installed">not installed</string>
+    <string name="ui_never_suspend_undo">EnforceDoze needs it to undo the suspension</string>
+    <string name="ui_never_suspend_system">a system app</string>
+    <string name="ui_never_suspend_dialer">the phone app</string>
+    <string name="ui_never_suspend_sms">the messaging app</string>
+    <string name="ui_never_suspend_home">a home screen</string>
+    <string name="ui_never_suspend_keyboard">an enabled keyboard</string>
+    <string name="ui_never_suspend_accessibility">an enabled accessibility service</string>
+    <string name="ui_never_suspend_alarms">it sets alarms</string>
+    <string name="ui_never_suspend_next_alarm">the next alarm clock\'s app</string>
+    <string name="ui_never_suspend_calls">it can ring for calls</string>
+    <string name="ui_never_suspend_keep_awake">a keep-awake app</string>
 </resources>

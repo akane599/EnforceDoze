@@ -8,10 +8,33 @@
          reads Wi-Fi state and opens no network connection. -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <!-- The root-tier extras (ADR 0038): which networks exist, whether the default one is validated
+         Wi-Fi, and TelephonyManager.isDataEnabled (its @RequiresPermission anyOf, android-17.0.0_r1).
+         A normal permission that reads state and opens no connection. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <!-- The keep-awake hold-off reads usage events (SPEC 5.5). Usage access is a T1 app op granted by
          the owner or the worker, never at install; without it the query returns nothing. Also
          declared by :core:privilege. -->
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+
+    <!-- The never-suspend list (ADR 0038) asks which apps are home screens, set alarms or ring for calls.
+         The app holds QUERY_ALL_PACKAGES for its pickers; these keep the module correct on its own. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SET_ALARM" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SHOW_ALARMS" />
+        </intent>
+        <intent>
+            <action android:name="android.telecom.ConnectionService" />
+        </intent>
+    </queries>
 </manifest>

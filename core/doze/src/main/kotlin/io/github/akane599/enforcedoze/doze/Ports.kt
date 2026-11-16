@@ -42,6 +42,21 @@ public sealed interface DeviceWrite {
         override val label: String get() = "cmd deviceidle whitelist ${if (add) "+" else "-"}$packageName"
     }
 
+    /** Root-tier Wi-Fi (ADR 0038). */
+    public data class Wifi(val enabled: Boolean) : DeviceWrite {
+        override val label: String get() = "cmd wifi set-wifi-enabled ${if (enabled) "enabled" else "disabled"}"
+    }
+
+    /** Root-tier mobile data (ADR 0038). */
+    public data class MobileData(val enabled: Boolean) : DeviceWrite {
+        override val label: String get() = "cmd phone data ${if (enabled) "enable" else "disable"}"
+    }
+
+    /** Root-tier app suspension (ADR 0038); only packages the engine suspended are ever unsuspended. */
+    public data class Suspend(val packages: List<String>, val suspended: Boolean) : DeviceWrite {
+        override val label: String get() = "pm ${if (suspended) "suspend" else "unsuspend"} ${packages.joinToString(" ")}"
+    }
+
     /** The quick proof's battery freeze (SPEC 8.6), not a lever: frozen as unplugged, or back to the hardware values. */
     public data class Battery(val unplugged: Boolean) : DeviceWrite {
         override val label: String get() = if (unplugged) "dumpsys battery unplug" else "dumpsys battery reset"
@@ -60,6 +75,20 @@ public data class ConstantsReading(val value: ConstantsValue, val writer: String
 
 /** `dumpsys sensorservice`: the mode line (lever C) and the sensor privacy line, either possibly missing. */
 public data class SensorReading(val mode: SensorValue?, val privacy: Boolean?)
+
+/** The radios as the app reads them with public calls (ADR 0038). */
+public data class RadioReading(
+    val wifiEnabled: Boolean,
+    /** A Wi-Fi network is connected, validated or not: Wi-Fi calling may use it. */
+    val wifiConnected: Boolean,
+    /** The phone's connection is a validated Wi-Fi network, so mobile data carries nothing now. */
+    val wifiValidated: Boolean,
+    val dataEnabled: Boolean,
+    val airplane: Boolean,
+)
+
+/** Which of the asked packages are suspended, and which the never-suspend list holds back, with why (ADR 0038). */
+public data class SuspensionReading(val suspended: Set<String>, val blocked: Map<String, String>)
 
 /**
  * The device as the engine sees it. Calls may block for a long time (binder); the engine stops waiting
@@ -82,6 +111,16 @@ public interface DozeDevice {
 
     /** `cmd deviceidle get deep`: the deep state's name as printed, for the quick proof (SPEC 8.6). */
     public suspend fun readDeepState(): DeviceResult<String>
+
+    /** Wi-Fi, mobile data and airplane mode (ADR 0038). */
+    public suspend fun readRadios(): DeviceResult<RadioReading> = DeviceResult.Failed(NO_EXTRAS)
+
+    /** Which of [packages] are suspended now, and which may not be (ADR 0038). */
+    public suspend fun readSuspension(packages: Set<String>): DeviceResult<SuspensionReading> = DeviceResult.Failed(NO_EXTRAS)
+
+    private companion object {
+        const val NO_EXTRAS = "this device port has no root-tier extras"
+    }
 }
 
 public fun interface EngineClock {
@@ -179,7 +218,24 @@ public data class PersistedState(
     val proofStartedAt: Instant? = null,
     /** The plan and the slot it is in (SPEC 6.5); null until the owner sets one, when the start profile applies. */
     val plan: PlanState? = null,
+    /** The root-tier extras the owner chose (ADR 0038). */
+    val extras: Extras = Extras(),
 )
+
+/** The root-tier extras (ADR 0038): all off until the owner turns one on, at T3 only. */
+public data class Extras(
+    val wifiOff: Boolean = false,
+    val dataOff: Boolean = false,
+    /** Apps to suspend during Doze, before the never-suspend list. */
+    val suspend: Set<String> = emptySet(),
+) {
+    public fun uses(lever: Lever): Boolean = when (lever) {
+        Lever.WIFI -> wifiOff
+        Lever.MOBILE_DATA -> dataOff
+        Lever.APP_SUSPENSION -> suspend.isNotEmpty()
+        else -> false
+    }
+}
 
 /** The `previous.json` snapshot (SPEC 5.2, ADR 0012): the string as found, or absent, and who wrote it. */
 public data class PreviousSnapshot(

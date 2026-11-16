@@ -46,6 +46,29 @@ class SettingsScreenshotTest {
             )
         }
 
+    /** ADR 0038 at T3: Wi-Fi off chosen, and one chosen app held back by the never-suspend list. */
+    @Test fun extras() = shoot(
+        MODULE,
+        "settings-extras",
+        listOf(Primary, Primary.copy(dark = false, turkish = true)),
+        length = SETTINGS_LENGTH,
+    ) {
+        SettingsScreen(
+            state.copy(
+                privilege = PrivilegeStatus(tier = 3, via = "Sui"),
+                extras = ExtrasState(
+                    available = true,
+                    wifiOff = true,
+                    suspend = listOf(
+                        SuspendApp(AppRef("org.example.feed", "Feed")),
+                        SuspendApp(AppRef("org.example.chat", "Chat"), heldBack = "it can ring for calls"),
+                    ),
+                ),
+            ),
+            NoSettings,
+        )
+    }
+
     // The token is shown once, with a copy button; only its hash is kept (ADR 0033).
     @Test fun token() = shoot(MODULE, "settings-token", listOf(Primary, Primary.copy(dark = false, turkish = true))) {
         SettingsScreen(state.copy(newToken = NewToken("Tasker", "3f9c0a7be41d26c58e0b71f4a9d3c2e6")), NoSettings)
@@ -77,6 +100,10 @@ private object NoSettings : SettingsActions {
     override fun privilege() = Unit
     override fun addKeepAwake() = Unit
     override fun removeKeepAwake(app: AppRef) = Unit
+    override fun wifiOff(on: Boolean) = Unit
+    override fun dataOff(on: Boolean) = Unit
+    override fun addSuspend() = Unit
+    override fun removeSuspend(app: AppRef) = Unit
     override fun reapplyOnDrift(on: Boolean) = Unit
     override fun wallpaperAccent(on: Boolean) = Unit
     override fun automation(on: Boolean) = Unit

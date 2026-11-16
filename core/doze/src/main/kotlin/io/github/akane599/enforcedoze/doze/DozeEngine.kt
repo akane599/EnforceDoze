@@ -27,7 +27,10 @@ import kotlinx.coroutines.launch
  *
  * [callDispatcher] runs the device calls, which may block on binder.
  */
-@Suppress("LongParameterList") // One argument per port (ADR 0015); a holder object would only hide them.
+@Suppress(
+    "LongParameterList", // One argument per port (ADR 0015); a holder object would only hide them.
+    "TooManyFunctions", // One function per engine command; the actor's whole surface is this class.
+)
 public class DozeEngine(
     device: DozeDevice,
     store: EngineStore,
@@ -101,6 +104,12 @@ public class DozeEngine(
 
     /** Apps kept on a trimmed allowlist; null until the owner chooses, and nothing is trimmed before. */
     public suspend fun setAllowlistKeep(packages: Set<String>?): Unit = submit { setAllowlistKeep(packages) }
+
+    /** The owner's root-tier extras (ADR 0038). */
+    public suspend fun setExtras(extras: Extras): Unit = submit { setExtras(extras) }
+
+    /** The app's network callback saw the connection change (ADR 0038). */
+    public suspend fun radiosChanged(): Unit = submit { radiosChanged() }
 
     public suspend fun restoreStock(): JobResult = submit { restoreStock() }
 

@@ -49,6 +49,9 @@
     <string name="ui_lever_sensors">Sensör kısıtlaması</string>
     <string name="ui_lever_sensor_privacy">Tüm sensörler kapalı</string>
     <string name="ui_lever_allowlist">İzin listesi</string>
+    <string name="ui_lever_wifi">Wi-Fi kapalı</string>
+    <string name="ui_lever_mobile_data">Mobil veri kapalı</string>
+    <string name="ui_lever_app_suspension">Askıya alınan uygulamalar</string>
     <!-- What each profile is for and what it costs (SPEC 6.1); shared by Profiles, Plan and Recommended. -->
     <string name="ui_profile_purpose_stock">Başlangıç noktası. Telefonun kendi başına ne yaptığını gösterir; her rapor bununla karşılaştırır.</string>
     <string name="ui_profile_purpose_everyday">Hareketsiz, ekranı kapalı telefon bir saat yerine yaklaşık 10 dakikada derin uykuya geçer. Güvenli varsayılan.</string>
@@ -150,4 +153,16 @@
     <string name="ui_check_waiting">Bekliyor</string>
     <string name="ui_check_unknown">Okunamadı</string>
     <string name="ui_check_guarded">Dokunulmadı</string>
+    <string name="ui_never_suspend_not_installed">yüklü değil</string>
+    <string name="ui_never_suspend_undo">EnforceDoze askıyı kaldırmak için ona gerek duyar</string>
+    <string name="ui_never_suspend_system">bir sistem uygulaması</string>
+    <string name="ui_never_suspend_dialer">telefon uygulaması</string>
+    <string name="ui_never_suspend_sms">mesajlaşma uygulaması</string>
+    <string name="ui_never_suspend_home">bir ana ekran</string>
+    <string name="ui_never_suspend_keyboard">etkin bir klavye</string>
+    <string name="ui_never_suspend_accessibility">etkin bir erişilebilirlik hizmeti</string>
+    <string name="ui_never_suspend_alarms">alarm kuruyor</string>
+    <string name="ui_never_suspend_next_alarm">sonraki alarmın uygulaması</string>
+    <string name="ui_never_suspend_calls">arama için çalabilir</string>
+    <string name="ui_never_suspend_keep_awake">uyanık tutulan bir uygulama</string>
 </resources>

@@ -5,6 +5,8 @@ import com.google.common.truth.Truth.assertThat
 import io.github.akane599.enforcedoze.doze.ConstantsValue
 import io.github.akane599.enforcedoze.doze.DeviceResult
 import io.github.akane599.enforcedoze.doze.DeviceWrite
+import io.github.akane599.enforcedoze.doze.RadioReading
+import io.github.akane599.enforcedoze.doze.SuspensionReading
 import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.DozeWorkerApi
 import io.github.akane599.enforcedoze.privilege.Grant
@@ -106,7 +108,15 @@ class PrivilegedDozeDeviceTest {
         }
     }
 
-    private val device = PrivilegedDozeDevice(worker, writer, shell) { grants }
+    private var radios =
+        RadioReading(wifiEnabled = true, wifiConnected = false, wifiValidated = false, dataEnabled = true, airplane = false)
+    private val extras = object : ExtrasReader {
+        override fun radios(): RadioReading = radios
+
+        override fun suspension(packages: Set<String>): SuspensionReading = error("the platform refused")
+    }
+
+    private val device = PrivilegedDozeDevice(worker, writer, shell, grants = { grants }, extras = extras)
 
     @Test
     fun `lever A is written by the app itself`() = runTest {
@@ -177,5 +187,32 @@ class PrivilegedDozeDeviceTest {
     fun `no worker is a failed write, never an exception`() = runTest {
         workerUp = false
         assertThat(device.write(DeviceWrite.Unforce)).isEqualTo(DeviceResult.Failed("no worker: tier T1: no worker"))
+    }
+
+    /** ADR 0038: the extras go through the worker; at most 32 packages a suspension call. */
+    @Test
+    fun `the extras are written through the worker, and suspension in calls of 32`() = runTest {
+        device.write(DeviceWrite.Wifi(false))
+        device.write(DeviceWrite.MobileData(true))
+        val apps = List(40) { "org.example.app$it" }
+        device.write(DeviceWrite.Suspend(apps, suspended = true))
+        assertThat(calls).containsExactly(
+            "worker:setWifiEnabled(false)",
+            "worker:setMobileData(true)",
+            "worker:setPackagesSuspended(${apps.take(32)}, true)",
+            "worker:setPackagesSuspended(${apps.drop(32)}, true)",
+        ).inOrder()
+    }
+
+    @Test
+    fun `the extras are read in the app process, and a platform error is a failed read`() = runTest {
+        assertThat((device.readRadios() as DeviceResult.Ok).value).isEqualTo(radios)
+        assertThat(device.readSuspension(setOf("org.example.app"))).isInstanceOf(DeviceResult.Failed::class.java)
+        assertThat(
+            PrivilegedDozeDevice(worker, writer, shell, grants = {
+                grants
+            }).readRadios(),
+        ).isInstanceOf(DeviceResult.Failed::class.java)
+        assertThat(calls).isEmpty()
     }
 }

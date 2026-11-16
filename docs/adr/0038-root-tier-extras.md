@@ -147,8 +147,8 @@ Wireless Android Auto is covered by the car-mode hold-off, which releases every 
   unchanged.
 - **Worker:** `WorkerContract.VERSION` rises, adding `setWifiEnabled`, `setMobileData` and
   `setPackagesSuspended`. Each refuses below uid 0.
-- **Manifest:** gains `ACCESS_WIFI_STATE` and `ACCESS_NETWORK_STATE`, which are normal permissions
-  and not network access. CI's INTERNET check stays.
+- **Manifest:** uses `ACCESS_WIFI_STATE` and `ACCESS_NETWORK_STATE`, which upstream already declared.
+  Both are normal permissions and give no network access. CI's INTERNET check stays.
 - **The night report** lists the extras' actions like any lever's. The recommender does not yet tell
   nights with extras apart: every profile gets the same help from them, but the predicted numbers
   can read better than the profile alone. Q15 asks whether that matters to the owner.

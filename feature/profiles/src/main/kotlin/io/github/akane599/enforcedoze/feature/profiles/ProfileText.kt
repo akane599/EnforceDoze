@@ -18,9 +18,15 @@ import io.github.akane599.enforcedoze.design.R as DesignR
 internal val Lever.letter: String
     get() = when (this) {
         Lever.CONSTANTS -> "A"
+
         Lever.FORCE_IDLE -> "B"
+
         Lever.SENSORS, Lever.SENSOR_PRIVACY -> "C"
+
         Lever.ALLOWLIST -> "D"
+
+        // The root-tier extras are the owner's settings, not a profile's (ADR 0038); they carry no letter.
+        Lever.WIFI, Lever.MOBILE_DATA, Lever.APP_SUSPENSION -> ""
     }
 
 /** One of the four levers as the detail lists it: letter, name, what this profile does with it. */

@@ -5,7 +5,9 @@ import io.github.akane599.enforcedoze.doze.ConstantsReading
 import io.github.akane599.enforcedoze.doze.DeviceResult
 import io.github.akane599.enforcedoze.doze.DeviceWrite
 import io.github.akane599.enforcedoze.doze.DozeDevice
+import io.github.akane599.enforcedoze.doze.RadioReading
 import io.github.akane599.enforcedoze.doze.SensorReading
+import io.github.akane599.enforcedoze.doze.SuspensionReading
 import io.github.akane599.enforcedoze.parse.DeviceIdleDump
 import io.github.akane599.enforcedoze.privilege.ConstantsWriter
 import io.github.akane599.enforcedoze.privilege.DozeWorkerApi
@@ -15,6 +17,7 @@ import io.github.akane599.enforcedoze.privilege.WorkerResult
 import io.github.akane599.enforcedoze.privilege.api.CommandOutcome
 import io.github.akane599.enforcedoze.privilege.api.CommandRunner
 import io.github.akane599.enforcedoze.privilege.api.ProcessCommandRunner
+import io.github.akane599.enforcedoze.privilege.api.WorkerContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -62,6 +65,7 @@ internal class PrivilegedDozeDevice(
     private val writer: ConstantsWriter,
     private val shell: LocalShell,
     private val grants: () -> Set<Grant>,
+    private val extras: ExtrasReader? = null,
 ) : DozeDevice {
     private val dump: Boolean get() = Grant.DUMP in grants()
 
@@ -84,6 +88,39 @@ internal class PrivilegedDozeDevice(
 
         // DEVICE_POWER, which only the worker holds.
         is DeviceWrite.Battery -> onWorker { setBatteryUnplugged(write.unplugged) }
+
+        // The root-tier extras (ADR 0038); the worker refuses them below root.
+        is DeviceWrite.Wifi -> onWorker { setWifiEnabled(write.enabled) }
+
+        is DeviceWrite.MobileData -> onWorker { setMobileData(write.enabled) }
+
+        is DeviceWrite.Suspend -> suspend(write)
+    }
+
+    /** At most [WorkerContract.MAX_SUSPEND] packages a call; the first refused call is the answer. */
+    private suspend fun suspend(write: DeviceWrite.Suspend): DeviceResult<Unit> {
+        var last: DeviceResult<Unit> = DeviceResult.Ok(Unit)
+        for (chunk in write.packages.chunked(WorkerContract.MAX_SUSPEND)) {
+            last = onWorker { setPackagesSuspended(chunk, write.suspended) }
+            if (last is DeviceResult.Failed) return last
+        }
+        return last
+    }
+
+    override suspend fun readRadios(): DeviceResult<RadioReading> = local { it.radios() }
+
+    override suspend fun readSuspension(packages: Set<String>): DeviceResult<SuspensionReading> = local { it.suspension(packages) }
+
+    @Suppress("TooGenericExceptionCaught") // A platform call that throws is a failed read, never a dead engine.
+    private suspend fun <T> local(read: (ExtrasReader) -> T): DeviceResult<T> {
+        val reader = extras ?: return DeviceResult.Failed("no reader for the root-tier extras")
+        return withContext(Dispatchers.IO) {
+            try {
+                DeviceResult.Ok(read(reader))
+            } catch (e: RuntimeException) {
+                DeviceResult.Failed(e.toString())
+            }
+        }
     }
 
     override suspend fun readConstants(): DeviceResult<ConstantsReading> {

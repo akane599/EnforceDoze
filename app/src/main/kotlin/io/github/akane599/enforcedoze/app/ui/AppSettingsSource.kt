@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import io.github.akane599.enforcedoze.privilege.Tier
+import io.github.akane599.enforcedoze.feature.settings.SuspendApp
+import io.github.akane599.enforcedoze.feature.settings.ExtrasState
+import io.github.akane599.enforcedoze.doze.android.neverSuspend
+import io.github.akane599.enforcedoze.doze.Extras
 import android.app.LocaleManager
 import io.github.akane599.enforcedoze.app.EngineService
 import com.akylas.enforcedoze.R
@@ -52,6 +59,7 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
                 keepAwake = services.prefs.keepAwake.map { AppRef(it, services.labels.label(it) ?: it) }.sortedBy { it.label.lowercase() },
                 // The engine saves its state after every command, so the saved file holds the choice either way.
                 reapplyOnDrift = services.graph.store.load().reapplyOnDrift,
+                extras = extras(privilege),
                 automation = services.prefs.automation,
                 clients = clients,
                 taskerOffer = TASKER.takeIf { tasker -> clients.none { it.packageName == tasker } && services.labels.installed(tasker) },
@@ -100,6 +108,32 @@ internal class AppSettingsSource(private val services: AppServices) : SettingsSo
 
     override suspend fun removeKeepAwake(packageName: String) {
         services.prefs.keepAwake = services.prefs.keepAwake - packageName
+    }
+
+    /** The root-tier extras (ADR 0038): shown at T3, or while one is still chosen so it can be turned off. */
+    private suspend fun extras(privilege: PrivilegeState): ExtrasState? {
+        val chosen = services.graph.store.load().extras
+        val available = privilege.tier == Tier.T3
+        if (!available && chosen == Extras()) return null
+        val reasons = withContext(Dispatchers.IO) { neverSuspend(app, chosen.suspend, services.prefs.keepAwake) }
+        val apps = chosen.suspend.map { name ->
+            SuspendApp(AppRef(name, services.labels.label(name) ?: name), reasons[name]?.let { app.getString(it.label()) })
+        }.sortedBy { it.app.label.lowercase() }
+        return ExtrasState(available, chosen.wifiOff, chosen.dataOff, apps)
+    }
+
+    override suspend fun wifiOff(on: Boolean) = changeExtras { it.copy(wifiOff = on) }
+
+    override suspend fun dataOff(on: Boolean) = changeExtras { it.copy(dataOff = on) }
+
+    override suspend fun removeSuspend(packageName: String) = changeExtras { it.copy(suspend = it.suspend - packageName) }
+
+    /** Running: through the engine, which saves it and puts back what is no longer chosen. Off: in the saved state. */
+    suspend fun changeExtras(change: (Extras) -> Extras) {
+        val next = change(services.graph.store.load().extras)
+        val outcome = services.access.send { it.engine.setExtras(next).let { ActionOutcome.Done } }
+        if (outcome != ActionOutcome.Done) services.graph.store.save(services.graph.store.load().copy(extras = next))
+        services.prefs.touch()
     }
 
     /** The phone's mode, read through the worker; null when it cannot be read. */

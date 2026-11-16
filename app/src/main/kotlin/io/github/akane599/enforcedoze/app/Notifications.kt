@@ -19,6 +19,7 @@ import io.github.akane599.enforcedoze.app.ui.MainActivity
 internal object Notifications {
     const val ENGINE_ID = 0x0D0E
     private const val REPORT_ID = 0x0D0F
+    private const val STUCK_ID = 0x0D10
     private const val ENGINE = "engine"
     private const val REPORTS = "reports"
 
@@ -75,6 +76,28 @@ internal object Notifications {
             .setOnlyAlertOnce(true)
             .build()
         context.getSystemService(NotificationManager::class.java).notify(REPORT_ID, notification)
+    }
+
+    /**
+     * The engine holds an extra the tier cannot put back (ADR 0038), as after a reboot without root: [text] names the
+     * system switch to use. Null cancels it.
+     */
+    fun extrasStuck(context: Context, text: String?) {
+        val manager = context.getSystemService(NotificationManager::class.java)
+        if (text == null) {
+            manager.cancel(STUCK_ID)
+            return
+        }
+        if (!allowed(context)) return
+        val notification = Notification.Builder(context, REPORTS)
+            .setSmallIcon(R.drawable.icon_monochrome)
+            .setContentTitle(context.getString(R.string.extras_stuck_title))
+            .setContentText(text)
+            .setStyle(Notification.BigTextStyle().bigText(text))
+            .setContentIntent(open(context, null, null))
+            .setOnlyAlertOnce(true)
+            .build()
+        manager.notify(STUCK_ID, notification)
     }
 
     private fun open(context: Context, target: String?, sessionId: Long?): PendingIntent {

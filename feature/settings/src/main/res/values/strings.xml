@@ -83,4 +83,15 @@
     <string name="settings_sensors_detail">Apps that held sensors at the last screen off, and the switch that turns all sensors off.</string>
     <string name="settings_switch">Switch from another setup</string>
     <string name="settings_switch_detail">What Tasker or another app set before EnforceDoze: keep it as a profile, check it is off, or go back to it.</string>
+    <string name="settings_extras">Root extras</string>
+    <string name="settings_extras_detail">Each one goes off at screen off and comes back at screen on, and whenever a call, music, car mode, the hotspot, a keep-awake app or charging holds Doze off. The savings are small: try the profiles first.</string>
+    <string name="settings_extras_needs_root">These need root (tier T3). What is still on is put back at the next screen on; turn it off here.</string>
+    <string name="settings_extras_wifi">Wi-Fi off in Doze</string>
+    <string name="settings_extras_wifi_detail">Only while Wi-Fi is on but not connected, so Wi-Fi calling is never cut. It saves the scanning.</string>
+    <string name="settings_extras_data">Mobile data off in Doze</string>
+    <string name="settings_extras_data_detail">Only while a working Wi-Fi network carries the connection, and back on the moment it goes. Android keeps VoLTE calls working with data off; this phone\'s carrier is not checked yet.</string>
+    <string name="settings_extras_suspend">Suspend during Doze</string>
+    <string name="settings_extras_suspend_detail">Chosen apps are paused until the screen comes on. Apps that ring for calls, keep alarms, type or read the screen, and the phone\'s own apps, are never suspended.</string>
+    <string name="settings_extras_held_back">Held back: %1$s</string>
+    <string name="settings_suspend_picker">Suspend during Doze</string>
 </resources>

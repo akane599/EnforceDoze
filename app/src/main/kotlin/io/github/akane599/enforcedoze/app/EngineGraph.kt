@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app
 
+import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.doze.Lever
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -91,7 +93,24 @@ internal class EngineGraph private constructor(context: Context) {
             engineScope.launch {
                 EvidenceProvider.notifyChanges(app, sessions.revision(), host.status.map { it.mode to it.profileId }.distinctUntilChanged())
             }
+            // An extra the tier cannot put back is told outside the app too: a radio may be off (ADR 0038).
+            engineScope.launch {
+                host.status.map { it.extrasStuck }.distinctUntilChanged().collect { stuck ->
+                    Notifications.extrasStuck(app, stuckText(stuck))
+                }
+            }
         }
+    }
+
+    /** Which system switch puts each held extra back, or null when none is stuck. */
+    private fun stuckText(stuck: Set<Lever>): String? = stuck.takeIf { it.isNotEmpty() }?.sorted()?.joinToString(" ") { lever ->
+        app.getString(
+            when (lever) {
+                Lever.WIFI -> R.string.extras_stuck_wifi
+                Lever.MOBILE_DATA -> R.string.extras_stuck_data
+                else -> R.string.extras_stuck_apps
+            },
+        )
     }
 
     suspend fun stop() {

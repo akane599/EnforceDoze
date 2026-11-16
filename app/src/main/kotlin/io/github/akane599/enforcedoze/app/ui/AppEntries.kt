@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.ui
 
+import androidx.compose.runtime.rememberCoroutineScope
+import io.github.akane599.enforcedoze.doze.android.neverSuspend
 import io.github.akane599.enforcedoze.feature.profiles.SwitchOverViewModel
 import io.github.akane599.enforcedoze.feature.profiles.SwitchOverRoute
 import android.content.Context
@@ -127,6 +129,7 @@ internal fun appEntries(
     entry<SensorsKey> { SensorsRoute(viewModel { SensorsViewModel(AppSensorsSource(services)) }, sensorsNavigation(navigator)) }
     entry<KeepAwakeKey> { KeepAwakePicker(services, navigator) }
     entry<ClientPickerKey> { ClientPicker(services, navigator) }
+    entry<SuspendPickerKey> { SuspendPicker(services, navigator) }
     entry<SwitchOverKey> { SwitchOver(services, navigator, exports) }
     entry<LicenceKey> { LicenceScreen(onBack = navigator::back) }
     entry<OnboardingKey> { key ->
@@ -215,6 +218,7 @@ private fun settingsNavigation(context: Context, navigator: Navigator, exports: 
     override fun privilege() = navigator.go(OnboardingKey(fromSettings = true))
     override fun addKeepAwake() = navigator.go(KeepAwakeKey)
     override fun addClient() = navigator.go(ClientPickerKey)
+    override fun addSuspend() = navigator.go(SuspendPickerKey)
     override fun switchOver() = navigator.go(SwitchOverKey)
     override fun exportAll() = exports.all()
 
@@ -240,6 +244,32 @@ private fun KeepAwakePicker(services: AppServices, navigator: Navigator) {
         apps = apps,
         onPick = { app ->
             services.prefs.keepAwake = services.prefs.keepAwake + app.packageName
+            navigator.back()
+        },
+        onBack = navigator::back,
+    )
+}
+
+/**
+ * The app picker for suspension during Doze (ADR 0038): apps on the never-suspend list are left out, as are the
+ * apps already chosen. The engine checks the list again at every screen off.
+ */
+@Composable
+private fun SuspendPicker(services: AppServices, navigator: Navigator) {
+    val scope = rememberCoroutineScope()
+    val apps = produceState(emptyList<PickApp>()) {
+        value = withContext(Dispatchers.IO) {
+            val chosen = services.graph.store.load().extras.suspend
+            val candidates = services.labels.apps(exclude = chosen + services.graph.app.packageName)
+            val held = neverSuspend(services.graph.app, candidates.map { it.packageName }.toSet(), services.prefs.keepAwake)
+            candidates.filter { it.packageName !in held }
+        }
+    }.value
+    AppPickerScreen(
+        title = stringResource(SettingsR.string.settings_suspend_picker),
+        apps = apps,
+        onPick = { app ->
+            scope.launch { AppSettingsSource(services).changeExtras { it.copy(suspend = it.suspend + app.packageName) } }
             navigator.back()
         },
         onBack = navigator::back,

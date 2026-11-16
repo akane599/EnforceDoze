@@ -38,6 +38,9 @@ class DeviceMappingTest {
         assertThat(DeviceMapping.writable(t1)).isEqualTo(Writable(constants = true, sensors = true))
         val t2 = PrivilegeState(emptySet(), ShizukuStatus.Ready(uid = 2000, version = 13, sui = false), false, WorkerStatus.Idle)
         assertThat(DeviceMapping.writable(t2)).isEqualTo(Writable(forceIdle = true, sensors = true, sensorPrivacy = true, allowlist = true))
+        // ADR 0038: the extras only with a root worker.
+        val t3 = t2.copy(shizuku = ShizukuStatus.Ready(uid = 0, version = 13, sui = false))
+        assertThat(DeviceMapping.writable(t3)).isEqualTo(Writable.EVERYTHING.copy(constants = false))
         val lost = t2.copy(worker = WorkerStatus.Unavailable(WorkerSource.SHIZUKU, "no bind"))
         assertThat(DeviceMapping.writable(lost)).isEqualTo(Writable.NOTHING)
     }

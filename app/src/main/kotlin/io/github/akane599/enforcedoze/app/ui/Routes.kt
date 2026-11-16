@@ -42,6 +42,9 @@ internal sealed interface Top : Route
 /** The app picker for a new automation client (ADR 0033). */
 @Serializable internal data object ClientPickerKey : Route
 
+/** The app picker for suspension during Doze (ADR 0038). */
+@Serializable internal data object SuspendPickerKey : Route
+
 @Serializable internal data object LicenceKey : Route
 
 /** Onboarding from its first step; [fromSettings] when the owner came to check privilege again. */
