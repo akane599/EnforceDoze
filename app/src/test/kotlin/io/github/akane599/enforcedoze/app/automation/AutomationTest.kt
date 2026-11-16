@@ -49,27 +49,57 @@ class AutomationTest {
     @Test
     fun `state changes share one 30 s limit and status reads are never limited`() {
         val gate = AutomationGate()
-        assertThat(gate.admit(AutomationAction.PAUSE, "a", null, 0)).isEqualTo(Admission.Run("a"))
-        assertThat(gate.admit(AutomationAction.APPLY_PROFILE, "b", null, 29_999)).isEqualTo(Admission.RateLimited("b"))
-        assertThat(gate.admit(AutomationAction.GET_STATUS, "b", null, 29_999)).isEqualTo(Admission.Run("b"))
+        assertThat(gate.admit(AutomationAction.PAUSE, "a", null, null, 0)).isEqualTo(Admission.Run("a"))
+        assertThat(gate.admit(AutomationAction.APPLY_PROFILE, "b", null, null, 29_999))
+            .isEqualTo(Admission.Dropped("b", Drop.RATE_LIMITED))
+        assertThat(gate.admit(AutomationAction.GET_STATUS, "b", null, null, 29_999)).isEqualTo(Admission.Run("b"))
         // A dropped call does not restart the window.
-        assertThat(gate.admit(AutomationAction.RESUME, "a", null, 30_000)).isEqualTo(Admission.Run("a"))
+        assertThat(gate.admit(AutomationAction.RESUME, "a", null, null, 30_000)).isEqualTo(Admission.Run("a"))
     }
 
     @Test
-    fun `a bad token is logged at most once a minute`() {
+    fun `a flood of dropped calls is logged once a minute per client and kind`() {
         val gate = AutomationGate()
-        assertThat(gate.admit(AutomationAction.PAUSE, null, null, 0)).isEqualTo(Admission.BadToken(log = true))
-        assertThat(gate.admit(AutomationAction.PAUSE, null, null, 59_999)).isEqualTo(Admission.BadToken(log = false))
-        assertThat(gate.admit(AutomationAction.GET_STATUS, null, null, 60_000)).isEqualTo(Admission.BadToken(log = true))
+        assertThat(gate.admit(AutomationAction.PAUSE, null, null, null, 0)).isEqualTo(Admission.Dropped(null, Drop.BAD_TOKEN))
+        assertThat(gate.admit(AutomationAction.PAUSE, null, null, null, 59_999))
+            .isEqualTo(Admission.Dropped(null, Drop.BAD_TOKEN, log = false))
+        assertThat(gate.admit(AutomationAction.GET_STATUS, null, null, null, 60_000)).isEqualTo(Admission.Dropped(null, Drop.BAD_TOKEN))
+        gate.admit(AutomationAction.PAUSE, "a", null, null, 60_000)
+        assertThat(gate.admit(AutomationAction.PAUSE, "a", null, null, 60_001)).isEqualTo(Admission.Dropped("a", Drop.RATE_LIMITED))
+        assertThat(gate.admit(AutomationAction.PAUSE, "a", null, null, 60_002))
+            .isEqualTo(Admission.Dropped("a", Drop.RATE_LIMITED, log = false))
+        // Another client's drop has its own row.
+        assertThat(gate.admit(AutomationAction.PAUSE, "b", null, null, 60_003)).isEqualTo(Admission.Dropped("b", Drop.RATE_LIMITED))
     }
 
     @Test
     fun `a sender that shares its identity must be the bound package`() {
         val gate = AutomationGate()
-        assertThat(gate.admit(AutomationAction.PAUSE, "a", "evil.app", 0)).isEqualTo(Admission.Mismatch("a", "evil.app"))
+        assertThat(gate.admit(AutomationAction.PAUSE, "a", "evil.app", null, 0))
+            .isEqualTo(Admission.Dropped("a", Drop.SENDER_MISMATCH, "evil.app"))
         // The mismatch did not use up the window.
-        assertThat(gate.admit(AutomationAction.PAUSE, "a", "a", 1)).isEqualTo(Admission.Run("a"))
+        assertThat(gate.admit(AutomationAction.PAUSE, "a", "a", null, 1)).isEqualTo(Admission.Run("a"))
+    }
+
+    @Test
+    fun `an invalid call is rejected without using up the window`() {
+        val gate = AutomationGate()
+        assertThat(gate.admit(AutomationAction.APPLY_PROFILE, "a", null, "no profile nope", 0))
+            .isEqualTo(Admission.Dropped("a", Drop.INVALID, "no profile nope"))
+        assertThat(gate.admit(AutomationAction.APPLY_PROFILE, "a", null, null, 1)).isEqualTo(Admission.Run("a"))
+    }
+
+    @Test
+    fun `sensors off needs on as a boolean or its text`() {
+        assertThat(Automation.onValue("true", present = true) { it }).isTrue()
+        assertThat(Automation.onValue(" false ", present = true) { it }).isFalse()
+        assertThat(Automation.onValue("yes", present = true) { it }).isNull()
+        assertThat(Automation.onValue(null, present = false) { it }).isNull()
+        // A boolean extra reads the same whatever the default.
+        assertThat(Automation.onValue(null, present = true) { true }).isTrue()
+        assertThat(Automation.onValue(null, present = true) { false }).isFalse()
+        // Another type (say an int) gives back the default each time.
+        assertThat(Automation.onValue(null, present = true) { it }).isNull()
     }
 
     @Test

@@ -33,7 +33,7 @@ manifest receivers, so a call without the package never arrives.
 | `PAUSE` | none | Back to stock settings until `RESUME`. |
 | `RESUME` | none | Back to the profile or plan in use. |
 | `RESTORE_STOCK` | none | Restores the stock settings, as Settings › Restore stock does. |
-| `SENSORS_OFF` | `on`: `true` turns Sensors Off on, `false` turns it off (default `true`) | The quick settings tile's switch. |
+| `SENSORS_OFF` | `on`: `true` turns Sensors Off on, `false` turns it off; required | The quick settings tile's switch. Sensors Off also stops the camera and microphone, so there is no default. |
 | `GET_STATUS` | none | Replies with a status broadcast (below). |
 
 Every call runs through the same commands and guardrails as a tap in the app. Calls, alarms and
@@ -42,9 +42,13 @@ emergency alerts keep working whatever a client sends.
 ## Limits and the log
 
 - Calls that change something (all but `GET_STATUS`) share one limit: at most one every 30 s,
-  across all clients. A call inside the 30 s is logged and dropped.
-- A call with an unknown token gets no reply and changes nothing. It is logged at most once a
-  minute, as `unknown`.
+  across all clients. A call inside the 30 s is logged and dropped. The limit runs on the phone's
+  uptime clock, so setting the time back does not hold it shut.
+- A call that cannot run as sent (no `id`, an unknown profile, `on` missing or not `true`/`false`)
+  is rejected before the limit, so it does not block the next good call.
+- A call with an unknown token gets no reply and changes nothing. Its extras are not even read.
+- Dropped and rejected calls are logged at most once a minute for each client and reason, so a loop
+  in a task cannot fill the log.
 - A sender that shares its identity (`BroadcastOptions.setShareIdentityEnabled`, API 34+) must be
   the app the token was made for. Otherwise the call is rejected.
 - Every call becomes a journal event of kind `AUTOMATION`: the client's package, the action and

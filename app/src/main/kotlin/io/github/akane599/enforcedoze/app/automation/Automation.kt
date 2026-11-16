@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package io.github.akane599.enforcedoze.app.automation
 
+import android.util.Log
+import android.os.SystemClock
 import kotlinx.coroutines.CancellationException
 import io.github.akane599.enforcedoze.doze.DozeEngine
 import io.github.akane599.enforcedoze.profile.Plan
@@ -46,32 +48,56 @@ internal class Automation(private val services: AppServices) {
     }
 
     /** The receiver is enabled only while the switch is on, so nothing can start the app through it otherwise. */
-    fun syncReceiver(on: Boolean = graph.prefs.automation) {
-        val state = if (on) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-        graph.app.packageManager.setComponentEnabledSetting(
-            ComponentName(graph.app, AutomationReceiver::class.java),
-            state,
-            PackageManager.DONT_KILL_APP,
-        )
-    }
+    fun syncReceiver(on: Boolean = graph.prefs.automation) = AutomationReceiver.enable(graph.app, on)
 
+    /** One call; nothing it sends can crash the app: a failure is logged with the client, or to logcat if even that fails. */
     suspend fun handle(intent: Intent, sender: String?) {
         val action = AutomationAction.of(intent.action) ?: return
-        val now = System.currentTimeMillis()
         if (!graph.prefs.automation) return
-        when (val admission = gate.admit(action, clients.match(intent.getStringExtra(EXTRA_TOKEN)), sender, now)) {
-            is Admission.BadToken -> if (admission.log) log(now, UNKNOWN_CLIENT, action, "rejected: unknown token")
-            is Admission.Mismatch -> log(now, admission.client, action, "rejected: sent by ${admission.sender}")
-            is Admission.RateLimited -> log(now, admission.client, action, "dropped: within 30 s of the last change")
-            is Admission.Run -> try {
-                run(action, admission.client, intent, now)
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (expected: Exception) {
-                // A call from outside never crashes the app; the failure is logged with the client like any result.
-                log(now, admission.client, action, "failed: ${expected.message ?: expected.javaClass.simpleName}")
+        val now = System.currentTimeMillis()
+        try {
+            val client = clients.match(intent.getStringExtra(EXTRA_TOKEN))
+            // Extras are checked only for a known client, so a call without a token learns nothing and costs nothing.
+            val problem = if (client != null) problem(action, intent) else null
+            when (val admission = gate.admit(action, client, sender, problem, SystemClock.elapsedRealtime())) {
+                is Admission.Dropped -> if (admission.log) log(now, admission.client ?: UNKNOWN_CLIENT, action, describe(admission))
+                is Admission.Run -> runLogged(action, admission.client, intent, now)
             }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (expected: Exception) {
+            Log.w(TAG, "automation call ${action.name} failed", expected)
         }
+    }
+
+    private suspend fun runLogged(action: AutomationAction, client: String, intent: Intent, now: Long) {
+        try {
+            run(action, client, intent, now)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (expected: Exception) {
+            log(now, client, action, "failed: ${expected.message ?: expected.javaClass.simpleName}")
+        }
+    }
+
+    /** A call that cannot run as sent; it is dropped before the rate limit, so it does not block the next good one. */
+    private suspend fun problem(action: AutomationAction, intent: Intent): String? = when (action) {
+        AutomationAction.APPLY_PROFILE -> when (val id = intent.getStringExtra(EXTRA_ID)) {
+            null -> "no id"
+            else -> "no profile $id".takeIf { graph.profiles.profile(id) == null }
+        }
+
+        // Sensors Off stops the camera and microphone too, so a client must say which way: no default.
+        AutomationAction.SENSORS_OFF -> "on must be true or false".takeIf { on(intent) == null }
+
+        else -> null
+    }
+
+    private fun describe(dropped: Admission.Dropped): String = when (dropped.drop) {
+        Drop.BAD_TOKEN -> "rejected: unknown token"
+        Drop.SENDER_MISMATCH -> "rejected: sent by ${dropped.detail}"
+        Drop.INVALID -> "rejected: ${dropped.detail}"
+        Drop.RATE_LIMITED -> "dropped: within 30 s of the last change"
     }
 
     private suspend fun run(action: AutomationAction, client: String, intent: Intent, now: Long) {
@@ -82,13 +108,14 @@ internal class Automation(private val services: AppServices) {
             AutomationAction.PAUSE -> engine(turnOn = false) { it.pause() }
             AutomationAction.RESUME -> engine(turnOn = true) { it.resume() }
             AutomationAction.RESTORE_STOCK -> describe(AppSettingsSource(services).restoreStock())
-            AutomationAction.SENSORS_OFF -> sensorsOff(intent.getBooleanExtra(EXTRA_ON, true))
+            AutomationAction.SENSORS_OFF -> sensorsOff(on(intent) ?: return)
             AutomationAction.GET_STATUS -> reply(client).let { "replied" }
         }
         log(now, client, action, result, profileId = id.takeIf { action == AutomationAction.APPLY_PROFILE })
     }
 
     private suspend fun applyProfile(id: String?): String {
+        // Checked before the rate limit too; this covers a profile deleted in between.
         val profile = id?.let { graph.profiles.profile(it) } ?: return "rejected: no profile ${id ?: "(no id)"}"
         return engine(turnOn = true) { it.setProfile(profile, SwitchReason.TASKER) }
     }
@@ -151,5 +178,21 @@ internal class Automation(private val services: AppServices) {
         const val EXTRA_ON = "on"
         const val STATUS_ACTION = "io.github.akane599.enforcedoze.action.STATUS"
         private const val UNKNOWN_CLIENT = "unknown"
+        private const val TAG = "Automation"
+
+        fun on(intent: Intent): Boolean? =
+            onValue(intent.getStringExtra(EXTRA_ON), intent.hasExtra(EXTRA_ON)) { default -> intent.getBooleanExtra(EXTRA_ON, default) }
+
+        /**
+         * `on` as the text `true`/`false` (Tasker sends extras as text) or a boolean extra; null when it is missing or
+         * anything else. [read] is the boolean getter with a default: a real boolean reads the same whatever the
+         * default, any other type falls back to it.
+         */
+        fun onValue(text: String?, present: Boolean, read: (Boolean) -> Boolean): Boolean? {
+            if (text != null) return text.trim().toBooleanStrictOrNull()
+            if (!present) return null
+            val asFalse = read(false)
+            return asFalse.takeIf { it == read(true) }
+        }
     }
 }

@@ -22,6 +22,9 @@ internal class AutomationClients(
     @Serializable
     private data class Saved(val clients: List<Client> = emptyList())
 
+    /** The file as last read or written: every call checks a token, so the file is not parsed each time. */
+    private var cached: Saved? = null
+
     @Synchronized
     fun clients(): List<Client> = load().clients
 
@@ -39,6 +42,7 @@ internal class AutomationClients(
     @Synchronized
     fun clear() {
         file.delete()
+        cached = Saved()
     }
 
     @Synchronized
@@ -52,20 +56,24 @@ internal class AutomationClients(
         return load().clients.firstOrNull { MessageDigest.isEqual(given, unhex(it.hash)) }?.packageName
     }
 
+    private fun load(): Saved = cached ?: read().also { cached = it }
+
     /** An unreadable file counts as no clients: every token stops working, which fails closed. */
-    private fun load(): Saved {
+    private fun read(): Saved {
         if (!file.isFile) return Saved()
         return runCatching { JSON.decodeFromString<Saved>(file.readText()) }.getOrDefault(Saved())
     }
 
+    /** The cache changes only once the file is written, so a failed write never leaves a token that is not on disk. */
     private fun save(saved: Saved) {
         file.parentFile?.mkdirs()
         val tmp = File(file.path + ".tmp")
         tmp.writeText(JSON.encodeToString(saved))
         if (!tmp.renameTo(file)) {
             file.delete()
-            tmp.renameTo(file)
+            check(tmp.renameTo(file)) { "could not write ${file.name}" }
         }
+        cached = saved
     }
 
     private companion object {
