@@ -157,6 +157,16 @@ adb uninstall "$client_pkg" >/dev/null 2>&1
 adb install -t "$dir/client.apk" >/dev/null || log "client reinstall failed"
 check "the signature permission reaches a client installed after EnforceDoze" client_granted
 
+# ADR 0036: upstream's open receivers are gone. `pm query-receivers` is PackageManagerShellCommand's (android-17.0.0_r1).
+no_upstream_receiver() {
+  local a
+  for a in ADD_WHITELIST REMOVE_WHITELIST ENABLE_FORCEDOZE CHANGE_SETTING; do
+    adb shell pm query-receivers --brief -a "com.akylas.enforcedoze.$a" | grep -q "$pkg" && return 1
+  done
+  return 0
+}
+check "no upstream receiver answers (allowlist, enable, settings)" no_upstream_receiver
+
 # 2. The automation API (ADR 0033, 0034): off by default, then a token for the shell as the client.
 call GET_STATUS nothing
 no_automation_events() { ! events_have AUTOMATION; }
