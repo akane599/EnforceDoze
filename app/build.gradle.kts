@@ -32,6 +32,9 @@ android {
         compose = true
     }
 
+    // Robolectric tests read the app's strings (the notifications' channels and texts).
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -113,6 +116,13 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+}
+
+tasks.withType<Test>().configureEach {
+    // Robolectric's FileDescriptor interceptor (SDK 36) reaches jdk.internal.access on JDK 17+ (ADR 0028).
+    jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED", "--add-opens=java.base/java.io=ALL-UNNAMED")
 }
 
 // Dependency licence check (SPEC 12.5): only licences compatible with GPL-3.0 may ship in the APK.

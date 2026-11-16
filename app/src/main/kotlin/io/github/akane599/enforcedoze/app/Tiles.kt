@@ -37,6 +37,38 @@ internal object Tiles {
     }
 }
 
+/** What the tiles show and do, apart from the system's tile service so it can be tested (parity row 32). */
+internal object TileRules {
+    enum class PlanLook { NO_PLAN, OFF, ON }
+
+    enum class PlanClick { SET_UP, RESUME, PAUSE }
+
+    enum class SensorsClick { TURN_ON_SENSORS, CONFIRM_OFF, OPEN_APP }
+
+    /** On only while the engine runs the plan; a paused plan or a stopped engine is off (Stock). */
+    fun planLook(running: Boolean, mode: Mode, profileId: String?): PlanLook = when {
+        profileId == null -> PlanLook.NO_PLAN
+        !running || mode == Mode.PAUSED -> PlanLook.OFF
+        else -> PlanLook.ON
+    }
+
+    fun planClick(running: Boolean, mode: Mode, profileId: String?): PlanClick = when (planLook(running, mode, profileId)) {
+        PlanLook.NO_PLAN -> PlanClick.SET_UP
+        PlanLook.OFF -> PlanClick.RESUME
+        PlanLook.ON -> PlanClick.PAUSE
+    }
+
+    /**
+     * [sensorsOff] is the sensor-privacy state, null when it could not be read. Turning sensors back on needs no
+     * confirmation; turning them off stops the camera and microphone too, so it asks first.
+     */
+    fun sensorsClick(sensorsOff: Boolean?): SensorsClick = when (sensorsOff) {
+        true -> SensorsClick.TURN_ON_SENSORS
+        false -> SensorsClick.CONFIRM_OFF
+        null -> SensorsClick.OPEN_APP
+    }
+}
+
 /** Shared by the tiles: a scope that lives while the system listens, and the tile's text. */
 abstract class EdTileService : TileService() {
     internal val graph: EngineGraph by lazy { EngineGraph.get(this) }
@@ -74,10 +106,10 @@ abstract class EdTileService : TileService() {
 class PlanTileService : EdTileService() {
     override suspend fun show() {
         val (running, mode, profileId) = state()
-        when {
-            profileId == null -> draw(Tile.STATE_INACTIVE, getString(R.string.tile_plan_none))
-            !running || mode == Mode.PAUSED -> draw(Tile.STATE_INACTIVE, getString(R.string.tile_plan_off))
-            else -> draw(Tile.STATE_ACTIVE, graph.profiles.profile(profileId)?.name ?: profileId)
+        when (TileRules.planLook(running, mode, profileId)) {
+            TileRules.PlanLook.NO_PLAN -> draw(Tile.STATE_INACTIVE, getString(R.string.tile_plan_none))
+            TileRules.PlanLook.OFF -> draw(Tile.STATE_INACTIVE, getString(R.string.tile_plan_off))
+            TileRules.PlanLook.ON -> draw(Tile.STATE_ACTIVE, profileId?.let { graph.profiles.profile(it)?.name ?: it }.orEmpty())
         }
     }
 
@@ -92,12 +124,13 @@ class PlanTileService : EdTileService() {
     override fun onClick() {
         launch {
             val (running, mode, profileId) = state()
-            if (profileId == null) {
+            val click = TileRules.planClick(running, mode, profileId)
+            if (click == TileRules.PlanClick.SET_UP) {
                 // No plan to run yet: the app sets one up first.
                 openApp(Notifications.OPEN_PLAN)
                 return@launch
             }
-            val on = !running || mode == Mode.PAUSED
+            val on = click == TileRules.PlanClick.RESUME
             graph.ui.access.send(turnOn = on) { host ->
                 if (on) host.engine.resume() else host.engine.pause()
                 ActionOutcome.Done
@@ -134,10 +167,10 @@ class SensorsTileService : EdTileService() {
 
     override fun onClick() {
         launch {
-            when (read()) {
-                true -> set(false)
-                false -> confirm()
-                null -> openApp(Notifications.OPEN_SENSORS)
+            when (TileRules.sensorsClick(read())) {
+                TileRules.SensorsClick.TURN_ON_SENSORS -> set(false)
+                TileRules.SensorsClick.CONFIRM_OFF -> confirm()
+                TileRules.SensorsClick.OPEN_APP -> openApp(Notifications.OPEN_SENSORS)
             }
         }
     }

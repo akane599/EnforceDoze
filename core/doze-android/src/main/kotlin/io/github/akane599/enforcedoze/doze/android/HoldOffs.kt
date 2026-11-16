@@ -48,6 +48,13 @@ internal object HoldOffRules {
     /** `BatteryManager.EXTRA_PLUGGED` is 0 on battery and a plug type otherwise; Doze also treats plugged as charging. */
     fun isPlugged(plugged: Int): Boolean = plugged != 0
 
+    /**
+     * A keep-awake app was on screen (SPEC 5.5, parity row 22). With none chosen the usage events are never read, so
+     * the hold-off costs nothing for owners who do not use it.
+     */
+    fun isKept(chosen: Set<String>, events: () -> Sequence<Pair<Int, String>>): Boolean =
+        chosen.isNotEmpty() && lastResumed(events()) in chosen
+
     /** The app on screen when the screen went off: the package of the last `ACTIVITY_RESUMED` event. */
     fun lastResumed(events: Sequence<Pair<Int, String>>): String? =
         events.lastOrNull { it.first == UsageEvents.Event.ACTIVITY_RESUMED }?.second
@@ -191,13 +198,10 @@ internal class ChargingSource(private val context: Context) :
 internal class KeepAwakeCheck(context: Context, private val chosen: () -> Set<String>) {
     private val usage = context.getSystemService(UsageStatsManager::class.java)
 
-    fun foregroundIsKept(nowMillis: Long): Boolean {
-        val keep = chosen()
-        if (keep.isEmpty()) return false
-        val events = usage.queryEvents(nowMillis - LOOKBACK_MILLIS, nowMillis) ?: return false
+    fun foregroundIsKept(nowMillis: Long): Boolean = HoldOffRules.isKept(chosen()) {
+        val events = usage.queryEvents(nowMillis - LOOKBACK_MILLIS, nowMillis) ?: return@isKept emptySequence()
         val event = UsageEvents.Event()
-        val sequence = generateSequence { if (events.getNextEvent(event)) event.eventType to event.packageName else null }
-        return HoldOffRules.lastResumed(sequence) in keep
+        generateSequence { if (events.getNextEvent(event)) event.eventType to event.packageName else null }
     }
 
     private companion object {

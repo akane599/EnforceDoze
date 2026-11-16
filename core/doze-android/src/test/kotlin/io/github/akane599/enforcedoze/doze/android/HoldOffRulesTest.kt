@@ -41,4 +41,14 @@ class HoldOffRulesTest {
         assertThat(HoldOffRules.lastResumed(sequenceOf(resumed to "a", resumed to "b", paused to "b"))).isEqualTo("b")
         assertThat(HoldOffRules.lastResumed(emptySequence())).isNull()
     }
+
+    @Test
+    fun `a chosen app on screen is kept awake, and with none chosen the events are not read`() {
+        val resumed = UsageEvents.Event.ACTIVITY_RESUMED
+        val events = sequenceOf(resumed to "org.example.maps", resumed to "org.example.reader")
+        assertThat(HoldOffRules.isKept(setOf("org.example.reader")) { events }).isTrue()
+        assertThat(HoldOffRules.isKept(setOf("org.example.maps")) { events }).isFalse()
+        assertThat(HoldOffRules.isKept(setOf("org.example.reader")) { emptySequence() }).isFalse()
+        assertThat(HoldOffRules.isKept(emptySet()) { error("usage events read with no app chosen") }).isFalse()
+    }
 }

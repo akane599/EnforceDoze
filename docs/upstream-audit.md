@@ -196,17 +196,17 @@ are decided here and listed in `docs/questions.md` Q4 so the owner can object.
 | 19 | Notification blocklist during Doze | `BlockNotificationsActivity`, `service call notification` | drop: binder transaction numbers (12.4) and outside scope (1.2); Doze already defers normal-priority notifications | — | removed (ADR 0037), dropped |
 | 20 | Hotspot exception | service | port | Hotspot hold-off (5.5) | upstream |
 | 21 | Music exception | service, `NotificationService` | port | Audio hold-off via `AudioManager` playback configurations (5.5) | upstream |
-| 22 | Keep the current foreground app awake | service | port | "Keep awake" app hold-off (5.5) | upstream |
+| 22 | Keep the current foreground app awake | service | port | "Keep awake" app hold-off (5.5) | replaced: `HoldOffRules.isKept` (`HoldOffRulesTest`) and the engine at screen off (`DozeEngineTest`) |
 | 23 | Custom Doze periods | `CustomDozePeriodReceiver` | port | Plans and the night window (6, 6.5) | upstream |
 | 24 | Auto-rotate and brightness fix | service | drop: a workaround for the removed non-root sensor hack; sensors return with `enable` at screen on | — | upstream |
-| 25 | Persistent / disabled notification | service | port | Foreground-service notification (9.2) | upstream |
+| 25 | Persistent / disabled notification | service | port | Foreground-service notification (9.2) | replaced: `Notifications`, a low-importance channel the owner can turn off (`NotificationsTest`) |
 | 26 | Doze stats and battery stats screens | `DozeStatsActivity`, `DozeBatteryStatsActivity` | port (replaced) | Sessions, verdicts, night report (8) | upstream |
 | 27 | Battery consumption list | `BatteryConsumptionAdapter` | drop: Coulomb covers per-app attribution (SPEC 1.2, 2.3) | — | upstream |
 | 28 | Log screen and logcat toggle | `LogActivity` | port (replaced) | Log screen, action log (8, 9.1) | replaced (ADR 0037): Log screen and action log; `LogScreenshotTest`, `LogFilterTest`, `ReportMappingTest` |
 | 29 | Reset EnforceDoze, reset stats | settings | port | Restore stock, reset app (5.6, 9.1) | upstream |
 | 30 | Tasker broadcasts screen and receivers | `TaskerBroadcastsActivity`, `Enable/DisableForceDozeService`, `SettingsChangeReceiver` | port | Automation API (11.1), `docs/automation.md` | partly removed (ADR 0037): the screen and receivers are gone; `EnableForceDozeService` stays while `Utils` uses it. New home tested by `AutomationTest` |
 | 31 | Re-enter Doze broadcast | `ReenterDoze` | port | Automation `APPLY_PLAN` / `RESUME` (11.1) | replaced (ADR 0037): `APPLY_PLAN` and `RESUME`; `AutomationTest` |
-| 32 | Doze tile | `ForceDozeTileService` | port | "Doze plan" tile (9.2, 11.2) | upstream |
+| 32 | Doze tile | `ForceDozeTileService` | port | "Doze plan" tile (9.2, 11.2) | replaced: `PlanTileService` and `SensorsTileService` (`TilesTest`, and the P5 emulator run) |
 | 33 | Airplane-mode tile | `AirplaneTileService` | drop: the system tile covers it (SPEC 2.3) | — | removed (ADR 0037), dropped |
 | 34 | Doze tunables screen | `DozeTunablesActivity` | port | Custom profiles with guardrails (6.3) | upstream |
 | 35 | Self-allowlist and battery-optimisation request | `RequestIgnoreBatteryActivity` | port | Onboarding, One UI "Never sleeping apps" (3.3, 9.1) | replaced (ADR 0034): the capabilities step asks through the system dialog and reads the exemption back; `KeepAliveTest`, `OnboardingScreenshotTest`. The class stays while upstream code that is still in the tree uses it |

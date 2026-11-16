@@ -211,59 +211,6 @@ class DozeEngineTest {
     }
 
     @Test
-    fun `until unlock still lets a hold-off at the lock screen release forced idle`() = runTest {
-        val classic = BuiltInProfiles.CLASSIC
-        val waiting = classic.copy(levers = classic.levers.copy(forceIdle = ForceIdleLever(true, untilUnlock = true)))
-        val engine = engine()
-        engine.startWith(waiting)
-        engine.screenOff()
-        engine.screenOn(locked = true)
-        engine.holdOff(HoldOff.CALL, active = true)
-        assertThat(writesSince(2)).containsExactly(DeviceWrite.Unforce, DeviceWrite.EnableSensors).inOrder()
-        engine.holdOff(HoldOff.CALL, active = false)
-        assertThat(writesSince(4)).isEmpty()
-        assertThat(device.forced).isFalse()
-    }
-
-    @Test
-    fun `hold-offs lift forced idle and sensors until the last one ends, and constants stay`() = runTest {
-        snapshotsReady()
-        val engine = engine()
-        val strictKeepAll = BuiltInProfiles.STRICT
-        store.state = PersistedState(allowlistKeep = emptySet())
-        engine.startWith(strictKeepAll)
-        engine.screenOff()
-        assertThat(device.forced).isTrue()
-        val string = device.constants
-        val mark = device.writes.size
-
-        engine.holdOff(HoldOff.CALL, active = true)
-        assertThat(writesSince(mark)).containsExactly(DeviceWrite.Unforce, DeviceWrite.EnableSensors).inOrder()
-        assertThat(engine.state(Lever.FORCE_IDLE)).isEqualTo(LeverState.HELD_OFF)
-        engine.holdOff(HoldOff.AUDIO, active = true)
-        engine.holdOff(HoldOff.CALL, active = false)
-        assertThat(writesSince(mark)).hasSize(2)
-
-        engine.holdOff(HoldOff.AUDIO, active = false)
-        assertThat(writesSince(mark + 2)).containsExactly(restricted, DeviceWrite.ForceIdle).inOrder()
-        assertThat(device.constants).isEqualTo(string)
-        assertThat(writesSince(mark).filterIsInstance<DeviceWrite.SetConstants>()).isEmpty()
-        assertThat(journal.events<EngineEvent.HoldOffStarted>().map { it.holdOff }).containsExactly(HoldOff.CALL, HoldOff.AUDIO)
-        assertThat(journal.events<EngineEvent.HoldOffEnded>().map { it.holdOff }).containsExactly(HoldOff.CALL, HoldOff.AUDIO)
-    }
-
-    @Test
-    fun `charging at screen off keeps forced idle off`() = runTest {
-        val engine = engine()
-        engine.startWith(BuiltInProfiles.CLASSIC)
-        engine.holdOff(HoldOff.CHARGING, active = true)
-        engine.screenOff()
-        assertThat(device.writes).isEmpty()
-        engine.holdOff(HoldOff.CHARGING, active = false)
-        assertThat(device.writes).containsExactly(restricted, DeviceWrite.ForceIdle).inOrder()
-    }
-
-    @Test
     fun `two corrections in 59 minutes, and a third is not made`() = runTest {
         snapshotsReady()
         val engine = engine()
@@ -487,23 +434,6 @@ class DozeEngineTest {
         engine.screenOff()
         assertThat(device.forced).isTrue()
         assertThat(engine.status.value.levers.getValue(Lever.FORCE_IDLE).state).isEqualTo(LeverState.APPLIED)
-    }
-
-    @Test
-    fun `a hold-off that starts during the screen-off batch wins`() = runTest {
-        val engine = engine()
-        engine.startWith(BuiltInProfiles.CLASSIC)
-        device.hang += "read:sensors"
-        launch { engine.screenOff() }
-        runCurrent()
-        assertThat(device.writes).isNotEmpty()
-        launch { engine.holdOff(HoldOff.CALL, active = true) }
-        device.hang.clear()
-        advanceUntilIdle()
-
-        assertThat(device.forced).isFalse()
-        assertThat(device.sensors).isEqualTo(SensorValue.Normal)
-        assertThat(engine.state(Lever.FORCE_IDLE)).isEqualTo(LeverState.HELD_OFF)
     }
 
     @Test

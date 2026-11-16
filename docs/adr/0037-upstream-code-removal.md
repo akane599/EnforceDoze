@@ -53,7 +53,9 @@ counted them as covered by "T3" and onboarding.
    - Also the template `ExampleUnitTest`.
    - Row 36 gets its test first (`EngineStartTest`). `NumberPickerPreference` and
      `EnableForceDozeService` stay: upstream's settings and `Utils` still name them.
-2. **Next:** port row 35 and rows 11–14, and strengthen the tests for 22, 25 and 32.
+2. **Next:** port row 35 and rows 11–14, and strengthen the tests for 22, 25 and 32. Done for 35, 22, 25
+   and 32 on 2026-11-16: the tile and keep-awake decisions are pure functions with JVM tests, and `:app`
+   runs Robolectric for the notifications (ADR 0028's JVM arguments).
    - The root-tier features get their own ADR before any code. Each one collides with device safety:
      - Wi-Fi off cuts Wi-Fi calling;
      - mobile data off delays messages, and can affect calls where there is no VoLTE;
