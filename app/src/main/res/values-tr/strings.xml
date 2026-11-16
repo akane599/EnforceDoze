@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
     <string name="app_name">EnforceDoze</string>
-    <string name="share_command_button_text">Komutu paylaş</string>
-    <string name="hi_text">Merhaba!</string>
-    <string name="donate_dialog_title">Çalışmamı destekle !</string>
-    <string name="donate_dialog_text">ForceDoze, reklamları olmayan tamamen ücretsiz ve açık kaynaklı bir uygulamadır ve böcekleri düzeltmek ve özellikleri eklemek / iyileştirmek için haftalık güncellemelerle bunu yapmak ve iyileştirmek için çok fazla zaman ayırdım. Çalışmalarımdan hoşlanıyorsanız, beni daha fazla çalışmaya ve daha da kullanışlı uygulamalar üretmeye motive etmek için bağış Yapmayı düşündünüzmü Hic</string>
-    <string name="donate_dialog_button_text">Bağış yapmak istiyorum</string>
-    <string name="device_supports_doze_text">Cihazınız Doze\'yi destekliyor</string>
-    <string name="turn_off_internet_doze_setting_title">Doze sırasında İnternet\'i devre dışı bırak</string>
-    <string name="turn_off_internet_doze_setting_summary">Doze sırasında WiFi / mobil verilerini devre dışı bırakır</string>
-    <string name="reboot_required_dialog_title">Yeniden Başlatma gereklidir</string>
-    <string name="reboot_required_dialog_text">Değişikliklerin geçerli olması için lütfen telefonunuzu yeniden başlatın.</string>
-    <string name="copy_command_button_text">Komutu kopyala</string>
     <string name="extras_stuck_title">EnforceDoze bir ayarı geri alamıyor</string>
     <string name="extras_stuck_wifi">Wi-Fi hâlâ kapalı: Hızlı Ayarlar\'dan açın.</string>
     <string name="extras_stuck_data">Mobil veri hâlâ kapalı: Hızlı Ayarlar\'dan açın.</string>

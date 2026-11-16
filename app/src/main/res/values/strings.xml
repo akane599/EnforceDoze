@@ -1,31 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- The app name and the notification for an extra the engine cannot put back (ADR 0038). -->
+<resources>
     <string name="app_name">EnforceDoze</string>
-    <string name="copy_command_button_text">Copy Command</string>
-    <string name="share_command_button_text">Share command</string>
-    <string name="hi_text">Hi!</string>
-    <string name="donate_dialog_title">Support my work</string>
-    <string name="donate_dialog_text">EnforceDoze is a completely free and open-source app with no ads and I\'ve put a lot of time into making and improving it, with weekly updates to fix bugs and add/improve features. If you like my work, please consider donating in order to motivate me to work harder and produce even more useful apps!</string>
-    <string name="donate_dialog_button_text">I want to donate</string>
-    <string name="device_supports_doze_text">Your device supports Doze</string>
-    <string name="turn_off_internet_doze_setting_title">Disable Internet during Doze</string>
-    <string name="turn_off_internet_doze_setting_summary">Disables WiFi/mobile data during Doze</string>
-    <string name="reboot_required_dialog_title">Reboot required</string>
-    <string name="reboot_required_dialog_text">Please reboot your phone for the changes to take effect</string>
-    
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
     <string name="extras_stuck_title">EnforceDoze cannot put a setting back</string>
     <string name="extras_stuck_wifi">Wi-Fi is still off: turn it on in Quick Settings.</string>
     <string name="extras_stuck_data">Mobile data is still off: turn it on in Quick Settings.</string>
