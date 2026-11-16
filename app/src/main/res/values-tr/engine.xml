@@ -27,4 +27,14 @@
     <string name="ui_report_gone">Bu rapor artık yok: saklama süresi ya da sıfırlama kaldırdı.</string>
     <string name="ui_pick_session">Raporunu görmek için bir oturum seçin.</string>
     <string name="ui_pick_profile">Kollarını ve zamanlamalarını görmek için bir profil seçin.</string>
+    <string name="ui_probe_read">Doze durumunu okuma</string>
+    <string name="ui_probe_keys">Doze zamanlaması anahtarları</string>
+    <string name="ui_probe_write">Doze zamanlamasını yazma</string>
+    <string name="ui_probe_force">Zorunlu derin uyku</string>
+    <string name="ui_probe_restrict">Sensör kısıtlaması</string>
+    <string name="ui_probe_privacy">Tüm sensörler kapalı anahtarı</string>
+    <string name="ui_probe_events">Doze olay günlüğü</string>
+    <string name="ui_probe_history">Pil geçmişi</string>
+    <string name="ui_probe_one_ui">One UI sürümü</string>
+    <string name="ui_probe_persistence">Yeniden başlatmadan sonra Doze zamanlaması</string>
 </resources>

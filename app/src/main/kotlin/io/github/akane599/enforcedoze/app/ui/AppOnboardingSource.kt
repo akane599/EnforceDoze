@@ -9,7 +9,10 @@ import io.github.akane599.enforcedoze.feature.onboarding.ProbeWord
 import io.github.akane599.enforcedoze.feature.onboarding.ServerKind
 import io.github.akane599.enforcedoze.privilege.PrivilegeState
 import io.github.akane599.enforcedoze.privilege.ShizukuStatus
+import com.akylas.enforcedoze.R
+import io.github.akane599.enforcedoze.privilege.probe.CapabilityProber
 import io.github.akane599.enforcedoze.privilege.probe.CapabilityReport
+import io.github.akane599.enforcedoze.privilege.probe.ProbeResult
 import io.github.akane599.enforcedoze.privilege.probe.ProbeStatus
 import io.github.akane599.enforcedoze.profile.Plan
 import io.github.akane599.enforcedoze.recommend.Urgency
@@ -34,7 +37,7 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
         OnboardingState(
             privilege = finding(privilege),
             tier = privilege.tier.ordinal,
-            probes = report?.let(::lines),
+            probes = report?.let { lines(it, ::title) },
             urgency = services.prefs.urgency,
             recommendation = recommendation,
             profileNames = names,
@@ -42,6 +45,9 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
             applied = plan,
         )
     }
+
+    /** The probe's name in the owner's language; its detail stays as the device printed it (SPEC 9.3 raw lines). */
+    private fun title(result: ProbeResult): String = PROBE_TITLES[result.id]?.let(services.graph.app::getString) ?: result.title
 
     override fun requestPermission() = services.graph.controller.requestShizukuPermission()
 
@@ -79,14 +85,27 @@ internal class AppOnboardingSource(private val services: AppServices) : Onboardi
             )
         }
 
-        fun lines(report: CapabilityReport): List<ProbeLine> = report.results.map {
+        private val PROBE_TITLES = mapOf(
+            CapabilityProber.READ to R.string.ui_probe_read,
+            CapabilityProber.KEYS to R.string.ui_probe_keys,
+            CapabilityProber.WRITE to R.string.ui_probe_write,
+            CapabilityProber.FORCE to R.string.ui_probe_force,
+            CapabilityProber.RESTRICT to R.string.ui_probe_restrict,
+            CapabilityProber.PRIVACY to R.string.ui_probe_privacy,
+            CapabilityProber.EVENTS to R.string.ui_probe_events,
+            CapabilityProber.HISTORY to R.string.ui_probe_history,
+            CapabilityProber.ONE_UI to R.string.ui_probe_one_ui,
+            CapabilityProber.PERSISTENCE to R.string.ui_probe_persistence,
+        )
+
+        fun lines(report: CapabilityReport, title: (ProbeResult) -> String = { it.title }): List<ProbeLine> = report.results.map {
             val word = when (it.status) {
                 ProbeStatus.OK -> ProbeWord.OK
                 ProbeStatus.MISSING -> ProbeWord.MISSING
                 ProbeStatus.FAILED -> ProbeWord.FAILED
                 ProbeStatus.SKIPPED -> ProbeWord.SKIPPED
             }
-            ProbeLine(it.title, word, it.detail)
+            ProbeLine(title(it), word, it.detail)
         }
 
         private const val ROOT_UID = 0

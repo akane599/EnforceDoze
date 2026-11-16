@@ -300,7 +300,6 @@ Carried over to P5:
   screen events (`DayZero`); the durable grants are given through the worker once Shizuku allows it.
   Untested on a device yet: the emulator run after 09:00 covers it.
   Still open in P5, each a spec item, not optional:
-  - probe titles come in English from `:core:privilege`; map the probe ids to string resources;
   - the allowlist below T2 (read with `DUMP`), and suggestions for alarm and messaging apps;
   - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);
   - the report's offer of a late app is not yet passed to the allowlist;
