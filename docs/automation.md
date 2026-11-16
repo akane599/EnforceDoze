@@ -66,13 +66,15 @@ only. Its extras:
 | `profile` | the profile in use |
 | `mode` | `MANAGED`, `PAUSED` or `HANDS_OFF` (after "Return to previous setup") |
 | `tier` | the privilege tier (`T0` … `T3`) |
-| `verdict` | the last session's verdict |
-| `deep_share` | the last session's share of time in deep idle, 0–1 |
-| `drain` | the last session's drain in %/h |
+| `verdict` | the last result's verdict: the last session, or the night it belongs to, as Home shows it; absent when not judged |
+| `deep_share` | its share of time in deep idle, 0–1; absent when not judged |
+| `drain` | its drain in %/h; absent while charging or not measured |
+| `report_session_id` | the session its report opens on |
 | `warning` | the first open warning's code, or absent |
 
 In Tasker, a profile on the event **Intent Received** with that action gets the extras as local
-variables: `%plan`, `%profile`, `%mode`, `%tier`, `%verdict`, `%deep_share`, `%drain`, `%warning`.
+variables: `%plan`, `%profile`, `%mode`, `%tier`, `%verdict`, `%deep_share`, `%drain`, `%report_session_id`,
+`%warning`.
 
 ## Tasker examples
 
