@@ -42,18 +42,24 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.akylas.enforcedoze.MainActivity"
-            android:exported="true">
+        <!-- The fork's Compose app is the launcher (ADR 0029). -->
+        <activity android:name="io.github.akane599.enforcedoze.app.ui.MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <!-- Upstream's screen, kept until the tiles that open it are replaced (SPEC 12.1). -->
+        <activity android:name="com.akylas.enforcedoze.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
         <receiver android:name="com.akylas.enforcedoze.BootCompleteReceiver"
             android:exported="true">

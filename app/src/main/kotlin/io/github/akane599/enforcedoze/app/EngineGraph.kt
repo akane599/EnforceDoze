@@ -3,6 +3,8 @@ package io.github.akane599.enforcedoze.app
 
 import android.content.Context
 import androidx.core.content.edit
+import io.github.akane599.enforcedoze.app.ui.AppPrefs
+import io.github.akane599.enforcedoze.app.ui.AppServices
 import io.github.akane599.enforcedoze.data.EngineFiles
 import io.github.akane599.enforcedoze.data.EvidenceDatabase
 import io.github.akane599.enforcedoze.data.JournalDao
@@ -16,6 +18,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -23,9 +28,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
- * The engine's composition root for the process. It is wired by hand while the app has one service; Hilt
- * (SPEC 12.2) arrives with the first feature module in P5. The engine runs only while [EngineService] is
- * up; [start] and [stop] are called from there.
+ * The composition root for the process, wired by hand (ADR 0029). The engine runs only while [EngineService]
+ * is up; [start] and [stop] are called from there.
  */
 internal class EngineGraph private constructor(context: Context) {
     val app: Context = context.applicationContext
@@ -38,11 +42,20 @@ internal class EngineGraph private constructor(context: Context) {
     val sessions: SessionDao by lazy { database.sessions() }
     val recorderFiles: RecorderFiles = RecorderFiles(File(app.filesDir, SESSIONS_DIR))
     val switch: EngineSwitch = EngineSwitch(app)
+    val prefs: AppPrefs = AppPrefs(app)
+
+    /** The screens' shared services (ADR 0029), made on first use: the service alone never needs them. */
+    val ui: AppServices by lazy { AppServices(this) }
 
     private val lifecycle = Mutex()
     private var running: Running? = null
 
     private class Running(val scope: CoroutineScope, val host: EngineHost, val recorder: SessionRecorder)
+
+    private val hostState = MutableStateFlow<EngineHost?>(null)
+
+    /** The running host, or null while the service is down; screens reach it only through `EngineAccess` (ADR 0029). */
+    val hosts: StateFlow<EngineHost?> = hostState.asStateFlow()
 
     /** The running host, or null while the service is down. */
     val host: EngineHost? get() = running?.host
@@ -56,11 +69,20 @@ internal class EngineGraph private constructor(context: Context) {
             controller.start()
             // The engine's actor lives in a child scope, so a stop ends it without ending the graph.
             val engineScope = CoroutineScope(scope.coroutineContext + SupervisorJob(scope.coroutineContext.job))
-            val host = EngineHost.create(app, engineScope, controller, store, RoomEngineJournal(journal), catalog = profiles)
+            val host = EngineHost.create(
+                app,
+                engineScope,
+                controller,
+                store,
+                RoomEngineJournal(journal),
+                keepAwakeApps = { prefs.keepAwake },
+                catalog = profiles,
+            )
             host.start(store.load().profileId?.let { profiles.profile(it) })
             val recorder = SessionRecorder(this, engineScope, host)
             withContext(Dispatchers.Main.immediate) { recorder.start() }
             running = Running(engineScope, host, recorder)
+            hostState.value = host
         }
     }
 
@@ -68,6 +90,7 @@ internal class EngineGraph private constructor(context: Context) {
         lifecycle.withLock {
             val current = running ?: return
             running = null
+            hostState.value = null
             withContext(Dispatchers.Main.immediate) {
                 current.recorder.stop()
                 current.host.stop()

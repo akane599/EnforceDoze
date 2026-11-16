@@ -1,0 +1,21 @@
+EnforceDoze A17 fork
+Copyright (C) 2026 Tuğberk Özgen
+
+This program is free software: you can redistribute it and/or modify it under the terms of the
+GNU General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version. See LICENSE.txt.
+
+This is a fork of EnforceDoze and keeps its history from the tag `upstream-baseline` (1.10.2).
+
+EnforceDoze
+  https://github.com/Akylas/EnforceDoze
+  Copyright (C) Martin Guillon (Akylas, farfromrefug) and contributors. GPL-3.0.
+
+ForceDoze, which EnforceDoze forked
+  https://github.com/theblixguy/ForceDoze
+  Copyright (C) Suyash Srijan (theblixguy) and contributors. GPL-3.0.
+
+Upstream translations were contributed through Weblate (https://hosted.weblate.org/engage/enforcedoze/);
+each translator is named in the commit history before `upstream-baseline`.
+
+Third-party libraries and their licences are listed here as the licence check is added (SPEC 12.5).

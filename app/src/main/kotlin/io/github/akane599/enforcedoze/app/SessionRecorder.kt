@@ -60,7 +60,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *   the session is stored; a session stored while the keyguard is already unlocked is reported right away.
  * Nothing runs on a timer while the screen is off (SPEC 8.2).
  */
-internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineScope, private val host: EngineHost) {
+internal class SessionRecorder(private val graph: EngineGraph, private val scope: CoroutineScope, private val host: EngineHost) {
     private val context: Context = graph.app
     private val controller: PrivilegeController = graph.controller
     private val store: EngineStore = graph.store
@@ -280,6 +280,8 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         retain(now)
         // The unlock that came first found no session to report (see the class comment).
         if (!keyguard.isKeyguardLocked) unlocked(now)
+        // A new session can change the recommendation; with "Follow Recommended" on, it is applied (SPEC 9.1 Plan).
+        graph.scope.launch { graph.ui.followRecommendation() }
     }
 
     /**
@@ -344,9 +346,9 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
         )
     }
 
-    /** Retention (SPEC 8.3): 30 days of records, 7 days of raw dumps. */
+    /** Retention (SPEC 8.3): the owner's days of records (30 by default), 7 days of raw dumps. */
     private suspend fun retain(now: Long) {
-        val records = now - RECORDS.toMillis()
+        val records = now - Duration.ofDays(graph.prefs.retentionDays.toLong()).toMillis()
         sessions.deleteSessionsBefore(records)
         journal.deleteActionsBefore(records)
         journal.deleteEventsBefore(records)
@@ -387,7 +389,6 @@ internal class SessionRecorder(graph: EngineGraph, private val scope: CoroutineS
 
         /** Under the 10 s a foreground broadcast may be held (ADR 0020). */
         val COPY_LIMIT: Duration = Duration.ofSeconds(8)
-        val RECORDS: Duration = Duration.ofDays(30)
         val RAW: Duration = Duration.ofDays(7)
 
         /** A night is reported at the first unlock after it, which comes well within a day. */

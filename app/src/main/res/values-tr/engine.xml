@@ -4,4 +4,27 @@
     <string name="engine_channel_name">Doze motoru</string>
     <string name="engine_channel_description">EnforceDoze profilinizi uygulamak için ekranı izlerken gösterilir</string>
     <string name="engine_notification_title">Doze profiliniz uygulanıyor</string>
+    <string name="ui_engine_off">Motor kapalı. Önce Ana sayfadan planı açın.</string>
+    <string name="ui_engine_did_not_start">Motor 10 saniye içinde başlamadı. Ayarlar\'dan yetkiyi denetleyin.</string>
+    <string name="ui_error_store">Motorun durumu kaydedilemedi</string>
+    <string name="ui_not_in_build">Bu sürümde henüz yok.</string>
+    <string name="ui_via_shizuku">Shizuku</string>
+    <string name="ui_via_sui">Sui</string>
+    <string name="ui_via_root">root</string>
+    <string name="ui_error_allowlist">İzin listesi okunamadı</string>
+    <string name="ui_licence">Lisans</string>
+    <string name="ui_hold_off_call">arama</string>
+    <string name="ui_hold_off_audio">ses çalıyor</string>
+    <string name="ui_hold_off_car_mode">araç modu</string>
+    <string name="ui_hold_off_hotspot">hotspot</string>
+    <string name="ui_hold_off_keep_awake">uyanık tutulan uygulama</string>
+    <string name="ui_hold_off_charging">şarj</string>
+    <string name="ui_saved">Kaydedildi</string>
+    <string name="ui_tab_home">Ana sayfa</string>
+    <string name="ui_tab_log">Kayıt</string>
+    <string name="ui_tab_profiles">Profiller</string>
+    <string name="ui_tab_settings">Ayarlar</string>
+    <string name="ui_report_gone">Bu rapor artık yok: saklama süresi ya da sıfırlama kaldırdı.</string>
+    <string name="ui_pick_session">Raporunu görmek için bir oturum seçin.</string>
+    <string name="ui_pick_profile">Kollarını ve zamanlamalarını görmek için bir profil seçin.</string>
 </resources>
