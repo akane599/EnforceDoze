@@ -304,7 +304,7 @@ Carried over to P5:
   - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);
   - an app waker's wakeup count includes alarm wakeups only when both alarm dumps were read
     (ADR 0019); the report's own-wakeups figure already says "unknown" then, the per-app rows do not;
-  - tiles and notifications (SPEC 9.2); the upstream Java screens are still in the APK;
+  - the upstream Java screens and services are still in the APK (unregistered tiles included);
   - the automation API and the Tasker grant belong to P6 (SPEC 11); Settings answers "not in this
     build yet" for both.
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):

@@ -170,3 +170,15 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   4.1 T1): `DUMP`, `WRITE_SECURE_SETTINGS` (lever A writes from the app, ADR 0012) and usage
   access. `READ_LOGS` stays with the worker, which reads the events buffer anyway, and the exact
   alarm op is only for the optional delay alarm.
+- **Tiles and notifications** (SPEC 9.2, 11.2).
+  - "Doze plan" pauses and resumes through the engine. With no plan yet, it opens Plan.
+  - "Sensors off" sets the all-sensors switch through the worker. Turning it on asks for the same
+    confirmation as the Sensors screen. Below T2 the tile is unavailable.
+  - Both tiles run in active mode and refresh when the engine status or the switch changes. A long
+    press opens Plan or Sensors.
+  - The engine notification names the profile in force in one line, at low importance.
+  - Night reports have their own low-importance channel. A report is posted once per new night, at
+    the first unlock, and opens the night's report.
+  - The notification permission is asked once, after onboarding.
+  - Upstream's tile classes are unregistered and wait for the upstream code's removal (SPEC 12.1);
+    their resources show as unused in lint until then.
