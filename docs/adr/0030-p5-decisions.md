@@ -119,3 +119,34 @@ The direction is ADR 0028 and the UI layer is ADR 0029.
   captures without the collection, none in 120 with it. It is a mitigation, so the flat check stays.
   Software rendering (`robolectric.pixelCopyRenderMode=software`) would avoid the render thread, but
   drops elevation shadows and every baseline would change; it stays the fallback.
+- **The app's sources sit on three shared services** (ADR 0029). Engine access looks the host up
+  per command, and an engine that is off answers "unavailable" unless the owner's action means
+  "turn it on". The warnings are decided once for every screen:
+  - levers the plan wants but the tier cannot write mean access lost;
+  - below T2 the app is read-only;
+  - a lever read back with another value is partly applied;
+  - a drift by a known writer in the last day means another manager;
+  - a state file that cannot be saved is an error with its raw line.
+- **An engine that is off reads as a paused plan on Home**, and Resume starts it. Applying a plan
+  from any screen also takes the engine out of a pause: the owner applying a plan means it to run.
+- **The quick proof runs in the app's scope**, not the screen's. Leaving Home must not cut it off
+  before its undo step (SPEC 0.2, every change undoable).
+- **The navigation bar has Home, Log, Profiles and Settings** (the ADR 0028 study). The allowlist and
+  sensors open from Settings' Doze section. "Check" in Settings opens onboarding at its privilege
+  step and returns to Settings.
+- **The app's own record is its preferences file**: onboarding, the answer to Q, applied plans,
+  late reports (with the session and the app), retention, keep-awake apps, the declined
+  recommendation and the warnings seen. The engine's choices (re-apply on drift, keep marks) stay
+  in its state file. While the engine is off, they are written there for it to start from.
+- **Retention is the owner's choice**; the recorder reads it instead of a fixed 30 days.
+- **Reset removes the app's records only after Restore stock is confirmed by read-back.** A refusal,
+  a stock difference or an unverified result stops it.
+- **The licence and notice ship as assets**, and a unit test keeps them byte-for-byte equal to the
+  repository's.
+- **The Compose activity is the launcher.** Upstream's activity keeps only the Quick Settings tile
+  preference until the tiles are replaced (SPEC 12.1).
+- **The recommendation is built from the app's own sessions for now.** With none recorded, the
+  screens say there is not enough history. The day-zero history from the phone's battery history
+  (SPEC 7.2) is still to come.
+- **Tasker is found by its public package name.** SPEC 11 grants Tasker the automation permission
+  by that name, so naming it in code tells nothing about any one phone.

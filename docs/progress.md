@@ -291,6 +291,22 @@ Carried over to P5:
 ## P5 UI and design (in progress)
 
 - Committed: Home, the night report and Profiles with their screenshot sets (ADR 0028–0030).
+- Committed on 2026-11-16: Plan and Recommended, Log, Settings, Allowlist, Sensors and Onboarding with
+  their screenshot sets; the quick-proof card on Home; `shoot` collects garbage before each capture
+  (flat frames, ADR 0030).
+- `:app` wiring (2026-11-16): a Compose launcher activity, Navigation 3, the nine screen sources
+  over shared engine, evidence and privilege services, and the report mapper with its JVM tests.
+  Still open in P5, each a spec item, not optional:
+  - the day-zero recommendation from the phone's battery history (SPEC 7.2, SPEC 15 checklist);
+  - probe titles come in English from `:core:privilege`; map the probe ids to string resources;
+  - the allowlist below T2 (read with `DUMP`), and suggestions for alarm and messaging apps;
+  - the server flag sync switch needs a worker call (`device_config` sync-disabled mode);
+  - the report's offer of a late app is not yet passed to the allowlist;
+  - `ReportState` holds some figures as non-null that an unread session does not have (time in
+    deep, maintenance windows, motion resets, app wakeups); make them nullable in `:feature:report`;
+  - tiles and notifications (SPEC 9.2); the upstream Java screens are still in the APK;
+  - the automation API and the Tasker grant belong to P6 (SPEC 11); Settings answers "not in this
+    build yet" for both.
 - Joined nights (ADR 0031, owner's rule of 2026-11-08):
   - one rule in `Nights`, used by the recorder, Signals and the feedback loop;
   - night rows with their own figures;
